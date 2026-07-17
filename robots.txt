@@ -1,0 +1,17 @@
+# bitaqti.com — robots.txt
+# آخر تحديث: 18 يوليو 2026
+
+User-agent: *
+
+# صفحات الخدمة نفسها — مسموح بفهرستها
+Allow: /$
+Allow: /index.html
+Allow: /before-order.html
+Allow: /privacy.html
+
+# لوحة الفواتير الداخلية — ممنوعة من الفهرسة دائماً، بغض النظر عن أي عميل
+Disallow: /inv-x7k2.html
+
+# ─────────────────────────────────────────────────────────
+
+Sitemap: https://bitaqti.com/sitemap.xml
