@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>سياسة الخصوصية وإخلاء المسؤولية — بطاقتي (Bitaqti)</title>
+<meta name="description" content="سياسة الخصوصية وإخلاء المسؤولية لخدمة بطاقتي (Bitaqti) — بطاقات رقمية تعريفية، البحرين." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='44' y='46' width='28' height='5' rx='2.5' fill='%238A8D93'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9;
+    --red:#CE1126; --red-deep:#9C0E1E; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+  }
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--paper); color:var(--ink);
+    line-height:1.9; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,.disp{font-family:'El Messiri',Arial,sans-serif;}
+  a{color:var(--red);text-decoration:none;font-weight:700;}
+  a:hover{text-decoration:underline;}
+  .mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--paper);border:1px solid var(--line);border-radius:5px;padding:2px 7px;color:var(--ink);direction:ltr;display:inline-block;}
+  .container{max-width:760px;margin:0 auto;padding:0 20px;}
+  a:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:4px;}
+
+  .nav{position:sticky;top:0;z-index:10;background:rgba(244,243,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .container{max-width:900px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14.5px;color:var(--ink);text-decoration:none;}
+  .brand .mark{width:30px;height:21px;border-radius:5px;background:var(--ink);position:relative;flex-shrink:0;}
+  .brand .mark::before{content:'';position:absolute;right:4px;top:5px;width:8px;height:8px;border-radius:2px;background:var(--paper);}
+  .back-link{font-size:13px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
+  .back-link:hover{color:var(--red);text-decoration:none;}
+  .back-link svg{width:15px;height:15px;}
+
+  .hero{padding:44px 0 8px;text-align:center;}
+  .eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);text-transform:uppercase;margin-bottom:10px;}
+  h1{font-size:clamp(23px,4vw,32px);font-weight:700;}
+  .updated{font-size:12px;color:var(--ink-faint);margin-top:12px;}
+
+  main{padding:20px 0 60px;}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);padding:8px 30px;margin-top:26px;}
+  section.pol{padding:26px 0;border-bottom:1px solid var(--line);}
+  section.pol:last-child{border-bottom:none;}
+  section.pol h2{font-size:16.5px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+  section.pol h2 .num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--red);border:1.5px solid var(--red);width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  section.pol p{font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+  section.pol p:last-child{margin-bottom:0;}
+  section.pol ul{margin:10px 0 10px;padding-inline-start:0;}
+  section.pol ul li{list-style:none;font-size:13.5px;color:var(--ink-soft);display:flex;gap:9px;margin-bottom:8px;line-height:1.7;}
+  section.pol ul li::before{content:'—';color:var(--red);flex-shrink:0;font-weight:700;}
+  .callout{background:var(--red-tint);border:1px dashed var(--red);border-radius:10px;padding:14px 16px;margin-top:12px;font-size:13px;color:var(--red-deep);}
+  .callout strong{display:block;margin-bottom:4px;}
+  .callout.gold{background:var(--gold-tint);border-color:var(--gold);color:#5C4826;}
+
+  .contact-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;}
+  .contact-pill{flex:1;min-width:180px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;text-align:center;}
+  .contact-pill .lbl{font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+  .contact-pill .val{font-size:12.5px;font-weight:700;color:var(--ink);}
+
+  footer{background:var(--ink);color:rgba(255,255,255,.55);padding:24px 0;text-align:center;font-size:11.5px;}
+  footer strong{color:#fff;}
+  footer .f-links{margin-top:9px;display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
+  footer .f-links a{color:var(--gold);}
+
+  @media (max-width:600px){
+    .card{padding:4px 20px;}
+    .brand small{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="brand"><span class="mark"></span> بطاقتي <small style="font-weight:400;color:var(--ink-faint);">Bitaqti</small></a>
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      الرئيسية
+    </a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container">
+    <div class="eyebrow">شفافية كاملة</div>
+    <h1>سياسة الخصوصية وإخلاء المسؤولية</h1>
+    <div class="updated">آخر تحديث: 17 يوليو 2026 · خدمة بطاقتي (Bitaqti) — bitaqti.com</div>
+    <div class="updated">اقرأ أيضاً: <a href="before-order.html">الأمور التي يجب معرفتها قبل الطلب</a></div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="card">
+
+      <section class="pol">
+        <h2><span class="num">١</span> من نحن</h2>
+        <p>«بطاقتي» (Bitaqti) خدمة فردية يقدّمها شخص واحد في البحرين — وليست شركة أو مؤسسة مسجّلة. أنا من يتواصل معك، يصمم بطاقتك، ويردّ على استفساراتك مباشرة عبر واتساب أو البريد الإلكتروني. الاسم التجاري «بطاقتي» والنطاق <strong>bitaqti.com</strong> مخصّصان لهذه الخدمة تحديداً.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٢</span> ما البيانات التي أجمعها</h2>
+        <p>لتنفيذ طلبك، أطلب منك المعلومات التالية فقط:</p>
+        <ul>
+          <li>سيرتك الذاتية الحالية (ملف PDF أو صورة)</li>
+          <li>صورتك الشخصية</li>
+          <li>الروابط التي تريد تضمينها (واتساب، لينكدإن، بريد إلكتروني، إلخ)</li>
+          <li>رقم هاتفك، لإنشاء رمز تحقق يتيح لك تتبّع حالة طلبك واستلام فاتورتك الرقمية</li>
+        </ul>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٣</span> كيف تُنظَّم بطاقتك ضمن رابط الموقع</h2>
+        <p>كل عميل يحصل على مجلّد خاص به تحت النطاق الرئيسي، بحيث يسهل تذكّر الرابط ومشاركته. مثال على الهيكلة (باستخدام اسم مستخدم افتراضي "username"):</p>
+        <ul>
+          <li><span class="mono">bitaqti.com</span> — الصفحة الرئيسية وصفحة الهبوط الخاصة بالخدمة نفسها</li>
+          <li><span class="mono">bitaqti.com/username/</span> — بطاقتك الرقمية (الصفحة التي تشاركها مع الآخرين)</li>
+          <li><span class="mono">bitaqti.com/username/cv/</span> — نسخة سيرتك الذاتية الورقية الأصلية (PDF) كما أرسلتها لي</li>
+          <li><span class="mono">bitaqti.com/username/photo.jpg</span> — ملف صورتك الشخصية المستخدم في البطاقة</li>
+          <li><span class="mono">bitaqti.com/username/...</span> — أي صفحات فرعية إضافية ضمن ملفك (متاحة في باقة المميزة، مثل صفحة إنجازات أو معرض أعمال)</li>
+        </ul>
+        <div class="callout">
+          <strong>مهم:</strong>
+          كل ملف داخل مجلدك — بما فيها ملف السيرة الأصلية والصورة — هو ملف عام يمكن لأي شخص يعرف رابطه المباشر فتحه، تماماً مثل رابط بطاقتك نفسها. راجع القسم ٥ أدناه حول ظهور هذه الروابط في نتائج البحث.
+        </div>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٤</span> كيف تُستخدم بياناتك</h2>
+        <p>تُستخدم بياناتك حصراً لبناء البطاقة الرقمية التي طلبتها وتسليمها لك، ولتشغيل ميزة تتبّع الطلب وإصدار فاتورتك الرقمية. لا أبيع بياناتك ولا أشاركها مع أي طرف ثالث لأغراض تسويقية أو غيرها.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٥</span> سجل طلبك والفاتورة الرقمية</h2>
+        <p>عند استلام طلبك، يُنشأ لك سجل خاص في نظام تتبّع الطلبات يتضمّن: رقم هاتفك، رمز التحقق الخاص بك، الباقة المختارة، السعر، تاريخ الطلب، حالة التنفيذ، وسجل بالإجراءات التي أنجزتها على طلبك خطوة بخطوة. هذا السجل هو ما يظهر لك عند استخدام "تتبّع الطلب" في الموقع.</p>
+        <p>لكل طلب <strong>رمز طلب فريد</strong> بصيغة ثابتة، مثال: <span class="mono">BH-CV-2026-0001</span> — يظهر في رأس فاتورتك الرقمية ويمكنك ذكره عند التواصل معي بخصوص طلبك.</p>
+        <p>بعد اكتمال الدفع، أرسل لك <strong>فاتورة رقمية</strong> عبر واتساب لتأكيد استلام المبلغ وتفاصيل طلبك — وهي نفس المعلومات التي تظهر لك لاحقاً في نافذة تتبّع الطلب على الموقع.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٦</span> التعديلات المجانية</h2>
+        <p>يشمل كل طلب <strong>جولتين مجانيتين من التعديل</strong> على محتوى بطاقتك (نص، ترتيب، روابط، أو تصحيح معلومة) بعد التسليم الأول — وتُطلَب الجولتان معاً دفعة واحدة قدر الإمكان لتسريع التنفيذ. أي تعديلات إضافية بعد ذلك يتم الاتفاق عليها معك مباشرة حسب حجم التغيير المطلوب.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٧</span> البيانات الحساسة — إزالة تلقائية</h2>
+        <p>لحماية خصوصيتك، أزيل تلقائياً من بطاقتك الرقمية أي بيانات حساسة ترد في سيرتك الأصلية، وتحديداً:</p>
+        <ul>
+          <li>الرقم الشخصي (CPR)</li>
+          <li>العنوان الدقيق للسكن (المبنى/الطريق/المجمع بالتفصيل)</li>
+        </ul>
+        <p>لا تُنشَر هذه البيانات على بطاقتك الرقمية <strong>إلا بموافقة صريحة منك أنت شخصياً</strong>، وبطلب واضح يفيد بأنك تريد تضمينها رغم التوصية بعدم ذلك.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٨</span> النشر وظهور بطاقتك في نتائج البحث</h2>
+        <p>بمجرد نشر بطاقتك الرقمية، يصبح رابطها صفحة عامة على الإنترنت مثل أي صفحة أخرى. لهذا أضع <strong>افتراضياً</strong> على بطاقتك وسم <span class="mono">noindex</span> الذي يطلب من محركات البحث مثل Google عدم إدراجها ضمن نتائج البحث. إن كنت تفضّل العكس — أن تنتشر بطاقتك وتظهر في نتائج البحث ليجدك بها أصحاب العمل أو من تتعامل معهم مثلاً — أخبرني وسأزيل هذا الوسم عنها.</p>
+        <div class="callout">
+          <strong>ملاحظة مهمة:</strong>
+          وسم noindex يقلل احتمال ظهور بطاقتك في نتائج البحث ولا يمنعه بشكل مطلق، ولا يمنع أي شخص يملك الرابط المباشر أو رمز QR من فتح الصفحة في كل الأحوال — وينطبق مبدأ النشر العام أيضاً على أي ملف فرعي داخل مجلدك (مثل ملف السيرة الأصلية أو الصورة، راجع القسم ٣).
+        </div>
+        <p>يمكنك في أي وقت طلب إلغاء نشر بطاقتك أو تعديل محتواها أو تغيير قرارك بخصوص الفهرسة بالتواصل معي مباشرة. بالإضافة إلى الإزالة التلقائية الموضحة في القسم ٧، يُستحسن أيضاً تجنّب تضمين معلومات حساسة جداً في سيرتك ما لم تكن ضرورية لمجالك المهني.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">٩</span> أين تُخزَّن بياناتك</h2>
+        <p>بطاقتك الرقمية (ملف الويب نفسه) تُستضاف على النطاق الرسمي <strong>bitaqti.com</strong>. بيانات تتبّع الطلبات (رقم الهاتف، رمز التحقق، الباقة، السعر، الحالة، سجل الإجراءات) تُحفظ في جدول بيانات Google Sheets خاص بي.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١٠</span> مدة الاحتفاظ بالبيانات</h2>
+        <p>أحتفظ بسجل طلبك (رقم الهاتف، رمز التحقق، تفاصيل الطلب) طالما بطاقتك منشورة وفعّالة، لتتمكن من التتبّع والتعديل عند الحاجة. عند طلبك إلغاء النشر نهائياً، أحذف السجل وملفات بطاقتك خلال مدة معقولة لا تتجاوز أسبوعاً من طلبك.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١١</span> ملفات تعريف الارتباط والتتبع</h2>
+        <p>لا يستخدم هذا الموقع ملفات تعريف ارتباط (cookies) أو أدوات تحليل أو تتبع تسويقي من أي طرف ثالث. الصفحة تعرض محتواك فقط، وتقرأ بيانات التتبع عند طلبك ذلك صراحة عبر نموذج تتبّع الطلب.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١٢</span> حقوقك</h2>
+        <ul>
+          <li>طلب تعديل أي معلومة في بطاقتك في أي وقت (ضمن الجولتين المجانيتين أو باتفاق إضافي)</li>
+          <li>طلب إلغاء نشر بطاقتك وحذف بياناتك من جدول التتبع نهائياً</li>
+          <li>معرفة ما هي البيانات المحفوظة عنك بالتحديد</li>
+          <li>الموافقة أو رفض تضمين أي بيانات حساسة في بطاقتك (راجع القسم ٧)</li>
+        </ul>
+        <p>لممارسة أي من هذه الحقوق، تواصل معي عبر واتساب أو البريد الإلكتروني أدناه.</p>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١٣</span> الدفع والاسترجاع</h2>
+        <ul>
+          <li>يُعتبر الطلب مؤكَّداً بعد استلام الدفعة وإرسال الفاتورة الرقمية لك</li>
+          <li>نظراً لأن العمل يبدأ فوراً بعد تأكيد الطلب، لا يوجد استرجاع للمبلغ بعد بدء التصميم إلا في حالات استثنائية تُقيَّم فردياً</li>
+          <li>إذا لم تصلك بطاقتك خلال المدة المتفق عليها (24-48 ساعة) لأسباب من طرفي، يمكنك طلب استرجاع كامل المبلغ</li>
+        </ul>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١٤</span> إخلاء المسؤولية</h2>
+        <ul>
+          <li>دقة المعلومات في بطاقتك مسؤوليتك أنت، لأنني أنقلها كما أرسلتها لي</li>
+          <li>الخدمة تُقدَّم "كما هي"، وأبذل جهدي لضمان استمرارها لكن دون ضمان تشغيل دائم بنسبة 100%</li>
+          <li>لست مسؤولاً عن أي انقطاع في خدمات أطراف ثالثة أستخدمها (Google، استضافة الموقع، واتساب)</li>
+          <li>الأسعار المذكورة، بما فيها عرض الافتتاح، قابلة للتغيير بعد انتهاء الفترة الترويجية المعلنة</li>
+          <li>هذه خدمة فردية مستقلة تحت الاسم التجاري «بطاقتي»، وليست شركة أو كياناً قانونياً مسجّلاً</li>
+        </ul>
+      </section>
+
+      <section class="pol">
+        <h2><span class="num">١٥</span> تواصل معي</h2>
+        <p>لأي استفسار متعلق بالخصوصية أو بياناتك، تواصل معي مباشرة:</p>
+        <div class="contact-strip">
+          <a class="contact-pill" href="https://wa.me/97336166806" target="_blank" rel="noopener"><div class="lbl">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div></a>
+          <a class="contact-pill" href="mailto:Hasan.sdaif16@gmail.com"><div class="lbl">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div></a>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <strong>بطاقتي</strong> (Bitaqti) — بطاقات رقمية تعريفية · البحرين
+    <div class="f-links">
+      <a href="index.html">الصفحة الرئيسية</a>
+      <a href="before-order.html">قبل أن تطلب</a>
+      <a href="https://wa.me/97336166806" target="_blank" rel="noopener">واتساب</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
