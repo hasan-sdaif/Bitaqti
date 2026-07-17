@@ -10,22 +10,30 @@
 //
 // هذه القيمة تبقى على السيرفر فقط ولا تصل إلى كود المتصفح إطلاقاً.
 //
-// ═══ الحماية من محاولات التخمين الآلي (Rate Limiting) ═══
-// نحدّ كل IP بحد أقصى 5 محاولات كل 60 ثانية على هذه الدالة تحديداً،
-// لمنع أي محاولة تخمين آلية لكلمة السر. هذا أكثر من كافٍ لأي محاولة
-// دخول حقيقية منك، حتى لو أخطأت بالكتابة مرتين أو ثلاث.
-exports.config = {
-  path: '/.netlify/functions/invoice-auth',
-  rateLimit: {
-    windowLimit: 5,
-    windowSize: 60,
-    aggregateBy: ['ip', 'domain'],
-  },
-};
+// ملاحظة تقنية: لا نستخدم هنا exports.config لتخصيص المسار أو rate
+// limiting المدمج، لأن صيغة CommonJS المستخدمة في هذا الملف (exports.*)
+// لا يتعرف عليها نظام تعريف الـconfig الحديث في Netlify — فقط الدوال
+// المكتوبة بصيغة ESM (export const config) تدعم ذلك. الدالة هنا تعمل
+// إذن على مسارها الافتراضي: /.netlify/functions/invoice-auth
+// والحماية من محاولات التخمين الآلي تُطبَّق يدوياً داخل الدالة نفسها
+// (تأخير بسيط + حد أقصى للمحاولات لكل IP، انظر أدناه).
+
+// حد بسيط للمحاولات داخل ذاكرة الدالة نفسها (in-memory). هذا ليس حلاً
+// دائماً مثالياً (لأن كل نسخة جديدة من الدالة تبدأ بذاكرة فارغة)، لكنه
+// طبقة حماية إضافية فورية لا تحتاج أي إعداد خارجي، وتعمل فعلياً طالما
+// نفس نسخة الدالة (instance) لا تزال "دافئة" بين الطلبات المتتالية.
+const attempts = new Map(); // ip -> { count, windowStart }
+const MAX_ATTEMPTS = 5;
+const WINDOW_MS = 60 * 1000;
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return jsonResponse(405, { error: 'method_not_allowed' });
+  }
+
+  const clientIp = getClientIp(event);
+  if (isRateLimited(clientIp)) {
+    return jsonResponse(429, { error: 'too_many_attempts' });
   }
 
   let password = '';
@@ -49,6 +57,7 @@ exports.handler = async (event) => {
   const isValid = timingSafeStringEqual(password, CORRECT_PASSWORD);
 
   if (!isValid) {
+    recordFailedAttempt(clientIp);
     return jsonResponse(401, { error: 'wrong_password' });
   }
 
@@ -60,6 +69,32 @@ exports.handler = async (event) => {
 
   return jsonResponse(200, { token, expiresAt });
 };
+
+function getClientIp(event) {
+  const headers = event.headers || {};
+  return (
+    headers['x-nf-client-connection-ip'] ||
+    (headers['x-forwarded-for'] || '').split(',')[0].trim() ||
+    'unknown'
+  );
+}
+
+function isRateLimited(ip) {
+  const record = attempts.get(ip);
+  if (!record) return false;
+  const withinWindow = Date.now() - record.windowStart < WINDOW_MS;
+  return withinWindow && record.count >= MAX_ATTEMPTS;
+}
+
+function recordFailedAttempt(ip) {
+  const record = attempts.get(ip);
+  const now = Date.now();
+  if (!record || now - record.windowStart >= WINDOW_MS) {
+    attempts.set(ip, { count: 1, windowStart: now });
+  } else {
+    record.count += 1;
+  }
+}
 
 function jsonResponse(statusCode, payload) {
   return {
