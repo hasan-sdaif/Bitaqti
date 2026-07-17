@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>نظام فواتير بطاقتي (Bitaqti)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-app: #f4f5f8;
+    --bg-paper: #ffffff;
+    --text-main: #111827;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --primary-color: #CE1126; /* أحمر بطاقتي */
+    --primary-hover: #b00f20;
+    --accent-color: #1f2937;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  [dir="ltr"] { unicode-bidi: isolate; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  button, input, select, textarea { font-family: inherit; }
+  /* منع تكبير iOS التلقائي للحقول (يحدث إذا كان font-size أقل من 16px) */
+  input, select, textarea { font-size: 16px; }
+
+  /* ══════════════════════════════════════════════
+     شاشة كلمة السر
+  ══════════════════════════════════════════════ */
+  .lock-screen {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(160deg, #1a1d23, #111318);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+  }
+
+  .lock-card {
+    background: var(--bg-paper);
+    border-radius: 20px;
+    padding: 32px 26px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  }
+
+  .lock-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fef2f2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+  }
+  .lock-icon svg { width: 24px; height: 24px; color: var(--primary-color); }
+
+  .lock-card h1 {
+    font-family: 'El Messiri', sans-serif;
+    font-size: 19px;
+    color: var(--accent-color);
+    margin-bottom: 6px;
+  }
+  .lock-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+
+  .lock-input-wrap { position: relative; margin-bottom: 14px; }
+  .lock-input {
+    width: 100%;
+    padding: 14px 46px 14px 16px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    background: #f9fafb;
+    text-align: center;
+    letter-spacing: 2px;
+  }
+  .lock-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(206,17,38,.1);
+  }
+  .lock-toggle {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    display: flex;
+  }
+  .lock-toggle svg { width: 18px; height: 18px; }
+
+  .lock-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary-color);
+    color: #fff;
+    font-weight: 700;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background .2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .lock-btn:hover { background: var(--primary-hover); }
+  .lock-btn:disabled { opacity: .6; cursor: not-allowed; }
+  .lock-btn .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+    display: none;
+  }
+  .lock-btn.loading .spinner { display: inline-block; }
+  .lock-btn.loading .lock-btn-text { display: none; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .lock-error {
+    margin-top: 14px;
+    font-size: 12.5px;
+    color: var(--primary-color);
+    background: #fef2f2;
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: none;
+  }
+  .lock-error.show { display: block; }
+
+  /* ══════════════════════════════════════════════
+     التطبيق الرئيسي (يظهر بعد فتح القفل)
+  ══════════════════════════════════════════════ */
+  .app { display: none; }
+  .app.unlocked { display: block; }
+
+  /* ── شريط علوي جوال فقط: أزرار وحفظ ── */
+  .mobile-topbar {
+    display: none;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg-paper);
+    border-bottom: 1px solid var(--border-color);
+    padding: calc(12px + var(--safe-top)) 16px 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .mobile-topbar h1 {
+    font-family: 'El Messiri', sans-serif;
+    font-size: 16px;
+    color: var(--accent-color);
+  }
+  .mobile-topbar .lock-out-btn {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
+  }
+  .mobile-topbar .lock-out-btn svg { width: 14px; height: 14px; }
+
+  /* ── Layout ── */
+  .container {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    gap: 30px;
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 30px;
+    align-items: start;
+  }
+
+  /* ── Form Panel (لوحة التحكم) ── */
+  .control-panel {
+    background: var(--bg-paper);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 30px;
+    border: 1px solid var(--border-color);
+  }
+
+  .panel-header {
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .panel-header h1 {
+    font-family: 'El Messiri', sans-serif;
+    font-size: 22px;
+    color: var(--accent-color);
+  }
+
+  .panel-header p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  .desktop-lock-out {
+    background: none; border: 1px solid var(--border-color); border-radius: 8px;
+    color: var(--text-muted); font-size: 11px; padding: 6px 10px; cursor: pointer;
+    display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;
+  }
+  .desktop-lock-out:hover { background: #f9fafb; }
+  .desktop-lock-out svg { width: 12px; height: 12px; }
+
+  .form-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    margin: 22px 0 12px;
+  }
+  .form-section-title:first-of-type { margin-top: 0; }
+
+  .form-group { margin-bottom: 16px; }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--accent-color);
+  }
+
+  .form-group .hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+    margin-inline-start: 4px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: #f9fafb;
+  }
+
+  .form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+  }
+
+  textarea.form-control { resize: vertical; min-height: 80px; }
+
+  .actions { display: flex; gap: 10px; margin-top: 24px; }
+
+  .btn {
+    flex: 1;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-print { background: var(--primary-color); color: #fff; }
+  .btn-print:hover { background: var(--primary-hover); }
+  .btn-print:active { transform: scale(.98); }
+
+  .btn-reset {
+    background: transparent;
+    border: 2px solid var(--border-color);
+    color: var(--text-muted);
+  }
+  .btn-reset:hover { background: #f3f4f6; color: var(--text-main); }
+  .btn-reset:active { transform: scale(.98); }
+
+  /* ── A4 Invoice Sheet ── */
+  .invoice-preview { display: flex; justify-content: center; }
+
+  .a4-sheet {
+    background: var(--bg-paper);
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo-svg { width: 45px; height: auto; }
+
+  .brand-text h2 {
+    font-family: 'El Messiri', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: 1.2;
+  }
+  .brand-text p { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; }
+
+  .inv-meta { text-align: left; }
+  .inv-meta h1 {
+    font-family: 'El Messiri', sans-serif;
+    font-size: 28px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+  }
+  .meta-item { margin-bottom: 4px; font-size: 13px; }
+  .meta-item span { color: var(--text-muted); display: inline-block; width: 60px; }
+
+  .customer-card {
+    background: #f9fafb;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .customer-info h3 { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
+  .customer-info p { font-size: 16px; font-weight: 600; color: var(--accent-color); }
+  .customer-info .phone { font-size: 14px; color: var(--text-muted); margin-top: 4px; direction: ltr; text-align: right; }
+  .customer-info .cv-link { font-size: 12.5px; color: var(--primary-color); margin-top: 6px; direction: ltr; text-align: right; font-family: 'IBM Plex Mono', monospace; word-break: break-all; }
+
+  .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+  .inv-table th {
+    background: var(--accent-color);
+    color: #fff;
+    padding: 12px 16px;
+    text-align: right;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .inv-table th:last-child { text-align: left; border-radius: 8px 0 0 8px; }
+  .inv-table th:first-child { border-radius: 0 8px 8px 0; }
+  .inv-table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 15px; font-weight: 600; }
+  .inv-table td:last-child { text-align: left; color: var(--primary-color); font-size: 18px; }
+
+  .notes-section {
+    background: #fef2f2;
+    border-right: 4px solid var(--primary-color);
+    padding: 15px 20px;
+    margin-bottom: auto;
+  }
+  .notes-section h4 { font-size: 13px; color: var(--primary-color); margin-bottom: 6px; }
+  .notes-section p { font-size: 13px; color: var(--accent-color); line-height: 1.6; white-space: pre-wrap; }
+
+  .inv-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .inv-footer p { margin-bottom: 5px; }
+  .contact-info { display: flex; justify-content: center; gap: 15px; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── زر عائم لمعاينة/رجوع للنموذج بالجوال ── */
+  .mobile-preview-fab {
+    display: none;
+    position: fixed;
+    left: 16px;
+    bottom: calc(16px + var(--safe-bottom));
+    z-index: 60;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0,0,0,.25);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .mobile-preview-fab svg { width: 22px; height: 22px; }
+
+  /* ══════════════════════════════════════════════
+     الاستجابة للجوال
+  ══════════════════════════════════════════════ */
+  @media (max-width: 992px) {
+    body { background: var(--bg-app); }
+    .mobile-topbar { display: flex; }
+    .mobile-preview-fab { display: flex; }
+
+    .container {
+      display: block;
+      padding: 16px 16px calc(100px + var(--safe-bottom));
+      gap: 0;
+    }
+
+    /* بالجوال: النموذج هو الوضع الافتراضي، والفاتورة تُعرض كوضع "معاينة" منفصل */
+    .control-panel {
+      position: static;
+      border-radius: 16px;
+      padding: 18px 16px 22px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+    }
+    .panel-header { display: block; }
+    .panel-header .desktop-lock-out { display: none; }
+
+    .form-control { padding: 14px; }
+
+    /* الفاتورة نفسها تُخفى افتراضياً بالجوال، وتظهر فقط عند الضغط على زر المعاينة */
+    .invoice-preview {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: #3d4148;
+      padding: 12px;
+      overflow-y: auto;
+      justify-content: flex-start;
+    }
+    .invoice-preview.show { display: flex; }
+
+    .a4-sheet {
+      /* تصغير الورقة لتناسب عرض الشاشة مع الحفاظ على أبعاد A4 الحقيقية */
+      width: 210mm;
+      min-height: 297mm;
+      transform-origin: top center;
+      transform: scale(var(--mobile-scale, 0.42));
+      margin-bottom: calc((297mm * (var(--mobile-scale, 0.42) - 1)) + 16px);
+      flex-shrink: 0;
+    }
+
+    .mobile-preview-topbar {
+      display: flex;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: #3d4148;
+      padding: calc(10px + var(--safe-top)) 4px 10px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .mobile-preview-topbar .mp-close {
+      background: rgba(255,255,255,.12);
+      border: none; color: #fff; border-radius: 10px;
+      padding: 9px 16px; font-size: 13px; font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .mobile-preview-topbar .mp-print {
+      background: var(--primary-color);
+      border: none; color: #fff; border-radius: 10px;
+      padding: 9px 16px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .actions { position: sticky; bottom: 0; background: var(--bg-app); padding-top: 10px; margin-top: 18px; }
+  }
+
+  @media (min-width: 993px) {
+    .mobile-preview-topbar, .mobile-preview-fab { display: none !important; }
+  }
+
+  /* ── Print Settings ── */
+  @media print {
+    @page { size: A4; margin: 0; }
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .lock-screen { display: none !important; }
+    .mobile-topbar, .mobile-preview-fab, .mobile-preview-topbar { display: none !important; }
+    .container { display: block; padding: 0; margin: 0; max-width: 100%; }
+    .invoice-preview {
+      display: block !important;
+      position: static !important;
+      background: #fff !important;
+      padding: 0 !important;
+      inset: auto !important;
+    }
+    .a4-sheet {
+      box-shadow: none;
+      margin: 0 !important;
+      width: 100%;
+      height: 100vh;
+      transform: none !important;
+      page-break-after: avoid;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     شاشة كلمة السر — تظهر أولاً دائماً
+══════════════════════════════════════════════ -->
+<div class="lock-screen no-print" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    </div>
+    <h1>صفحة داخلية محمية</h1>
+    <p>أدخل كلمة السر للوصول لنظام فواتير بطاقتي</p>
+
+    <form id="lockForm">
+      <div class="lock-input-wrap">
+        <input type="password" class="lock-input mono" id="lockPassword" placeholder="••••••••" autocomplete="current-password" required>
+        <button type="button" class="lock-toggle" id="lockToggle" aria-label="إظهار كلمة السر">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <button type="submit" class="lock-btn" id="lockSubmitBtn">
+        <span class="spinner"></span>
+        <span class="lock-btn-text">دخول</span>
+      </button>
+    </form>
+
+    <div class="lock-error" id="lockError"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     التطبيق — يظهر فقط بعد نجاح التحقق
+══════════════════════════════════════════════ -->
+<div class="app" id="app">
+
+  <div class="mobile-topbar no-print">
+    <h1>نظام الفواتير</h1>
+    <button class="lock-out-btn" id="mobileLockOutBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+      خروج
+    </button>
+  </div>
+
+  <div class="container">
+
+    <!-- لوحة التحكم -->
+    <div class="control-panel no-print">
+      <div class="panel-header">
+        <div>
+          <h1>إصدار فاتورة</h1>
+          <p>قم بتعبئة البيانات أدناه، وستنعكس فوراً على الفاتورة.</p>
+        </div>
+        <button class="desktop-lock-out" id="desktopLockOutBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          خروج
+        </button>
+      </div>
+
+      <div class="form-section-title">بيانات الطلب</div>
+
+      <div class="form-group">
+        <label>رقم الفاتورة</label>
+        <input type="text" class="form-control mono" id="fCode" dir="ltr" value="BH-CV-2026-001">
+      </div>
+
+      <div class="form-group">
+        <label>تاريخ الإصدار</label>
+        <input type="date" class="form-control" id="fDate">
+      </div>
+
+      <div class="form-section-title">بيانات العميل</div>
+
+      <div class="form-group">
+        <label>اسم العميل</label>
+        <input type="text" class="form-control" id="fName" placeholder="الاسم الكامل">
+      </div>
+
+      <div class="form-group">
+        <label>رقم الهاتف</label>
+        <input type="text" class="form-control mono" id="fPhone" dir="ltr" placeholder="+973 XXXXXXXX" inputmode="tel">
+      </div>
+
+      <div class="form-group">
+        <label>رابط بطاقة العميل <span class="hint">(الملف الفرعي بالموقع، مثال: hasan_sdaif)</span></label>
+        <input type="text" class="form-control mono" id="fCvLink" dir="ltr" placeholder="bitaqti.com/hasan_sdaif">
+      </div>
+
+      <div class="form-section-title">تفاصيل الباقة</div>
+
+      <div class="form-group">
+        <label>الباقة المختارة</label>
+        <select class="form-control" id="fPackage">
+          <option value="الباقة الأساسية">الباقة الأساسية</option>
+          <option value="الباقة القياسية">الباقة القياسية</option>
+          <option value="الباقة المميزة">الباقة المميزة</option>
+          <option value="__other__">باقة مخصصة (أخرى)</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="fPackageOtherWrap" style="display:none;">
+        <label>اسم الباقة المخصصة</label>
+        <input type="text" class="form-control" id="fPackageOther" placeholder="اكتب اسم الباقة والتفاصيل">
+      </div>
+
+      <div class="form-group">
+        <label>المبلغ الإجمالي (د.ب)</label>
+        <input type="text" class="form-control mono" id="fPrice" dir="ltr" placeholder="مثال: 15.000" inputmode="decimal">
+      </div>
+
+      <div class="form-group">
+        <label>ملاحظات إضافية <span class="hint">(تظهر في الفاتورة)</span></label>
+        <textarea class="form-control" id="fNotes" placeholder="مثال: تم دفع عربون، أو تفاصيل إضافية للخدمة..."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-print" id="btnPrint">
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"></path></svg>
+          طباعة / حفظ PDF
+        </button>
+        <button class="btn btn-reset" id="btnClear">مسح</button>
+      </div>
+    </div>
+
+    <!-- معاينة الفاتورة (مخفية بالجوال حتى الضغط على زر المعاينة) -->
+    <div class="invoice-preview" id="invoicePreview">
+
+      <!-- شريط علوي يظهر فقط داخل وضع المعاينة بالجوال -->
+      <div class="mobile-preview-topbar no-print">
+        <button class="mp-close" id="mpCloseBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          رجوع للنموذج
+        </button>
+        <button class="mp-print" id="mpPrintBtn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"></path></svg>
+          طباعة
+        </button>
+      </div>
+
+      <div class="a4-sheet" id="sheet">
+
+        <div class="inv-header">
+          <div class="brand">
+            <svg class="logo-svg" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5" y="10" width="90" height="50" rx="8" fill="#1f2937"/>
+              <rect x="75" y="20" width="12" height="12" rx="2" fill="#ffffff"/>
+              <rect x="15" y="45" width="40" height="4" rx="2" fill="#CE1126"/>
+            </svg>
+            <div class="brand-text">
+              <h2>بطاقتي</h2>
+              <p>Bitaqti · بطاقات رقمية تعريفية</p>
+            </div>
+          </div>
+
+          <div class="inv-meta">
+            <h1>فاتورة</h1>
+            <div class="meta-item"><span>رقم:</span> <strong class="mono" id="pCode" dir="ltr">BH-CV-2026-001</strong></div>
+            <div class="meta-item"><span>التاريخ:</span> <strong class="mono" id="pDate"></strong></div>
+          </div>
+        </div>
+
+        <div class="customer-card">
+          <div class="customer-info">
+            <h3>فاتورة إلى:</h3>
+            <p id="pName">اسم العميل</p>
+            <div class="phone mono" id="pPhone"></div>
+            <div class="cv-link" id="pCvLink" style="display:none;"></div>
+          </div>
+        </div>
+
+        <table class="inv-table">
+          <thead>
+            <tr>
+              <th>البيان / تفاصيل الباقة</th>
+              <th>المبلغ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id="pPackage">الباقة الأساسية</td>
+              <td class="mono" id="pPrice" dir="ltr">0.000 د.ب</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="notes-section" id="pNotesWrap" style="display:none;">
+          <h4>ملاحظات هامة:</h4>
+          <p id="pNotes"></p>
+        </div>
+
+        <div class="inv-footer">
+          <p><strong>شكراً لثقتكم بخدمات بطاقتي (Bitaqti)</strong></p>
+          <p>مملكة البحرين</p>
+          <div class="contact-info">
+            <span>📞 wa.me/97336166806</span>
+            <span>✉️ Hasan.sdaif16@gmail.com</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- زر عائم لفتح المعاينة بالجوال -->
+  <button class="mobile-preview-fab no-print" id="mobilePreviewFab" aria-label="معاينة الفاتورة">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+  </button>
+
+</div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const todayISO = () => new Date().toISOString().slice(0,10);
+  const formatDate = iso => { if(!iso) return ''; const [y,m,d] = iso.split('-'); return `${d} / ${m} / ${y}`; };
+
+  /* ══════════════════════════════════════════════
+     منطق القفل — التحقق يتم دائماً عبر السيرفر (Netlify Function)
+     كلمة السر نفسها لا توجد أبداً في كود هذه الصفحة.
+  ══════════════════════════════════════════════ */
+  const AUTH_ENDPOINT = '/.netlify/functions/invoice-auth';
+  const SESSION_KEY = 'bitaqti_invoice_session';
+
+  function getSavedSession() {
+    try {
+      const raw = sessionStorage.getItem(SESSION_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed.token || !parsed.expiresAt) return null;
+      if (Date.now() > parsed.expiresAt) {
+        sessionStorage.removeItem(SESSION_KEY);
+        return null;
+      }
+      return parsed;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function saveSession(token, expiresAt) {
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token, expiresAt }));
+  }
+
+  function clearSession() {
+    sessionStorage.removeItem(SESSION_KEY);
+  }
+
+  function unlockApp() {
+    $('lockScreen').style.display = 'none';
+    $('app').classList.add('unlocked');
+    initApp();
+  }
+
+  function lockApp() {
+    clearSession();
+    $('lockScreen').style.display = 'flex';
+    $('app').classList.remove('unlocked');
+    $('lockPassword').value = '';
+    $('lockError').classList.remove('show');
+  }
+
+  // عند فتح الصفحة: هل يوجد جلسة صالحة محفوظة (لا حاجة لإعادة كتابة كلمة السر)؟
+  (function checkExistingSession() {
+    const session = getSavedSession();
+    if (session) {
+      unlockApp();
+    }
+  })();
+
+  const lockForm = $('lockForm');
+  const lockPasswordInput = $('lockPassword');
+  const lockSubmitBtn = $('lockSubmitBtn');
+  const lockError = $('lockError');
+
+  $('lockToggle').addEventListener('click', () => {
+    lockPasswordInput.type = lockPasswordInput.type === 'password' ? 'text' : 'password';
+  });
+
+  lockForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = lockPasswordInput.value;
+    if (!password) return;
+
+    lockSubmitBtn.disabled = true;
+    lockSubmitBtn.classList.add('loading');
+    lockError.classList.remove('show');
+
+    try {
+      const res = await fetch(AUTH_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.status === 429) {
+        lockError.textContent = 'محاولات كثيرة جداً خلال وقت قصير. انتظر دقيقة وحاول مجدداً.';
+        lockError.classList.add('show');
+        return;
+      }
+
+      if (!res.ok) {
+        lockError.textContent = 'كلمة السر غير صحيحة.';
+        lockError.classList.add('show');
+        lockPasswordInput.value = '';
+        lockPasswordInput.focus();
+        return;
+      }
+
+      const data = await res.json();
+      saveSession(data.token, data.expiresAt);
+      unlockApp();
+
+    } catch (err) {
+      lockError.textContent = 'تعذّر الاتصال بالسيرفر. تحقق من الإنترنت وحاول مجدداً.';
+      lockError.classList.add('show');
+    } finally {
+      lockSubmitBtn.disabled = false;
+      lockSubmitBtn.classList.remove('loading');
+    }
+  });
+
+  $('mobileLockOutBtn').addEventListener('click', lockApp);
+  $('desktopLockOutBtn').addEventListener('click', lockApp);
+
+  /* ══════════════════════════════════════════════
+     منطق التطبيق — يعمل فقط بعد فتح القفل
+  ══════════════════════════════════════════════ */
+  function initApp() {
+    if (initApp._done) return; // تجنّب تكرار ربط الأحداث لو فُتح القفل أكثر من مرة
+    initApp._done = true;
+
+    function updatePreview() {
+      $('pCode').textContent = $('fCode').value.trim() || '---';
+      $('pDate').textContent = formatDate($('fDate').value) || '---';
+
+      $('pName').textContent = $('fName').value.trim() || 'عميل غير محدد';
+      $('pPhone').textContent = $('fPhone').value.trim() || '';
+
+      const cvLink = $('fCvLink').value.trim();
+      const pCvLink = $('pCvLink');
+      if (cvLink) {
+        pCvLink.textContent = cvLink.replace(/^https?:\/\//, '');
+        pCvLink.style.display = 'block';
+      } else {
+        pCvLink.style.display = 'none';
+      }
+
+      const pkgSel = $('fPackage').value;
+      $('pPackage').textContent = pkgSel === '__other__'
+        ? ($('fPackageOther').value.trim() || 'باقة مخصصة')
+        : pkgSel;
+
+      const price = $('fPrice').value.trim();
+      $('pPrice').textContent = price ? price + ' د.ب' : '---';
+
+      const notes = $('fNotes').value.trim();
+      $('pNotesWrap').style.display = notes ? 'block' : 'none';
+      $('pNotes').textContent = notes;
+    }
+
+    ['fCode', 'fDate', 'fName', 'fPhone', 'fCvLink', 'fPackageOther', 'fPrice', 'fNotes'].forEach(id => {
+      $(id).addEventListener('input', updatePreview);
+    });
+
+    $('fPackage').addEventListener('change', () => {
+      $('fPackageOtherWrap').style.display = $('fPackage').value === '__other__' ? 'block' : 'none';
+      updatePreview();
+    });
+
+    function doPrint() { window.print(); }
+
+    $('btnPrint').addEventListener('click', doPrint);
+    $('mpPrintBtn').addEventListener('click', doPrint);
+
+    $('btnClear').addEventListener('click', () => {
+      $('fCode').value = 'BH-CV-2026-';
+      $('fName').value = '';
+      $('fPhone').value = '';
+      $('fCvLink').value = '';
+      $('fPackage').value = 'الباقة الأساسية';
+      $('fPackageOther').value = '';
+      $('fPackageOtherWrap').style.display = 'none';
+      $('fPrice').value = '';
+      $('fNotes').value = '';
+      $('fDate').value = todayISO();
+      updatePreview();
+    });
+
+    // ── تبديل وضع المعاينة بالجوال ──
+    const invoicePreview = $('invoicePreview');
+    function openPreview() {
+      invoicePreview.classList.add('show');
+      fitSheetToScreen();
+      document.body.style.overflow = 'hidden';
+    }
+    function closePreview() {
+      invoicePreview.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+    $('mobilePreviewFab').addEventListener('click', openPreview);
+    $('mpCloseBtn').addEventListener('click', closePreview);
+
+    // حساب نسبة تصغير ورقة A4 لتناسب عرض شاشة الجوال بدقة
+    function fitSheetToScreen() {
+      const sheet = $('sheet');
+      const availableWidth = window.innerWidth - 24; // هامش بسيط
+      const a4WidthPx = 210 * 3.7795; // تقريب mm إلى px
+      const scale = Math.min(availableWidth / a4WidthPx, 0.55);
+      document.documentElement.style.setProperty('--mobile-scale', scale.toFixed(3));
+    }
+    window.addEventListener('resize', () => {
+      if (invoicePreview.classList.contains('show')) fitSheetToScreen();
+    });
+
+    $('fDate').value = todayISO();
+    updatePreview();
+  }
+</script>
+</body>
+</html>
