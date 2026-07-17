@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>بطاقتي (Bitaqti) — بطاقة رقمية واحدة تُعرّف بك | البحرين</title>
+<meta name="description" content="بطاقتي (Bitaqti) — حوّل سيرتك الذاتية إلى بطاقة رقمية برابط خاص ورمز QR. خدمة فردية في البحرين، تسليم خلال 24-48 ساعة، وعرض افتتاح لفترة محدودة." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='44' y='46' width='28' height='5' rx='2.5' fill='%238A8D93'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9;
+    --red:#CE1126; --red-deep:#9C0E1E; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --shadow:0 16px 38px rgba(23,24,28,.10);
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+  }
+
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--paper); color:var(--ink);
+    line-height:1.75; -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  h1,h2,h3,.disp{font-family:'El Messiri',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums;}
+  /* أي رقم هاتف أو رمز يُعرض كنص (وليس رابطاً) يُعزَل باتجاه LTR كي لا تنعكس مقاطعه داخل صفحة RTL */
+  [dir="ltr"]{unicode-bidi:isolate;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1080px;margin:0 auto;padding:0 20px;}
+  a:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:4px;}
+
+  /* ═══════════════ SERRATED DIVIDER (signature motif) ═══════════════ */
+  .serrate{
+    height:12px; width:100%;
+    background-image:linear-gradient(135deg,var(--paper) 50%,transparent 50%),
+                      linear-gradient(-135deg,var(--paper) 50%,transparent 50%);
+    background-size:16px 16px; background-position:top left,top right;
+    background-repeat:repeat-x; background-color:var(--surface);
+  }
+  .serrate.flip{transform:scaleY(-1);}
+
+  /* ═══════════════ NAV ═══════════════ */
+  .nav{position:sticky;top:0;z-index:100;background:rgba(244,243,239,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;gap:10px;}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0;}
+  .brand .mark{width:34px;height:24px;border-radius:5px;background:var(--ink);position:relative;flex-shrink:0;}
+  .brand .mark::before{content:'';position:absolute;right:5px;top:6px;width:9px;height:9px;border-radius:2px;background:var(--paper);}
+  .brand .mark::after{content:'';position:absolute;left:5px;top:8px;width:13px;height:3px;border-radius:2px;background:var(--red);box-shadow:0 5px 0 var(--ink-faint);}
+  .brand small{display:block;font-weight:400;font-size:10.5px;color:var(--ink-faint);margin-top:1px;}
+  .nav-links{display:flex;gap:22px;}
+  .nav-links a{font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
+  .nav-links a:hover{color:var(--red);}
+  .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .mini-cd{display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-weight:700;font-size:11px;padding:7px 12px;border-radius:20px;white-space:nowrap;}
+  .mini-cd i{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  .burger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .burger svg{width:17px;height:17px;color:var(--ink);}
+  .mobile-panel{display:none;position:fixed;inset:64px 0 0 0;z-index:99;background:var(--surface);padding:22px 20px;overflow-y:auto;}
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{display:block;font-size:16px;font-weight:700;padding:14px 4px;border-bottom:1px solid var(--line);}
+
+  /* ═══════════════ HERO ═══════════════ */
+  .hero{background:var(--surface);padding:52px 0 0;}
+  .hero .container{display:flex;align-items:center;gap:46px;flex-wrap:wrap;padding-bottom:44px;}
+  .hero-text{flex:1;min-width:280px;}
+  .eyebrow{display:flex;align-items:center;gap:9px;font-size:11.5px;font-weight:700;letter-spacing:.4px;color:var(--red);margin-bottom:14px;}
+  .eyebrow::before{content:'';width:20px;height:2px;background:var(--red);border-radius:2px;}
+  .hero h1{font-size:clamp(27px,4.6vw,42px);font-weight:700;line-height:1.3;max-width:600px;}
+  .hero h1 em{font-style:normal;color:var(--red);}
+  .hero-p{font-size:14.5px;color:var(--ink-soft);margin:18px 0 0;max-width:490px;}
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;padding:13px 22px;border-radius:10px;transition:transform .18s ease,box-shadow .18s ease;cursor:pointer;border:none;font-family:inherit;}
+  .btn svg{width:15px;height:15px;flex-shrink:0;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{transform:translateY(-2px);box-shadow:0 12px 22px rgba(206,17,38,.3);}
+  .btn-line{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+  .btn-line:hover{border-color:var(--ink);}
+  .btn-block{width:100%;justify-content:center;}
+
+  .trust-row{display:flex;flex-wrap:wrap;gap:20px;margin-top:30px;}
+  .trust-item{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--ink-soft);font-weight:500;}
+  .trust-item svg{width:15px;height:15px;color:var(--red);flex-shrink:0;}
+
+  /* ── Signature: the digital ID card ── */
+  .card-stage{flex-shrink:0;width:320px;max-width:100%;perspective:900px;}
+  .idcard{
+    width:320px;aspect-ratio:1.586/1;border-radius:18px;background:var(--paper);
+    border:1px solid var(--line);box-shadow:var(--shadow);
+    padding:18px 20px;position:relative;overflow:hidden;
+    transform:rotate(-3deg) translateY(0);
+    animation:issueCard .8s cubic-bezier(.2,.9,.25,1) .1s both;
+  }
+  @keyframes issueCard{
+    from{opacity:0;transform:rotate(0deg) translateY(-24px) scale(.94);}
+    to{opacity:1;transform:rotate(-3deg) translateY(0) scale(1);}
+  }
+  .idcard::before{
+    content:'';position:absolute;top:-30px;left:-30px;width:90px;height:90px;
+    background:linear-gradient(135deg,var(--red) 48%,transparent 50%);
+  }
+  .idc-toprow{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
+  .idc-tag{font-family:'IBM Plex Mono',monospace;font-size:8.5px;letter-spacing:1.5px;color:var(--ink-faint);text-transform:uppercase;font-weight:600;}
+  .idc-chip{width:26px;height:19px;border-radius:4px;background:linear-gradient(135deg,var(--gold),#C9A96A);position:relative;}
+  .idc-chip::before,.idc-chip::after{content:'';position:absolute;left:4px;right:4px;height:1px;background:rgba(23,24,28,.35);}
+  .idc-chip::before{top:6px;}
+  .idc-chip::after{top:11px;}
+  .idc-body{display:flex;gap:14px;margin-top:16px;align-items:center;}
+  .idc-photo{width:52px;height:64px;border-radius:8px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+  .idc-photo svg{width:26px;height:26px;color:var(--ink-faint);}
+  .idc-lines{flex:1;min-width:0;}
+  .idc-name{height:8px;border-radius:4px;background:var(--ink);width:78%;margin-bottom:8px;}
+  .idc-role{height:6px;border-radius:3px;background:var(--ink-faint);width:58%;margin-bottom:8px;}
+  .idc-role2{height:6px;border-radius:3px;background:var(--line);width:40%;}
+  .idc-qr{width:38px;height:38px;border-radius:6px;flex-shrink:0;
+    background-image:
+      linear-gradient(90deg,var(--ink) 50%,transparent 50%),
+      linear-gradient(var(--ink) 50%,transparent 50%);
+    background-size:8px 8px,8px 8px; background-color:var(--surface); border:1px solid var(--line);
+    background-repeat:repeat; opacity:.85;
+  }
+  .idc-bottom{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px;position:relative;z-index:1;}
+  .idc-serial{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:1px;color:var(--ink-soft);font-weight:600;}
+  .idc-badge{font-size:8px;font-weight:700;letter-spacing:.5px;color:var(--red);border:1px solid var(--red);border-radius:20px;padding:2px 8px;}
+  @media (prefers-reduced-motion:reduce){.idcard{animation:none;opacity:1;} .mini-cd i{animation:none;}}
+
+  /* ═══════════════ SECTIONS ═══════════════ */
+  section{padding:56px 0;scroll-margin-top:80px;}
+  section.on-surface{background:var(--surface);}
+  .sec-head{margin-bottom:28px;text-align:center;}
+  .sec-eyebrow{font-size:11px;font-weight:700;color:var(--red);letter-spacing:.6px;margin-bottom:9px;text-transform:uppercase;}
+  .sec-head h2{font-size:clamp(20px,3vw,26px);font-weight:700;}
+  .sec-head p{font-size:13.5px;color:var(--ink-soft);margin-top:9px;max-width:480px;margin-inline:auto;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease;}
+  .reveal.in-view{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;} html{scroll-behavior:auto;}}
+
+  /* ── how it works ── */
+  .stub-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+  .stub{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:20px 18px;}
+  .stub .n{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:12px;color:#fff;background:var(--ink);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:13px;}
+  .stub h3{font-size:13.5px;font-weight:700;margin-bottom:6px;}
+  .stub p{font-size:12px;color:var(--ink-soft);}
+  .prep-box{margin-top:24px;background:var(--red-tint);border:1px dashed var(--red);border-radius:var(--radius);overflow:hidden;}
+  .prep-box summary{
+    list-style:none;cursor:pointer;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  }
+  .prep-box summary::-webkit-details-marker{display:none;}
+  .prep-box summary .sm-txt{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--red-deep);}
+  .prep-box summary .sm-txt svg{width:17px;height:17px;flex-shrink:0;}
+  .prep-box summary .sm-plus{font-size:20px;font-weight:700;color:var(--red);flex-shrink:0;transition:transform .2s ease;}
+  .prep-box[open] summary .sm-plus{transform:rotate(45deg);}
+  .prep-box .prep-content{padding:0 22px 22px;}
+  .prep-box h4{font-size:12px;font-weight:700;margin:16px 0 10px;color:var(--red-deep);text-transform:uppercase;letter-spacing:.4px;}
+  .prep-box h4:first-child{margin-top:0;}
+  .prep-box ul li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:9px;margin-bottom:8px;line-height:1.6;}
+  .prep-box ul li::before{content:'▢';color:var(--red);font-weight:700;flex-shrink:0;}
+  .prep-note{background:var(--surface);border:1px solid var(--red);border-radius:10px;padding:13px 15px;margin-top:14px;font-size:12.5px;color:var(--ink);line-height:1.7;display:flex;gap:10px;}
+  .prep-note svg{width:17px;height:17px;color:var(--red);flex-shrink:0;margin-top:1px;}
+  .prep-note strong{color:var(--red-deep);}
+
+  /* ── offer stamp band ── */
+  .offer-band{background:var(--ink);color:#fff;padding:46px 0;}
+  .offer-band .sec-head h2,.offer-band .sec-head p{color:#fff;}
+  .offer-band .sec-head p{color:rgba(255,255,255,.58);}
+  .offer-band .sec-eyebrow{color:var(--gold);}
+  .stamp-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:34px;}
+  .stamp{
+    display:flex;flex-direction:column;align-items:center;gap:14px;flex-shrink:0;position:relative;
+  }
+  .stamp .cd-row{display:flex;gap:10px;align-items:center;}
+  .stamp .cd-unit{
+    width:68px;text-align:center;background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));
+    border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px 4px 10px;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 20px rgba(0,0,0,.25);
+  }
+  .stamp .cd-unit b{
+    display:block;font-family:'IBM Plex Mono',monospace;font-size:25px;font-weight:600;color:var(--gold);
+    font-variant-numeric:tabular-nums;line-height:1;transition:transform .25s ease;
+  }
+  .stamp .cd-unit b.tick{animation:cdTick .35s ease;}
+  @keyframes cdTick{0%{transform:translateY(-6px);opacity:.4;}100%{transform:translateY(0);opacity:1;}}
+  .stamp .cd-unit span{font-size:8.5px;color:rgba(255,255,255,.5);letter-spacing:.6px;text-transform:uppercase;margin-top:6px;display:block;}
+  .stamp .cd-sep{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:rgba(255,255,255,.25);}
+  .stamp .cd-label{font-size:10.5px;letter-spacing:.6px;color:rgba(255,255,255,.55);display:flex;align-items:center;gap:7px;}
+  .stamp .cd-label::before,.stamp .cd-label::after{content:'';width:16px;height:1px;background:rgba(255,255,255,.2);}
+  @media (max-width:400px){ .stamp .cd-unit{width:56px;padding:9px 3px 8px;} .stamp .cd-unit b{font-size:20px;} }
+  .price-plate{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:14px 22px;}
+  .price-plate .old{font-family:'IBM Plex Mono',monospace;font-size:14px;color:rgba(255,255,255,.5);text-decoration:line-through;}
+  .price-plate .new{font-family:'IBM Plex Mono',monospace;font-size:27px;color:var(--gold);font-weight:600;}
+  .price-plate .save{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;white-space:nowrap;}
+
+  /* ── pricing: card-material tiers، ثلاثة تدرجات لونية مختلفة ── */
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start;}
+  .ptier{border-radius:18px;padding:26px 22px;position:relative;box-shadow:var(--shadow-sm);border:1px solid var(--line);background:var(--surface);transition:transform .2s ease,box-shadow .2s ease;}
+  .ptier:hover{transform:translateY(-4px);box-shadow:0 20px 34px rgba(23,24,28,.14);}
+
+  /* الأساسية — زمردي/أخضر */
+  .ptier.emerald{background:linear-gradient(160deg,#ECFDF5 0%,#CFF3E1 55%,#A7E8C9 100%);border-color:#0C9A63;}
+  .ptier.emerald .ptier-mat{color:#0C7A4F;}
+  .ptier.emerald .ptier-price .new{color:#047A4B;}
+  .ptier.emerald ul li svg{color:#0C9A63;}
+  .ptier.emerald .ptier-div{border-color:rgba(12,154,99,.25);}
+
+  /* القياسية — ذهبي/كهرماني */
+  .ptier.gold{background:linear-gradient(160deg,#FFFBEB 0%,#FCEFC7 55%,#F3DA98 100%);border-color:var(--gold);}
+  .ptier.gold .ptier-mat{color:#8A6A24;}
+  .ptier.gold .ptier-price .new{color:#9C7A1E;}
+  .ptier.gold ul li svg{color:#B8924A;}
+  .ptier.gold .ptier-div{border-color:rgba(156,122,30,.25);}
+
+  /* المميزة — نيلي/كحلي ملكي */
+  .ptier.indigo{background:linear-gradient(160deg,#2A2560 0%,#1E1B4B 60%,#141233 100%);color:#fff;border-color:#3730A3;}
+  .ptier.indigo .ptier-mat{color:rgba(255,255,255,.55);}
+  .ptier.indigo .ptier-price .old{color:rgba(255,255,255,.4);}
+  .ptier.indigo .ptier-price .new{color:#F4C550;}
+  .ptier.indigo .ptier-note{color:rgba(255,255,255,.45);}
+  .ptier.indigo .ptier-div{border-color:rgba(255,255,255,.16);}
+  .ptier.indigo ul li{color:rgba(255,255,255,.82);}
+  .ptier.indigo ul li svg{color:#F4C550;}
+
+  .ptier-badge{position:absolute;top:-11px;right:50%;transform:translateX(50%);background:var(--gold);color:var(--ink);font-size:10px;font-weight:700;padding:4px 12px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 10px rgba(0,0,0,.15);}
+  .ptier-mat{font-size:10.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--ink-faint);}
+  .ptier-name{font-family:'El Messiri',Arial,sans-serif;font-size:19px;font-weight:700;margin-top:4px;}
+  .ptier-price{margin:14px 0 4px;font-family:'IBM Plex Mono',monospace;}
+  .ptier-price .old{font-size:13px;color:var(--ink-faint);text-decoration:line-through;margin-inline-end:7px;}
+  .ptier-price .new{font-size:28px;font-weight:600;color:var(--red);}
+  .ptier-price .unit{font-size:12px;color:var(--ink-soft);font-family:'IBM Plex Sans Arabic',sans-serif;}
+  .ptier.indigo .ptier-price .unit{color:rgba(255,255,255,.6);}
+  .ptier-note{font-size:10.5px;color:var(--ink-faint);margin-bottom:16px;}
+  .ptier-div{border-top:1px solid var(--line);margin-bottom:16px;}
+  .ptier ul{margin-bottom:18px;}
+  .ptier ul li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;margin-bottom:10px;line-height:1.5;}
+  .ptier ul li svg{width:14px;height:14px;color:var(--red);flex-shrink:0;margin-top:2px;}
+  .ptier .btn-red{background:var(--ink);}
+  .ptier.indigo .btn-red{background:#F4C550;color:#1E1B4B;}
+  .ptier.indigo .btn-red:hover{box-shadow:0 12px 22px rgba(244,197,80,.3);}
+
+  .compare-wrap{margin-top:36px;overflow-x:auto;}
+  table.compare{width:100%;border-collapse:collapse;min-width:520px;font-size:12.5px;}
+  table.compare th,table.compare td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:center;}
+  table.compare th{font-family:'El Messiri',sans-serif;font-weight:700;color:var(--ink);}
+  table.compare td:first-child,table.compare th:first-child{text-align:right;color:var(--ink-soft);}
+  table.compare td svg{width:14px;height:14px;color:var(--red);}
+  table.compare td span.no{color:var(--ink-faint);}
+
+  /* ── examples ── */
+  .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  .ex-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;}
+  .ex-preview{height:120px;background:var(--ink);display:flex;align-items:center;justify-content:center;position:relative;}
+  .ex-preview .mini-card{width:78px;height:49px;border-radius:6px;background:var(--paper);position:relative;box-shadow:0 8px 18px rgba(0,0,0,.35);}
+  .ex-preview .mini-card::before{content:'';position:absolute;top:8px;right:8px;left:8px;height:5px;border-radius:3px;background:var(--ink);opacity:.6;}
+  .ex-preview .mini-card::after{content:'';position:absolute;top:17px;right:8px;width:20px;height:20px;border-radius:4px;background:var(--ink-faint);opacity:.5;}
+  .ex-card.locked .ex-preview{background:var(--line);}
+  .ex-card.locked .mini-card{opacity:.5;}
+  .ex-body{padding:16px 18px;}
+  .ex-body h4{font-size:13.5px;font-weight:700;margin-bottom:4px;}
+  .ex-body p{font-size:11.5px;color:var(--ink-soft);margin-bottom:12px;}
+  .ex-link{font-size:12px;font-weight:700;color:var(--red);}
+  .ex-card.locked .ex-link{color:var(--ink-faint);pointer-events:none;}
+
+  /* ── FAQ ── */
+  .faq-list{max-width:640px;margin:0 auto;}
+  .faq-item{background:var(--paper);border:1px solid var(--line);border-radius:10px;margin-bottom:10px;overflow:hidden;}
+  .faq-item summary{padding:16px 18px;font-size:13.5px;font-weight:700;cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:'+';font-size:19px;color:var(--red);font-weight:700;flex-shrink:0;transition:transform .2s ease;}
+  .faq-item[open] summary::after{transform:rotate(45deg);}
+  .faq-item p{padding:0 18px 17px;font-size:12.5px;color:var(--ink-soft);}
+
+  /* ── track order: checkpoint ── */
+  .track-wrap{display:flex;justify-content:center;}
+  .checkpoint{max-width:430px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);overflow:hidden;}
+  .cp-head{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:10px;}
+  .cp-head svg{width:17px;height:17px;color:var(--gold);flex-shrink:0;}
+  .cp-head span{font-size:12.5px;font-weight:700;letter-spacing:.3px;}
+  .cp-body{padding:24px 24px 28px;}
+  .field{margin-bottom:15px;}
+  .field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--ink-soft);}
+  .field input{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;}
+  .field input[dir="ltr"]{text-align:left;}
+  .track-msg{font-size:12px;color:var(--ink-faint);margin-top:11px;text-align:center;}
+  .track-msg.err{color:var(--red);font-weight:700;}
+  .track-msg a{color:var(--red);font-weight:700;}
+
+  /* ── invoice modal (نافذة منبثقة بشكل فاتورة) ── */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(23,24,28,.62);backdrop-filter:blur(3px);
+    display:flex;align-items:center;justify-content:center;padding:18px;
+    opacity:0;pointer-events:none;transition:opacity .22s ease;
+  }
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .invoice{
+    width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--surface);border-radius:20px;
+    box-shadow:0 30px 60px rgba(0,0,0,.35);transform:translateY(18px) scale(.97);opacity:0;
+    transition:transform .25s cubic-bezier(.2,.9,.25,1),opacity .25s ease;
+  }
+  .modal-overlay.show .invoice{transform:translateY(0) scale(1);opacity:1;}
+  .inv-head{background:var(--ink);color:#fff;padding:22px 24px 18px;position:relative;}
+  .inv-head .inv-close{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .inv-head .inv-close svg{width:15px;height:15px;}
+  .inv-head .inv-brand{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:10px;}
+  .inv-head .inv-brand .mark{width:24px;height:17px;border-radius:4px;background:#fff;position:relative;flex-shrink:0;}
+  .inv-head .inv-brand .mark::after{content:'';position:absolute;right:4px;left:4px;top:6px;height:2px;border-radius:2px;background:var(--red);}
+  .inv-head h3{font-family:'El Messiri',sans-serif;font-size:19px;font-weight:700;}
+  .inv-meta{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;color:rgba(255,255,255,.55);font-family:'IBM Plex Mono',monospace;}
+  .inv-status{position:absolute;bottom:-13px;right:24px;font-size:10.5px;font-weight:700;padding:5px 14px;border-radius:20px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.25);}
+  .inv-body{padding:26px 24px 22px;}
+  .inv-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px;}
+  .inv-row:last-of-type{border-bottom:none;}
+  .inv-row .k{color:var(--ink-faint);font-size:12px;}
+  .inv-row .v{font-weight:700;color:var(--ink);text-align:left;}
+  .inv-total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:2px solid var(--ink);}
+  .inv-total .k{font-size:13px;font-weight:700;}
+  .inv-total .v{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;color:var(--red);}
+  .inv-link-btn{margin-top:16px;}
+  .inv-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin:20px 0 10px;}
+  .inv-timeline{position:relative;padding-inline-start:20px;}
+  .inv-timeline::before{content:'';position:absolute;right:5px;top:4px;bottom:4px;width:2px;background:var(--line);}
+  html[dir="rtl"] .inv-timeline::before{right:5px;left:auto;}
+  .inv-tl-item{position:relative;padding-bottom:14px;font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .inv-tl-item:last-child{padding-bottom:0;}
+  .inv-tl-item::before{content:'';position:absolute;right:-19px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--red);}
+  .inv-tl-item b{display:block;color:var(--ink);font-weight:700;font-size:11.5px;margin-bottom:1px;}
+  .inv-note{margin-top:18px;background:var(--red-tint);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--red-deep);line-height:1.7;}
+  .inv-foot{display:flex;gap:8px;margin-top:20px;}
+  .inv-foot .btn{flex:1;font-size:12.5px;padding:11px 14px;}
+  @media (max-width:400px){ .inv-body{padding:22px 18px 18px;} .inv-head{padding:20px 18px 16px;} }
+
+  /* ── contact ── */
+  .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:460px;margin:0 auto;}
+  .contact-card{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:19px 14px;text-align:center;}
+  .contact-card svg{width:20px;height:20px;color:var(--red);margin:0 auto 9px;}
+  .contact-card .lbl{font-size:10px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px;letter-spacing:.4px;}
+  .contact-card .val{font-size:12.5px;font-weight:700;}
+  .privacy-note{max-width:620px;margin:26px auto 0;font-size:11.5px;color:var(--ink-faint);text-align:center;line-height:1.9;}
+  .privacy-note a{color:var(--red);font-weight:700;}
+
+  footer{background:var(--ink);color:rgba(255,255,255,.55);padding:26px 0;text-align:center;font-size:11.5px;}
+  footer strong{color:#fff;}
+  footer .f-links{margin-top:10px;display:flex;justify-content:center;gap:18px;flex-wrap:wrap;}
+  footer .f-links a{color:var(--gold);font-weight:700;}
+
+  /* sticky order bar (mobile) */
+  .order-bar{position:fixed;left:0;right:0;bottom:0;z-index:90;background:var(--surface);border-top:1px solid var(--line);display:none;padding-bottom:env(safe-area-inset-bottom);}
+  .order-bar .container{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 18px;}
+  .order-bar .ob-price{font-size:11.5px;color:var(--ink-soft);}
+  .order-bar .ob-price b{font-family:'IBM Plex Mono',monospace;color:var(--red);font-size:15px;}
+  @media (max-width:760px){.order-bar{display:block;}body{padding-bottom:68px;}}
+
+  .to-top{position:fixed;left:16px;bottom:78px;z-index:91;width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,.25);opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease;}
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:17px;height:17px;}
+  @media (min-width:761px){.to-top{bottom:26px;}}
+
+  /* ═══════════════ RESPONSIVE ═══════════════ */
+  @media (max-width:960px){
+    .hero .container{flex-direction:column-reverse;text-align:center;padding-top:8px;}
+    .hero-p{margin-inline:auto;}
+    .cta-row,.trust-row,.eyebrow{justify-content:center;}
+    .hero h1{margin-inline:auto;}
+    .stub-row{grid-template-columns:repeat(2,1fr);}
+    .tiers{grid-template-columns:1fr;max-width:360px;margin-inline:auto;}
+    .ex-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .stamp-row{flex-direction:column;}
+  }
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .stub-row{grid-template-columns:1fr;}
+  }
+  @media (max-width:400px){
+    .brand small{display:none;}
+    .stamp{width:150px;height:150px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="mark"></span>
+      <span>بطاقتي<small>Bitaqti · بطاقات رقمية تعريفية</small></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">كيف تعمل</a></li>
+      <li><a href="#pricing">الباقات</a></li>
+      <li><a href="#examples">نماذج</a></li>
+      <li><a href="#faq">أسئلة شائعة</a></li>
+      <li><a href="#track">تتبع الطلب</a></li>
+      <li><a href="#contact">تواصل</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="#offer" class="mini-cd"><i></i><span id="miniCd">--:--:--</span></a>
+      <button class="burger" id="burgerBtn" aria-label="فتح القائمة" aria-expanded="false">
+        <svg id="burgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#how" data-nav>كيف تعمل</a>
+  <a href="#pricing" data-nav>الباقات</a>
+  <a href="#examples" data-nav>نماذج</a>
+  <a href="#faq" data-nav>أسئلة شائعة</a>
+  <a href="#track" data-nav>تتبع الطلب</a>
+  <a href="#contact" data-nav>تواصل</a>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="hero-text">
+      <div class="eyebrow">خدمة فردية جديدة · البحرين</div>
+      <h1>سيرتك الذاتية تستحق أكثر من ملف PDF ينام في المجلدات — تستحق <em>بطاقة رقمية</em> تُفتح بضغطة</h1>
+      <p class="hero-p">أرسل لي سيرتك الحالية وصورتك والروابط التي تريدها، وأحوّلها إلى بطاقة رقمية برابط خاص ورمز QR، بتصميم يليق بمجالك — خلال 24 إلى 48 ساعة فقط.</p>
+      <div class="cta-row">
+        <a class="btn btn-red" href="https://wa.me/97336166806?text=مرحباً، أرغب بطلب بطاقتي الرقمية" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+          اطلب بطاقتك الآن
+        </a>
+        <a class="btn btn-line" href="#pricing">شاهد الباقات</a>
+      </div>
+      <p style="font-size:11.5px;color:var(--ink-faint);margin-top:14px;">قبل الطلب، يُنصح بقراءة <a href="before-order.html" style="color:var(--red);font-weight:700;">الأمور التي يجب معرفتها قبل الطلب</a></p>
+      <div class="trust-row">
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> بدون اشتراك شهري</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> تواصل مباشر معي شخصياً</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> تسليم خلال 24-48 ساعة</div>
+      </div>
+    </div>
+
+    <div class="card-stage">
+      <div class="idcard" aria-hidden="true">
+        <div class="idc-toprow">
+          <span class="idc-tag">Digital Card</span>
+          <span class="idc-chip"></span>
+        </div>
+        <div class="idc-body">
+          <div class="idc-photo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.5-4 4-5.6 7-5.6s5.5 1.6 7 5.6"/></svg>
+          </div>
+          <div class="idc-lines">
+            <div class="idc-name"></div>
+            <div class="idc-role"></div>
+            <div class="idc-role2"></div>
+          </div>
+          <div class="idc-qr"></div>
+        </div>
+        <div class="idc-bottom">
+          <span class="idc-serial" dir="ltr">BH-CV-2026</span>
+          <span class="idc-badge">صالحة</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="serrate"></div>
+</header>
+
+<main>
+
+<!-- ═══════════════ WHAT IS A "BITAQTI" CARD ═══════════════ -->
+<section id="what">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-eyebrow">تعريف سريع</div>
+      <h2>ما هي «البطاقة التعريفية» الرقمية؟</h2>
+      <p>نسخة رقمية وتفاعلية من سيرتك الذاتية، تحلّ محل ملف PDF التقليدي</p>
+    </div>
+    <div style="max-width:640px;margin:0 auto 22px;text-align:center;">
+      <p style="font-size:13.5px;color:var(--ink-soft);">البطاقة التعريفية هي صفحة ويب واحدة تحمل اسمك ومسمّاك الوظيفي وأهم بيانات سيرتك الذاتية وروابط التواصل معك، وتُفتح بضغطة واحدة عبر رابط خاص أو رمز QR — فكّرها كبطاقة تعريف أو كرت أعمال (Business Card) رقمي وتفاعلي، يجمع سيرتك الذاتية وبيانات التواصل في مكان واحد سهل المشاركة والتحديث.</p>
+    </div>
+    <div class="stub-row" style="grid-template-columns:repeat(2,1fr);max-width:640px;margin:0 auto;">
+      <div class="stub"><h3>اسمك ومسمّاك الوظيفي</h3><p>وأهم بيانات سيرتك الذاتية بشكل منظّم وواضح</p></div>
+      <div class="stub"><h3>روابط التواصل معك</h3><p>واتساب، لينكدإن، بريد إلكتروني، أو أي رابط تريده</p></div>
+      <div class="stub"><h3>رابط خاص + رمز QR</h3><p>تُفتح بضغطة واحدة، بلا تحميل أو تصفّح ملفات</p></div>
+      <div class="stub"><h3>بديل عصري لملف PDF</h3><p>سهلة المشاركة والتحديث، وتليق بمجالك المهني</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HOW IT WORKS ═══════════════ -->
+<section id="how" class="on-surface">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">العملية</div><h2>كيف تحصل على بطاقتك الرقمية؟</h2><p>أربع خطوات، من إرسال سيرتك إلى استلام رابطك الخاص</p></div>
+    <div class="stub-row">
+      <div class="stub reveal"><div class="n">١</div><h3>أرسل سيرتك وصورتك</h3><p>سيرتك الحالية (PDF أو صورة) وصورتك الشخصية عبر واتساب.</p></div>
+      <div class="stub reveal"><div class="n">٢</div><h3>حدد روابطك</h3><p>واتساب، لينكدإن، بريد إلكتروني، أو أي رابط آخر تريد إضافته.</p></div>
+      <div class="stub reveal"><div class="n">٣</div><h3>نصمم بطاقتك</h3><p>نحوّل بياناتك إلى بطاقة رقمية بتصميم يليق بمجالك.</p></div>
+      <div class="stub reveal"><div class="n">٤</div><h3>تستلم رابطك</h3><p>خلال 24-48 ساعة، رابطك الخاص ورمز QR جاهزان للمشاركة.</p></div>
+    </div>
+    <details class="prep-box reveal">
+      <summary>
+        <span class="sm-txt">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+          قبل أن تراسلني، جهّز التالي (اضغط لعرض كل التفاصيل)
+        </span>
+        <span class="sm-plus">+</span>
+      </summary>
+      <div class="prep-content">
+        <h4>المتطلبات الأساسية</h4>
+        <ul>
+          <li>سيرتك الذاتية الحالية (ملف PDF أو صورة واضحة وكاملة)</li>
+          <li>صورة شخصية حديثة بخلفية مناسبة وإضاءة واضحة</li>
+          <li>اسمك الكامل كما تريد ظهوره بالضبط في البطاقة</li>
+          <li>مسمّاك الوظيفي أو مجالك (مثال: طالب علوم إسلامية، مصمم جرافيك، محاسب...)</li>
+          <li>قائمة الروابط التي تريد تضمينها (واتساب، لينكدإن، بريد إلكتروني، إنستغرام، موقع شخصي، إلخ)</li>
+        </ul>
+        <h4>تفاصيل اختيارية تساعد في تسريع التصميم</h4>
+        <ul>
+          <li>اللغة أو اللغات التي تريد ظهور البطاقة بها (عربي / إنجليزي / كلاهما)</li>
+          <li>لون أو طابع تصميم تفضله إن وُجد (وإلا سأختار ما يناسب مجالك)</li>
+          <li>الباقة التي تريد حجزها من الباقات الثلاث أدناه</li>
+        </ul>
+        <div class="prep-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+          <span><strong>مهم:</strong> إن كانت لديك سيرة قديمة تريد تحديثها، اكتب لي بوضوح ماذا تريد <strong>إضافته أو تعديله</strong> (مثال: تحديث المسمى الوظيفي، إضافة شهادة جديدة)، وماذا تريد <strong>حذفه</strong> من سيرتك الأصلية قبل تحويلها إلى بطاقة رقمية (مثال: حذف رقم هاتف قديم أو خبرة لم تعد تريد إظهارها). كل ملاحظة تكتبها لي تُطبَّق حرفياً على بطاقتك.</span>
+        </div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<!-- ═══════════════ OFFER STAMP ═══════════════ -->
+<section class="offer-band" id="offer">
+  <div class="container">
+    <div class="sec-head">
+      <div class="sec-eyebrow">عرض محدود</div>
+      <h2>عرض الافتتاح ينتهي خلال</h2>
+      <p>بعد المهلة يعود السعر إلى وضعه الطبيعي</p>
+    </div>
+    <div class="stamp-row">
+      <div class="stamp" role="timer" aria-live="off">
+        <div class="cd-row" id="cdTimer">
+          <div class="cd-unit"><b id="cdDays">00</b><span>يوم</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><b id="cdHours">00</b><span>ساعة</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><b id="cdMins">00</b><span>دقيقة</span></div>
+          <span class="cd-sep">:</span>
+          <div class="cd-unit"><b id="cdSecs">00</b><span>ثانية</span></div>
+        </div>
+        <div class="cd-label">حتى ٢٠ أغسطس ٢٠٢٦</div>
+      </div>
+      <div class="price-plate">
+        <span class="old">7.000 د.ب</span>
+        <span class="new">5.000</span>
+        <span class="save">وفّر 2 د.ب</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ PRICING ═══════════════ -->
+<section id="pricing" class="on-surface">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">الباقات</div><h2>اختر مادة بطاقتك</h2><p>ثلاث درجات، مثل بطاقات العضوية — الأسعار أدناه تجريبية وقابلة للتعديل بسهولة قبل النشر</p></div>
+    <div class="tiers">
+
+      <div class="ptier emerald reveal">
+        <div class="ptier-mat">ورقية · أساسية</div>
+        <div class="ptier-name">الأساسية</div>
+        <div class="ptier-price"><span class="old">7.000</span><span class="new">5.000</span> <span class="unit">د.ب</span></div>
+        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-div"></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> بطاقة رقمية بصفحة واحدة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> تصميم متجاوب لكل الأجهزة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> رابط خاص + رمز QR</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> زر لعرض السيرة الورقية الأصلية PDF</li>
+        </ul>
+        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة الأساسية" target="_blank" rel="noopener">احجز الأساسية</a>
+      </div>
+
+      <div class="ptier gold reveal">
+        <div class="ptier-badge">مثل بطاقتي التعريفية</div>
+        <div class="ptier-mat">مطلية بالذهب · قياسية</div>
+        <div class="ptier-name">القياسية</div>
+        <div class="ptier-price"><span class="old">10.000</span><span class="new">8.000</span> <span class="unit">د.ب</span></div>
+        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-div"></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> كل ما في الباقة الأساسية</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> دعم لغتين (عربي/إنجليزي) بزر تبديل</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> أقسام إنجازات وشهادات منظّمة</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> ترجمة تلقائية للغة أخرى عند الطلب</li>
+        </ul>
+        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة القياسية" target="_blank" rel="noopener">احجز القياسية</a>
+      </div>
+
+      <div class="ptier indigo reveal">
+        <div class="ptier-mat">نيلي ملكي · مميزة</div>
+        <div class="ptier-name">المميزة</div>
+        <div class="ptier-price"><span class="old">15.000</span><span class="new">12.000</span> <span class="unit">د.ب</span></div>
+        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-div"></div>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> كل ما في الباقة القياسية</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> صفحات فرعية إضافية (إنجازات، معرض أعمال)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> أولوية في التسليم</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> نسخة PDF مطابقة للتصميم الرقمي</li>
+        </ul>
+        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة المميزة" target="_blank" rel="noopener">احجز المميزة</a>
+      </div>
+
+    </div>
+
+    <div class="compare-wrap reveal">
+      <table class="compare">
+        <thead><tr><th>الميزة</th><th>الأساسية</th><th>القياسية</th><th>المميزة</th></tr></thead>
+        <tbody>
+          <tr><td>رابط خاص + رمز QR</td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td>دعم لغتين</td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td>صفحات فرعية إضافية</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td>أولوية التسليم</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXAMPLES ═══════════════ -->
+<section id="examples">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">أعمالي</div><h2>نماذج حقيقية</h2><p>بموافقة أصحابها</p></div>
+    <div class="ex-grid">
+      <div class="ex-card reveal">
+        <div class="ex-preview"><div class="mini-card"></div></div>
+        <div class="ex-body"><h4>حسن سديف</h4><p>طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة</p><a class="ex-link" href="https://h-edu.netlify.app/cv" target="_blank" rel="noopener">عرض البطاقة ←</a></div>
+      </div>
+      <div class="ex-card locked reveal">
+        <div class="ex-preview"><div class="mini-card"></div></div>
+        <div class="ex-body"><h4>نموذج قادم</h4><p>سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link">قريباً</span></div>
+      </div>
+      <div class="ex-card locked reveal">
+        <div class="ex-preview"><div class="mini-card"></div></div>
+        <div class="ex-body"><h4>نموذج قادم</h4><p>سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link">قريباً</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FAQ ═══════════════ -->
+<section id="faq" class="on-surface">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">أسئلة شائعة</div><h2>كل ما تحتاج معرفته</h2></div>
+    <div class="faq-list">
+      <details class="faq-item reveal"><summary>كم تستغرق مدة التسليم؟</summary><p>من 24 إلى 48 ساعة من استلام سيرتك وصورتك والروابط كاملة.</p></details>
+      <details class="faq-item reveal"><summary>ماذا أحتاج لإرساله؟</summary><p>سيرتك الذاتية الحالية (PDF أو صورة واضحة)، صورتك الشخصية، وقائمة الروابط التي تريد إضافتها.</p></details>
+      <details class="faq-item reveal"><summary>ما الفرق بين الباقات الثلاث؟</summary><p>راجع جدول المقارنة أعلاه — الفرق الرئيسي هو دعم اللغتين في القياسية، والصفحات الفرعية الإضافية وأولوية التسليم في المميزة.</p></details>
+      <details class="faq-item reveal"><summary>هل يمكنني طلب تعديل على بطاقتي لاحقاً؟</summary><p>تواصل معي عبر واتساب وسأساعدك في أي تعديل تحتاجه.</p></details>
+      <details class="faq-item reveal"><summary>هل بياناتي وسيرتي الذاتية آمنة؟</summary><p>راجع صفحة سياسة الخصوصية وإخلاء المسؤولية في أسفل الصفحة لمزيد من التفاصيل.</p></details>
+      <details class="faq-item reveal"><summary>ما الأمور التي يجب أن أعرفها قبل الطلب؟</summary><p>صفحة <a href="before-order.html" style="color:var(--red);font-weight:700;">الأمور التي يجب معرفتها قبل الطلب</a> تشرح كل شيء بوضوح: احتمال ظهور رابط بطاقتك في نتائج البحث، سياسة التعديلات، البيانات الحساسة، والدفع والاسترجاع.</p></details>
+      <details class="faq-item reveal"><summary>كيف أتتبع حالة طلبي؟</summary><p>أدخل رقم هاتفك ورمز التحقق الذي أرسلته لك في قسم "تتبع الطلب" أدناه.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ TRACK ORDER ═══════════════ -->
+<section id="track">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">تتبع الطلب</div><h2>تحقق من حالة طلبك</h2><p>أدخل رقم هاتفك ورمز التحقق الذي استلمته</p></div>
+    <div class="track-wrap">
+      <div class="checkpoint reveal">
+        <div class="cp-head">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 3v6"/></svg>
+          <span>نقطة التحقق من الطلب</span>
+        </div>
+        <div class="cp-body">
+          <form id="trackForm">
+            <div class="field"><label for="phoneInput">رقم الهاتف</label><input type="tel" id="phoneInput" dir="ltr" placeholder="3XXXXXXX" required inputmode="numeric"></div>
+            <div class="field"><label for="codeInput">رمز التحقق</label><input type="text" id="codeInput" dir="ltr" placeholder="أدخل رمز التحقق" required></div>
+            <button type="submit" class="btn btn-red btn-block">تحقق من طلبي</button>
+          </form>
+          <div class="track-msg" id="trackMsg">لم تستلم رمز التحقق؟ <a href="https://wa.me/97336166806" target="_blank" rel="noopener">تواصل معي عبر واتساب</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section id="contact" class="on-surface">
+  <div class="container">
+    <div class="sec-head"><div class="sec-eyebrow">تواصل</div><h2>تواصل معي</h2><p>خدمة فردية أقدّمها بنفسي، وليست شركة</p></div>
+    <div class="contact-grid">
+      <a class="contact-card reveal" href="https://wa.me/97336166806" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+        <div class="lbl">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div>
+      </a>
+      <a class="contact-card reveal" href="mailto:Hasan.sdaif16@gmail.com">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <div class="lbl">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div>
+      </a>
+    </div>
+    <p class="privacy-note">ملاحظة: عند نشر بطاقتك الرقمية، قد يظهر رابطها ضمن نتائج محركات البحث كغيرها من الصفحات المتاحة على الإنترنت. لمزيد من التفاصيل راجع <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <strong>بطاقتي</strong> (Bitaqti) — بطاقات رقمية تعريفية · البحرين
+    <div class="f-links">
+      <a href="before-order.html">قبل أن تطلب</a>
+      <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>
+      <a href="https://wa.me/97336166806" target="_blank" rel="noopener">واتساب</a>
+    </div>
+  </div>
+</footer>
+
+<div class="order-bar">
+  <div class="container">
+    <span class="ob-price">الباقة الأساسية من <b>5.000 د.ب</b></span>
+    <a class="btn btn-red" href="https://wa.me/97336166806?text=مرحباً، أرغب بطلب بطاقتي الرقمية" target="_blank" rel="noopener">اطلب الآن</a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="العودة للأعلى">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<!-- ═══════════════ INVOICE MODAL (نافذة منبثقة بشكل فاتورة) ═══════════════ -->
+<div class="modal-overlay" id="invoiceOverlay" role="dialog" aria-modal="true" aria-labelledby="invTitle">
+  <div class="invoice">
+    <div class="inv-head">
+      <button class="inv-close" id="invClose" aria-label="إغلاق الفاتورة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M6 18L18 6"/></svg>
+      </button>
+      <div class="inv-brand"><span class="mark"></span> بطاقتي (Bitaqti)</div>
+      <h3 id="invTitle">فاتورة الطلب</h3>
+      <div class="inv-meta">
+        <span id="invSerial" dir="ltr">#—</span>
+        <span id="invDate" dir="ltr">—</span>
+      </div>
+      <span class="inv-status" id="invStatus">—</span>
+    </div>
+    <div class="inv-body">
+      <div class="inv-row"><span class="k">رقم الهاتف</span><span class="v" id="invPhone" dir="ltr">—</span></div>
+      <div class="inv-row"><span class="k">الباقة المحجوزة</span><span class="v" id="invPackage">—</span></div>
+      <div class="inv-row"><span class="k">عدد الطلبات السابقة لديك</span><span class="v" id="invCount">—</span></div>
+      <div class="inv-row"><span class="k">رابط بطاقتك الرقمية</span><span class="v" id="invLinkWrap">—</span></div>
+      <div class="inv-total"><span class="k">إجمالي المبلغ</span><span class="v" id="invPrice">—</span></div>
+
+      <div id="invTimelineWrap">
+        <div class="inv-section-title">ما تم إنجازه في طلبك</div>
+        <div class="inv-timeline" id="invTimeline"></div>
+      </div>
+
+      <div class="inv-note" id="invNote" style="display:none;"></div>
+
+      <div class="inv-foot">
+        <a class="btn btn-line btn-block" href="https://wa.me/97336166806" target="_blank" rel="noopener">تواصل واتساب</a>
+        <button class="btn btn-red btn-block" id="invCloseBtn2">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ══════════ COUNTDOWN (يتضمن الثواني) ══════════ */
+  const OFFER_END = new Date('2026-08-20T23:59:59+03:00').getTime();
+  function pad(n){ return String(n).padStart(2,'0'); }
+  function setUnit(id, val){
+    const el = document.getElementById(id);
+    if(el.textContent !== val){
+      el.textContent = val;
+      el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick');
+    }
+  }
+  function updateCountdown(){
+    const diff = OFFER_END - Date.now();
+    const d = diff>0 ? Math.floor(diff/86400000) : 0;
+    const h = diff>0 ? Math.floor((diff%86400000)/3600000) : 0;
+    const m = diff>0 ? Math.floor((diff%3600000)/60000) : 0;
+    const s = diff>0 ? Math.floor((diff%60000)/1000) : 0;
+    setUnit('cdDays', pad(d));
+    setUnit('cdHours', pad(h));
+    setUnit('cdMins', pad(m));
+    setUnit('cdSecs', pad(s));
+    document.getElementById('miniCd').textContent = diff>0 ? `${d}ي ${pad(h)}:${pad(m)}:${pad(s)}` : 'انتهى العرض';
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  /* ══════════ MOBILE MENU ══════════ */
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobilePanel = document.getElementById('mobilePanel');
+  burgerBtn.addEventListener('click', () => {
+    const open = mobilePanel.classList.toggle('open');
+    burgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.getElementById('burgerIcon').innerHTML = open ? '<path d="M6 6l12 12M6 18L18 6"/>' : '<path d="M4 6h16M4 12h16M4 18h16"/>';
+  });
+  document.querySelectorAll('#mobilePanel a[data-nav]').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      mobilePanel.classList.remove('open');
+      burgerBtn.setAttribute('aria-expanded','false');
+      document.getElementById('burgerIcon').innerHTML='<path d="M4 6h16M4 12h16M4 18h16"/>';
+    });
+  });
+
+  /* ══════════ REVEAL ON SCROLL ══════════ */
+  const revealObs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in-view'); revealObs.unobserve(en.target); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>revealObs.observe(el));
+
+  /* ══════════ BACK TO TOP ══════════ */
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{ toTop.classList.toggle('show', window.scrollY > 500); });
+  toTop.addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
+  });
+
+  /* ══════════ ORDER TRACKING — معمارية GDSA (Google Sheets كقاعدة بيانات) ══════════
+     القراءة تتم بالكامل من المتصفح عبر رابط تصدير CSV العام لملف Google Sheets،
+     بدون أي خادم أو Apps Script. راجع GlideStack_GDSA_v4-1.md، القسم 11.
+
+     هيكل الشيت (الصف الأول = عناوين بالإنجليزية لتطابق الكود):
+       phone | code | package | price | order_date | status | order_count | order_code | cv_link | actions_log | subpage_content
+       (عمود actions_log: إجراءات مفصولة بـ | ، وكل إجراء بصيغة "تاريخ - وصف")
+       (عمود order_code: رمز الطلب الفريد الذي يظهر في رأس الفاتورة، بصيغة ثابتة مثل BH-CV-2026-0001)
+
+     ⚠️ ملاحظة أمان مهمة (كما وردت في دليل GDSA، القسم 34):
+     أي شخص يعرف رابط تصدير CSV لنفس الشيت يمكنه رؤية كل الصفوف — كل أرقام
+     الهواتف والرموز — وليس فقط الصف المطابق، لأن الحماية هنا تعتمد على سرّية
+     رابط الشيت نفسه وليست صلاحيات حقيقية لكل صف. لا تشارك رابط الشيت مع أحد،
+     ولا تضع فيه بيانات أكثر من اللازم للتتبع. */
+  const CONFIG = {
+    SHEETS: {
+      MAIN_ID: '1ooI9WfgiCnpgVsitKwZUOeepyaswLPFNSwBSVT0BYMI',
+      GID: 0,
+    }
+  };
+
+  function sheetCSVUrl(id, gid=0){
+    return `https://docs.google.com/spreadsheets/d/${id}/export?format=csv&gid=${gid}`;
+  }
+  function parseCSVLine(line){
+    const result=[]; let current='', inQuotes=false;
+    for (const char of line) {
+      if (char==='"') inQuotes=!inQuotes;
+      else if (char===',' && !inQuotes) { result.push(current); current=''; }
+      else current+=char;
+    }
+    result.push(current);
+    return result;
+  }
+  function parseCSV(text){
+    const lines = text.trim().split('\n');
+    if (lines.length < 2) return [];
+    const headers = parseCSVLine(lines[0]).map(h=>h.trim());
+    return lines.slice(1).filter(l=>l.trim()).map(line=>{
+      const values = parseCSVLine(line);
+      return Object.fromEntries(headers.map((h,i)=>[h,(values[i]||'').trim()]));
+    });
+  }
+  async function loadOrdersSheet(){
+    if(!CONFIG.SHEETS.MAIN_ID) return null;
+    const res = await fetch(sheetCSVUrl(CONFIG.SHEETS.MAIN_ID, CONFIG.SHEETS.GID));
+    if(!res.ok) return null;
+    return parseCSV(await res.text());
+  }
+
+  const trackForm = document.getElementById('trackForm');
+  const trackMsg = document.getElementById('trackMsg');
+
+  /* ألوان حالة الطلب داخل الفاتورة */
+  const STATUS_COLORS = {
+    'قيد التنفيذ':   '#B8924A',
+    'بانتظار الدفع': '#CE1126',
+    'تم التصميم':    '#3730A3',
+    'تم التسليم':    '#0C9A63',
+    'ملغي':          '#53565C',
+  };
+
+  function maskPhone(phone){
+    if(!phone || phone.length < 4) return phone || '—';
+    return phone.slice(0,2) + '••••' + phone.slice(-2);
+  }
+
+  function buildTimeline(actionsLog){
+    const wrap = document.getElementById('invTimeline');
+    const section = document.getElementById('invTimelineWrap');
+    wrap.innerHTML = '';
+    const steps = (actionsLog || '').split('|').map(s=>s.trim()).filter(Boolean);
+    if(!steps.length){ section.style.display = 'none'; return; }
+    section.style.display = 'block';
+    steps.forEach(step=>{
+      const idx = step.indexOf(' - ');
+      const date = idx>-1 ? step.slice(0, idx) : '';
+      const desc = idx>-1 ? step.slice(idx+3) : step;
+      const item = document.createElement('div');
+      item.className = 'inv-tl-item';
+      item.innerHTML = date ? `<b>${date}</b>${desc}` : desc;
+      wrap.appendChild(item);
+    });
+  }
+
+  function openInvoice(match, phone){
+    document.getElementById('invSerial').textContent = '#' + (match.order_code || 'BH-CV-2026-0000');
+    document.getElementById('invDate').textContent = match.order_date || '—';
+    document.getElementById('invPhone').textContent = maskPhone(phone);
+    document.getElementById('invPackage').textContent = match.package || '—';
+    document.getElementById('invCount').textContent = match.order_count || '1';
+    document.getElementById('invPrice').textContent = match.price ? `${match.price} د.ب` : '—';
+
+    const linkWrap = document.getElementById('invLinkWrap');
+    linkWrap.innerHTML = match.cv_link ? `<a href="${match.cv_link}" target="_blank" rel="noopener" style="color:var(--red);font-weight:700;">فتح البطاقة ←</a>` : '—';
+
+    const statusEl = document.getElementById('invStatus');
+    const status = match.status || 'قيد التنفيذ';
+    statusEl.textContent = status;
+    statusEl.style.background = STATUS_COLORS[status] || '#53565C';
+
+    buildTimeline(match.actions_log);
+
+    const noteEl = document.getElementById('invNote');
+    if(match.subpage_content){ noteEl.textContent = match.subpage_content; noteEl.style.display = 'block'; }
+    else { noteEl.style.display = 'none'; }
+
+    const overlay = document.getElementById('invoiceOverlay');
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeInvoice(){
+    document.getElementById('invoiceOverlay').classList.remove('show');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('invClose').addEventListener('click', closeInvoice);
+  document.getElementById('invCloseBtn2').addEventListener('click', closeInvoice);
+  document.getElementById('invoiceOverlay').addEventListener('click', (e)=>{ if(e.target.id === 'invoiceOverlay') closeInvoice(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeInvoice(); });
+
+  trackForm.addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const code = document.getElementById('codeInput').value.trim();
+
+    trackMsg.textContent = 'جاري التحقق...';
+    trackMsg.classList.remove('err');
+
+    try{
+      const rows = await loadOrdersSheet();
+      const match = rows && rows.find(r => r.phone === phone && r.code === code);
+      if(match){
+        trackMsg.textContent = '';
+        openInvoice(match, phone);
+      } else {
+        trackMsg.textContent = 'لم يتم العثور على طلب برقم الهاتف ورمز التحقق المُدخلين.';
+        trackMsg.classList.add('err');
+      }
+    } catch(err){
+      trackMsg.textContent = 'تعذّر الاتصال بخدمة التتبع حالياً. تواصل معي عبر واتساب.';
+      trackMsg.classList.add('err');
+    }
+  });
+</script>
+</body>
+</html>
