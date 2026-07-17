@@ -51,7 +51,7 @@
   .serrate.flip{transform:scaleY(-1);}
 
   /* ═══════════════ NAV ═══════════════ */
-  .nav{position:sticky;top:0;z-index:100;background:rgba(244,243,239,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav{position:sticky;top:31px;z-index:100;background:rgba(244,243,239,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
   .nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;gap:10px;}
   .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0;}
   .brand .mark{width:34px;height:24px;border-radius:5px;background:var(--ink);position:relative;flex-shrink:0;}
@@ -67,7 +67,7 @@
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
   .burger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
   .burger svg{width:17px;height:17px;color:var(--ink);}
-  .mobile-panel{display:none;position:fixed;inset:64px 0 0 0;z-index:99;background:var(--surface);padding:22px 20px;overflow-y:auto;}
+  .mobile-panel{display:none;position:fixed;inset:95px 0 0 0;z-index:99;background:var(--surface);padding:22px 20px;overflow-y:auto;}
   .mobile-panel.open{display:block;}
   .mobile-panel a{display:block;font-size:16px;font-weight:700;padding:14px 4px;border-bottom:1px solid var(--line);}
 
@@ -247,6 +247,16 @@
   .ptier .btn-red{background:var(--ink);}
   .ptier.indigo .btn-red{background:#F4C550;color:#1E1B4B;}
   .ptier.indigo .btn-red:hover{box-shadow:0 12px 22px rgba(244,197,80,.3);}
+  .ptier-btns{display:flex;flex-direction:column;gap:8px;}
+  .ptier.indigo .btn-line{border-color:rgba(255,255,255,.3);color:#fff;}
+  .ptier.indigo .btn-line:hover{border-color:#fff;}
+
+  /* ── علامة اختيار العملة (منسدلة) ── */
+  .currency-switch{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:26px;flex-wrap:wrap;}
+  .currency-switch label{font-size:12.5px;font-weight:600;color:var(--ink-soft);}
+  .currency-switch select{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;font-size:12.5px;font-weight:700;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:10px;padding:9px 14px;cursor:pointer;}
+  .currency-switch select:hover{border-color:var(--ink-faint);}
+  .currency-switch select:focus-visible{outline:2px solid var(--red);outline-offset:2px;}
 
   .compare-wrap{margin-top:36px;overflow-x:auto;}
   table.compare{width:100%;border-collapse:collapse;min-width:520px;font-size:12.5px;}
@@ -365,6 +375,15 @@
   .to-top svg{width:17px;height:17px;}
   @media (min-width:761px){.to-top{bottom:26px;}}
 
+  /* ═══════════════ شريط اللغة العلوي: ثابت في أعلى الصفحة دائماً (فوق شريط التنقل) ═══════════════
+     مهم: تبديل اللغة يُترجم النصوص فقط عبر data-en / data-ar المخزّنة في نفس الملف،
+     ولا يُغيّر اتجاه الصفحة (تبقى RTL) ولا تصميمها أو ترتيب عناصرها إطلاقاً. */
+  .lang-bar{position:sticky;top:0;z-index:110;background:var(--ink);color:#fff;padding:6px 0;}
+  .lang-bar .container{display:flex;align-items:center;justify-content:flex-end;gap:6px;}
+  .lang-bar button{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);font-family:'IBM Plex Sans Arabic',Arial,sans-serif;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;transition:all .15s ease;}
+  .lang-bar button.active{background:var(--red);border-color:var(--red);color:#fff;}
+  .lang-bar button:not(.active):hover{border-color:rgba(255,255,255,.5);color:#fff;}
+
   /* ═══════════════ RESPONSIVE ═══════════════ */
   @media (max-width:960px){
     .hero .container{flex-direction:column-reverse;text-align:center;padding-top:8px;}
@@ -390,21 +409,29 @@
 </head>
 <body>
 
+<!-- ═══════════════ شريط اللغة (ثابت في أعلى الصفحة دائماً، فوق شريط التنقل — لا يغيّر اتجاه أو تصميم الصفحة) ═══════════════ -->
+<div class="lang-bar">
+  <div class="container">
+    <button type="button" data-lang="ar" class="active">العربية</button>
+    <button type="button" data-lang="en">English</button>
+  </div>
+</div>
+
 <!-- ═══════════════ NAV ═══════════════ -->
 <nav class="nav">
   <div class="container">
     <a href="#home" class="brand">
       <span class="mark"></span>
-      <span>بطاقتي<small>Bitaqti · بطاقات رقمية تعريفية</small></span>
+      <span data-ar="بطاقتي" data-en="Bitaqti">بطاقتي<small data-ar="Bitaqti · بطاقات رقمية تعريفية" data-en="Bitaqti · Digital Identity Cards">Bitaqti · بطاقات رقمية تعريفية</small></span>
     </a>
     <ul class="nav-links">
-      <li><a href="#how">كيف تعمل</a></li>
-      <li><a href="#pricing">الباقات</a></li>
-      <li><a href="#addons">خدمات إضافية</a></li>
-      <li><a href="#examples">نماذج</a></li>
-      <li><a href="#faq">أسئلة شائعة</a></li>
-      <li><a href="#track">تتبع الطلب</a></li>
-      <li><a href="#contact">تواصل</a></li>
+      <li><a href="#how" data-ar="كيف تعمل" data-en="How it works">كيف تعمل</a></li>
+      <li><a href="#pricing" data-ar="الباقات" data-en="Packages">الباقات</a></li>
+      <li><a href="#addons" data-ar="خدمات إضافية" data-en="Add-ons">خدمات إضافية</a></li>
+      <li><a href="#examples" data-ar="نماذج" data-en="Examples">نماذج</a></li>
+      <li><a href="#faq" data-ar="أسئلة شائعة" data-en="FAQ">أسئلة شائعة</a></li>
+      <li><a href="#track" data-ar="تتبع الطلب" data-en="Track order">تتبع الطلب</a></li>
+      <li><a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a></li>
     </ul>
     <div class="nav-right">
       <a href="#offer" class="mini-cd"><i></i><span id="miniCd">--:--:--</span></a>
@@ -429,21 +456,21 @@
 <header class="hero" id="home">
   <div class="container">
     <div class="hero-text">
-      <div class="eyebrow">خدمة فردية جديدة · البحرين</div>
-      <h1>سيرتك الذاتية تستحق أكثر من ملف PDF ينام في المجلدات — تستحق <em>بطاقة رقمية</em> تُفتح بضغطة</h1>
-      <p class="hero-p">أرسل لي سيرتك الحالية وصورتك والروابط التي تريدها، وأحوّلها إلى بطاقة رقمية برابط خاص ورمز QR، بتصميم يليق بمجالك — خلال 24 إلى 48 ساعة فقط.</p>
+      <div class="eyebrow" data-i18n="hero.eyebrow">خدمة فردية جديدة · البحرين</div>
+      <h1 data-i18n="hero.title">سيرتك الذاتية تستحق أكثر من ملف PDF ينام في المجلدات — تستحق <em>بطاقة رقمية</em> تُفتح بضغطة</h1>
+      <p class="hero-p" data-i18n="hero.desc">أرسل لي سيرتك الحالية وصورتك والروابط التي تريدها، وأحوّلها إلى بطاقة رقمية برابط خاص ورمز QR، بتصميم يليق بمجالك — خلال 24 إلى 48 ساعة فقط.</p>
       <div class="cta-row">
         <a class="btn btn-red" href="https://wa.me/97336166806?text=مرحباً، أرغب بطلب بطاقتي الرقمية" target="_blank" rel="noopener">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
-          اطلب بطاقتك الآن
+          <span data-i18n="hero.cta1">اطلب بطاقتك الآن</span>
         </a>
-        <a class="btn btn-line" href="#pricing">شاهد الباقات</a>
+        <a class="btn btn-line" href="#pricing" data-i18n="hero.cta2">شاهد الباقات</a>
       </div>
-      <p style="font-size:11.5px;color:var(--ink-faint);margin-top:14px;">قبل الطلب، يُنصح بقراءة <a href="before-order.html" style="color:var(--red);font-weight:700;">الأمور التي يجب معرفتها قبل الطلب</a></p>
+      <p style="font-size:11.5px;color:var(--ink-faint);margin-top:14px;"><span data-i18n="hero.readfirst">قبل الطلب، يُنصح بقراءة</span> <a href="before-order.html" style="color:var(--red);font-weight:700;" data-i18n="hero.readlink">الأمور التي يجب معرفتها قبل الطلب</a></p>
       <div class="trust-row">
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> بدون اشتراك شهري</div>
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> تواصل مباشر معي شخصياً</div>
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> تسليم خلال 24-48 ساعة</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="hero.trust1">بدون اشتراك شهري</span></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="hero.trust2">تواصل مباشر معي شخصياً</span></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="hero.trust3">تسليم خلال 24-48 ساعة</span></div>
       </div>
     </div>
 
@@ -480,18 +507,18 @@
 <section id="what">
   <div class="container">
     <div class="sec-head">
-      <div class="sec-eyebrow">تعريف سريع</div>
-      <h2>ما هي «البطاقة التعريفية» الرقمية؟</h2>
-      <p>نسخة رقمية وتفاعلية من سيرتك الذاتية، تحلّ محل ملف PDF التقليدي</p>
+      <div class="sec-eyebrow" data-i18n="what.eyebrow">تعريف سريع</div>
+      <h2 data-i18n="what.title">ما هي «البطاقة التعريفية» الرقمية؟</h2>
+      <p data-i18n="what.sub">نسخة رقمية وتفاعلية من سيرتك الذاتية، تحلّ محل ملف PDF التقليدي</p>
     </div>
     <div style="max-width:640px;margin:0 auto 22px;text-align:center;">
-      <p style="font-size:13.5px;color:var(--ink-soft);">البطاقة التعريفية هي صفحة ويب واحدة تحمل اسمك ومسمّاك الوظيفي وأهم بيانات سيرتك الذاتية وروابط التواصل معك، وتُفتح بضغطة واحدة عبر رابط خاص أو رمز QR — فكّرها كبطاقة تعريف أو كرت أعمال (Business Card) رقمي وتفاعلي، يجمع سيرتك الذاتية وبيانات التواصل في مكان واحد سهل المشاركة والتحديث.</p>
+      <p style="font-size:13.5px;color:var(--ink-soft);" data-i18n="what.desc">البطاقة التعريفية هي صفحة ويب واحدة تحمل اسمك ومسمّاك الوظيفي وأهم بيانات سيرتك الذاتية وروابط التواصل معك، وتُفتح بضغطة واحدة عبر رابط خاص أو رمز QR — فكّرها كبطاقة تعريف أو كرت أعمال (Business Card) رقمي وتفاعلي، يجمع سيرتك الذاتية وبيانات التواصل في مكان واحد سهل المشاركة والتحديث.</p>
     </div>
     <div class="stub-row" style="grid-template-columns:repeat(2,1fr);max-width:640px;margin:0 auto;">
-      <div class="stub"><h3>اسمك ومسمّاك الوظيفي</h3><p>وأهم بيانات سيرتك الذاتية بشكل منظّم وواضح</p></div>
-      <div class="stub"><h3>روابط التواصل معك</h3><p>واتساب، لينكدإن، بريد إلكتروني، أو أي رابط تريده</p></div>
-      <div class="stub"><h3>رابط خاص + رمز QR</h3><p>تُفتح بضغطة واحدة، بلا تحميل أو تصفّح ملفات</p></div>
-      <div class="stub"><h3>بديل عصري لملف PDF</h3><p>سهلة المشاركة والتحديث، وتليق بمجالك المهني</p></div>
+      <div class="stub"><h3 data-i18n="what.s1t">اسمك ومسمّاك الوظيفي</h3><p data-i18n="what.s1p">وأهم بيانات سيرتك الذاتية بشكل منظّم وواضح</p></div>
+      <div class="stub"><h3 data-i18n="what.s2t">روابط التواصل معك</h3><p data-i18n="what.s2p">واتساب، لينكدإن، بريد إلكتروني، أو أي رابط تريده</p></div>
+      <div class="stub"><h3 data-i18n="what.s3t">رابط خاص + رمز QR</h3><p data-i18n="what.s3p">تُفتح بضغطة واحدة، بلا تحميل أو تصفّح ملفات</p></div>
+      <div class="stub"><h3 data-i18n="what.s4t">بديل عصري لملف PDF</h3><p data-i18n="what.s4p">سهلة المشاركة والتحديث، وتليق بمجالك المهني</p></div>
     </div>
   </div>
 </section>
@@ -499,39 +526,39 @@
 <!-- ═══════════════ HOW IT WORKS ═══════════════ -->
 <section id="how" class="on-surface">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">العملية</div><h2>كيف تحصل على بطاقتك الرقمية؟</h2><p>أربع خطوات، من إرسال سيرتك إلى استلام رابطك الخاص</p></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="how.eyebrow">العملية</div><h2 data-i18n="how.title">كيف تحصل على بطاقتك الرقمية؟</h2><p data-i18n="how.sub">أربع خطوات، من إرسال سيرتك إلى استلام رابطك الخاص</p></div>
     <div class="stub-row">
-      <div class="stub reveal"><div class="n">١</div><h3>أرسل سيرتك وصورتك</h3><p>سيرتك الحالية (PDF أو صورة) وصورتك الشخصية عبر واتساب.</p></div>
-      <div class="stub reveal"><div class="n">٢</div><h3>حدد روابطك</h3><p>واتساب، لينكدإن، بريد إلكتروني، أو أي رابط آخر تريد إضافته.</p></div>
-      <div class="stub reveal"><div class="n">٣</div><h3>نصمم بطاقتك</h3><p>نحوّل بياناتك إلى بطاقة رقمية بتصميم يليق بمجالك.</p></div>
-      <div class="stub reveal"><div class="n">٤</div><h3>تستلم رابطك</h3><p>خلال 24-48 ساعة، رابطك الخاص ورمز QR جاهزان للمشاركة.</p></div>
+      <div class="stub reveal"><div class="n">١</div><h3 data-i18n="how.s1t">أرسل سيرتك وصورتك</h3><p data-i18n="how.s1p">سيرتك الحالية (PDF أو صورة) وصورتك الشخصية عبر واتساب.</p></div>
+      <div class="stub reveal"><div class="n">٢</div><h3 data-i18n="how.s2t">حدد روابطك</h3><p data-i18n="how.s2p">واتساب، لينكدإن، بريد إلكتروني، أو أي رابط آخر تريد إضافته.</p></div>
+      <div class="stub reveal"><div class="n">٣</div><h3 data-i18n="how.s3t">نصمم بطاقتك</h3><p data-i18n="how.s3p">نحوّل بياناتك إلى بطاقة رقمية بتصميم يليق بمجالك.</p></div>
+      <div class="stub reveal"><div class="n">٤</div><h3 data-i18n="how.s4t">تستلم رابطك</h3><p data-i18n="how.s4p">خلال 24-48 ساعة، رابطك الخاص ورمز QR جاهزان للمشاركة.</p></div>
     </div>
     <details class="prep-box reveal">
       <summary>
         <span class="sm-txt">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
-          قبل أن تراسلني، جهّز التالي (اضغط لعرض كل التفاصيل)
+          <span data-i18n="how.prep">قبل أن تراسلني، جهّز التالي (اضغط لعرض كل التفاصيل)</span>
         </span>
         <span class="sm-plus">+</span>
       </summary>
       <div class="prep-content">
-        <h4>المتطلبات الأساسية</h4>
+        <h4 data-i18n="how.req">المتطلبات الأساسية</h4>
         <ul>
-          <li>سيرتك الذاتية الحالية (ملف PDF أو صورة واضحة وكاملة)</li>
-          <li>صورة شخصية حديثة بخلفية مناسبة وإضاءة واضحة</li>
-          <li>اسمك الكامل كما تريد ظهوره بالضبط في البطاقة</li>
-          <li>مسمّاك الوظيفي أو مجالك (مثال: طالب علوم إسلامية، مصمم جرافيك، محاسب...)</li>
-          <li>قائمة الروابط التي تريد تضمينها (واتساب، لينكدإن، بريد إلكتروني، إنستغرام، موقع شخصي، إلخ)</li>
+          <li data-i18n="how.req1">سيرتك الذاتية الحالية (ملف PDF أو صورة واضحة وكاملة)</li>
+          <li data-i18n="how.req2">صورة شخصية حديثة بخلفية مناسبة وإضاءة واضحة</li>
+          <li data-i18n="how.req3">اسمك الكامل كما تريد ظهوره بالضبط في البطاقة</li>
+          <li data-i18n="how.req4">مسمّاك الوظيفي أو مجالك (مثال: طالب علوم إسلامية، مصمم جرافيك، محاسب...)</li>
+          <li data-i18n="how.req5">قائمة الروابط التي تريد تضمينها (واتساب، لينكدإن، بريد إلكتروني، إنستغرام، موقع شخصي، إلخ)</li>
         </ul>
-        <h4>تفاصيل اختيارية تساعد في تسريع التصميم</h4>
+        <h4 data-i18n="how.opt">تفاصيل اختيارية تساعد في تسريع التصميم</h4>
         <ul>
-          <li>اللغة أو اللغات التي تريد ظهور البطاقة بها (عربي / إنجليزي / كلاهما)</li>
-          <li>لون أو طابع تصميم تفضله إن وُجد (وإلا سأختار ما يناسب مجالك)</li>
-          <li>الباقة التي تريد حجزها من الباقات الثلاث أدناه</li>
+          <li data-i18n="how.opt1">اللغة أو اللغات التي تريد ظهور البطاقة بها (عربي / إنجليزي / كلاهما)</li>
+          <li data-i18n="how.opt2">لون أو طابع تصميم تفضله إن وُجد (وإلا سأختار ما يناسب مجالك)</li>
+          <li data-i18n="how.opt3">الباقة التي تريد حجزها من الباقات الثلاث أدناه</li>
         </ul>
         <div class="prep-note">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-          <span><strong>مهم:</strong> إن كانت لديك سيرة قديمة تريد تحديثها، اكتب لي بوضوح ماذا تريد <strong>إضافته أو تعديله</strong> (مثال: تحديث المسمى الوظيفي، إضافة شهادة جديدة)، وماذا تريد <strong>حذفه</strong> من سيرتك الأصلية قبل تحويلها إلى بطاقة رقمية (مثال: حذف رقم هاتف قديم أو خبرة لم تعد تريد إظهارها). كل ملاحظة تكتبها لي تُطبَّق حرفياً على بطاقتك.</span>
+          <span data-i18n="how.note"><strong>مهم:</strong> إن كانت لديك سيرة قديمة تريد تحديثها، اكتب لي بوضوح ماذا تريد <strong>إضافته أو تعديله</strong> (مثال: تحديث المسمى الوظيفي، إضافة شهادة جديدة)، وماذا تريد <strong>حذفه</strong> من سيرتك الأصلية قبل تحويلها إلى بطاقة رقمية (مثال: حذف رقم هاتف قديم أو خبرة لم تعد تريد إظهارها). كل ملاحظة تكتبها لي تُطبَّق حرفياً على بطاقتك.</span>
         </div>
       </div>
     </details>
@@ -542,27 +569,27 @@
 <section class="offer-band" id="offer">
   <div class="container">
     <div class="sec-head">
-      <div class="sec-eyebrow">عرض محدود</div>
-      <h2>عرض الافتتاح ينتهي خلال</h2>
-      <p>بعد المهلة يعود السعر إلى وضعه الطبيعي</p>
+      <div class="sec-eyebrow" data-i18n="offer.eyebrow">عرض محدود</div>
+      <h2 data-i18n="offer.title">عرض الافتتاح ينتهي خلال</h2>
+      <p data-i18n="offer.sub">بعد المهلة يعود السعر إلى وضعه الطبيعي</p>
     </div>
     <div class="stamp-row">
       <div class="stamp" role="timer" aria-live="off">
         <div class="cd-row" id="cdTimer">
-          <div class="cd-unit"><b id="cdDays">00</b><span>يوم</span></div>
+          <div class="cd-unit"><b id="cdDays">00</b><span data-i18n="offer.day">يوم</span></div>
           <span class="cd-sep">:</span>
-          <div class="cd-unit"><b id="cdHours">00</b><span>ساعة</span></div>
+          <div class="cd-unit"><b id="cdHours">00</b><span data-i18n="offer.hour">ساعة</span></div>
           <span class="cd-sep">:</span>
-          <div class="cd-unit"><b id="cdMins">00</b><span>دقيقة</span></div>
+          <div class="cd-unit"><b id="cdMins">00</b><span data-i18n="offer.min">دقيقة</span></div>
           <span class="cd-sep">:</span>
-          <div class="cd-unit"><b id="cdSecs">00</b><span>ثانية</span></div>
+          <div class="cd-unit"><b id="cdSecs">00</b><span data-i18n="offer.sec">ثانية</span></div>
         </div>
-        <div class="cd-label">حتى ٢٠ أغسطس ٢٠٢٦</div>
+        <div class="cd-label" data-i18n="offer.until">حتى ٢٠ أغسطس ٢٠٢٦</div>
       </div>
       <div class="price-plate">
-        <span class="old">7.000 د.ب</span>
+        <span class="old" data-i18n="offer.oldprice">7.000 د.ب</span>
         <span class="new">5.000</span>
-        <span class="save">وفّر 2 د.ب</span>
+        <span class="save" data-i18n="offer.save">وفّر 2 د.ب</span>
       </div>
     </div>
   </div>
@@ -571,70 +598,90 @@
 <!-- ═══════════════ PRICING ═══════════════ -->
 <section id="pricing" class="on-surface">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">الباقات</div><h2>اختر مادة بطاقتك</h2><p>ثلاث درجات، مثل بطاقات العضوية — الأسعار أدناه تجريبية وقابلة للتعديل بسهولة قبل النشر</p></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="pricing.eyebrow">الباقات</div><h2 data-i18n="pricing.title">اختر مادة بطاقتك</h2><p data-i18n="pricing.sub">ثلاث درجات، مثل بطاقات العضوية — الأسعار أدناه تجريبية وقابلة للتعديل بسهولة قبل النشر</p></div>
+
+    <!-- ═══ علامة اختيار العملة (منسدلة) — الافتراضي: دينار بحريني ═══ -->
+    <div class="currency-switch">
+      <label for="currencySelect" data-i18n="pricing.currencyLabel">عرض الأسعار بعملة:</label>
+      <select id="currencySelect">
+        <option value="BHD" selected data-i18n="pricing.curBHD">دينار بحريني (د.ب)</option>
+        <option value="SAR" data-i18n="pricing.curSAR">ريال سعودي (ر.س)</option>
+        <option value="USD" data-i18n="pricing.curUSD">دولار أمريكي ($)</option>
+      </select>
+    </div>
+
     <div class="tiers">
 
       <div class="ptier emerald reveal">
-        <div class="ptier-mat">ورقية · أساسية</div>
-        <div class="ptier-name">الأساسية</div>
-        <div class="ptier-price"><span class="old">7.000</span><span class="new">5.000</span> <span class="unit">د.ب</span></div>
-        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-mat" data-i18n="pricing.t1mat">ورقية · أساسية</div>
+        <div class="ptier-name" data-i18n="pricing.t1name">الأساسية</div>
+        <div class="ptier-price"><span class="old" data-bhd="7.000">7.000</span><span class="new" data-bhd="5.000">5.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
+        <div class="ptier-note" data-i18n="pricing.note">عرض افتتاح لمدة شهر واحد</div>
         <div class="ptier-div"></div>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> بطاقة رقمية بصفحة واحدة</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> تصميم متجاوب لكل الأجهزة</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> رابط خاص + رمز QR</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> كل ما ورد في سيرتك الورقية ينتقل حرفياً إلى بطاقتك الرقمية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> زر لعرض السيرة الورقية الأصلية PDF</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t1f1">بطاقة رقمية بصفحة واحدة</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t1f2">تصميم متجاوب لكل الأجهزة</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t1f3">رابط خاص + رمز QR</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t1f4">كل ما ورد في سيرتك الورقية ينتقل حرفياً إلى بطاقتك الرقمية</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t1f5">زر لعرض السيرة الورقية الأصلية PDF</span></li>
         </ul>
-        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة الأساسية" target="_blank" rel="noopener">احجز الأساسية</a>
+        <div class="ptier-btns">
+          <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة الأساسية" target="_blank" rel="noopener" data-i18n="pricing.book1">احجز الأساسية</a>
+          <a class="btn btn-line btn-block" href="preview-basic.html" data-i18n="pricing.preview">معاينة الباقة</a>
+        </div>
       </div>
 
       <div class="ptier gold reveal">
-        <div class="ptier-badge">مثل بطاقتي التعريفية</div>
-        <div class="ptier-mat">مطلية بالذهب · قياسية</div>
-        <div class="ptier-name">القياسية</div>
-        <div class="ptier-price"><span class="old">10.000</span><span class="new">8.000</span> <span class="unit">د.ب</span></div>
-        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-badge" data-i18n="pricing.t2badge">مثل بطاقتي التعريفية</div>
+        <div class="ptier-mat" data-i18n="pricing.t2mat">مطلية بالذهب · قياسية</div>
+        <div class="ptier-name" data-i18n="pricing.t2name">القياسية</div>
+        <div class="ptier-price"><span class="old" data-bhd="10.000">10.000</span><span class="new" data-bhd="8.000">8.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
+        <div class="ptier-note" data-i18n="pricing.note">عرض افتتاح لمدة شهر واحد</div>
         <div class="ptier-div"></div>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> كل ما في الباقة الأساسية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> دعم لغتين (عربي/إنجليزي) بزر تبديل</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> أقسام إنجازات وشهادات منظّمة</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> ترجمة تلقائية للغة أخرى عند الطلب</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> حتى 3 شهادات فعلية (PDF) بزر يفتحها من بطاقتك — أرسلها لي عبر واتساب (كل ملف حتى 3 ميجابايت)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t2f1">كل ما في الباقة الأساسية</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t2f2">دعم لغتين (عربي/إنجليزي) بزر تبديل</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t2f3">أقسام إنجازات وشهادات منظّمة</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t2f4">ترجمة تلقائية للغة أخرى عند الطلب</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t2f5">حتى 3 شهادات فعلية (PDF) بزر يفتحها من بطاقتك — أرسلها لي عبر واتساب (كل ملف حتى 3 ميجابايت)</span></li>
         </ul>
-        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة القياسية" target="_blank" rel="noopener">احجز القياسية</a>
+        <div class="ptier-btns">
+          <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة القياسية" target="_blank" rel="noopener" data-i18n="pricing.book2">احجز القياسية</a>
+          <a class="btn btn-line btn-block" href="preview-standard.html" data-i18n="pricing.preview">معاينة الباقة</a>
+        </div>
       </div>
 
       <div class="ptier indigo reveal">
-        <div class="ptier-mat">نيلي ملكي · مميزة</div>
-        <div class="ptier-name">المميزة</div>
-        <div class="ptier-price"><span class="old">15.000</span><span class="new">12.000</span> <span class="unit">د.ب</span></div>
-        <div class="ptier-note">عرض افتتاح لمدة شهر واحد</div>
+        <div class="ptier-mat" data-i18n="pricing.t3mat">نيلي ملكي · مميزة</div>
+        <div class="ptier-name" data-i18n="pricing.t3name">المميزة</div>
+        <div class="ptier-price"><span class="old" data-bhd="15.000">15.000</span><span class="new" data-bhd="12.000">12.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
+        <div class="ptier-note" data-i18n="pricing.note">عرض افتتاح لمدة شهر واحد</div>
         <div class="ptier-div"></div>
         <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> كل ما في الباقة القياسية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> صفحات فرعية إضافية (إنجازات، معرض أعمال)</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> أولوية في التسليم</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> نسخة PDF مطابقة للتصميم الرقمي</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> إمكانية تثبيت بطاقتك كتطبيق على شاشة الهاتف الرئيسية (PWA)</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f1">كل ما في الباقة القياسية</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f2">صفحات فرعية إضافية (إنجازات، معرض أعمال)</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f3">أولوية في التسليم</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f4">نسخة PDF مطابقة للتصميم الرقمي</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f5">إمكانية تثبيت بطاقتك كتطبيق على شاشة الهاتف الرئيسية (PWA)</span></li>
         </ul>
-        <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة المميزة" target="_blank" rel="noopener">احجز المميزة</a>
+        <div class="ptier-btns">
+          <a class="btn btn-red btn-block" href="https://wa.me/97336166806?text=أرغب بحجز الباقة المميزة" target="_blank" rel="noopener" data-i18n="pricing.book3">احجز المميزة</a>
+          <a class="btn btn-line btn-block" href="preview-premium.html" data-i18n="pricing.preview">معاينة الباقة</a>
+        </div>
       </div>
 
     </div>
 
     <div class="compare-wrap reveal">
       <table class="compare">
-        <thead><tr><th>الميزة</th><th>الأساسية</th><th>القياسية</th><th>المميزة</th></tr></thead>
+        <thead><tr><th data-i18n="pricing.cFeature">الميزة</th><th data-i18n="pricing.t1name">الأساسية</th><th data-i18n="pricing.t2name">القياسية</th><th data-i18n="pricing.t3name">المميزة</th></tr></thead>
         <tbody>
-          <tr><td>رابط خاص + رمز QR</td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
-          <tr><td>دعم لغتين</td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
-          <tr><td>حتى 3 شهادات فعلية (PDF)</td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
-          <tr><td>صفحات فرعية إضافية</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
-          <tr><td>أولوية التسليم</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
-          <tr><td>تثبيت كتطبيق هاتف (PWA)</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c1">رابط خاص + رمز QR</td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c2">دعم لغتين</td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c3">حتى 3 شهادات فعلية (PDF)</td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c4">صفحات فرعية إضافية</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c5">أولوية التسليم</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
+          <tr><td data-i18n="pricing.c6">تثبيت كتطبيق هاتف (PWA)</td><td><span class="no">—</span></td><td><span class="no">—</span></td><td><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg></td></tr>
         </tbody>
       </table>
     </div>
@@ -645,52 +692,52 @@
 <section id="addons" class="on-surface">
   <div class="container">
     <div class="sec-head">
-      <div class="sec-eyebrow">خدمات إضافية</div>
-      <h2>تحتاج شيئاً أكثر تحديداً؟</h2>
-      <p>خدمات منفصلة تماماً عن الباقات الثلاث، تُطلب وتُدفع لوحدها فوق أي باقة — أو حتى بدون طلب باقة كاملة</p>
+      <div class="sec-eyebrow" data-i18n="addons.eyebrow">خدمات إضافية</div>
+      <h2 data-i18n="addons.title">تحتاج شيئاً أكثر تحديداً؟</h2>
+      <p data-i18n="addons.sub">خدمات منفصلة تماماً عن الباقات الثلاث، تُطلب وتُدفع لوحدها فوق أي باقة — أو حتى بدون طلب باقة كاملة</p>
     </div>
     <div class="stub-row">
       <div class="stub reveal">
-        <h3>ترجمة إلى لغة ثالثة</h3>
-        <p>بطاقتك أصلاً بالعربي أو ثنائية اللغة؟ أضف لغة ثالثة (مثل الإنجليزية أو غيرها) كزر تبديل إضافي على نفس البطاقة.</p>
-        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;">2.000</span> <span class="unit">د.ب</span></div>
+        <h3 data-i18n="addons.a1t">ترجمة إلى لغة ثالثة</h3>
+        <p data-i18n="addons.a1p">بطاقتك أصلاً بالعربي أو ثنائية اللغة؟ أضف لغة ثالثة (مثل الإنجليزية أو غيرها) كزر تبديل إضافي على نفس البطاقة.</p>
+        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;" data-bhd="2.000">2.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
       </div>
       <div class="stub reveal">
-        <h3>جولة تعديل إضافية</h3>
-        <p>تجاوزت الجولتين المجانيتين وتحتاج تعديلاً إضافياً على نص أو ترتيب أو روابط بطاقتك الحالية؟</p>
-        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;">1.000</span> <span class="unit">د.ب</span></div>
+        <h3 data-i18n="addons.a2t">جولة تعديل إضافية</h3>
+        <p data-i18n="addons.a2p">تجاوزت الجولتين المجانيتين وتحتاج تعديلاً إضافياً على نص أو ترتيب أو روابط بطاقتك الحالية؟</p>
+        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;" data-bhd="1.000">1.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
       </div>
       <div class="stub reveal">
-        <h3>شهادة إضافية بعد التسليم</h3>
-        <p>طلبت الباقة القياسية أو المميزة ولديك شهادة جديدة تريد إضافتها لاحقاً بعد التسليم الأول؟ أرسلها لي عبر واتساب (حتى 3 ميجابايت).</p>
-        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;">0.500</span> <span class="unit">د.ب / شهادة</span></div>
+        <h3 data-i18n="addons.a3t">شهادة إضافية بعد التسليم</h3>
+        <p data-i18n="addons.a3p">طلبت الباقة القياسية أو المميزة ولديك شهادة جديدة تريد إضافتها لاحقاً بعد التسليم الأول؟ أرسلها لي عبر واتساب (حتى 3 ميجابايت).</p>
+        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;" data-bhd="0.500">0.500</span> <span class="unit" data-currency-unit data-currency-unit-suffix=" / شهادة">د.ب / شهادة</span></div>
       </div>
       <div class="stub reveal">
-        <h3>تحديث سنوي كامل</h3>
-        <p>مضى عام على بطاقتك وتريد تحديثها بالكامل (خبرة جديدة، تنسيق جديد) بدل الاكتفاء بتعديل بسيط؟</p>
-        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;">3.000</span> <span class="unit">د.ب</span></div>
+        <h3 data-i18n="addons.a4t">تحديث سنوي كامل</h3>
+        <p data-i18n="addons.a4p">مضى عام على بطاقتك وتريد تحديثها بالكامل (خبرة جديدة، تنسيق جديد) بدل الاكتفاء بتعديل بسيط؟</p>
+        <div class="ptier-price" style="margin:12px 0 4px;"><span class="new" style="font-size:20px;" data-bhd="3.000">3.000</span> <span class="unit" data-currency-unit>د.ب</span></div>
       </div>
     </div>
-    <p style="text-align:center;font-size:12px;color:var(--ink-faint);margin-top:22px;">الأسعار أعلاه تجريبية وقابلة للتعديل بسهولة قبل النشر، مثل أسعار الباقات الثلاث أعلاه. لطلب أي خدمة إضافية، راسلني مباشرة عبر واتساب.</p>
+    <p style="text-align:center;font-size:12px;color:var(--ink-faint);margin-top:22px;" data-i18n="addons.note">الأسعار أعلاه تجريبية وقابلة للتعديل بسهولة قبل النشر، مثل أسعار الباقات الثلاث أعلاه. لطلب أي خدمة إضافية، راسلني مباشرة عبر واتساب.</p>
   </div>
 </section>
 
 <!-- ═══════════════ EXAMPLES ═══════════════ -->
 <section id="examples">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">أعمالي</div><h2>نماذج حقيقية</h2><p>بموافقة أصحابها</p></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="examples.eyebrow">أعمالي</div><h2 data-i18n="examples.title">نماذج حقيقية</h2><p data-i18n="examples.sub">بموافقة أصحابها</p></div>
     <div class="ex-grid">
       <div class="ex-card reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
-        <div class="ex-body"><h4>حسن سديف</h4><p>طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة</p><a class="ex-link" href="https://h-edu.netlify.app/cv" target="_blank" rel="noopener">عرض البطاقة ←</a></div>
+        <div class="ex-body"><h4 data-i18n="examples.ex1name">حسن سديف</h4><p data-i18n="examples.ex1desc">طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة</p><a class="ex-link" href="https://h-edu.netlify.app/cv" target="_blank" rel="noopener" data-i18n="examples.viewcard">عرض البطاقة ←</a></div>
       </div>
       <div class="ex-card locked reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
-        <div class="ex-body"><h4>نموذج قادم</h4><p>سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link">قريباً</span></div>
+        <div class="ex-body"><h4 data-i18n="examples.soon">نموذج قادم</h4><p data-i18n="examples.soondesc">سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link" data-i18n="examples.soonlabel">قريباً</span></div>
       </div>
       <div class="ex-card locked reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
-        <div class="ex-body"><h4>نموذج قادم</h4><p>سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link">قريباً</span></div>
+        <div class="ex-body"><h4 data-i18n="examples.soon">نموذج قادم</h4><p data-i18n="examples.soondesc">سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link" data-i18n="examples.soonlabel">قريباً</span></div>
       </div>
     </div>
   </div>
@@ -699,15 +746,15 @@
 <!-- ═══════════════ FAQ ═══════════════ -->
 <section id="faq" class="on-surface">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">أسئلة شائعة</div><h2>كل ما تحتاج معرفته</h2></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="faq.eyebrow">أسئلة شائعة</div><h2 data-i18n="faq.title">كل ما تحتاج معرفته</h2></div>
     <div class="faq-list">
-      <details class="faq-item reveal"><summary>كم تستغرق مدة التسليم؟</summary><p>من 24 إلى 48 ساعة من استلام سيرتك وصورتك والروابط كاملة.</p></details>
-      <details class="faq-item reveal"><summary>ماذا أحتاج لإرساله؟</summary><p>سيرتك الذاتية الحالية (PDF أو صورة واضحة)، صورتك الشخصية، وقائمة الروابط التي تريد إضافتها.</p></details>
-      <details class="faq-item reveal"><summary>ما الفرق بين الباقات الثلاث؟</summary><p>راجع جدول المقارنة أعلاه — الفرق الرئيسي هو دعم اللغتين في القياسية، والصفحات الفرعية الإضافية وأولوية التسليم في المميزة.</p></details>
-      <details class="faq-item reveal"><summary>هل يمكنني طلب تعديل على بطاقتي لاحقاً؟</summary><p>تواصل معي عبر واتساب وسأساعدك في أي تعديل تحتاجه.</p></details>
-      <details class="faq-item reveal"><summary>هل بياناتي وسيرتي الذاتية آمنة؟</summary><p>راجع صفحة سياسة الخصوصية وإخلاء المسؤولية في أسفل الصفحة لمزيد من التفاصيل.</p></details>
-      <details class="faq-item reveal"><summary>ما الأمور التي يجب أن أعرفها قبل الطلب؟</summary><p>صفحة <a href="before-order.html" style="color:var(--red);font-weight:700;">الأمور التي يجب معرفتها قبل الطلب</a> تشرح كل شيء بوضوح: احتمال ظهور رابط بطاقتك في نتائج البحث، سياسة التعديلات، البيانات الحساسة، والدفع والاسترجاع.</p></details>
-      <details class="faq-item reveal"><summary>كيف أتتبع حالة طلبي؟</summary><p>أدخل رقم هاتفك ورمز التحقق الذي أرسلته لك في قسم "تتبع الطلب" أدناه.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q1">كم تستغرق مدة التسليم؟</summary><p data-i18n="faq.a1">من 24 إلى 48 ساعة من استلام سيرتك وصورتك والروابط كاملة.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q2">ماذا أحتاج لإرساله؟</summary><p data-i18n="faq.a2">سيرتك الذاتية الحالية (PDF أو صورة واضحة)، صورتك الشخصية، وقائمة الروابط التي تريد إضافتها.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q3">ما الفرق بين الباقات الثلاث؟</summary><p data-i18n="faq.a3">راجع جدول المقارنة أعلاه — الفرق الرئيسي هو دعم اللغتين في القياسية، والصفحات الفرعية الإضافية وأولوية التسليم في المميزة.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q4">هل يمكنني طلب تعديل على بطاقتي لاحقاً؟</summary><p data-i18n="faq.a4">تواصل معي عبر واتساب وسأساعدك في أي تعديل تحتاجه.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q5">هل بياناتي وسيرتي الذاتية آمنة؟</summary><p data-i18n="faq.a5">راجع صفحة سياسة الخصوصية وإخلاء المسؤولية في أسفل الصفحة لمزيد من التفاصيل.</p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q6">ما الأمور التي يجب أن أعرفها قبل الطلب؟</summary><p><span data-i18n="faq.a6a">صفحة</span> <a href="before-order.html" style="color:var(--red);font-weight:700;" data-i18n="hero.readlink">الأمور التي يجب معرفتها قبل الطلب</a> <span data-i18n="faq.a6b">تشرح كل شيء بوضوح: احتمال ظهور رابط بطاقتك في نتائج البحث، سياسة التعديلات، البيانات الحساسة، والدفع والاسترجاع.</span></p></details>
+      <details class="faq-item reveal"><summary data-i18n="faq.q7">كيف أتتبع حالة طلبي؟</summary><p data-i18n="faq.a7">أدخل رقم هاتفك ورمز التحقق الذي أرسلته لك في قسم "تتبع الطلب" أدناه.</p></details>
     </div>
   </div>
 </section>
@@ -715,20 +762,20 @@
 <!-- ═══════════════ TRACK ORDER ═══════════════ -->
 <section id="track">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">تتبع الطلب</div><h2>تحقق من حالة طلبك</h2><p>أدخل رقم هاتفك ورمز التحقق الذي استلمته</p></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="track.eyebrow">تتبع الطلب</div><h2 data-i18n="track.title">تحقق من حالة طلبك</h2><p data-i18n="track.sub">أدخل رقم هاتفك ورمز التحقق الذي استلمته</p></div>
     <div class="track-wrap">
       <div class="checkpoint reveal">
         <div class="cp-head">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18M7 3v6"/></svg>
-          <span>نقطة التحقق من الطلب</span>
+          <span data-i18n="track.checkpoint">نقطة التحقق من الطلب</span>
         </div>
         <div class="cp-body">
           <form id="trackForm">
-            <div class="field"><label for="phoneInput">رقم الهاتف</label><input type="tel" id="phoneInput" dir="ltr" placeholder="3XXXXXXX" required inputmode="numeric"></div>
-            <div class="field"><label for="codeInput">رمز التحقق</label><input type="text" id="codeInput" dir="ltr" placeholder="أدخل رمز التحقق" required></div>
-            <button type="submit" class="btn btn-red btn-block">تحقق من طلبي</button>
+            <div class="field"><label for="phoneInput" data-i18n="track.phone">رقم الهاتف</label><input type="tel" id="phoneInput" dir="ltr" placeholder="3XXXXXXX" required inputmode="numeric"></div>
+            <div class="field"><label for="codeInput" data-i18n="track.code">رمز التحقق</label><input type="text" id="codeInput" dir="ltr" placeholder="أدخل رمز التحقق" required></div>
+            <button type="submit" class="btn btn-red btn-block" data-i18n="track.submit">تحقق من طلبي</button>
           </form>
-          <div class="track-msg" id="trackMsg">لم تستلم رمز التحقق؟ <a href="https://wa.me/97336166806" target="_blank" rel="noopener">تواصل معي عبر واتساب</a></div>
+          <div class="track-msg" id="trackMsg"><span data-i18n="track.nocode">لم تستلم رمز التحقق؟</span> <a href="https://wa.me/97336166806" target="_blank" rel="noopener" data-i18n="track.contact">تواصل معي عبر واتساب</a></div>
         </div>
       </div>
     </div>
@@ -738,18 +785,18 @@
 <!-- ═══════════════ CONTACT ═══════════════ -->
 <section id="contact" class="on-surface">
   <div class="container">
-    <div class="sec-head"><div class="sec-eyebrow">تواصل</div><h2>تواصل معي</h2><p>خدمة فردية أقدّمها بنفسي، وليست شركة</p></div>
+    <div class="sec-head"><div class="sec-eyebrow" data-i18n="contact.eyebrow">تواصل</div><h2 data-i18n="contact.title">تواصل معي</h2><p data-i18n="contact.sub">خدمة فردية أقدّمها بنفسي، وليست شركة</p></div>
     <div class="contact-grid">
       <a class="contact-card reveal" href="https://wa.me/97336166806" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
-        <div class="lbl">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div>
+        <div class="lbl" data-i18n="contact.whatsapp">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div>
       </a>
       <a class="contact-card reveal" href="mailto:Hasan.sdaif16@gmail.com">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-        <div class="lbl">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div>
+        <div class="lbl" data-i18n="contact.email">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div>
       </a>
     </div>
-    <p class="privacy-note">ملاحظة: عند نشر بطاقتك الرقمية، قد يظهر رابطها ضمن نتائج محركات البحث كغيرها من الصفحات المتاحة على الإنترنت. لمزيد من التفاصيل راجع <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>.</p>
+    <p class="privacy-note"><span data-i18n="contact.note">ملاحظة: عند نشر بطاقتك الرقمية، قد يظهر رابطها ضمن نتائج محركات البحث كغيرها من الصفحات المتاحة على الإنترنت. لمزيد من التفاصيل راجع</span> <a href="privacy.html" data-i18n="contact.privacylink">سياسة الخصوصية وإخلاء المسؤولية</a>.</p>
   </div>
 </section>
 
@@ -757,19 +804,19 @@
 
 <footer>
   <div class="container">
-    <strong>بطاقتي</strong> (Bitaqti) — بطاقات رقمية تعريفية · البحرين
+    <strong data-i18n="footer.brand">بطاقتي</strong> <span data-i18n="footer.tagline">(Bitaqti) — بطاقات رقمية تعريفية · البحرين</span>
     <div class="f-links">
-      <a href="before-order.html">قبل أن تطلب</a>
-      <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>
-      <a href="https://wa.me/97336166806" target="_blank" rel="noopener">واتساب</a>
+      <a href="before-order.html" data-i18n="footer.link1">قبل أن تطلب</a>
+      <a href="privacy.html" data-i18n="contact.privacylink">سياسة الخصوصية وإخلاء المسؤولية</a>
+      <a href="https://wa.me/97336166806" target="_blank" rel="noopener" data-i18n="contact.whatsapp">واتساب</a>
     </div>
   </div>
 </footer>
 
 <div class="order-bar">
   <div class="container">
-    <span class="ob-price">الباقة الأساسية من <b>5.000 د.ب</b></span>
-    <a class="btn btn-red" href="https://wa.me/97336166806?text=مرحباً، أرغب بطلب بطاقتي الرقمية" target="_blank" rel="noopener">اطلب الآن</a>
+    <span class="ob-price"><span data-i18n="orderbar.from">الباقة الأساسية من</span> <b data-bhd="5.000">5.000 د.ب</b></span>
+    <a class="btn btn-red" href="https://wa.me/97336166806?text=مرحباً، أرغب بطلب بطاقتي الرقمية" target="_blank" rel="noopener" data-i18n="orderbar.cta">اطلب الآن</a>
   </div>
 </div>
 
@@ -785,7 +832,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M6 18L18 6"/></svg>
       </button>
       <div class="inv-brand"><span class="mark"></span> بطاقتي (Bitaqti)</div>
-      <h3 id="invTitle">فاتورة الطلب</h3>
+      <h3 id="invTitle" data-i18n="invoice.title">فاتورة الطلب</h3>
       <div class="inv-meta">
         <span id="invSerial" dir="ltr">#—</span>
         <span id="invDate" dir="ltr">—</span>
@@ -793,28 +840,326 @@
       <span class="inv-status" id="invStatus">—</span>
     </div>
     <div class="inv-body">
-      <div class="inv-row"><span class="k">رقم الهاتف</span><span class="v" id="invPhone" dir="ltr">—</span></div>
-      <div class="inv-row"><span class="k">الباقة المحجوزة</span><span class="v" id="invPackage">—</span></div>
-      <div class="inv-row"><span class="k">عدد الطلبات السابقة لديك</span><span class="v" id="invCount">—</span></div>
-      <div class="inv-row"><span class="k">رابط بطاقتك الرقمية</span><span class="v" id="invLinkWrap">—</span></div>
-      <div class="inv-total"><span class="k">إجمالي المبلغ</span><span class="v" id="invPrice">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.phone">رقم الهاتف</span><span class="v" id="invPhone" dir="ltr">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.package">الباقة المحجوزة</span><span class="v" id="invPackage">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.count">عدد الطلبات السابقة لديك</span><span class="v" id="invCount">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.link">رابط بطاقتك الرقمية</span><span class="v" id="invLinkWrap">—</span></div>
+      <div class="inv-total"><span class="k" data-i18n="invoice.total">إجمالي المبلغ</span><span class="v" id="invPrice">—</span></div>
 
       <div id="invTimelineWrap">
-        <div class="inv-section-title">ما تم إنجازه في طلبك</div>
+        <div class="inv-section-title" data-i18n="invoice.timeline">ما تم إنجازه في طلبك</div>
         <div class="inv-timeline" id="invTimeline"></div>
       </div>
 
       <div class="inv-note" id="invNote" style="display:none;"></div>
 
       <div class="inv-foot">
-        <a class="btn btn-line btn-block" href="https://wa.me/97336166806" target="_blank" rel="noopener">تواصل واتساب</a>
-        <button class="btn btn-red btn-block" id="invCloseBtn2">إغلاق</button>
+        <a class="btn btn-line btn-block" href="https://wa.me/97336166806" target="_blank" rel="noopener" data-i18n="invoice.whatsapp">تواصل واتساب</a>
+        <button class="btn btn-red btn-block" id="invCloseBtn2" data-i18n="invoice.close">إغلاق</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
+  /* ══════════════════════════════════════════════════════════════════
+     ترجمة الصفحة (عربي ⇄ إنجليزي) — القاموس والدالة مضمّنان في نفس الملف
+     مهم: تبديل اللغة يُترجم النصوص فقط، ولا يُغيّر اتجاه الصفحة (تبقى RTL)
+     ولا تصميمها أو ترتيب عناصرها إطلاقاً — كما طلب صاحب الموقع.
+     ══════════════════════════════════════════════════════════════════ */
+  const I18N = {
+    ar: {
+      "hero.eyebrow":"خدمة فردية جديدة · البحرين",
+      "hero.title":"سيرتك الذاتية تستحق أكثر من ملف PDF ينام في المجلدات — تستحق <em>بطاقة رقمية</em> تُفتح بضغطة",
+      "hero.desc":"أرسل لي سيرتك الحالية وصورتك والروابط التي تريدها، وأحوّلها إلى بطاقة رقمية برابط خاص ورمز QR، بتصميم يليق بمجالك — خلال 24 إلى 48 ساعة فقط.",
+      "hero.cta1":"اطلب بطاقتك الآن",
+      "hero.cta2":"شاهد الباقات",
+      "hero.readfirst":"قبل الطلب، يُنصح بقراءة",
+      "hero.readlink":"الأمور التي يجب معرفتها قبل الطلب",
+      "hero.trust1":"بدون اشتراك شهري",
+      "hero.trust2":"تواصل مباشر معي شخصياً",
+      "hero.trust3":"تسليم خلال 24-48 ساعة",
+
+      "what.eyebrow":"تعريف سريع",
+      "what.title":"ما هي «البطاقة التعريفية» الرقمية؟",
+      "what.sub":"نسخة رقمية وتفاعلية من سيرتك الذاتية، تحلّ محل ملف PDF التقليدي",
+      "what.desc":"البطاقة التعريفية هي صفحة ويب واحدة تحمل اسمك ومسمّاك الوظيفي وأهم بيانات سيرتك الذاتية وروابط التواصل معك، وتُفتح بضغطة واحدة عبر رابط خاص أو رمز QR — فكّرها كبطاقة تعريف أو كرت أعمال (Business Card) رقمي وتفاعلي، يجمع سيرتك الذاتية وبيانات التواصل في مكان واحد سهل المشاركة والتحديث.",
+      "what.s1t":"اسمك ومسمّاك الوظيفي","what.s1p":"وأهم بيانات سيرتك الذاتية بشكل منظّم وواضح",
+      "what.s2t":"روابط التواصل معك","what.s2p":"واتساب، لينكدإن، بريد إلكتروني، أو أي رابط تريده",
+      "what.s3t":"رابط خاص + رمز QR","what.s3p":"تُفتح بضغطة واحدة، بلا تحميل أو تصفّح ملفات",
+      "what.s4t":"بديل عصري لملف PDF","what.s4p":"سهلة المشاركة والتحديث، وتليق بمجالك المهني",
+
+      "how.eyebrow":"العملية",
+      "how.title":"كيف تحصل على بطاقتك الرقمية؟",
+      "how.sub":"أربع خطوات، من إرسال سيرتك إلى استلام رابطك الخاص",
+      "how.s1t":"أرسل سيرتك وصورتك","how.s1p":"سيرتك الحالية (PDF أو صورة) وصورتك الشخصية عبر واتساب.",
+      "how.s2t":"حدد روابطك","how.s2p":"واتساب، لينكدإن، بريد إلكتروني، أو أي رابط آخر تريد إضافته.",
+      "how.s3t":"نصمم بطاقتك","how.s3p":"نحوّل بياناتك إلى بطاقة رقمية بتصميم يليق بمجالك.",
+      "how.s4t":"تستلم رابطك","how.s4p":"خلال 24-48 ساعة، رابطك الخاص ورمز QR جاهزان للمشاركة.",
+      "how.prep":"قبل أن تراسلني، جهّز التالي (اضغط لعرض كل التفاصيل)",
+      "how.req":"المتطلبات الأساسية",
+      "how.req1":"سيرتك الذاتية الحالية (ملف PDF أو صورة واضحة وكاملة)",
+      "how.req2":"صورة شخصية حديثة بخلفية مناسبة وإضاءة واضحة",
+      "how.req3":"اسمك الكامل كما تريد ظهوره بالضبط في البطاقة",
+      "how.req4":"مسمّاك الوظيفي أو مجالك (مثال: طالب علوم إسلامية، مصمم جرافيك، محاسب...)",
+      "how.req5":"قائمة الروابط التي تريد تضمينها (واتساب، لينكدإن، بريد إلكتروني، إنستغرام، موقع شخصي، إلخ)",
+      "how.opt":"تفاصيل اختيارية تساعد في تسريع التصميم",
+      "how.opt1":"اللغة أو اللغات التي تريد ظهور البطاقة بها (عربي / إنجليزي / كلاهما)",
+      "how.opt2":"لون أو طابع تصميم تفضله إن وُجد (وإلا سأختار ما يناسب مجالك)",
+      "how.opt3":"الباقة التي تريد حجزها من الباقات الثلاث أدناه",
+      "how.note":"<strong>مهم:</strong> إن كانت لديك سيرة قديمة تريد تحديثها، اكتب لي بوضوح ماذا تريد <strong>إضافته أو تعديله</strong> (مثال: تحديث المسمى الوظيفي، إضافة شهادة جديدة)، وماذا تريد <strong>حذفه</strong> من سيرتك الأصلية قبل تحويلها إلى بطاقة رقمية (مثال: حذف رقم هاتف قديم أو خبرة لم تعد تريد إظهارها). كل ملاحظة تكتبها لي تُطبَّق حرفياً على بطاقتك.",
+
+      "offer.eyebrow":"عرض محدود","offer.title":"عرض الافتتاح ينتهي خلال","offer.sub":"بعد المهلة يعود السعر إلى وضعه الطبيعي",
+      "offer.day":"يوم","offer.hour":"ساعة","offer.min":"دقيقة","offer.sec":"ثانية",
+      "offer.until":"حتى ٢٠ أغسطس ٢٠٢٦","offer.oldprice":"7.000 د.ب","offer.save":"وفّر 2 د.ب",
+
+      "pricing.eyebrow":"الباقات","pricing.title":"اختر مادة بطاقتك",
+      "pricing.sub":"ثلاث درجات، مثل بطاقات العضوية — الأسعار أدناه تجريبية وقابلة للتعديل بسهولة قبل النشر",
+      "pricing.currencyLabel":"عرض الأسعار بعملة:",
+      "pricing.curBHD":"دينار بحريني (د.ب)","pricing.curSAR":"ريال سعودي (ر.س)","pricing.curUSD":"دولار أمريكي ($)",
+      "pricing.note":"عرض افتتاح لمدة شهر واحد",
+      "pricing.preview":"معاينة الباقة",
+      "pricing.cFeature":"الميزة",
+      "pricing.t1mat":"ورقية · أساسية","pricing.t1name":"الأساسية",
+      "pricing.t1f1":"بطاقة رقمية بصفحة واحدة",
+      "pricing.t1f2":"تصميم متجاوب لكل الأجهزة",
+      "pricing.t1f3":"رابط خاص + رمز QR",
+      "pricing.t1f4":"كل ما ورد في سيرتك الورقية ينتقل حرفياً إلى بطاقتك الرقمية",
+      "pricing.t1f5":"زر لعرض السيرة الورقية الأصلية PDF",
+      "pricing.book1":"احجز الأساسية",
+      "pricing.t2badge":"مثل بطاقتي التعريفية","pricing.t2mat":"مطلية بالذهب · قياسية","pricing.t2name":"القياسية",
+      "pricing.t2f1":"كل ما في الباقة الأساسية",
+      "pricing.t2f2":"دعم لغتين (عربي/إنجليزي) بزر تبديل",
+      "pricing.t2f3":"أقسام إنجازات وشهادات منظّمة",
+      "pricing.t2f4":"ترجمة تلقائية للغة أخرى عند الطلب",
+      "pricing.t2f5":"حتى 3 شهادات فعلية (PDF) بزر يفتحها من بطاقتك — أرسلها لي عبر واتساب (كل ملف حتى 3 ميجابايت)",
+      "pricing.book2":"احجز القياسية",
+      "pricing.t3mat":"نيلي ملكي · مميزة","pricing.t3name":"المميزة",
+      "pricing.t3f1":"كل ما في الباقة القياسية",
+      "pricing.t3f2":"صفحات فرعية إضافية (إنجازات، معرض أعمال)",
+      "pricing.t3f3":"أولوية في التسليم",
+      "pricing.t3f4":"نسخة PDF مطابقة للتصميم الرقمي",
+      "pricing.t3f5":"إمكانية تثبيت بطاقتك كتطبيق على شاشة الهاتف الرئيسية (PWA)",
+      "pricing.book3":"احجز المميزة",
+      "pricing.c1":"رابط خاص + رمز QR","pricing.c2":"دعم لغتين","pricing.c3":"حتى 3 شهادات فعلية (PDF)",
+      "pricing.c4":"صفحات فرعية إضافية","pricing.c5":"أولوية التسليم","pricing.c6":"تثبيت كتطبيق هاتف (PWA)",
+
+      "addons.eyebrow":"خدمات إضافية","addons.title":"تحتاج شيئاً أكثر تحديداً؟",
+      "addons.sub":"خدمات منفصلة تماماً عن الباقات الثلاث، تُطلب وتُدفع لوحدها فوق أي باقة — أو حتى بدون طلب باقة كاملة",
+      "addons.a1t":"ترجمة إلى لغة ثالثة","addons.a1p":"بطاقتك أصلاً بالعربي أو ثنائية اللغة؟ أضف لغة ثالثة (مثل الإنجليزية أو غيرها) كزر تبديل إضافي على نفس البطاقة.",
+      "addons.a2t":"جولة تعديل إضافية","addons.a2p":"تجاوزت الجولتين المجانيتين وتحتاج تعديلاً إضافياً على نص أو ترتيب أو روابط بطاقتك الحالية؟",
+      "addons.a3t":"شهادة إضافية بعد التسليم","addons.a3p":"طلبت الباقة القياسية أو المميزة ولديك شهادة جديدة تريد إضافتها لاحقاً بعد التسليم الأول؟ أرسلها لي عبر واتساب (حتى 3 ميجابايت).",
+      "addons.a4t":"تحديث سنوي كامل","addons.a4p":"مضى عام على بطاقتك وتريد تحديثها بالكامل (خبرة جديدة، تنسيق جديد) بدل الاكتفاء بتعديل بسيط؟",
+      "addons.note":"الأسعار أعلاه تجريبية وقابلة للتعديل بسهولة قبل النشر، مثل أسعار الباقات الثلاث أعلاه. لطلب أي خدمة إضافية، راسلني مباشرة عبر واتساب.",
+
+      "examples.eyebrow":"أعمالي","examples.title":"نماذج حقيقية","examples.sub":"بموافقة أصحابها",
+      "examples.ex1name":"حسن سديف","examples.ex1desc":"طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة","examples.viewcard":"عرض البطاقة ←",
+      "examples.soon":"نموذج قادم","examples.soondesc":"سيُضاف هنا نموذج عميل بعد الحصول على إذنه","examples.soonlabel":"قريباً",
+
+      "faq.eyebrow":"أسئلة شائعة","faq.title":"كل ما تحتاج معرفته",
+      "faq.q1":"كم تستغرق مدة التسليم؟","faq.a1":"من 24 إلى 48 ساعة من استلام سيرتك وصورتك والروابط كاملة.",
+      "faq.q2":"ماذا أحتاج لإرساله؟","faq.a2":"سيرتك الذاتية الحالية (PDF أو صورة واضحة)، صورتك الشخصية، وقائمة الروابط التي تريد إضافتها.",
+      "faq.q3":"ما الفرق بين الباقات الثلاث؟","faq.a3":"راجع جدول المقارنة أعلاه — الفرق الرئيسي هو دعم اللغتين في القياسية، والصفحات الفرعية الإضافية وأولوية التسليم في المميزة.",
+      "faq.q4":"هل يمكنني طلب تعديل على بطاقتي لاحقاً؟","faq.a4":"تواصل معي عبر واتساب وسأساعدك في أي تعديل تحتاجه.",
+      "faq.q5":"هل بياناتي وسيرتي الذاتية آمنة؟","faq.a5":"راجع صفحة سياسة الخصوصية وإخلاء المسؤولية في أسفل الصفحة لمزيد من التفاصيل.",
+      "faq.q6":"ما الأمور التي يجب أن أعرفها قبل الطلب؟",
+      "faq.a6a":"صفحة","faq.a6b":"تشرح كل شيء بوضوح: احتمال ظهور رابط بطاقتك في نتائج البحث، سياسة التعديلات، البيانات الحساسة، والدفع والاسترجاع.",
+      "faq.q7":"كيف أتتبع حالة طلبي؟","faq.a7":"أدخل رقم هاتفك ورمز التحقق الذي أرسلته لك في قسم \"تتبع الطلب\" أدناه.",
+
+      "track.eyebrow":"تتبع الطلب","track.title":"تحقق من حالة طلبك","track.sub":"أدخل رقم هاتفك ورمز التحقق الذي استلمته",
+      "track.checkpoint":"نقطة التحقق من الطلب","track.phone":"رقم الهاتف","track.code":"رمز التحقق","track.submit":"تحقق من طلبي",
+      "track.nocode":"لم تستلم رمز التحقق؟","track.contact":"تواصل معي عبر واتساب",
+
+      "contact.eyebrow":"تواصل","contact.title":"تواصل معي","contact.sub":"خدمة فردية أقدّمها بنفسي، وليست شركة",
+      "contact.whatsapp":"واتساب","contact.email":"البريد الإلكتروني",
+      "contact.note":"ملاحظة: عند نشر بطاقتك الرقمية، قد يظهر رابطها ضمن نتائج محركات البحث كغيرها من الصفحات المتاحة على الإنترنت. لمزيد من التفاصيل راجع",
+      "contact.privacylink":"سياسة الخصوصية وإخلاء المسؤولية",
+
+      "footer.brand":"بطاقتي","footer.tagline":"(Bitaqti) — بطاقات رقمية تعريفية · البحرين","footer.link1":"قبل أن تطلب",
+
+      "orderbar.from":"الباقة الأساسية من","orderbar.cta":"اطلب الآن",
+
+      "invoice.title":"فاتورة الطلب","invoice.phone":"رقم الهاتف","invoice.package":"الباقة المحجوزة",
+      "invoice.count":"عدد الطلبات السابقة لديك","invoice.link":"رابط بطاقتك الرقمية","invoice.total":"إجمالي المبلغ",
+      "invoice.timeline":"ما تم إنجازه في طلبك","invoice.whatsapp":"تواصل واتساب","invoice.close":"إغلاق"
+    },
+    en: {
+      "hero.eyebrow":"New solo service · Bahrain",
+      "hero.title":"Your CV deserves more than a PDF file sleeping in folders — it deserves a <em>digital card</em> that opens with one tap",
+      "hero.desc":"Send me your current CV, your photo and the links you want, and I'll turn them into a digital card with a private link and QR code, in a design that suits your field — within 24 to 48 hours only.",
+      "hero.cta1":"Order your card now",
+      "hero.cta2":"See the packages",
+      "hero.readfirst":"Before ordering, it's recommended to read",
+      "hero.readlink":"Things you should know before ordering",
+      "hero.trust1":"No monthly subscription",
+      "hero.trust2":"Direct contact with me personally",
+      "hero.trust3":"Delivery within 24-48 hours",
+
+      "what.eyebrow":"Quick definition",
+      "what.title":"What is a digital \"Bitaqti\" card?",
+      "what.sub":"A digital, interactive version of your CV that replaces the traditional PDF file",
+      "what.desc":"The ID card is a single web page carrying your name, job title, key CV details and your contact links, opened with a single tap via a private link or QR code — think of it as a digital, interactive business card that brings your CV and contact info together in one place that's easy to share and update.",
+      "what.s1t":"Your name and job title","what.s1p":"And the key details of your CV, organized and clear",
+      "what.s2t":"Your contact links","what.s2p":"WhatsApp, LinkedIn, email, or any link you want",
+      "what.s3t":"Private link + QR code","what.s3p":"Opens with a single tap, no downloading or browsing files",
+      "what.s4t":"A modern alternative to a PDF file","what.s4p":"Easy to share and update, and fitting for your professional field",
+
+      "how.eyebrow":"The process",
+      "how.title":"How do you get your digital card?",
+      "how.sub":"Four steps, from sending your CV to receiving your private link",
+      "how.s1t":"Send your CV and photo","how.s1p":"Your current CV (PDF or image) and your personal photo via WhatsApp.",
+      "how.s2t":"Choose your links","how.s2p":"WhatsApp, LinkedIn, email, or any other link you want to add.",
+      "how.s3t":"We design your card","how.s3p":"We turn your info into a digital card with a design that suits your field.",
+      "how.s4t":"You receive your link","how.s4p":"Within 24-48 hours, your private link and QR code are ready to share.",
+      "how.prep":"Before you message me, prepare the following (tap to view all details)",
+      "how.req":"Basic requirements",
+      "how.req1":"Your current CV (a clear, complete PDF file or image)",
+      "how.req2":"A recent personal photo with a suitable background and clear lighting",
+      "how.req3":"Your full name exactly as you want it to appear on the card",
+      "how.req4":"Your job title or field (e.g. Islamic studies student, graphic designer, accountant...)",
+      "how.req5":"The list of links you want included (WhatsApp, LinkedIn, email, Instagram, personal website, etc.)",
+      "how.opt":"Optional details that help speed up the design",
+      "how.opt1":"The language(s) you want the card to appear in (Arabic / English / both)",
+      "how.opt2":"A preferred color or design style, if any (otherwise I'll choose what suits your field)",
+      "how.opt3":"The package you want to book from the three packages below",
+      "how.note":"<strong>Important:</strong> if you have an old CV you want updated, clearly tell me what you want <strong>added or edited</strong> (e.g. updating your job title, adding a new certificate), and what you want <strong>removed</strong> from your original CV before turning it into a digital card (e.g. removing an old phone number or an experience you no longer want shown). Every note you write me is applied to your card exactly as written.",
+
+      "offer.eyebrow":"Limited offer","offer.title":"The launch offer ends in","offer.sub":"After the deadline, the price returns to normal",
+      "offer.day":"day","offer.hour":"hour","offer.min":"min","offer.sec":"sec",
+      "offer.until":"Until August 20, 2026","offer.oldprice":"BHD 7.000","offer.save":"Save BHD 2",
+
+      "pricing.eyebrow":"Packages","pricing.title":"Choose your card's material",
+      "pricing.sub":"Three tiers, like membership cards — prices below are sample prices, easy to adjust before launch",
+      "pricing.currencyLabel":"Show prices in:",
+      "pricing.curBHD":"Bahraini Dinar (BHD)","pricing.curSAR":"Saudi Riyal (SAR)","pricing.curUSD":"US Dollar ($)",
+      "pricing.note":"Launch offer for one month",
+      "pricing.preview":"Preview package",
+      "pricing.cFeature":"Feature",
+      "pricing.t1mat":"Paper · Basic","pricing.t1name":"Basic",
+      "pricing.t1f1":"A single-page digital card",
+      "pricing.t1f2":"Responsive design for all devices",
+      "pricing.t1f3":"Private link + QR code",
+      "pricing.t1f4":"Everything in your paper CV transfers literally to your digital card",
+      "pricing.t1f5":"A button to view the original paper CV as a PDF",
+      "pricing.book1":"Book Basic",
+      "pricing.t2badge":"Like my own ID card","pricing.t2mat":"Gold-plated · Standard","pricing.t2name":"Standard",
+      "pricing.t2f1":"Everything in the Basic package",
+      "pricing.t2f2":"Two-language support (Arabic/English) with a toggle button",
+      "pricing.t2f3":"Organized achievements and certificates sections",
+      "pricing.t2f4":"Automatic translation into another language on request",
+      "pricing.t2f5":"Up to 3 real certificates (PDF) with a button that opens them from your card — send them to me via WhatsApp (each file up to 3MB)",
+      "pricing.book2":"Book Standard",
+      "pricing.t3mat":"Royal indigo · Premium","pricing.t3name":"Premium",
+      "pricing.t3f1":"Everything in the Standard package",
+      "pricing.t3f2":"Extra sub-pages (achievements, portfolio)",
+      "pricing.t3f3":"Priority delivery",
+      "pricing.t3f4":"A PDF version matching the digital design",
+      "pricing.t3f5":"Ability to install your card as an app on your phone's home screen (PWA)",
+      "pricing.book3":"Book Premium",
+      "pricing.c1":"Private link + QR code","pricing.c2":"Two-language support","pricing.c3":"Up to 3 real certificates (PDF)",
+      "pricing.c4":"Extra sub-pages","pricing.c5":"Priority delivery","pricing.c6":"Install as a phone app (PWA)",
+
+      "addons.eyebrow":"Add-ons","addons.title":"Need something more specific?",
+      "addons.sub":"Services entirely separate from the three packages, ordered and paid for on their own on top of any package — or even without ordering a full package",
+      "addons.a1t":"Translation into a third language","addons.a1p":"Is your card already in Arabic or bilingual? Add a third language (such as English or another) as an extra toggle button on the same card.",
+      "addons.a2t":"An extra revision round","addons.a2p":"Exceeded the two free revision rounds and need an extra edit to your current card's text, layout, or links?",
+      "addons.a3t":"An extra certificate after delivery","addons.a3p":"Ordered the Standard or Premium package and have a new certificate you want added later after the first delivery? Send it to me via WhatsApp (up to 3MB).",
+      "addons.a4t":"A full annual update","addons.a4p":"A year has passed since your card and you want to update it fully (new experience, new layout) instead of a simple edit?",
+      "addons.note":"The prices above are sample prices, easy to adjust before launch, just like the three package prices above. To order any add-on, message me directly on WhatsApp.",
+
+      "examples.eyebrow":"My work","examples.title":"Real examples","examples.sub":"With their owners' consent",
+      "examples.ex1name":"Hasan Sdaif","examples.ex1desc":"Islamic studies student and teacher — the personal example of the service owner","examples.viewcard":"View card ←",
+      "examples.soon":"Coming example","examples.soondesc":"A client example will be added here once permission is granted","examples.soonlabel":"Coming soon",
+
+      "faq.eyebrow":"FAQ","faq.title":"Everything you need to know",
+      "faq.q1":"How long does delivery take?","faq.a1":"24 to 48 hours from receiving your CV, photo and all the links.",
+      "faq.q2":"What do I need to send?","faq.a2":"Your current CV (PDF or a clear image), your personal photo, and the list of links you want added.",
+      "faq.q3":"What's the difference between the three packages?","faq.a3":"See the comparison table above — the main difference is two-language support in Standard, and extra sub-pages plus priority delivery in Premium.",
+      "faq.q4":"Can I request an edit to my card later?","faq.a4":"Contact me on WhatsApp and I'll help with any edit you need.",
+      "faq.q5":"Is my data and CV safe?","faq.a5":"See the Privacy Policy and Disclaimer page at the bottom of the page for more details.",
+      "faq.q6":"What should I know before ordering?",
+      "faq.a6a":"The page","faq.a6b":"explains everything clearly: the possibility of your card's link appearing in search results, the edits policy, sensitive data, and payment and refunds.",
+      "faq.q7":"How do I track my order status?","faq.a7":"Enter your phone number and the verification code I sent you in the \"Track order\" section below.",
+
+      "track.eyebrow":"Track order","track.title":"Check your order status","track.sub":"Enter your phone number and the verification code you received",
+      "track.checkpoint":"Order verification point","track.phone":"Phone number","track.code":"Verification code","track.submit":"Check my order",
+      "track.nocode":"Didn't receive a verification code?","track.contact":"Contact me on WhatsApp",
+
+      "contact.eyebrow":"Contact","contact.title":"Get in touch","contact.sub":"An individual service I provide myself, not a company",
+      "contact.whatsapp":"WhatsApp","contact.email":"Email",
+      "contact.note":"Note: once your digital card is published, its link may appear in search engine results like any other page available on the internet. For more details, see",
+      "contact.privacylink":"Privacy Policy and Disclaimer",
+
+      "footer.brand":"Bitaqti","footer.tagline":"— Digital identity cards · Bahrain","footer.link1":"Before you order",
+
+      "orderbar.from":"Basic package from","orderbar.cta":"Order now",
+
+      "invoice.title":"Order invoice","invoice.phone":"Phone number","invoice.package":"Booked package",
+      "invoice.count":"Your previous order count","invoice.link":"Your digital card link","invoice.total":"Total amount",
+      "invoice.timeline":"What has been completed on your order","invoice.whatsapp":"Contact on WhatsApp","invoice.close":"Close"
+    }
+  };
+
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-bar button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-bar button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+  (function initLanguage(){
+    let saved = 'ar';
+    try{ saved = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    applyLanguage(saved);
+  })();
+
+  /* ══════════════════════════════════════════════════════════════════
+     تبديل العملة (دينار بحريني ← ريال سعودي ← دولار أمريكي)
+     أسعار الأساس مخزّنة بالدينار البحريني في data-bhd، والتحويل يتم
+     بمعدلات ثابتة يسهل تعديلها من مكان واحد هنا.
+     1 د.ب = 10 ر.س (معدل ثابت كما طلب صاحب الموقع) | 1 د.ب ≈ 2.65 $ (تقريبي)
+     ══════════════════════════════════════════════════════════════════ */
+  const FX = {
+    BHD: { rate: 1,     symbol: 'د.ب', decimals: 3 },
+    SAR: { rate: 10,    symbol: 'ر.س', decimals: 2 },
+    USD: { rate: 2.65,  symbol: '$',   decimals: 2 }
+  };
+  function formatPrice(bhdValue, currency){
+    const cfg = FX[currency] || FX.BHD;
+    const converted = bhdValue * cfg.rate;
+    return converted.toFixed(cfg.decimals);
+  }
+  function applyCurrency(currency){
+    const cfg = FX[currency] || FX.BHD;
+    document.querySelectorAll('[data-bhd]').forEach(el=>{
+      const base = parseFloat(el.getAttribute('data-bhd'));
+      if(isNaN(base)) return;
+      el.textContent = formatPrice(base, currency);
+    });
+    document.querySelectorAll('[data-currency-unit]').forEach(el=>{
+      const suffix = el.getAttribute('data-currency-unit-suffix') || '';
+      el.textContent = cfg.symbol + suffix;
+    });
+    try{ localStorage.setItem('bitaqti_currency', currency); }catch(e){}
+  }
+  const currencySelect = document.getElementById('currencySelect');
+  if(currencySelect){
+    currencySelect.addEventListener('change', ()=> applyCurrency(currencySelect.value));
+    (function initCurrency(){
+      let saved = 'BHD';
+      try{ saved = localStorage.getItem('bitaqti_currency') || 'BHD'; }catch(e){}
+      currencySelect.value = saved;
+      applyCurrency(saved);
+    })();
+  }
+
   /* ══════════ COUNTDOWN (يتضمن الثواني) ══════════ */
   const OFFER_END = new Date('2026-08-20T23:59:59+03:00').getTime();
   function pad(n){ return String(n).padStart(2,'0'); }
@@ -835,7 +1180,10 @@
     setUnit('cdHours', pad(h));
     setUnit('cdMins', pad(m));
     setUnit('cdSecs', pad(s));
-    document.getElementById('miniCd').textContent = diff>0 ? `${d}ي ${pad(h)}:${pad(m)}:${pad(s)}` : 'انتهى العرض';
+    const curLang = (document.querySelector('.lang-bar button.active') || {}).getAttribute ? document.querySelector('.lang-bar button.active').getAttribute('data-lang') : 'ar';
+    const dayLetter = curLang === 'en' ? 'd ' : 'ي ';
+    const endedLabel = curLang === 'en' ? 'Offer ended' : 'انتهى العرض';
+    document.getElementById('miniCd').textContent = diff>0 ? `${d}${dayLetter}${pad(h)}:${pad(m)}:${pad(s)}` : endedLabel;
   }
   updateCountdown();
   setInterval(updateCountdown, 1000);
