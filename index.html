@@ -828,54 +828,23 @@
     window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
   });
 
-  /* ══════════ ORDER TRACKING — معمارية GDSA (Google Sheets كقاعدة بيانات) ══════════
-     القراءة تتم بالكامل من المتصفح عبر رابط تصدير CSV العام لملف Google Sheets،
-     بدون أي خادم أو Apps Script. راجع GlideStack_GDSA_v4-1.md، القسم 11.
+  /* ══════════ ORDER TRACKING — عبر Netlify Function وسيطة (server-side) ══════════
+     المتصفح لا يتصل بمصدر البيانات مباشرة ولا يعرف مكان تخزينها أو رابطها.
+     كل ما يفعله المتصفح هو إرسال رقم الهاتف ورمز التحقق إلى نقطة نهاية واحدة
+     على السيرفر (Netlify Function)، وهي التي تتحقق من التطابق من طرفها
+     وتُعيد للمتصفح بيانات الطلب المطابق فقط — لا شيء غير ذلك.
+     التفاصيل الكاملة لآلية الأمان موجودة في صفحة سياسة الخصوصية. */
+  const TRACK_ENDPOINT = '/.netlify/functions/track-order';
 
-     هيكل الشيت (الصف الأول = عناوين بالإنجليزية لتطابق الكود):
-       phone | code | package | price | order_date | status | order_count | order_code | cv_link | actions_log | subpage_content
-       (عمود actions_log: إجراءات مفصولة بـ | ، وكل إجراء بصيغة "تاريخ - وصف")
-       (عمود order_code: رمز الطلب الفريد الذي يظهر في رأس الفاتورة، بصيغة ثابتة مثل BH-CV-2026-0001)
-
-     ⚠️ ملاحظة أمان مهمة (كما وردت في دليل GDSA، القسم 34):
-     أي شخص يعرف رابط تصدير CSV لنفس الشيت يمكنه رؤية كل الصفوف — كل أرقام
-     الهواتف والرموز — وليس فقط الصف المطابق، لأن الحماية هنا تعتمد على سرّية
-     رابط الشيت نفسه وليست صلاحيات حقيقية لكل صف. لا تشارك رابط الشيت مع أحد،
-     ولا تضع فيه بيانات أكثر من اللازم للتتبع. */
-  const CONFIG = {
-    SHEETS: {
-      MAIN_ID: '1ooI9WfgiCnpgVsitKwZUOeepyaswLPFNSwBSVT0BYMI',
-      GID: 0,
-    }
-  };
-
-  function sheetCSVUrl(id, gid=0){
-    return `https://docs.google.com/spreadsheets/d/${id}/export?format=csv&gid=${gid}`;
-  }
-  function parseCSVLine(line){
-    const result=[]; let current='', inQuotes=false;
-    for (const char of line) {
-      if (char==='"') inQuotes=!inQuotes;
-      else if (char===',' && !inQuotes) { result.push(current); current=''; }
-      else current+=char;
-    }
-    result.push(current);
-    return result;
-  }
-  function parseCSV(text){
-    const lines = text.trim().split('\n');
-    if (lines.length < 2) return [];
-    const headers = parseCSVLine(lines[0]).map(h=>h.trim());
-    return lines.slice(1).filter(l=>l.trim()).map(line=>{
-      const values = parseCSVLine(line);
-      return Object.fromEntries(headers.map((h,i)=>[h,(values[i]||'').trim()]));
+  async function checkOrder(phone, code){
+    const res = await fetch(TRACK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ phone, code }),
     });
-  }
-  async function loadOrdersSheet(){
-    if(!CONFIG.SHEETS.MAIN_ID) return null;
-    const res = await fetch(sheetCSVUrl(CONFIG.SHEETS.MAIN_ID, CONFIG.SHEETS.GID));
-    if(!res.ok) return null;
-    return parseCSV(await res.text());
+    if(res.status === 404) return { notFound: true };
+    if(!res.ok) throw new Error('track_request_failed');
+    return { data: await res.json() };
   }
 
   const trackForm = document.getElementById('trackForm');
@@ -958,14 +927,13 @@
     trackMsg.classList.remove('err');
 
     try{
-      const rows = await loadOrdersSheet();
-      const match = rows && rows.find(r => r.phone === phone && r.code === code);
-      if(match){
-        trackMsg.textContent = '';
-        openInvoice(match, phone);
-      } else {
+      const result = await checkOrder(phone, code);
+      if(result.notFound){
         trackMsg.textContent = 'لم يتم العثور على طلب برقم الهاتف ورمز التحقق المُدخلين.';
         trackMsg.classList.add('err');
+      } else {
+        trackMsg.textContent = '';
+        openInvoice(result.data, phone);
       }
     } catch(err){
       trackMsg.textContent = 'تعذّر الاتصال بخدمة التتبع حالياً. تواصل معي عبر واتساب.';
