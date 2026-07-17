@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Hasan Abbas Hasan Sdaif — Digital CV</title>
+<meta name="description" content="Hasan Abbas Hasan Sdaif — Islamic Studies Student & Community Educator. Bahrain." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%231A3557'/%3E%3Crect x='30' y='30' width='40' height='40' fill='none' stroke='%23C9A45A' stroke-width='5'/%3E%3Crect x='30' y='30' width='40' height='40' fill='none' stroke='%23C9A45A' stroke-width='5' transform='rotate(45 50 50)'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;600;700;800&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  :root{
+    --navy:#1A3557; --navy2:#224572; --navy-deep:#122740;
+    --gold:#B8924A; --goldf:#C9A45A;
+    --bg:#F3F5F9; --surface:#FFFFFF;
+    --text:#1B1B22; --mid:#474757; --lite:#6A6A7A;
+    --border:#DDE2EC;
+    --shadow:0 10px 30px rgba(20,35,60,.08);
+    --radius:14px;
+  }
+  [data-theme="dark"]{
+    --bg:#0E1B2B; --surface:#16273D;
+    --text:#EDEFF5; --mid:#C2CADA; --lite:#93A0B8;
+    --border:#26374F;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+
+  body{
+    font-family:'Source Sans 3',Arial,sans-serif;
+    background:var(--bg); color:var(--text);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+    transition:background .35s ease,color .35s ease;
+  }
+  html[lang="ar"] body{ font-family:'Tajawal','Source Sans 3',Arial,sans-serif; }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1080px;margin:0 auto;padding:0 22px;}
+  h1,h2,h3{font-family:'Lora',Georgia,serif;}
+  html[lang="ar"] h1,
+  html[lang="ar"] h2,
+  html[lang="ar"] .brand-name-text,
+  html[lang="ar"] .hero-role{ font-family:'Amiri',Georgia,serif; }
+
+  a:focus-visible,button:focus-visible{outline:2px solid var(--goldf);outline-offset:3px;border-radius:4px;}
+
+  /* ═══════════════ NAV ═══════════════ */
+  .nav{
+    position:sticky; top:0; z-index:100;
+    background:rgba(26,53,87,.92); backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .nav .container{display:flex;align-items:center;justify-content:space-between;height:62px;gap:12px;}
+  .brand{display:flex;align-items:center;gap:9px;color:#fff;font-weight:700;font-size:15px;letter-spacing:.2px;min-width:0;}
+  .brand svg{width:22px;height:22px;flex-shrink:0;}
+  .brand-text{min-width:0;}
+  .brand-sub{color:var(--goldf);font-weight:400;font-size:11px;display:block;letter-spacing:.5px;white-space:nowrap;}
+  .nav-links{display:flex;gap:26px;list-style:none;}
+  .nav-links a{
+    color:rgba(255,255,255,.72); font-size:13.5px; font-weight:600;
+    padding:6px 2px; position:relative; transition:color .2s ease; white-space:nowrap;
+  }
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:-2px; width:0; height:2px;
+    background:var(--goldf); transition:width .25s ease;
+  }
+  .nav-links a:hover,.nav-links a.active{color:#fff;}
+  .nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+  .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.06);color:#fff;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background .2s ease,transform .2s ease;flex-shrink:0;
+  }
+  .icon-btn:hover{background:rgba(255,255,255,.14);}
+  .icon-btn svg{width:17px;height:17px;}
+  .icon-btn .moon{display:none;}
+  [data-theme="dark"] .icon-btn .sun{display:none;}
+  [data-theme="dark"] .icon-btn .moon{display:block;}
+  .lang-btn{width:auto;min-width:42px;padding:0 12px;border-radius:20px;font-size:11.5px;font-weight:800;letter-spacing:.3px;font-family:'Source Sans 3',Arial,sans-serif;}
+  .burger{display:none;}
+
+  /* mobile nav panel */
+  .mobile-panel{
+    display:none; position:fixed; inset:62px 0 0 0; z-index:99;
+    background:var(--navy-deep); padding:26px 22px; overflow-y:auto;
+  }
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:block; color:#fff; font-size:17px; font-weight:600; padding:14px 4px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .mobile-panel .mp-linkedin{color:var(--goldf);}
+
+  /* ═══════════════ HERO ═══════════════ */
+  .hero{
+    position:relative; overflow:hidden;
+    background:linear-gradient(160deg,var(--navy-deep),var(--navy) 55%,var(--navy2));
+    color:#fff; padding:56px 0 64px;
+  }
+  .hero::before{
+    content:''; position:absolute; inset:0; opacity:.5;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect x='12' y='12' width='36' height='36' fill='none' stroke='%23C9A45A' stroke-opacity='0.16' stroke-width='1'/%3E%3Crect x='12' y='12' width='36' height='36' fill='none' stroke='%23C9A45A' stroke-opacity='0.16' stroke-width='1' transform='rotate(45 30 30)'/%3E%3C/svg%3E");
+    background-size:60px 60px;
+    mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.15));
+  }
+  .hero .container{position:relative;display:flex;align-items:center;gap:44px;flex-wrap:wrap;}
+  .photo-wrap{position:relative;flex-shrink:0;}
+  .photo-frame{
+    position:relative;
+    width:168px;height:210px;border-radius:8px;overflow:hidden;
+    border:4px solid rgba(255,255,255,.92);
+    box-shadow:0 16px 40px rgba(0,0,0,.4);
+    background:var(--navy2);
+  }
+  .photo-frame img{width:100%;height:100%;object-fit:cover;object-position:center 15%;position:relative;z-index:2;}
+  .photo-fallback{
+    position:absolute; inset:0; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Lora',Georgia,serif; font-size:44px; font-weight:700; color:rgba(255,255,255,.9);
+    background:linear-gradient(160deg,var(--navy2),var(--navy-deep));
+    letter-spacing:1px;
+  }
+  .corner-star{position:absolute;width:26px;height:26px;color:var(--goldf);opacity:.85;}
+  .corner-star.tl{top:-13px;left:-13px;}
+  .corner-star.br{bottom:-13px;right:-13px;}
+
+  .hero-text{flex:1;min-width:260px;}
+  .eyebrow{
+    font-size:11.5px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase;
+    color:var(--goldf); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+  }
+  .eyebrow::before{content:'';width:22px;height:1px;background:var(--goldf);}
+  .hero-text h1{font-size:clamp(26px,5vw,42px);font-weight:700;line-height:1.15;}
+  .hero-role{font-size:clamp(13px,2vw,15px);font-weight:600;color:rgba(255,255,255,.82);margin-top:8px;}
+  .hero-p{font-size:14.5px;color:rgba(255,255,255,.72);margin-top:14px;max-width:560px;line-height:1.75;}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700;
+    padding:10px 18px; border-radius:9px; transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+  }
+  .btn svg{width:15px;height:15px;flex-shrink:0;}
+  .btn-gold{background:var(--goldf);color:var(--navy-deep);}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(201,164,90,.35);}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.22);}
+  .btn-ghost:hover{background:rgba(255,255,255,.16);transform:translateY(-2px);}
+
+  /* quick facts strip */
+  .facts{background:var(--surface);border-bottom:1px solid var(--border);}
+  .facts .container{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
+  .fact{padding:18px 14px;text-align:center;border-right:1px solid var(--border);}
+  .fact:last-child{border-right:none;}
+  .fact b{display:block;font-family:'Lora',serif;font-size:18px;color:var(--navy);}
+  html[lang="ar"] .fact b{font-family:'Amiri',serif;}
+  [data-theme="dark"] .fact b{color:var(--goldf);}
+  .fact span{font-size:11px;color:var(--lite);text-transform:uppercase;letter-spacing:.5px;}
+
+  /* ═══════════════ SECTIONS ═══════════════ */
+  section{padding:58px 0;scroll-margin-top:78px;}
+  section:nth-of-type(even){background:var(--surface);}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:30px;}
+  .sec-num{font-family:'Lora',serif;font-size:13px;color:var(--goldf);font-weight:600;}
+  .sec-head h2{font-size:clamp(20px,3vw,26px);color:var(--navy);font-weight:700;}
+  [data-theme="dark"] .sec-head h2{color:#fff;}
+  .sec-line{flex:1;height:1px;background:var(--border);}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease;}
+  .reveal.in-view{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    html{scroll-behavior:auto;}
+  }
+
+  /* skills / languages / interests grid */
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow);}
+  section:nth-of-type(even) .card{background:var(--bg);}
+  .card h3{font-size:12.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--navy);margin-bottom:14px;}
+  [data-theme="dark"] .card h3{color:var(--goldf);}
+  .pill-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+  .pill{font-size:12px;font-weight:600;color:var(--mid);background:var(--bg);border:1px solid var(--border);border-radius:20px;padding:6px 13px;}
+  [data-theme="dark"] .pill{background:var(--surface);}
+  .lang-row{margin-bottom:13px;}
+  .lang-row:last-child{margin-bottom:0;}
+  .lang-top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:600;margin-bottom:5px;gap:8px;}
+  .lang-top span:last-child{font-weight:400;color:var(--lite);font-size:11px;}
+  .bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
+  .bar-f{height:100%;background:linear-gradient(90deg,var(--gold),var(--goldf));border-radius:3px;}
+
+  /* timeline */
+  .timeline{position:relative;padding-left:28px;}
+  .timeline::before{content:'';position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--border);}
+  .t-item{position:relative;padding-bottom:30px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{position:absolute;left:-28px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2.5px solid var(--goldf);}
+  section:nth-of-type(even) .t-dot{background:var(--bg);}
+  .t-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;}
+  .t-title{font-weight:700;font-size:15px;color:var(--text);}
+  .t-date{font-size:11.5px;font-weight:700;color:var(--gold);white-space:nowrap;background:rgba(184,146,74,.1);padding:3px 10px;border-radius:20px;}
+  .t-org{font-size:13px;font-weight:600;color:var(--navy2);margin-top:3px;}
+  [data-theme="dark"] .t-org{color:var(--goldf);}
+  .t-note{font-size:12.5px;color:var(--lite);font-style:italic;margin-top:2px;}
+  .t-ul{margin-top:8px;}
+  .t-ul li{font-size:13.5px;color:var(--mid);padding-left:15px;position:relative;margin-bottom:5px;line-height:1.6;}
+  .t-ul li::before{content:'▸';position:absolute;left:0;color:var(--goldf);}
+
+  /* achievements + certifications */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .ach-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;gap:12px;box-shadow:var(--shadow);}
+  section:nth-of-type(even) .ach-card{background:var(--bg);}
+  .ach-card svg{width:20px;height:20px;color:var(--goldf);flex-shrink:0;margin-top:2px;}
+  .ach-card p{font-size:13.5px;color:var(--mid);line-height:1.6;}
+  .ach-card strong{color:var(--text);}
+
+  .cert-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;box-shadow:var(--shadow);}
+  section:nth-of-type(even) .cert-card{background:var(--bg);}
+  .cert-card .name{font-weight:700;font-size:14px;margin-bottom:3px;}
+  .cert-card .meta{font-size:12px;color:var(--lite);}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .contact-card{
+    background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 16px;
+    text-align:center;transition:transform .2s ease,box-shadow .2s ease;
+  }
+  section:nth-of-type(even) .contact-card{background:var(--bg);}
+  .contact-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .contact-card svg{width:22px;height:22px;color:var(--goldf);margin:0 auto 10px;}
+  .contact-card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--lite);margin-bottom:4px;}
+  .contact-card .val{font-size:13px;font-weight:700;word-break:break-word;}
+
+  footer{background:var(--navy-deep);color:rgba(255,255,255,.6);padding:26px 0 100px;text-align:center;font-size:12px;}
+  footer strong{color:#fff;}
+
+  /* floating quick-contact bar */
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:rgba(18,39,64,.94);backdrop-filter:blur(10px);
+    border-top:1px solid rgba(255,255,255,.1);
+    display:flex;justify-content:center;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:8px 12px;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:7px 4px;border-radius:9px;color:rgba(255,255,255,.85);transition:background .2s ease;
+  }
+  .fab:hover{background:rgba(255,255,255,.08);}
+  .fab svg{width:19px;height:19px;color:var(--goldf);}
+  .fab span{font-size:9.5px;font-weight:600;letter-spacing:.2px;}
+
+  .to-top{
+    position:fixed;right:18px;bottom:76px;z-index:91;width:42px;height:42px;border-radius:50%;
+    background:var(--goldf);color:var(--navy-deep);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+  body{padding-bottom:64px;}
+
+  /* ═══════════════ RESPONSIVE ═══════════════ */
+  @media (max-width:900px){
+    .grid-3{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;width:36px;height:36px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+    .burger svg{width:18px;height:18px;color:#fff;}
+    .hero .container{flex-direction:column;text-align:center;}
+    .hero-p{margin-left:auto;margin-right:auto;}
+    .cta-row,.eyebrow{justify-content:center;}
+    .facts .container{grid-template-columns:repeat(2,1fr);}
+    .fact:nth-child(2){border-right:none;}
+    .fact{border-bottom:1px solid var(--border);}
+    .fact:nth-child(3),.fact:nth-child(4){border-bottom:none;}
+    .grid-2{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+    .fab span{display:none;}
+  }
+  @media (max-width:400px){
+    .brand-sub{display:none;}
+  }
+  @media (min-width:761px){
+    .fab-bar{display:none;}
+    body{padding-bottom:0;}
+    .to-top{bottom:28px;}
+  }
+
+  /* ═══════════════ RTL (Arabic) ═══════════════ */
+  html[dir="rtl"] .timeline{padding-left:0;padding-right:28px;}
+  html[dir="rtl"] .timeline::before{left:auto;right:5px;}
+  html[dir="rtl"] .t-dot{left:auto;right:-28px;}
+  html[dir="rtl"] .t-ul li{padding-left:0;padding-right:15px;}
+  html[dir="rtl"] .t-ul li::before{content:'◂';left:auto;right:0;}
+  html[dir="rtl"] .corner-star.tl{left:auto;right:-13px;}
+  html[dir="rtl"] .corner-star.br{right:auto;left:-13px;}
+  html[dir="rtl"] .nav-links a::after{left:auto;right:0;}
+  html[dir="rtl"] .to-top{right:auto;left:18px;}
+  html[dir="rtl"] .fact{border-right:none;border-left:1px solid var(--border);}
+  html[dir="rtl"] .fact:last-child{border-left:none;}
+  @media (max-width:760px){
+    html[dir="rtl"] .fact:nth-child(2){border-left:none;}
+    html[dir="rtl"] .fact{border-left:1px solid var(--border);border-bottom:1px solid var(--border);}
+    html[dir="rtl"] .fact:nth-child(3),html[dir="rtl"] .fact:nth-child(4){border-bottom:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav">
+  <div class="container">
+    <a href="#home" class="brand">
+      <svg viewBox="0 0 100 100" fill="none"><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="7"/><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="7" transform="rotate(45 50 50)"/></svg>
+      <span class="brand-text"><span class="brand-name-text" data-i18n="brandName">Hasan Sdaif</span><span class="brand-sub" data-i18n="brandSub">Islamic Studies &amp; Education</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" data-nav data-i18n="navAbout">About</a></li>
+      <li><a href="#skills" data-nav data-i18n="navSkills">Skills</a></li>
+      <li><a href="#experience" data-nav data-i18n="navExperience">Experience</a></li>
+      <li><a href="#education" data-nav data-i18n="navEducation">Education</a></li>
+      <li><a href="#achievements" data-nav data-i18n="navAchievements">Achievements</a></li>
+      <li><a href="#contact" data-nav data-i18n="navContact">Contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="icon-btn lang-btn" id="langBtn" data-i18n-aria="ariaLang" aria-label="Switch language">
+        <span id="langBtnText">العربية</span>
+      </button>
+      <button class="icon-btn" id="themeBtn" data-i18n-aria="ariaTheme" aria-label="Toggle dark mode" aria-pressed="false">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="burger" id="burgerBtn" data-i18n-aria="ariaBurger" aria-label="Open menu" aria-expanded="false">
+        <svg id="burgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about" data-nav data-i18n="navAbout">About</a>
+  <a href="#skills" data-nav data-i18n="navSkills">Skills</a>
+  <a href="#experience" data-nav data-i18n="navExperience">Experience</a>
+  <a href="#education" data-nav data-i18n="navEducation">Education</a>
+  <a href="#achievements" data-nav data-i18n="navAchievements">Achievements</a>
+  <a href="#contact" data-nav data-i18n="navContact">Contact</a>
+  <a href="https://www.linkedin.com/in/hasan-sdaif-08003941b/" target="_blank" rel="noopener" class="mp-linkedin" data-i18n="navLinkedin">LinkedIn Profile ↗</a>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="photo-wrap">
+      <div class="photo-frame">
+        <div class="photo-fallback" data-i18n="photoFallback">HS</div>
+        <img id="heroPhoto" src="h-photo.jpg" alt="Hasan Abbas Hasan Sdaif" data-i18n-alt="heroName"
+             onerror="this.style.opacity='0'"
+             onload="this.style.opacity='1'; var f=this.previousElementSibling; if(f) f.style.display='none';">
+      </div>
+      <svg class="corner-star tl" viewBox="0 0 100 100" fill="none"><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="6"/><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="6" transform="rotate(45 50 50)"/></svg>
+      <svg class="corner-star br" viewBox="0 0 100 100" fill="none"><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="6"/><rect x="26" y="26" width="48" height="48" stroke="currentColor" stroke-width="6" transform="rotate(45 50 50)"/></svg>
+    </div>
+    <div class="hero-text">
+      <div class="eyebrow" data-i18n="eyebrow">Digital CV</div>
+      <h1 data-i18n="heroName">Hasan Abbas Hasan Sdaif</h1>
+      <div class="hero-role" data-i18n="heroRole">Islamic Studies Student &amp; Community Educator</div>
+      <p class="hero-p" data-i18n="heroBio">Student of Islamic sciences at Al-Ghadir Hawza with hands-on experience in education, youth development, and community programs. Balances full-time religious study with active teaching roles and self-directed learning in technology and AI tools. Holds an intermediate spoken level in Japanese and has applied it in real educational settings. Committed volunteer since 2017.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="https://wa.me/97336166806" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+          <span data-i18n="btnWhatsapp">WhatsApp</span>
+        </a>
+        <a class="btn btn-ghost" href="mailto:Hasan.sdaif16@gmail.com">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <span data-i18n="btnEmail">Email</span>
+        </a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/hasan-sdaif-08003941b/" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg>
+          <span data-i18n="btnLinkedin">LinkedIn</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- QUICK FACTS -->
+<div class="facts">
+  <div class="container">
+    <div class="fact"><b data-i18n="factLocationVal">Sitra, BH</b><span data-i18n="factLocationLbl">Location</span></div>
+    <div class="fact"><b data-i18n="factRolesVal">2 Roles</b><span data-i18n="factRolesLbl">Currently Teaching</span></div>
+    <div class="fact"><b data-i18n="factLangsVal">3</b><span data-i18n="factLangsLbl">Languages Spoken</span></div>
+    <div class="fact"><b data-i18n="factVolVal">2017</b><span data-i18n="factVolLbl">Volunteering Since</span></div>
+  </div>
+</div>
+
+<main>
+
+<!-- ═══════════════ ABOUT / SKILLS ═══════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head"><span class="sec-num">01</span><h2 data-i18n="sec01">Skills &amp; Profile</h2><div class="sec-line"></div></div>
+    <div class="grid-3">
+      <div class="card reveal" id="skills">
+        <h3 data-i18n="cardSkillsTitle">Core Skills</h3>
+        <div class="pill-wrap">
+          <span class="pill" data-i18n="skill1">Public Speaking</span>
+          <span class="pill" data-i18n="skill2">Classroom Teaching</span>
+          <span class="pill" data-i18n="skill3">HTML / Web Dev</span>
+          <span class="pill" data-i18n="skill4">AI Tools</span>
+          <span class="pill" data-i18n="skill5">Workshop Delivery</span>
+          <span class="pill" data-i18n="skill6">Leadership</span>
+          <span class="pill" data-i18n="skill7">Time Management</span>
+          <span class="pill" data-i18n="skill8">First Aid</span>
+          <span class="pill" data-i18n="skill9">Community Work</span>
+          <span class="pill" data-i18n="skill10">Academic Writing</span>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 data-i18n="cardLangTitle">Languages</h3>
+        <div class="lang-row">
+          <div class="lang-top"><span data-i18n="langArName">Arabic</span><span data-i18n="langArLvl">Native</span></div>
+          <div class="bar"><div class="bar-f" style="width:100%"></div></div>
+        </div>
+        <div class="lang-row">
+          <div class="lang-top"><span data-i18n="langJaName">Japanese</span><span data-i18n="langJaLvl">Intermediate (Speaking)</span></div>
+          <div class="bar"><div class="bar-f" style="width:55%"></div></div>
+        </div>
+        <div class="lang-row">
+          <div class="lang-top"><span data-i18n="langEnName">English</span><span data-i18n="langEnLvl">Basic</span></div>
+          <div class="bar"><div class="bar-f" style="width:40%"></div></div>
+        </div>
+      </div>
+      <div class="card reveal">
+        <h3 data-i18n="cardInterestsTitle">Interests</h3>
+        <div class="pill-wrap">
+          <span class="pill" data-i18n="interest1">Reading</span>
+          <span class="pill" data-i18n="interest2">Writing</span>
+          <span class="pill" data-i18n="interest3">Translation</span>
+          <span class="pill" data-i18n="interest4">Technology</span>
+          <span class="pill" data-i18n="interest5">Web Dev (AI)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE ═══════════════ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head"><span class="sec-num">02</span><h2 data-i18n="sec02">Work Experience</h2><div class="sec-line"></div></div>
+    <div class="timeline">
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp1Title">Religious Education Teacher</span><span class="t-date" data-i18n="exp1Date">2024 – Present</span></div>
+        <div class="t-org" data-i18n="exp1Org">Al-Murtadha Center · Sitra, Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp1B1">Taught religious education across two consecutive years — middle school students (Year 1) then primary students (Year 2) — adapting content and delivery to suit each age group</li>
+          <li data-i18n="exp1B2">Designed lesson plans, managed classroom dynamics, and maintained consistent student engagement throughout the academic year</li>
+        </ul>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp2Title">Assistant Religious Education Teacher</span><span class="t-date" data-i18n="exp2Date">2024 – Present</span></div>
+        <div class="t-org" data-i18n="exp2Org">Al-Ahleya Association · Sitra, Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp2B1">Guided primary school students through foundational Islamic practices including Salah and Wudu, ensuring clear and patient instruction suited to young learners</li>
+          <li data-i18n="exp2B2">Coordinated with senior teachers to support program structure and student follow-up</li>
+        </ul>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp3Title">Sales Associate – Part-time</span><span class="t-date" data-i18n="exp3Date">Ramadan 2024</span></div>
+        <div class="t-org" data-i18n="exp3Org">BBZ – Apparel Bahrain · Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp3B1">Assisted customers on the shop floor and handled product inquiries during the high-traffic Ramadan season</li>
+          <li data-i18n="exp3B2">Supported daily retail operations including display upkeep and transaction processing</li>
+        </ul>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp4Title">Member – Afaq Al-Tamayuz Youth Development Program</span><span class="t-date" data-i18n="exp4Date">2018 – 2020</span></div>
+        <div class="t-org" data-i18n="exp4Org">Al-Ahleya Association · Sitra, Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp4B1">Completed structured sessions covering personal development, public speaking, and community leadership over a two-year program</li>
+        </ul>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp5Title">Member – Leaders Program</span><span class="t-date" data-i18n="exp5Date">2022 – 2023</span></div>
+        <div class="t-org" data-i18n="exp5Org">Leaders Program · Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp5B1">Participated in leadership development workshops and collaborative group activities aimed at cultivating initiative and teamwork</li>
+        </ul>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="exp6Title">Community Volunteer (Seasonal)</span><span class="t-date" data-i18n="exp6Date">2017 – Present</span></div>
+        <div class="t-org" data-i18n="exp6Org">Al-Ahleya Association · Sitra, Bahrain</div>
+        <ul class="t-ul">
+          <li data-i18n="exp6B1">Contributed to community events and seasonal programs over eight years, demonstrating sustained commitment to public service and community engagement</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EDUCATION ═══════════════ -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head"><span class="sec-num">03</span><h2 data-i18n="sec03">Education</h2><div class="sec-line"></div></div>
+    <div class="timeline">
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="edu1Title">Specialized Hawza Program – Islamic Sciences</span><span class="t-date" data-i18n="edu1Date">2024 – Present</span></div>
+        <div class="t-org" data-i18n="edu1Org">Al-Ghadir Hawza for Islamic Sciences · Bahrain</div>
+        <div class="t-note" data-i18n="edu1Note">Morning academic program — specialized study of Islamic jurisprudence, theology, and sciences</div>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="edu2Title">Foundational Islamic Studies Program</span><span class="t-date" data-i18n="edu2Date">2023 – 2024</span></div>
+        <div class="t-org" data-i18n="edu2Org">Al-Hujja Center for Islamic Sciences · Bahrain</div>
+        <div class="t-note" data-i18n="edu2Note">Evening non-specialist program in Islamic knowledge and religious studies</div>
+      </div>
+
+      <div class="t-item reveal">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="edu3Title">High School Certificate (Tawjihi)</span><span class="t-date" data-i18n="edu3Date">2019 – 2022</span></div>
+        <div class="t-org" data-i18n="edu3Org">Al-Ta'awun Secondary School for Boys · Bahrain</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ACHIEVEMENTS ═══════════════ -->
+<section id="achievements">
+  <div class="container">
+    <div class="sec-head"><span class="sec-num">04</span><h2 data-i18n="sec04">Key Achievements</h2><div class="sec-line"></div></div>
+    <div class="grid-2">
+      <div class="ach-card reveal">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <p data-i18n-html="ach1">Designed and delivered a <strong>Japanese Language Basics course</strong> at Al-Ta'awun Secondary School for Boys — a self-initiated language program introduced beyond the standard school curriculum</p>
+      </div>
+      <div class="ach-card reveal">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <p data-i18n-html="ach2">Conducted an <strong>AI Tools &amp; Prompting Workshop</strong> for religious education teachers at a community center, introducing practical AI applications to a non-technical audience</p>
+      </div>
+      <div class="ach-card reveal">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <p data-i18n-html="ach3">Built simple <strong>web-based educational games and tools</strong> using HTML and AI-assisted development as an independent self-learning project</p>
+      </div>
+      <div class="ach-card reveal">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <p data-i18n-html="ach4">Managed simultaneous responsibilities across two teaching roles and full-time religious studies, demonstrating strong <strong>time management and reliability</strong></p>
+      </div>
+    </div>
+
+    <div class="sec-head" style="margin-top:44px;"><span class="sec-num">05</span><h2 data-i18n="sec05">Certifications</h2><div class="sec-line"></div></div>
+    <div class="grid-3">
+      <div class="cert-card reveal"><div class="name" data-i18n="cert1Name">Public Speaking &amp; Oratory</div><div class="meta" data-i18n="cert1Meta">Afaq Al-Tamayuz · Oct 2019</div></div>
+      <div class="cert-card reveal"><div class="name" data-i18n="cert2Name">Leadership Skills</div><div class="meta" data-i18n="cert2Meta">Idrak Platform · Oct 2019</div></div>
+      <div class="cert-card reveal"><div class="name" data-i18n="cert3Name">First Aid Certification</div><div class="meta" data-i18n="cert3Meta">University of Bahrain · 2023</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head"><span class="sec-num">06</span><h2 data-i18n="sec06">Get In Touch</h2><div class="sec-line"></div></div>
+    <div class="contact-grid">
+      <a class="contact-card reveal" href="tel:+97336166806">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
+        <div class="lbl" data-i18n="contactPhoneLbl">Phone</div><div class="val">+973 3616 6806</div>
+      </a>
+      <a class="contact-card reveal" href="mailto:Hasan.sdaif16@gmail.com">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        <div class="lbl" data-i18n="contactEmailLbl">Email</div><div class="val">Hasan.sdaif16@gmail.com</div>
+      </a>
+      <a class="contact-card reveal" href="https://www.linkedin.com/in/hasan-sdaif-08003941b/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg>
+        <div class="lbl" data-i18n="contactLinkedinLbl">LinkedIn</div><div class="val">hasan-sdaif</div>
+      </a>
+      <a class="contact-card reveal" href="https://www.google.com/maps/search/Sitra,+Bahrain" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+        <div class="lbl" data-i18n="contactLocationLbl">Location</div><div class="val" data-i18n="contactLocationVal">Sitra, Bahrain</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <strong data-i18n="heroName">Hasan Abbas Hasan Sdaif</strong> — <span data-i18n="footerRole">Islamic Studies Student &amp; Community Educator · Bahrain</span>
+  </div>
+</footer>
+
+<!-- floating quick contact bar (mobile) -->
+<div class="fab-bar">
+  <div class="container">
+    <a class="fab" href="tel:+97336166806">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
+      <span data-i18n="fabCall">Call</span>
+    </a>
+    <a class="fab" href="https://wa.me/97336166806" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+      <span data-i18n="fabWhatsapp">WhatsApp</span>
+    </a>
+    <a class="fab" href="mailto:Hasan.sdaif16@gmail.com">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      <span data-i18n="fabEmail">Email</span>
+    </a>
+    <a class="fab" href="https://www.linkedin.com/in/hasan-sdaif-08003941b/" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg>
+      <span data-i18n="fabLinkedin">LinkedIn</span>
+    </a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" data-i18n-aria="ariaToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  /* ══════════ TRANSLATIONS ══════════ */
+  const translations = {
+    en: {
+      navAbout:"About", navSkills:"Skills", navExperience:"Experience", navEducation:"Education",
+      navAchievements:"Achievements", navContact:"Contact", navLinkedin:"LinkedIn Profile ↗",
+      brandName:"Hasan Sdaif", brandSub:"Islamic Studies & Education",
+      eyebrow:"Digital CV",
+      heroName:"Hasan Abbas Hasan Sdaif",
+      heroRole:"Islamic Studies Student & Community Educator",
+      heroBio:"Student of Islamic sciences at Al-Ghadir Hawza with hands-on experience in education, youth development, and community programs. Balances full-time religious study with active teaching roles and self-directed learning in technology and AI tools. Holds an intermediate spoken level in Japanese and has applied it in real educational settings. Committed volunteer since 2017.",
+      btnWhatsapp:"WhatsApp", btnEmail:"Email", btnLinkedin:"LinkedIn",
+      photoFallback:"HS",
+      factLocationVal:"Sitra, BH", factLocationLbl:"Location",
+      factRolesVal:"2 Roles", factRolesLbl:"Currently Teaching",
+      factLangsVal:"3", factLangsLbl:"Languages Spoken",
+      factVolVal:"2017", factVolLbl:"Volunteering Since",
+      sec01:"Skills & Profile", sec02:"Work Experience", sec03:"Education",
+      sec04:"Key Achievements", sec05:"Certifications", sec06:"Get In Touch",
+      cardSkillsTitle:"Core Skills",
+      skill1:"Public Speaking", skill2:"Classroom Teaching", skill3:"HTML / Web Dev", skill4:"AI Tools",
+      skill5:"Workshop Delivery", skill6:"Leadership", skill7:"Time Management", skill8:"First Aid",
+      skill9:"Community Work", skill10:"Academic Writing",
+      cardLangTitle:"Languages",
+      langArName:"Arabic", langArLvl:"Native",
+      langJaName:"Japanese", langJaLvl:"Intermediate (Speaking)",
+      langEnName:"English", langEnLvl:"Basic",
+      cardInterestsTitle:"Interests",
+      interest1:"Reading", interest2:"Writing", interest3:"Translation", interest4:"Technology", interest5:"Web Dev (AI)",
+      exp1Title:"Religious Education Teacher", exp1Org:"Al-Murtadha Center · Sitra, Bahrain", exp1Date:"2024 – Present",
+      exp1B1:"Taught religious education across two consecutive years — middle school students (Year 1) then primary students (Year 2) — adapting content and delivery to suit each age group",
+      exp1B2:"Designed lesson plans, managed classroom dynamics, and maintained consistent student engagement throughout the academic year",
+      exp2Title:"Assistant Religious Education Teacher", exp2Org:"Al-Ahleya Association · Sitra, Bahrain", exp2Date:"2024 – Present",
+      exp2B1:"Guided primary school students through foundational Islamic practices including Salah and Wudu, ensuring clear and patient instruction suited to young learners",
+      exp2B2:"Coordinated with senior teachers to support program structure and student follow-up",
+      exp3Title:"Sales Associate – Part-time", exp3Org:"BBZ – Apparel Bahrain · Bahrain", exp3Date:"Ramadan 2024",
+      exp3B1:"Assisted customers on the shop floor and handled product inquiries during the high-traffic Ramadan season",
+      exp3B2:"Supported daily retail operations including display upkeep and transaction processing",
+      exp4Title:"Member – Afaq Al-Tamayuz Youth Development Program", exp4Org:"Al-Ahleya Association · Sitra, Bahrain", exp4Date:"2018 – 2020",
+      exp4B1:"Completed structured sessions covering personal development, public speaking, and community leadership over a two-year program",
+      exp5Title:"Member – Leaders Program", exp5Org:"Leaders Program · Bahrain", exp5Date:"2022 – 2023",
+      exp5B1:"Participated in leadership development workshops and collaborative group activities aimed at cultivating initiative and teamwork",
+      exp6Title:"Community Volunteer (Seasonal)", exp6Org:"Al-Ahleya Association · Sitra, Bahrain", exp6Date:"2017 – Present",
+      exp6B1:"Contributed to community events and seasonal programs over eight years, demonstrating sustained commitment to public service and community engagement",
+      edu1Title:"Specialized Hawza Program – Islamic Sciences", edu1Org:"Al-Ghadir Hawza for Islamic Sciences · Bahrain", edu1Date:"2024 – Present",
+      edu1Note:"Morning academic program — specialized study of Islamic jurisprudence, theology, and sciences",
+      edu2Title:"Foundational Islamic Studies Program", edu2Org:"Al-Hujja Center for Islamic Sciences · Bahrain", edu2Date:"2023 – 2024",
+      edu2Note:"Evening non-specialist program in Islamic knowledge and religious studies",
+      edu3Title:"High School Certificate (Tawjihi)", edu3Org:"Al-Ta'awun Secondary School for Boys · Bahrain", edu3Date:"2019 – 2022",
+      ach1:"Designed and delivered a <strong>Japanese Language Basics course</strong> at Al-Ta'awun Secondary School for Boys — a self-initiated language program introduced beyond the standard school curriculum",
+      ach2:"Conducted an <strong>AI Tools &amp; Prompting Workshop</strong> for religious education teachers at a community center, introducing practical AI applications to a non-technical audience",
+      ach3:"Built simple <strong>web-based educational games and tools</strong> using HTML and AI-assisted development as an independent self-learning project",
+      ach4:"Managed simultaneous responsibilities across two teaching roles and full-time religious studies, demonstrating strong <strong>time management and reliability</strong>",
+      cert1Name:"Public Speaking & Oratory", cert1Meta:"Afaq Al-Tamayuz · Oct 2019",
+      cert2Name:"Leadership Skills", cert2Meta:"Idrak Platform · Oct 2019",
+      cert3Name:"First Aid Certification", cert3Meta:"University of Bahrain · 2023",
+      contactPhoneLbl:"Phone", contactEmailLbl:"Email", contactLinkedinLbl:"LinkedIn",
+      contactLocationLbl:"Location", contactLocationVal:"Sitra, Bahrain",
+      footerRole:"Islamic Studies Student & Community Educator · Bahrain",
+      fabCall:"Call", fabWhatsapp:"WhatsApp", fabEmail:"Email", fabLinkedin:"LinkedIn",
+      ariaTheme:"Toggle dark mode", ariaLang:"Switch language", ariaBurger:"Open menu", ariaToTop:"Back to top",
+      langSwitchTo:"العربية",
+      pageTitle:"Hasan Abbas Hasan Sdaif — Digital CV"
+    },
+    ar: {
+      navAbout:"نبذة", navSkills:"المهارات", navExperience:"الخبرة", navEducation:"التعليم",
+      navAchievements:"الإنجازات", navContact:"التواصل", navLinkedin:"↗ الملف الشخصي على لينكدإن",
+      brandName:"حسن سديف", brandSub:"دراسات إسلامية وتعليم",
+      eyebrow:"سيرة ذاتية رقمية",
+      heroName:"حسن عباس حسن سديف",
+      heroRole:"طالب دراسات إسلامية ومتطوع مجتمعي",
+      heroBio:"طالب في العلوم الإسلامية بحوزة الغدير، يمتلك خبرة عملية في التعليم وتطوير الشباب والبرامج المجتمعية. يوازن بين الدراسة الدينية المتفرغة وأدوار التدريس النشطة والتعلم الذاتي في مجال التكنولوجيا وأدوات الذكاء الاصطناعي. يتقن اليابانية بمستوى متوسط محادثةً وطبّقها في بيئات تعليمية حقيقية. متطوع ملتزم منذ عام 2017.",
+      btnWhatsapp:"واتساب", btnEmail:"البريد الإلكتروني", btnLinkedin:"لينكدإن",
+      photoFallback:"ح.س",
+      factLocationVal:"سترة، البحرين", factLocationLbl:"الموقع",
+      factRolesVal:"2 دور", factRolesLbl:"يدرّس حاليًا",
+      factLangsVal:"3", factLangsLbl:"لغات يتحدثها",
+      factVolVal:"2017", factVolLbl:"يتطوع منذ",
+      sec01:"المهارات والملف الشخصي", sec02:"الخبرة العملية", sec03:"التعليم",
+      sec04:"الإنجازات الرئيسية", sec05:"الشهادات", sec06:"تواصل معي",
+      cardSkillsTitle:"المهارات الأساسية",
+      skill1:"الخطابة العامة", skill2:"التدريس الصفي", skill3:"HTML / تطوير الويب", skill4:"أدوات الذكاء الاصطناعي",
+      skill5:"تقديم الورش", skill6:"القيادة", skill7:"إدارة الوقت", skill8:"الإسعافات الأولية",
+      skill9:"العمل المجتمعي", skill10:"الكتابة الأكاديمية",
+      cardLangTitle:"اللغات",
+      langArName:"العربية", langArLvl:"اللغة الأم",
+      langJaName:"اليابانية", langJaLvl:"متوسط (محادثة)",
+      langEnName:"الإنجليزية", langEnLvl:"أساسي",
+      cardInterestsTitle:"الاهتمامات",
+      interest1:"القراءة", interest2:"الكتابة", interest3:"الترجمة", interest4:"التكنولوجيا", interest5:"تطوير الويب (ذكاء اصطناعي)",
+      exp1Title:"معلم في التعليم الديني", exp1Org:"مركز المرتضى · سترة، البحرين", exp1Date:"2024 – حتى الآن",
+      exp1B1:"درّس في التعليم الديني على مدى سنتين متتاليتين — طلاب المرحلة الإعدادية (في السنة الأولى) ثم طلاب المرحلة الابتدائية (في السنة الثانية) — مع تكييف المحتوى وأسلوب التدريس لكل فئة عمرية",
+      exp1B2:"صمّم خطط الدروس، وأدار ديناميكيات الفصل، وحافظ على مشاركة الطلاب طوال العام الدراسي",
+      exp2Title:"مساعد معلم في التعليم الديني", exp2Org:"جمعية الأهلية · سترة، البحرين", exp2Date:"2024 – حتى الآن",
+      exp2B1:"أرشد طلاب الابتدائية في المعارف الإسلامية الأساسية كالصلاة والوضوء، مع ضمان تعليم واضح وصبور يناسب صغار السن",
+      exp2B2:"نسّق مع المدرسين الأقدم لدعم هيكل البرنامج ومتابعة الطلاب",
+      exp3Title:"موظف مبيعات – دوام جزئي", exp3Org:"BBZ – أباريل البحرين · البحرين", exp3Date:"رمضان 2024",
+      exp3B1:"ساعد الزبائن في صالة العرض وتعامل مع استفسارات المنتجات خلال موسم رمضان المزدحم",
+      exp3B2:"دعم العمليات اليومية للمتجر بما في ذلك صيانة العرض ومعالجة المعاملات",
+      exp4Title:"عضو – برنامج آفاق التميز لتطوير الشباب", exp4Org:"جمعية الأهلية · سترة، البحرين", exp4Date:"2018 – 2020",
+      exp4B1:"أتمّ جلسات منظمة تغطي التطوير الشخصي والخطابة العامة والقيادة المجتمعية على مدى برنامج مدته سنتان",
+      exp5Title:"عضو – برنامج القادة", exp5Org:"برنامج القادة · البحرين", exp5Date:"2022 – 2023",
+      exp5B1:"شارك في ورش تطوير القيادة والأنشطة الجماعية التعاونية الرامية إلى تنمية المبادرة والعمل الجماعي",
+      exp6Title:"متطوع مجتمعي (موسمي)", exp6Org:"جمعية الأهلية · سترة، البحرين", exp6Date:"2017 – حتى الآن",
+      exp6B1:"أسهم في الفعاليات المجتمعية والبرامج الموسمية على مدى ثماني سنوات، بما يعكس التزامًا راسخًا بالخدمة العامة والمشاركة المجتمعية",
+      edu1Title:"برنامج الحوزة المتخصص – العلوم الإسلامية", edu1Org:"حوزة الغدير للعلوم الإسلامية · البحرين", edu1Date:"2024 – حتى الآن",
+      edu1Note:"برنامج أكاديمي صباحي — دراسة متخصصة في الفقه الإسلامي والعقيدة والعلوم",
+      edu2Title:"برنامج الدراسات الإسلامية التأسيسي", edu2Org:"مركز الحجة للعلوم الإسلامية · البحرين", edu2Date:"2023 – 2024",
+      edu2Note:"برنامج مسائي غير متخصص في المعارف الإسلامية والدراسات الدينية",
+      edu3Title:"شهادة الثانوية العامة (التوجيهي)", edu3Org:"ثانوية التعاون للبنين · البحرين", edu3Date:"2019 – 2022",
+      ach1:"صمّم وقدّم <strong>دورة أساسيات اللغة اليابانية</strong> في ثانوية التعاون للبنين — برنامج لغوي ذاتي المبادرة يتجاوز المنهج الدراسي المعتاد",
+      ach2:"أجرى <strong>ورشة أدوات الذكاء الاصطناعي والـ Prompting</strong> لمعلمي التعليم الديني في أحد المراكز المجتمعية، مقدّمًا تطبيقات عملية للذكاء الاصطناعي لجمهور غير تقني",
+      ach3:"بنى <strong>ألعابًا وأدوات تعليمية</strong> على الويب باستخدام HTML والتطوير بمساعدة الذكاء الاصطناعي كمشروع تعلّم ذاتي مستقل",
+      ach4:"أدار مسؤوليات متزامنة بين دورين تدريسيين ودراسة دينية متفرغة، بما يعكس <strong>إدارة وقت وموثوقية</strong> عالية",
+      cert1Name:"الخطابة والإلقاء العام", cert1Meta:"آفاق التميز · أكتوبر 2019",
+      cert2Name:"مهارات القيادة", cert2Meta:"منصة إدراك · أكتوبر 2019",
+      cert3Name:"شهادة الإسعافات الأولية", cert3Meta:"جامعة البحرين · 2023",
+      contactPhoneLbl:"الهاتف", contactEmailLbl:"البريد الإلكتروني", contactLinkedinLbl:"لينكدإن",
+      contactLocationLbl:"الموقع", contactLocationVal:"سترة، البحرين",
+      footerRole:"طالب دراسات إسلامية ومتطوع مجتمعي · البحرين",
+      fabCall:"اتصال", fabWhatsapp:"واتساب", fabEmail:"البريد", fabLinkedin:"لينكدإن",
+      ariaTheme:"تبديل الوضع الداكن", ariaLang:"تبديل اللغة", ariaBurger:"فتح القائمة", ariaToTop:"العودة للأعلى",
+      langSwitchTo:"English",
+      pageTitle:"حسن عباس حسن سديف — سيرة ذاتية رقمية"
+    }
+  };
+
+  let currentLang = 'en';
+
+  function applyLanguage(lang){
+    const dict = translations[lang];
+    if(!dict) return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.title = dict.pageTitle;
+
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      if(dict[key] !== undefined) el.textContent = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(el=>{
+      const key = el.getAttribute('data-i18n-html');
+      if(dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach(el=>{
+      const key = el.getAttribute('data-i18n-alt');
+      if(dict[key] !== undefined) el.alt = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+      const key = el.getAttribute('data-i18n-aria');
+      if(dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+    });
+
+    const langBtnText = document.getElementById('langBtnText');
+    if(langBtnText) langBtnText.textContent = dict.langSwitchTo;
+
+    currentLang = lang;
+  }
+
+  document.getElementById('langBtn').addEventListener('click', ()=>{
+    applyLanguage(currentLang === 'en' ? 'ar' : 'en');
+  });
+
+  // mobile menu
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobilePanel = document.getElementById('mobilePanel');
+  burgerBtn.addEventListener('click', () => {
+    const open = mobilePanel.classList.toggle('open');
+    burgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.getElementById('burgerIcon').innerHTML = open
+      ? '<path d="M6 6l12 12M6 18L18 6"/>'
+      : '<path d="M4 6h16M4 12h16M4 18h16"/>';
+  });
+  document.querySelectorAll('#mobilePanel a[data-nav]').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      mobilePanel.classList.remove('open');
+      burgerBtn.setAttribute('aria-expanded','false');
+      document.getElementById('burgerIcon').innerHTML='<path d="M4 6h16M4 12h16M4 18h16"/>';
+    });
+  });
+
+  // theme toggle (in-memory only — no storage APIs)
+  const themeBtn = document.getElementById('themeBtn');
+  themeBtn.addEventListener('click', ()=>{
+    const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+    document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    themeBtn.setAttribute('aria-pressed', isDark ? 'false':'true');
+  });
+
+  // scrollspy
+  const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
+  const sections = [...document.querySelectorAll('main section[id]')];
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        navAnchors.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+en.target.id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  sections.forEach(s=>spy.observe(s));
+
+  // reveal on scroll
+  const revealItems = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){ en.target.classList.add('in-view'); revealObs.unobserve(en.target); }
+    });
+  }, {threshold:0.12});
+  revealItems.forEach(el=>revealObs.observe(el));
+
+  // back to top
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    toTop.classList.toggle('show', window.scrollY > 500);
+  });
+  toTop.addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
+  });
+
+  // init
+  applyLanguage('en');
+</script>
+</body>
+</html>
