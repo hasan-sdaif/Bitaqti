@@ -831,11 +831,23 @@
         return;
       }
 
-      if (!res.ok) {
+      if (res.status === 500) {
+        lockError.textContent = 'الصفحة غير مُعدّة بعد على السيرفر — متغيّر INVOICE_PASSWORD غير موجود في إعدادات Netlify، أو لم تتم إعادة الرفع (deploy) بعد إضافته.';
+        lockError.classList.add('show');
+        return;
+      }
+
+      if (res.status === 401) {
         lockError.textContent = 'كلمة السر غير صحيحة.';
         lockError.classList.add('show');
         lockPasswordInput.value = '';
         lockPasswordInput.focus();
+        return;
+      }
+
+      if (!res.ok) {
+        lockError.textContent = `خطأ غير متوقع من السيرفر (رمز ${res.status}). حاول لاحقاً.`;
+        lockError.classList.add('show');
         return;
       }
 
