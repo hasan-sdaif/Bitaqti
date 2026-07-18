@@ -298,22 +298,67 @@
   .faq-item[open] summary::after{transform:rotate(45deg);}
   .faq-item p{padding:0 18px 17px;font-size:12.5px;color:var(--ink-soft);}
 
-  /* ── track order: checkpoint ── */
+  /* ── track order: checkpoint (v2 — محسّن) ── */
   .track-wrap{display:flex;justify-content:center;}
-  .checkpoint{max-width:430px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);overflow:hidden;}
+  .checkpoint{max-width:520px;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow-sm);overflow:hidden;}
   .cp-head{background:var(--ink);color:#fff;padding:16px 24px;display:flex;align-items:center;gap:10px;}
   .cp-head svg{width:17px;height:17px;color:var(--gold);flex-shrink:0;}
   .cp-head span{font-size:12.5px;font-weight:700;letter-spacing:.3px;}
   .cp-body{padding:24px 24px 28px;}
   .field{margin-bottom:15px;}
   .field label{display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:var(--ink-soft);}
-  .field input{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;}
+  .field input{width:100%;padding:12px 14px;border-radius:9px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font-family:inherit;font-size:14px;transition:border-color .15s,box-shadow .15s;}
+  .field input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
   .field input[dir="ltr"]{text-align:left;}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media(max-width:420px){.field-row{grid-template-columns:1fr;}}
   .track-msg{font-size:12px;color:var(--ink-faint);margin-top:11px;text-align:center;}
   .track-msg.err{color:var(--red);font-weight:700;}
+  .track-msg.ok{color:#0C9A63;font-weight:700;}
   .track-msg a{color:var(--red);font-weight:700;}
+  .track-submit{position:relative;}
+  .track-submit.loading .btn-text{opacity:0;}
+  .track-submit .btn-spinner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:18px;height:18px;border:2.5px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:btn-spin .6s linear infinite;display:none;}
+  .track-submit.loading .btn-spinner{display:block;}
+  @keyframes btn-spin{to{transform:translate(-50%,-50%) rotate(360deg);}}
 
-  /* ── invoice modal (نافذة منبثقة بشكل فاتورة) ── */
+  /* ── track result card (يظهر بعد نجاح التحقق) ── */
+  .track-result{display:none;margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px 18px 20px;animation:slideIn .35s ease;}
+  .track-result.show{display:block;}
+  @keyframes slideIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+  .tr-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px;}
+  .tr-top .tr-pkg{font-size:13px;color:var(--ink-faint);}
+  .tr-top .tr-pkg b{display:block;color:var(--ink);font-size:15px;font-weight:700;margin-top:2px;font-family:'El Messiri',sans-serif;}
+  .tr-status-pill{font-size:10.5px;font-weight:700;padding:5px 12px;border-radius:20px;color:#fff;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.12);}
+  /* progress steps */
+  .tr-steps{display:flex;justify-content:space-between;align-items:flex-start;gap:4px;margin:18px 0 8px;position:relative;}
+  .tr-steps::before{content:'';position:absolute;top:11px;right:14px;left:14px;height:2px;background:var(--line);z-index:0;}
+  .tr-step{flex:1;text-align:center;position:relative;z-index:1;}
+  .tr-step .dot{width:22px;height:22px;border-radius:50%;background:var(--surface);border:2px solid var(--line);margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--ink-faint);transition:all .3s ease;}
+  .tr-step .dot svg{width:11px;height:11px;color:#fff;}
+  .tr-step.done .dot{background:#0C9A63;border-color:#0C9A63;}
+  .tr-step.active .dot{background:var(--red);border-color:var(--red);box-shadow:0 0 0 4px var(--red-tint);}
+  .tr-step.canceled .dot{background:var(--ink-faint);border-color:var(--ink-faint);}
+  .tr-step .lbl{font-size:9.5px;font-weight:600;color:var(--ink-faint);line-height:1.3;}
+  .tr-step.done .lbl,.tr-step.active .lbl{color:var(--ink);}
+  .tr-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+  .tr-meta-item{font-size:11.5px;}
+  .tr-meta-item .k{display:block;color:var(--ink-faint);font-size:10px;margin-bottom:2px;}
+  .tr-meta-item .v{font-weight:700;color:var(--ink);}
+  .tr-meta-item .v.mono{font-family:'IBM Plex Mono',monospace;}
+  .tr-actions{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .tr-actions .btn{flex:1;font-size:11.5px;padding:10px 12px;min-width:0;}
+
+  /* ── history list (الطلبات السابقة لنفس الرقم) ── */
+  .tr-history{margin-top:16px;border-top:1px dashed var(--line);padding-top:14px;}
+  .tr-history-title{font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .tr-history-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 12px;background:var(--surface);border:1px solid var(--line);border-radius:9px;margin-bottom:6px;font-size:11.5px;cursor:pointer;transition:border-color .15s;}
+  .tr-history-item:hover{border-color:var(--red);}
+  .tr-history-item .h-code{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
+  .tr-history-item .h-meta{font-size:10px;color:var(--ink-faint);}
+  .tr-history-item .h-pill{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:12px;color:#fff;}
+
+  /* ── invoice modal (نافذة منبثقة بشكل فاتورة — v2 محسّن) ── */
   .modal-overlay{
     position:fixed;inset:0;z-index:200;background:rgba(23,24,28,.62);backdrop-filter:blur(3px);
     display:flex;align-items:center;justify-content:center;padding:18px;
@@ -321,13 +366,15 @@
   }
   .modal-overlay.show{opacity:1;pointer-events:auto;}
   .invoice{
-    width:100%;max-width:440px;max-height:88vh;overflow-y:auto;background:var(--surface);border-radius:20px;
+    width:100%;max-width:520px;max-height:90vh;overflow-y:auto;background:var(--surface);border-radius:20px;
     box-shadow:0 30px 60px rgba(0,0,0,.35);transform:translateY(18px) scale(.97);opacity:0;
     transition:transform .25s cubic-bezier(.2,.9,.25,1),opacity .25s ease;
+    position:relative;
   }
   .modal-overlay.show .invoice{transform:translateY(0) scale(1);opacity:1;}
   .inv-head{background:var(--ink);color:#fff;padding:22px 24px 18px;position:relative;}
-  .inv-head .inv-close{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;}
+  .inv-head .inv-close{position:absolute;top:14px;left:14px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;}
+  .inv-head .inv-close:hover{background:rgba(255,255,255,.22);}
   .inv-head .inv-close svg{width:15px;height:15px;}
   .inv-head .inv-brand{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:10px;}
   .inv-head .inv-brand .mark{width:24px;height:17px;border-radius:4px;background:#fff;position:relative;flex-shrink:0;}
@@ -335,16 +382,39 @@
   .inv-head h3{font-family:'El Messiri',sans-serif;font-size:19px;font-weight:700;}
   .inv-meta{display:flex;justify-content:space-between;margin-top:12px;font-size:11px;color:rgba(255,255,255,.55);font-family:'IBM Plex Mono',monospace;}
   .inv-status{position:absolute;bottom:-13px;right:24px;font-size:10.5px;font-weight:700;padding:5px 14px;border-radius:20px;color:#fff;box-shadow:0 6px 14px rgba(0,0,0,.25);}
-  .inv-body{padding:26px 24px 22px;}
+  .inv-watermark{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-22deg);font-family:'El Messiri',sans-serif;font-size:60px;font-weight:700;color:rgba(0,0,0,.06);pointer-events:none;text-transform:uppercase;letter-spacing:4px;z-index:0;}
+  .inv-body{padding:26px 24px 22px;position:relative;z-index:1;}
+  /* customer card */
+  .inv-customer{background:var(--paper);border-radius:12px;padding:14px 16px;margin-bottom:14px;}
+  .inv-customer .ic-name{font-family:'El Messiri',sans-serif;font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+  .inv-customer .ic-sub{font-size:11px;color:var(--ink-faint);display:flex;gap:10px;flex-wrap:wrap;}
+  .inv-customer .ic-sub span{display:inline-flex;align-items:center;gap:3px;}
+  .inv-customer .ic-sub svg{width:11px;height:11px;}
   .inv-row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px;}
   .inv-row:last-of-type{border-bottom:none;}
   .inv-row .k{color:var(--ink-faint);font-size:12px;}
   .inv-row .v{font-weight:700;color:var(--ink);text-align:left;}
+  .inv-row .v.mono{font-family:'IBM Plex Mono',monospace;}
+  /* price breakdown */
+  .inv-breakdown{background:var(--paper);border-radius:10px;padding:12px 14px;margin-top:12px;}
+  .inv-bd-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;font-size:12px;color:var(--ink-soft);}
+  .inv-bd-row .v{font-family:'IBM Plex Mono',monospace;font-weight:600;}
+  .inv-bd-row.discount .v{color:#0C9A63;}
+  .inv-bd-row.vat .v{color:var(--gold);}
   .inv-total{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:14px;border-top:2px solid var(--ink);}
   .inv-total .k{font-size:13px;font-weight:700;}
   .inv-total .v{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:600;color:var(--red);}
+  /* QR section */
+  .inv-qr-wrap{display:flex;gap:14px;align-items:center;margin-top:18px;padding:14px;background:var(--paper);border-radius:12px;}
+  .inv-qr{width:96px;height:96px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+  .inv-qr img,.inv-qr canvas,.inv-qr svg{width:100%;height:100%;display:block;}
+  .inv-qr-info{flex:1;min-width:0;}
+  .inv-qr-info .qt{font-size:11px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .inv-qr-info .qd{font-size:10.5px;color:var(--ink-faint);line-height:1.5;word-break:break-all;}
+  .inv-qr-info .qa{font-size:11px;font-weight:700;color:var(--red);margin-top:6px;display:inline-flex;align-items:center;gap:3px;}
   .inv-link-btn{margin-top:16px;}
-  .inv-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin:20px 0 10px;}
+  .inv-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin:20px 0 10px;display:flex;justify-content:space-between;align-items:center;}
+  .inv-section-title .inv-section-toggle{font-size:10px;font-weight:700;color:var(--red);text-transform:none;letter-spacing:0;cursor:pointer;background:none;border:none;padding:0;}
   .inv-timeline{position:relative;padding-inline-start:20px;}
   .inv-timeline::before{content:'';position:absolute;right:5px;top:4px;bottom:4px;width:2px;background:var(--line);}
   html[dir="rtl"] .inv-timeline::before{right:5px;left:auto;}
@@ -353,9 +423,24 @@
   .inv-tl-item::before{content:'';position:absolute;right:-19px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid var(--surface);box-shadow:0 0 0 1px var(--red);}
   .inv-tl-item b{display:block;color:var(--ink);font-weight:700;font-size:11.5px;margin-bottom:1px;}
   .inv-note{margin-top:18px;background:var(--red-tint);border-radius:10px;padding:12px 14px;font-size:12.5px;color:var(--red-deep);line-height:1.7;}
-  .inv-foot{display:flex;gap:8px;margin-top:20px;}
-  .inv-foot .btn{flex:1;font-size:12.5px;padding:11px 14px;}
-  @media (max-width:400px){ .inv-body{padding:22px 18px 18px;} .inv-head{padding:20px 18px 16px;} }
+  .inv-designer{margin-top:10px;font-size:11px;color:var(--ink-faint);text-align:center;}
+  .inv-designer b{color:var(--ink);font-weight:700;}
+  .inv-foot{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;}
+  .inv-foot .btn{flex:1;font-size:12.5px;padding:11px 14px;min-width:0;}
+  .inv-foot .btn-ico{display:inline-flex;align-items:center;justify-content:center;gap:5px;}
+  .inv-foot .btn-ico svg{width:14px;height:14px;}
+  @media (max-width:480px){ .inv-body{padding:22px 18px 18px;} .inv-head{padding:20px 18px 16px;} .inv-qr-wrap{flex-direction:column;text-align:center;} .inv-qr{margin:0 auto;} }
+  /* print styles */
+  @media print{
+    body * {visibility:hidden;}
+    .modal-overlay, .modal-overlay * {visibility:visible;}
+    .modal-overlay{position:static;background:none;backdrop-filter:none;padding:0;display:block;opacity:1;pointer-events:auto;}
+    .invoice{max-width:100%;max-height:none;box-shadow:none;transform:none;opacity:1;border-radius:0;border:none;}
+    .inv-head .inv-close, .inv-foot .btn-line, .inv-foot .btn-red{display:none !important;}
+    .inv-watermark{color:rgba(0,0,0,.12) !important;}
+    .inv-body{padding:18px 0;}
+    @page{margin:14mm;}
+  }
 
   /* ── contact ── */
   .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:620px;margin:0 auto;}
@@ -770,11 +855,63 @@
         </div>
         <div class="cp-body">
           <form id="trackForm">
-            <div class="field"><label for="phoneInput" data-i18n="track.phone">رقم الهاتف</label><input type="tel" id="phoneInput" dir="ltr" placeholder="3XXXXXXX" required inputmode="numeric"></div>
-            <div class="field"><label for="codeInput" data-i18n="track.code">رمز التحقق</label><input type="text" id="codeInput" dir="ltr" placeholder="أدخل رمز التحقق" required></div>
-            <button type="submit" class="btn btn-red btn-block" data-i18n="track.submit">تحقق من طلبي</button>
+            <div class="field-row">
+              <div class="field"><label for="phoneInput" data-i18n="track.phone">رقم الهاتف</label><input type="tel" id="phoneInput" dir="ltr" placeholder="3XXXXXXX" required inputmode="numeric" autocomplete="tel"></div>
+              <div class="field"><label for="codeInput" data-i18n="track.code">رمز التحقق</label><input type="text" id="codeInput" dir="ltr" placeholder="أدخل رمز التحقق" required inputmode="numeric" autocomplete="one-time-code"></div>
+            </div>
+            <button type="submit" class="btn btn-red btn-block track-submit" id="trackSubmitBtn" data-i18n="track.submit">تحقق من طلبي<span class="btn-spinner" aria-hidden="true"></span></button>
           </form>
           <div class="track-msg" id="trackMsg"><span data-i18n="track.nocode">لم تستلم رمز التحقق؟</span> <a href="https://wa.me/97366302585" target="_blank" rel="noopener" data-i18n="track.contact">تواصل معي عبر واتساب</a></div>
+
+          <!-- ═══ بطاقة نتيجة التتبع (تظهر بعد نجاح التحقق) ═══ -->
+          <div class="track-result" id="trackResult" aria-live="polite">
+            <div class="tr-top">
+              <div class="tr-pkg">
+                <span data-i18n="track.r.package">الباقة</span>
+                <b id="trPackage">—</b>
+              </div>
+              <span class="tr-status-pill" id="trStatusPill">—</span>
+            </div>
+
+            <!-- شريط التقدّم متعدد الخطوات -->
+            <div class="tr-steps" id="trSteps">
+              <div class="tr-step" data-step="received">
+                <div class="dot">1</div>
+                <div class="lbl" data-i18n="track.r.s1">استلام الطلب</div>
+              </div>
+              <div class="tr-step" data-step="payment">
+                <div class="dot">2</div>
+                <div class="lbl" data-i18n="track.r.s2">بانتظار الدفع</div>
+              </div>
+              <div class="tr-step" data-step="design">
+                <div class="dot">3</div>
+                <div class="lbl" data-i18n="track.r.s3">تم التصميم</div>
+              </div>
+              <div class="tr-step" data-step="delivered">
+                <div class="dot">4</div>
+                <div class="lbl" data-i18n="track.r.s4">تم التسليم</div>
+              </div>
+            </div>
+
+            <div class="tr-meta">
+              <div class="tr-meta-item"><span class="k" data-i18n="track.r.code">رمز الطلب</span><span class="v mono" id="trCode">—</span></div>
+              <div class="tr-meta-item"><span class="k" data-i18n="track.r.date">تاريخ الطلب</span><span class="v" id="trDate">—</span></div>
+              <div class="tr-meta-item"><span class="k" data-i18n="track.r.delivery">تاريخ التسليم</span><span class="v" id="trDelivery">—</span></div>
+              <div class="tr-meta-item"><span class="k" data-i18n="track.r.total">الإجمالي</span><span class="v mono" id="trTotal">—</span></div>
+            </div>
+
+            <div class="tr-actions">
+              <a class="btn btn-red" id="trOpenCard" href="#" target="_blank" rel="noopener" data-i18n="track.r.openCard">فتح بطاقتي</a>
+              <button class="btn btn-line" id="trViewInvoice" type="button" data-i18n="track.r.viewInvoice">عرض الفاتورة</button>
+              <a class="btn btn-line" href="https://wa.me/97366302585" target="_blank" rel="noopener" data-i18n="track.r.contact">واتساب</a>
+            </div>
+
+            <!-- سجل الطلبات السابقة لنفس الرقم -->
+            <div class="tr-history" id="trHistoryWrap" style="display:none;">
+              <div class="tr-history-title" data-i18n="track.r.history">طلبات سابقة بنفس الرقم</div>
+              <div id="trHistoryList"></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -828,9 +965,10 @@
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
 </button>
 
-<!-- ═══════════════ INVOICE MODAL (نافذة منبثقة بشكل فاتورة) ═══════════════ -->
+<!-- ═══════════════ INVOICE MODAL (نافذة منبثقة بشكل فاتورة — v2) ═══════════════ -->
 <div class="modal-overlay" id="invoiceOverlay" role="dialog" aria-modal="true" aria-labelledby="invTitle">
   <div class="invoice">
+    <div class="inv-watermark" id="invWatermark"></div>
     <div class="inv-head">
       <button class="inv-close" id="invClose" aria-label="إغلاق الفاتورة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M6 18L18 6"/></svg>
@@ -844,22 +982,75 @@
       <span class="inv-status" id="invStatus">—</span>
     </div>
     <div class="inv-body">
-      <div class="inv-row"><span class="k" data-i18n="invoice.phone">رقم الهاتف</span><span class="v" id="invPhone" dir="ltr">—</span></div>
+      <!-- بطاقة العميل -->
+      <div class="inv-customer" id="invCustomerCard">
+        <div class="ic-name" id="invCustomerName">—</div>
+        <div class="ic-sub">
+          <span id="invCustomerPhoneWrap" dir="ltr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span id="invPhone">—</span>
+          </span>
+          <span id="invCustomerEmailWrap" dir="ltr">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+            <span id="invCustomerEmail">—</span>
+          </span>
+          <span id="invCustomerCountryWrap">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            <span id="invCustomerCountry">—</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- صفوف الفاتورة -->
       <div class="inv-row"><span class="k" data-i18n="invoice.package">الباقة المحجوزة</span><span class="v" id="invPackage">—</span></div>
       <div class="inv-row"><span class="k" data-i18n="invoice.count">عدد الطلبات السابقة لديك</span><span class="v" id="invCount">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.paymentMethod">طريقة الدفع</span><span class="v" id="invPaymentMethod">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.paymentStatus">حالة الدفع</span><span class="v" id="invPaymentStatus">—</span></div>
+      <div class="inv-row"><span class="k" data-i18n="invoice.deliveryDate">تاريخ التسليم</span><span class="v mono" id="invDeliveryDate">—</span></div>
       <div class="inv-row"><span class="k" data-i18n="invoice.link">رابط بطاقتك الرقمية</span><span class="v" id="invLinkWrap">—</span></div>
-      <div class="inv-total"><span class="k" data-i18n="invoice.total">إجمالي المبلغ</span><span class="v" id="invPrice">—</span></div>
+
+      <!-- تفصيل السعر -->
+      <div class="inv-breakdown" id="invBreakdown">
+        <div class="inv-bd-row"><span data-i18n="invoice.subtotal">المجموع الفرعي</span><span class="v" id="invSubtotal">—</span></div>
+        <div class="inv-bd-row discount" id="invDiscountRow" style="display:none;"><span data-i18n="invoice.discount">الخصم</span><span class="v" id="invDiscount">—</span></div>
+        <div class="inv-bd-row vat" id="invVatRow"><span data-i18n="invoice.vat">ضريبة القيمة المضافة (10%)</span><span class="v" id="invVat">—</span></div>
+      </div>
+      <div class="inv-total"><span class="k" data-i18n="invoice.total">الإجمالي شامل الضريبة</span><span class="v" id="invPrice">—</span></div>
+
+      <!-- رمز QR -->
+      <div class="inv-qr-wrap" id="invQrWrap" style="display:none;">
+        <div class="inv-qr" id="invQr"></div>
+        <div class="inv-qr-info">
+          <div class="qt" data-i18n="invoice.qr.title">رمز QR لبطاقتك</div>
+          <div class="qd" id="invQrDesc">—</div>
+          <a class="qa" id="invQrLink" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            <span data-i18n="invoice.qr.open">فتح الرابط</span>
+          </a>
+        </div>
+      </div>
 
       <div id="invTimelineWrap">
-        <div class="inv-section-title" data-i18n="invoice.timeline">ما تم إنجازه في طلبك</div>
+        <div class="inv-section-title">
+          <span data-i18n="invoice.timeline">ما تم إنجازه في طلبك</span>
+        </div>
         <div class="inv-timeline" id="invTimeline"></div>
       </div>
 
       <div class="inv-note" id="invNote" style="display:none;"></div>
 
+      <div class="inv-designer" id="invDesigner" style="display:none;">
+        <span data-i18n="invoice.designer">المصمم المسؤول:</span> <b id="invDesignerName">—</b>
+      </div>
+
       <div class="inv-foot">
-        <a class="btn btn-line btn-block" href="https://wa.me/97366302585" target="_blank" rel="noopener" data-i18n="invoice.whatsapp">تواصل واتساب</a>
-        <button class="btn btn-red btn-block" id="invCloseBtn2" data-i18n="invoice.close">إغلاق</button>
+        <a class="btn btn-line" href="https://wa.me/97366302585" target="_blank" rel="noopener">
+          <span class="btn-ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 0 0 4.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg><span data-i18n="invoice.whatsapp">واتساب</span></span>
+        </a>
+        <button class="btn btn-line" id="invPrintBtn" type="button">
+          <span class="btn-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg><span data-i18n="invoice.print">طباعة / PDF</span></span>
+        </button>
+        <button class="btn btn-red" id="invCloseBtn2" type="button" data-i18n="invoice.close">إغلاق</button>
       </div>
     </div>
   </div>
@@ -975,6 +1166,9 @@
       "track.eyebrow":"تتبع الطلب","track.title":"تحقق من حالة طلبك","track.sub":"أدخل رقم هاتفك ورمز التحقق الذي استلمته",
       "track.checkpoint":"نقطة التحقق من الطلب","track.phone":"رقم الهاتف","track.code":"رمز التحقق","track.submit":"تحقق من طلبي",
       "track.nocode":"لم تستلم رمز التحقق؟","track.contact":"تواصل معي عبر واتساب",
+      "track.r.package":"الباقة","track.r.s1":"استلام الطلب","track.r.s2":"بانتظار الدفع","track.r.s3":"تم التصميم","track.r.s4":"تم التسليم",
+      "track.r.code":"رمز الطلب","track.r.date":"تاريخ الطلب","track.r.delivery":"تاريخ التسليم","track.r.total":"الإجمالي",
+      "track.r.openCard":"فتح بطاقتي","track.r.viewInvoice":"عرض الفاتورة","track.r.contact":"واتساب","track.r.history":"طلبات سابقة بنفس الرقم",
 
       "contact.eyebrow":"تواصل","contact.title":"تواصل معي","contact.sub":"خدمة فردية أقدّمها بنفسي، وليست شركة",
       "contact.whatsapp":"واتساب","contact.email":"البريد الإلكتروني","contact.instagram":"إنستقرام",
@@ -986,8 +1180,12 @@
       "orderbar.from":"الباقة الأساسية من","orderbar.cta":"اطلب الآن",
 
       "invoice.title":"فاتورة الطلب","invoice.phone":"رقم الهاتف","invoice.package":"الباقة المحجوزة",
-      "invoice.count":"عدد الطلبات السابقة لديك","invoice.link":"رابط بطاقتك الرقمية","invoice.total":"إجمالي المبلغ",
-      "invoice.timeline":"ما تم إنجازه في طلبك","invoice.whatsapp":"تواصل واتساب","invoice.close":"إغلاق"
+      "invoice.count":"عدد الطلبات السابقة لديك","invoice.link":"رابط بطاقتك الرقمية","invoice.total":"الإجمالي شامل الضريبة",
+      "invoice.timeline":"ما تم إنجازه في طلبك","invoice.whatsapp":"واتساب","invoice.close":"إغلاق",
+      "invoice.paymentMethod":"طريقة الدفع","invoice.paymentStatus":"حالة الدفع","invoice.deliveryDate":"تاريخ التسليم",
+      "invoice.subtotal":"المجموع الفرعي","invoice.discount":"الخصم","invoice.vat":"ضريبة القيمة المضافة (10%)",
+      "invoice.qr.title":"رمز QR لبطاقتك","invoice.qr.open":"فتح الرابط","invoice.print":"طباعة / PDF",
+      "invoice.designer":"المصمم المسؤول:"
     },
     en: {
       "nav.brand":"Bitaqti","nav.brandSub":"Bitaqti · Digital Identity Cards",
@@ -1092,6 +1290,9 @@
       "track.eyebrow":"Track order","track.title":"Check your order status","track.sub":"Enter your phone number and the verification code you received",
       "track.checkpoint":"Order verification point","track.phone":"Phone number","track.code":"Verification code","track.submit":"Check my order",
       "track.nocode":"Didn't receive a verification code?","track.contact":"Contact me on WhatsApp",
+      "track.r.package":"Package","track.r.s1":"Order received","track.r.s2":"Awaiting payment","track.r.s3":"Designed","track.r.s4":"Delivered",
+      "track.r.code":"Order code","track.r.date":"Order date","track.r.delivery":"Delivery date","track.r.total":"Total",
+      "track.r.openCard":"Open my card","track.r.viewInvoice":"View invoice","track.r.contact":"WhatsApp","track.r.history":"Previous orders for this number",
 
       "contact.eyebrow":"Contact","contact.title":"Get in touch","contact.sub":"An individual service I provide myself, not a company",
       "contact.whatsapp":"WhatsApp","contact.email":"Email","contact.instagram":"Instagram",
@@ -1103,8 +1304,12 @@
       "orderbar.from":"Basic package from","orderbar.cta":"Order now",
 
       "invoice.title":"Order invoice","invoice.phone":"Phone number","invoice.package":"Booked package",
-      "invoice.count":"Your previous order count","invoice.link":"Your digital card link","invoice.total":"Total amount",
-      "invoice.timeline":"What has been completed on your order","invoice.whatsapp":"Contact on WhatsApp","invoice.close":"Close"
+      "invoice.count":"Your previous order count","invoice.link":"Your digital card link","invoice.total":"Total (incl. VAT)",
+      "invoice.timeline":"What has been completed on your order","invoice.whatsapp":"WhatsApp","invoice.close":"Close",
+      "invoice.paymentMethod":"Payment method","invoice.paymentStatus":"Payment status","invoice.deliveryDate":"Delivery date",
+      "invoice.subtotal":"Subtotal","invoice.discount":"Discount","invoice.vat":"VAT (10%)",
+      "invoice.qr.title":"QR code for your card","invoice.qr.open":"Open link","invoice.print":"Print / PDF",
+      "invoice.designer":"Assigned designer:"
     }
   };
 
@@ -1225,13 +1430,15 @@
     window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
   });
 
-  /* ══════════ ORDER TRACKING — عبر Netlify Function وسيطة (server-side) ══════════
+  /* ══════════ ORDER TRACKING + INVOICE (v2 محسّن) ═════════════════
      المتصفح لا يتصل بمصدر البيانات مباشرة ولا يعرف مكان تخزينها أو رابطها.
      كل ما يفعله المتصفح هو إرسال رقم الهاتف ورمز التحقق إلى نقطة نهاية واحدة
      على السيرفر (Netlify Function)، وهي التي تتحقق من التطابق من طرفها
-     وتُعيد للمتصفح بيانات الطلب المطابق فقط — لا شيء غير ذلك.
+     وتُعيد للمتصفح بيانات الطلب المطابق + سجل الطلبات السابقة لنفس الرقم.
      التفاصيل الكاملة لآلية الأمان موجودة في صفحة سياسة الخصوصية. */
   const TRACK_ENDPOINT = '/.netlify/functions/track-order';
+  const WHATSAPP_URL = 'https://wa.me/97366302585';
+  const CURRENCY = 'د.ب';
 
   async function checkOrder(phone, code){
     const res = await fetch(TRACK_ENDPOINT, {
@@ -1239,15 +1446,26 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, code }),
     });
-    if(res.status === 404) return { notFound: true };
+    if(res.status === 404){
+      let msg = 'لم يتم العثور على طلب برقم الهاتف ورمز التحقق المُدخلين.';
+      try { const j = await res.json(); if(j.message) msg = j.message; } catch(_) {}
+      return { notFound: true, message: msg };
+    }
+    if(res.status === 429){
+      let msg = 'محاولات كثيرة جداً. انتظر دقيقة.';
+      try { const j = await res.json(); if(j.message) msg = j.message; } catch(_) {}
+      return { rateLimited: true, message: msg };
+    }
     if(!res.ok) throw new Error('track_request_failed');
     return { data: await res.json() };
   }
 
   const trackForm = document.getElementById('trackForm');
   const trackMsg = document.getElementById('trackMsg');
+  const trackSubmitBtn = document.getElementById('trackSubmitBtn');
+  const trackResult = document.getElementById('trackResult');
 
-  /* ألوان حالة الطلب داخل الفاتورة */
+  // ألوان حالة الطلب (تُستخدم في pill الحالة + dot الشريط)
   const STATUS_COLORS = {
     'قيد التنفيذ':   '#B8924A',
     'بانتظار الدفع': '#CE1126',
@@ -1256,22 +1474,55 @@
     'ملغي':          '#53565C',
   };
 
+  // ترتيب الخطوات (نُطابق status الحالي بخطوة محددة)
+  const STATUS_STEP = {
+    'قيد التنفيذ':   'received',
+    'بانتظار الدفع': 'payment',
+    'تم التصميم':    'design',
+    'تم التسليم':    'delivered',
+    'ملغي':          'canceled',
+  };
+  const STEP_ORDER = ['received', 'payment', 'design', 'delivered'];
+
+  let lastOrderData = null; // آخر بيانات طلب تم جلبها (نُستخدم للفاتورة والطباعة)
+
   function maskPhone(phone){
     if(!phone || phone.length < 4) return phone || '—';
     return phone.slice(0,2) + '••••' + phone.slice(-2);
   }
 
-  function buildTimeline(actionsLog){
+  function formatMoney(n){
+    const v = Number(n);
+    if(isNaN(v)) return '—';
+    return (Math.round(v * 1000) / 1000).toFixed(3) + ' ' + CURRENCY;
+  }
+
+  /** يبني الخط الزمني المُهيكَل داخل الفاتورة (يقبل مصفوفة أو نص خام) */
+  function buildTimeline(timelineInput){
     const wrap = document.getElementById('invTimeline');
     const section = document.getElementById('invTimelineWrap');
     wrap.innerHTML = '';
-    const steps = (actionsLog || '').split('|').map(s=>s.trim()).filter(Boolean);
+
+    let steps = [];
+    if(Array.isArray(timelineInput)){
+      steps = timelineInput.map(s => ({ date: s.date || '', desc: s.desc || s.raw || '' }));
+    } else if(typeof timelineInput === 'string'){
+      steps = String(timelineInput)
+        .split('|')
+        .map(s => s.trim())
+        .filter(Boolean)
+        .map(step => {
+          const idx = step.indexOf(' - ');
+          return idx > -1
+            ? { date: step.slice(0, idx).trim(), desc: step.slice(idx + 3).trim() }
+            : { date: '', desc: step };
+        });
+    }
+
     if(!steps.length){ section.style.display = 'none'; return; }
     section.style.display = 'block';
-    steps.forEach(step=>{
-      const idx = step.indexOf(' - ');
-      const date = idx>-1 ? step.slice(0, idx) : '';
-      const desc = idx>-1 ? step.slice(idx+3) : step;
+
+    steps.forEach(({ date, desc }) => {
       const item = document.createElement('div');
       item.className = 'inv-tl-item';
       item.innerHTML = date ? `<b>${date}</b>${desc}` : desc;
@@ -1279,62 +1530,283 @@
     });
   }
 
-  function openInvoice(match, phone){
-    document.getElementById('invSerial').textContent = '#' + (match.order_code || 'BH-CV-2026-0000');
-    document.getElementById('invDate').textContent = match.order_date || '—';
+  /** يُحدّث شريط التقدّم متعدد الخطوات في بطاقة النتيجة */
+  function renderSteps(status){
+    const currentStep = STATUS_STEP[status] || 'received';
+    const wrap = document.getElementById('trSteps');
+
+    // حالة ملغي: نُعلّم كل الخطوات كملغية
+    if(currentStep === 'canceled'){
+      wrap.querySelectorAll('.tr-step').forEach(el => {
+        el.classList.remove('done','active');
+        el.classList.add('canceled');
+        const dot = el.querySelector('.dot');
+        dot.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M6 6l12 12M6 18L18 6"/></svg>';
+      });
+      return;
+    }
+
+    const currentIdx = STEP_ORDER.indexOf(currentStep);
+    wrap.querySelectorAll('.tr-step').forEach(el => {
+      el.classList.remove('done','active','canceled');
+      const step = el.getAttribute('data-step');
+      const idx = STEP_ORDER.indexOf(step);
+      const dot = el.querySelector('.dot');
+      if(idx < currentIdx){
+        el.classList.add('done');
+        dot.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>';
+      } else if(idx === currentIdx){
+        el.classList.add('active');
+        dot.textContent = idx + 1;
+      } else {
+        dot.textContent = idx + 1;
+      }
+    });
+  }
+
+  /** يعرض بطاقة نتيجة التتبع داخل القسم */
+  function renderTrackResult(order, history){
+    const safeOrder = order || {};
+    document.getElementById('trPackage').textContent = safeOrder.package || '—';
+
+    const status = safeOrder.status || 'قيد التنفيذ';
+    const pill = document.getElementById('trStatusPill');
+    pill.textContent = status;
+    pill.style.background = STATUS_COLORS[status] || '#53565C';
+
+    renderSteps(status);
+
+    document.getElementById('trCode').textContent = safeOrder.order_code || '—';
+    document.getElementById('trDate').textContent = safeOrder.order_date || '—';
+    document.getElementById('trDelivery').textContent = safeOrder.delivery_date || '—';
+    document.getElementById('trTotal').textContent = safeOrder.total_with_vat != null
+      ? formatMoney(safeOrder.total_with_vat)
+      : (safeOrder.price != null ? formatMoney(safeOrder.price) : '—');
+
+    const openCard = document.getElementById('trOpenCard');
+    if(safeOrder.cv_link){
+      openCard.href = safeOrder.cv_link;
+      openCard.style.pointerEvents = '';
+      openCard.style.opacity = '';
+    } else {
+      openCard.href = '#';
+      openCard.style.pointerEvents = 'none';
+      openCard.style.opacity = '.45';
+    }
+
+    // سجل الطلبات السابقة
+    const histWrap = document.getElementById('trHistoryWrap');
+    const histList = document.getElementById('trHistoryList');
+    histList.innerHTML = '';
+    if(Array.isArray(history) && history.length){
+      histWrap.style.display = 'block';
+      history.forEach(h => {
+        const item = document.createElement('div');
+        item.className = 'tr-history-item';
+        const color = STATUS_COLORS[h.status] || '#53565C';
+        item.innerHTML = `
+          <div>
+            <div class="h-code">${h.order_code || '—'}</div>
+            <div class="h-meta">${h.order_date || ''} · ${h.package || ''}</div>
+          </div>
+          <span class="h-pill" style="background:${color};">${h.status || '—'}</span>
+        `;
+        histList.appendChild(item);
+      });
+    } else {
+      histWrap.style.display = 'none';
+    }
+
+    trackResult.classList.add('show');
+  }
+
+  /** يفتح نافذة الفاتورة (تأخذ كائن order + phone) */
+  function openInvoice(order, phone){
+    const o = order || {};
+    lastOrderData = { order: o, phone };
+
+    // الترويسة
+    document.getElementById('invSerial').textContent = '#' + (o.order_code || 'BH-CV-2026-0000');
+    document.getElementById('invDate').textContent = o.order_date || '—';
+
+    // العميل
+    const custName = o.customer_name || (phone ? `عميل ${maskPhone(phone)}` : '—');
+    document.getElementById('invCustomerName').textContent = custName;
     document.getElementById('invPhone').textContent = maskPhone(phone);
-    document.getElementById('invPackage').textContent = match.package || '—';
-    document.getElementById('invCount').textContent = match.order_count || '1';
-    document.getElementById('invPrice').textContent = match.price ? `${match.price} د.ب` : '—';
+
+    const emailWrap = document.getElementById('invCustomerEmailWrap');
+    if(o.customer_email){
+      document.getElementById('invCustomerEmail').textContent = o.customer_email;
+      emailWrap.style.display = '';
+    } else { emailWrap.style.display = 'none'; }
+
+    const countryWrap = document.getElementById('invCustomerCountryWrap');
+    if(o.customer_country){
+      document.getElementById('invCustomerCountry').textContent = o.customer_country;
+      countryWrap.style.display = '';
+    } else { countryWrap.style.display = 'none'; }
+
+    // الصفوف
+    document.getElementById('invPackage').textContent = o.package || '—';
+    document.getElementById('invCount').textContent = o.total_orders_for_phone || o.order_count || '1';
+    document.getElementById('invPaymentMethod').textContent = o.payment_method || '—';
+    document.getElementById('invPaymentStatus').textContent = o.payment_status || '—';
+    document.getElementById('invDeliveryDate').textContent = o.delivery_date || '—';
 
     const linkWrap = document.getElementById('invLinkWrap');
-    linkWrap.innerHTML = match.cv_link ? `<a href="${match.cv_link}" target="_blank" rel="noopener" style="color:var(--red);font-weight:700;">فتح البطاقة ←</a>` : '—';
+    linkWrap.innerHTML = o.cv_link
+      ? `<a href="${o.cv_link}" target="_blank" rel="noopener" style="color:var(--red);font-weight:700;">فتح البطاقة ←</a>`
+      : '—';
 
+    // تفصيل السعر
+    const subtotal = Number(o.price) || 0;
+    const discount = Number(o.discount_amount) || 0;
+    const vat = Number(o.vat_amount) || (subtotal > 0 ? subtotal * 0.1 : 0);
+    const total = Number(o.total_with_vat) || (subtotal - discount + vat);
+
+    document.getElementById('invSubtotal').textContent = formatMoney(subtotal);
+
+    const discountRow = document.getElementById('invDiscountRow');
+    if(discount > 0){
+      document.getElementById('invDiscount').textContent = '− ' + formatMoney(discount);
+      discountRow.style.display = '';
+    } else { discountRow.style.display = 'none'; }
+
+    document.getElementById('invVat').textContent = formatMoney(vat);
+    document.getElementById('invPrice').textContent = formatMoney(total);
+
+    // علامة الحالة
     const statusEl = document.getElementById('invStatus');
-    const status = match.status || 'قيد التنفيذ';
+    const status = o.status || 'قيد التنفيذ';
     statusEl.textContent = status;
     statusEl.style.background = STATUS_COLORS[status] || '#53565C';
 
-    buildTimeline(match.actions_log);
+    // علامة مائية حسب الحالة
+    const watermark = document.getElementById('invWatermark');
+    if(status === 'تم التسليم'){ watermark.textContent = 'DELIVERED'; }
+    else if(status === 'ملغي'){ watermark.textContent = 'CANCELED'; }
+    else if(o.payment_status === 'مدفوع'){ watermark.textContent = 'PAID'; }
+    else if(o.invoice_status === 'مسودة'){ watermark.textContent = 'DRAFT'; }
+    else { watermark.textContent = ''; }
 
+    // الخط الزمني
+    buildTimeline(o.timeline || o.actions_log);
+
+    // ملاحظة العميل
     const noteEl = document.getElementById('invNote');
-    if(match.subpage_content){ noteEl.textContent = match.subpage_content; noteEl.style.display = 'block'; }
+    if(o.subpage_content){ noteEl.textContent = o.subpage_content; noteEl.style.display = 'block'; }
     else { noteEl.style.display = 'none'; }
 
+    // المصمم المسؤول
+    const designerWrap = document.getElementById('invDesigner');
+    if(o.assigned_designer){
+      document.getElementById('invDesignerName').textContent = o.assigned_designer;
+      designerWrap.style.display = 'block';
+    } else { designerWrap.style.display = 'none'; }
+
+    // QR Code
+    renderQR(o.cv_link || o.qr_code_path);
+
+    // عرض النافذة
     const overlay = document.getElementById('invoiceOverlay');
     overlay.classList.add('show');
     document.body.style.overflow = 'hidden';
+  }
+
+  /** يولّد QR Code بسيط كصورة SVG باستخدام خدمة Google Chart API بديلة (api.qrserver.com)
+   *  لأنها لا تحتاج مكتبة خارجية — أو يمكن استبدالها بمكتبة qrcode-generator لاحقاً. */
+  function renderQR(text){
+    const wrap = document.getElementById('invQrWrap');
+    const qrBox = document.getElementById('invQr');
+    const desc = document.getElementById('invQrDesc');
+    const link = document.getElementById('invQrLink');
+
+    if(!text){
+      wrap.style.display = 'none';
+      return;
+    }
+    wrap.style.display = 'flex';
+    qrBox.innerHTML = '';
+    const img = document.createElement('img');
+    img.alt = 'QR Code';
+    img.loading = 'lazy';
+    img.src = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=4&data=${encodeURIComponent(text)}`;
+    img.onerror = () => { wrap.style.display = 'none'; };
+    qrBox.appendChild(img);
+
+    desc.textContent = text.length > 50 ? text.slice(0, 50) + '…' : text;
+    link.href = text;
   }
 
   function closeInvoice(){
     document.getElementById('invoiceOverlay').classList.remove('show');
     document.body.style.overflow = '';
   }
+
   document.getElementById('invClose').addEventListener('click', closeInvoice);
   document.getElementById('invCloseBtn2').addEventListener('click', closeInvoice);
-  document.getElementById('invoiceOverlay').addEventListener('click', (e)=>{ if(e.target.id === 'invoiceOverlay') closeInvoice(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeInvoice(); });
+  document.getElementById('invoiceOverlay').addEventListener('click', (e)=>{
+    if(e.target.id === 'invoiceOverlay') closeInvoice();
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape' && document.getElementById('invoiceOverlay').classList.contains('show')){
+      closeInvoice();
+    }
+  });
 
+  // زر الطباعة داخل الفاتورة
+  document.getElementById('invPrintBtn').addEventListener('click', ()=>{
+    if(!lastOrderData) return;
+    // نفتح الفاتورة أولاً (إن لم تكن مفتوحة) ثم نطبع
+    if(!document.getElementById('invoiceOverlay').classList.contains('show')){
+      openInvoice(lastOrderData.order, lastOrderData.phone);
+    }
+    setTimeout(()=> window.print(), 80);
+  });
+
+  // زر "عرض الفاتورة" داخل بطاقة نتيجة التتبع
+  document.getElementById('trViewInvoice').addEventListener('click', ()=>{
+    if(lastOrderData) openInvoice(lastOrderData.order, lastOrderData.phone);
+  });
+
+  // إرسال نموذج التتبع
   trackForm.addEventListener('submit', async (e)=>{
     e.preventDefault();
     const phone = document.getElementById('phoneInput').value.trim();
     const code = document.getElementById('codeInput').value.trim();
 
+    // إخفاء نتيجة سابقة إن وُجدت
+    trackResult.classList.remove('show');
     trackMsg.textContent = 'جاري التحقق...';
-    trackMsg.classList.remove('err');
+    trackMsg.classList.remove('err','ok');
+    trackSubmitBtn.classList.add('loading');
+    trackSubmitBtn.disabled = true;
 
     try{
       const result = await checkOrder(phone, code);
       if(result.notFound){
-        trackMsg.textContent = 'لم يتم العثور على طلب برقم الهاتف ورمز التحقق المُدخلين.';
+        trackMsg.textContent = result.message || 'لم يتم العثور على طلب.';
+        trackMsg.classList.add('err');
+      } else if(result.rateLimited){
+        trackMsg.textContent = result.message || 'محاولات كثيرة جداً.';
         trackMsg.classList.add('err');
       } else {
-        trackMsg.textContent = '';
-        openInvoice(result.data, phone);
+        const order = result.data.order || result.data;
+        const history = result.data.history || [];
+        lastOrderData = { order, phone };
+        trackMsg.textContent = 'تم التحقق بنجاح ✓';
+        trackMsg.classList.add('ok');
+        renderTrackResult(order, history);
+        // فتح الفاتورة تلقائياً بعد فتح بطاقة النتيجة
+        // (نتركها للزائر ليختار عبر زر "عرض الفاتورة" حتى لا تكون مفاجئة)
       }
     } catch(err){
+      console.error('[track] error', err);
       trackMsg.textContent = 'تعذّر الاتصال بخدمة التتبع حالياً. تواصل معي عبر واتساب.';
       trackMsg.classList.add('err');
+    } finally {
+      trackSubmitBtn.classList.remove('loading');
+      trackSubmitBtn.disabled = false;
     }
   });
 </script>
