@@ -1814,8 +1814,175 @@
     if(!document.getElementById('invoiceOverlay').classList.contains('show')){
       openInvoice(lastOrderData.order, lastOrderData.phone);
     }
-    setTimeout(()=> window.print(), 80);
+    // نستخدم نافذة منفصلة لطباعة احترافية بدون تشويش بقية الصفحة
+    printInvoiceInNewWindow(lastOrderData.order, lastOrderData.phone);
   });
+
+  /** يفتح نافذة جديدة بقالب A4 احترافي للفاتورة ويطبعها تلقائياً */
+  function printInvoiceInNewWindow(order, phone){
+    const o = order || {};
+    const win = window.open('', '_blank', 'width=820,height=900');
+    if(!win){
+      // إن فُتح حظر النوافذ، نطبع في نفس النافذة
+      setTimeout(()=> window.print(), 80);
+      return;
+    }
+    const maskPhone = (p) => (!p || p.length < 4) ? (p || '—') : (p.slice(0,2) + '••••' + p.slice(-2));
+    const fmtMoney = (n) => {
+      const v = Number(n);
+      if(isNaN(v)) return '—';
+      return (Math.round(v * 1000) / 1000).toFixed(3) + ' د.ب';
+    };
+
+    const subtotal = Number(o.price) || 0;
+    const discount = Number(o.discount_amount) || 0;
+    const vat = Number(o.vat_amount) || (subtotal > 0 ? subtotal * 0.1 : 0);
+    const total = Number(o.total_with_vat) || (subtotal - discount + vat);
+
+    const STATUS_COLORS_PRINT = {
+      'قيد التنفيذ':'#B8924A','بانتظار الدفع':'#CE1126','تم التصميم':'#3730A3',
+      'تم التسليم':'#0C9A63','ملغي':'#53565C',
+    };
+    const statusColor = STATUS_COLORS_PRINT[o.status] || '#53565C';
+
+    // بناء الخط الزمني
+    let timelineHtml = '';
+    if(o.timeline && Array.isArray(o.timeline) && o.timeline.length){
+      timelineHtml = '<div class="timeline"><h3>سجل الإجراءات</h3>';
+      o.timeline.forEach(t => {
+        timelineHtml += `<div class="tl-item">${t.date ? `<b>${t.date}</b>` : ''}${t.desc}</div>`;
+      });
+      timelineHtml += '</div>';
+    } else if(o.actions_log){
+      timelineHtml = '<div class="timeline"><h3>سجل الإجراءات</h3>';
+      String(o.actions_log).split('|').map(s => s.trim()).filter(Boolean).forEach(step => {
+        const idx = step.indexOf(' - ');
+        const date = idx > -1 ? step.slice(0, idx) : '';
+        const desc = idx > -1 ? step.slice(idx + 3) : step;
+        timelineHtml += `<div class="tl-item">${date ? `<b>${date}</b>` : ''}${desc}</div>`;
+      });
+      timelineHtml += '</div>';
+    }
+
+    const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>فاتورة ${o.order_code || ''}</title>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page{size:A4;margin:10mm;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#fff;color:#17181C;line-height:1.6;font-size:11pt;}
+  .sheet{max-width:190mm;margin:0 auto;padding:6mm 4mm;}
+  .head{background:#17181C;color:#fff;padding:18px 22px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
+  .head .brand{display:flex;align-items:center;gap:10px;}
+  .head .mark{width:30px;height:22px;border-radius:4px;background:#fff;position:relative;}
+  .head .mark::after{content:'';position:absolute;right:5px;left:5px;top:9px;height:2px;border-radius:2px;background:#CE1126;}
+  .head h1{font-family:'El Messiri',sans-serif;font-size:18pt;font-weight:700;}
+  .head .meta{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10pt;opacity:.7;}
+  .status-pill{display:inline-block;padding:4px 12px;border-radius:14px;color:#fff;font-size:10pt;font-weight:700;margin-top:8px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+  .card{background:#F4F3EF;border-radius:8px;padding:12px 14px;}
+  .card .lbl{font-size:9pt;color:#8A8D93;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+  .card .val{font-weight:700;font-size:11pt;}
+  .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #E3E1D9;font-size:11pt;}
+  .row .k{color:#53565C;}
+  .row .v{font-weight:700;}
+  .breakdown{background:#F4F3EF;border-radius:8px;padding:10px 14px;margin:10px 0;}
+  .breakdown .row{border-bottom:1px dashed #E3E1D9;}
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:2px solid #17181C;}
+  .total .v{font-family:'IBM Plex Mono',monospace;font-size:18pt;font-weight:700;color:#CE1126;}
+  .timeline{margin:14px 0;}
+  .timeline h3{font-size:10pt;color:#8A8D93;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .tl-item{padding:5px 0 5px 18px;border-right:2px solid #CE1126;margin-right:5px;font-size:10pt;}
+  .tl-item b{display:block;color:#17181C;font-size:9pt;margin-bottom:1px;}
+  .qr-wrap{display:flex;gap:14px;align-items:center;margin:14px 0;padding:12px;background:#F4F3EF;border-radius:8px;}
+  .qr-box{width:90px;height:90px;background:#fff;border:1px solid #E3E1D9;border-radius:6px;padding:5px;flex-shrink:0;}
+  .qr-box img{width:100%;height:100%;display:block;}
+  .qr-info .qt{font-size:10pt;font-weight:700;margin-bottom:3px;}
+  .qr-info .qd{font-size:9pt;color:#8A8D93;word-break:break-all;}
+  .foot{margin-top:18px;padding-top:12px;border-top:1px solid #E3E1D9;text-align:center;font-size:9pt;color:#8A8D93;}
+  .foot strong{color:#17181C;}
+  @media print{body{font-size:11pt;}.sheet{padding:0;}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="head">
+    <div>
+      <div class="brand"><span class="mark"></span> <strong>بطاقتي (Bitaqti)</strong></div>
+      <h1>فاتورة الطلب</h1>
+    </div>
+    <div class="meta">
+      <div>${o.order_code || '#—'}</div>
+      <div>${o.order_date || '—'}</div>
+      <div class="status-pill" style="background:${statusColor};">${o.status || '—'}</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="lbl">العميل</div>
+      <div class="val">${o.customer_name || maskPhone(phone) || '—'}</div>
+      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;" dir="ltr">${maskPhone(phone)}</div>
+    </div>
+    <div class="card">
+      <div class="lbl">معلومات إضافية</div>
+      <div class="val" style="font-size:10pt;" dir="ltr">${o.customer_email || '—'}</div>
+      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;">${o.customer_country || 'مملكة البحرين'}</div>
+    </div>
+  </div>
+
+  <div class="row"><span class="k">الباقة</span><span class="v">${o.package || '—'}</span></div>
+  <div class="row"><span class="k">طريقة الدفع</span><span class="v">${o.payment_method || '—'}</span></div>
+  <div class="row"><span class="k">حالة الدفع</span><span class="v">${o.payment_status || '—'}</span></div>
+  <div class="row"><span class="k">تاريخ التسليم</span><span class="v" dir="ltr">${o.delivery_date || '—'}</span></div>
+  ${o.cv_link ? `<div class="row"><span class="k">رابط البطاقة</span><span class="v" style="font-size:10pt;" dir="ltr">${o.cv_link}</span></div>` : ''}
+  ${o.assigned_designer ? `<div class="row"><span class="k">المصمم</span><span class="v">${o.assigned_designer}</span></div>` : ''}
+
+  <div class="breakdown">
+    <div class="row"><span>المجموع الفرعي</span><span class="v" dir="ltr">${fmtMoney(subtotal)}</span></div>
+    ${discount > 0 ? `<div class="row"><span>الخصم</span><span class="v" style="color:#0C9A63;" dir="ltr">− ${fmtMoney(discount)}</span></div>` : ''}
+    <div class="row"><span>ضريبة القيمة المضافة (10%)</span><span class="v" style="color:#9C7A3C;" dir="ltr">${fmtMoney(vat)}</span></div>
+  </div>
+  <div class="total"><span>الإجمالي شامل الضريبة</span><span class="v" dir="ltr">${fmtMoney(total)}</span></div>
+
+  ${o.cv_link ? `
+  <div class="qr-wrap">
+    <div class="qr-box">
+      <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=2&data=${encodeURIComponent(o.cv_link)}" alt="QR">
+    </div>
+    <div class="qr-info">
+      <div class="qt">رمز QR لبطاقتك الرقمية</div>
+      <div class="qd">${o.cv_link}</div>
+      <div style="font-size:9pt;color:#8A8D93;margin-top:4px;">امسح الرمز بكاميرا الهاتف لفتح البطاقة مباشرة</div>
+    </div>
+  </div>` : ''}
+
+  ${timelineHtml}
+
+  ${o.subpage_content ? `<div style="margin:12px 0;background:#FBE9EA;border-radius:8px;padding:10px 14px;font-size:10pt;color:#9C0E1E;line-height:1.6;">${o.subpage_content}</div>` : ''}
+
+  <div class="foot">
+    <strong>بطاقتي (Bitaqti)</strong> · بطاقات رقمية تعريفية · مملكة البحرين<br>
+    واتساب: <span dir="ltr">+973 6630 2585</span> · بريد: <span dir="ltr">bitaqti.bh@gmail.com</span>
+  </div>
+</div>
+<script>
+  // ننتظر تحميل الخطوط ثم نطبع تلقائياً
+  if(document.fonts && document.fonts.ready){
+    document.fonts.ready.then(() => setTimeout(() => window.print(), 200));
+  } else {
+    window.onload = () => setTimeout(() => window.print(), 500);
+  }
+<\/script>
+</body>
+</html>`;
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+  }
 
   // زر "عرض الفاتورة" داخل بطاقة نتيجة التتبع
   document.getElementById('trViewInvoice').addEventListener('click', ()=>{
