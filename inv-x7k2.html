@@ -362,18 +362,18 @@
   .inv-qr canvas{width:80px;height:80px;border:1px solid var(--line);border-radius:6px;padding:3px;}
   .inv-qr span{font-size:9px;color:var(--ink-faint);}
 
-  .inv-items-table{width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:16px;}
+  .inv-items-table{width:100%;max-width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:16px;overflow:hidden;}
   .inv-items-table th{
-    background:var(--ink);color:#fff;font-size:11px;font-weight:700;
-    padding:9px 8px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    background:var(--ink);color:#fff;font-size:10px;font-weight:700;
+    padding:8px 3px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .inv-items-table th:first-child{border-radius:6px 0 0 6px;}
   .inv-items-table th:last-child{border-radius:0 6px 6px 0;text-align:center;}
-  .inv-items-table th.col-num{text-align:center;width:8%;}
-  .inv-items-table th.col-qty{text-align:center;width:12%;}
-  .inv-items-table th.col-price{text-align:center;width:17%;}
-  .inv-items-table th.col-total{text-align:center;width:18%;}
-  .inv-items-table td{padding:9px 8px;border-bottom:1px solid var(--line);font-size:12.5px;overflow-wrap:break-word;word-break:break-word;}
+  .inv-items-table th.col-num{text-align:center;width:9mm;}
+  .inv-items-table th.col-qty{text-align:center;width:14mm;}
+  .inv-items-table th.col-price{text-align:center;width:23mm;}
+  .inv-items-table th.col-total{text-align:center;width:23mm;}
+  .inv-items-table td{padding:8px 3px;border-bottom:1px solid var(--line);font-size:12px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
   .inv-items-table td.col-num{text-align:center;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-qty{text-align:center;font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-price{text-align:center;font-family:'IBM Plex Mono',monospace;direction:ltr;}
@@ -714,6 +714,8 @@
       color-adjust:exact !important;
     }
     #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
+    /* قفل نهائي: لا شيء داخل الورقة يمكن أن يكون أعرض منها، مهما كان السبب */
+    #sheet > *,.a4-sheet > *{max-width:100% !important;box-sizing:border-box !important;}
 
     /* الروابط لا تُظهر URL */
     a[href]:after,
@@ -1005,7 +1007,7 @@
                   <th class="col-num">#</th>
                   <th>البيان / الوصف</th>
                   <th class="col-qty">كمية</th>
-                  <th class="col-price">سعر الوحدة</th>
+                  <th class="col-price">السعر</th>
                   <th class="col-total">الإجمالي</th>
                 </tr>
               </thead>
