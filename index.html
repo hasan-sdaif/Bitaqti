@@ -1810,23 +1810,19 @@
   // زر الطباعة داخل الفاتورة
   document.getElementById('invPrintBtn').addEventListener('click', ()=>{
     if(!lastOrderData) return;
-    // نفتح الفاتورة أولاً (إن لم تكن مفتوحة) ثم نطبع
+    // نفتح الفاتورة أولاً (إن لم تكن مفتوحة) لضمان توفر البيانات
     if(!document.getElementById('invoiceOverlay').classList.contains('show')){
       openInvoice(lastOrderData.order, lastOrderData.phone);
     }
-    // نستخدم نافذة منفصلة لطباعة احترافية بدون تشويش بقية الصفحة
-    printInvoiceInNewWindow(lastOrderData.order, lastOrderData.phone);
+    // نطبع عبر iframe مخفي (لن يُحجب أبداً من popup blockers)
+    setTimeout(() => printInvoiceViaIframe(lastOrderData.order, lastOrderData.phone), 100);
   });
 
-  /** يفتح نافذة جديدة بقالب A4 احترافي للفاتورة ويطبعها تلقائياً */
-  function printInvoiceInNewWindow(order, phone){
+  /**
+   * يطبع الفاتورة عبر iframe مخفي — الحل الأكثر موثوقية ضد حاجزي النوافذ المنبثقة.
+   */
+  function printInvoiceViaIframe(order, phone){
     const o = order || {};
-    const win = window.open('', '_blank', 'width=820,height=900');
-    if(!win){
-      // إن فُتح حظر النوافذ، نطبع في نفس النافذة
-      setTimeout(()=> window.print(), 80);
-      return;
-    }
     const maskPhone = (p) => (!p || p.length < 4) ? (p || '—') : (p.slice(0,2) + '••••' + p.slice(-2));
     const fmtMoney = (n) => {
       const v = Number(n);
@@ -1847,24 +1843,85 @@
 
     // بناء الخط الزمني
     let timelineHtml = '';
-    if(o.timeline && Array.isArray(o.timeline) && o.timeline.length){
+    const steps = (o.timeline && Array.isArray(o.timeline) && o.timeline.length)
+      ? o.timeline
+      : (o.actions_log ? String(o.actions_log).split('|').map(s => s.trim()).filter(Boolean).map(step => {
+          const idx = step.indexOf(' - ');
+          return idx > -1 ? {date: step.slice(0, idx), desc: step.slice(idx + 3)} : {date: '', desc: step};
+        }) : []);
+
+    if(steps.length){
       timelineHtml = '<div class="timeline"><h3>سجل الإجراءات</h3>';
-      o.timeline.forEach(t => {
+      steps.forEach(t => {
         timelineHtml += `<div class="tl-item">${t.date ? `<b>${t.date}</b>` : ''}${t.desc}</div>`;
-      });
-      timelineHtml += '</div>';
-    } else if(o.actions_log){
-      timelineHtml = '<div class="timeline"><h3>سجل الإجراءات</h3>';
-      String(o.actions_log).split('|').map(s => s.trim()).filter(Boolean).forEach(step => {
-        const idx = step.indexOf(' - ');
-        const date = idx > -1 ? step.slice(0, idx) : '';
-        const desc = idx > -1 ? step.slice(idx + 3) : step;
-        timelineHtml += `<div class="tl-item">${date ? `<b>${date}</b>` : ''}${desc}</div>`;
       });
       timelineHtml += '</div>';
     }
 
-    const html = `<!DOCTYPE html>
+    const invoiceHtml = `
+  <div class="sheet">
+    <div class="head">
+      <div>
+        <div class="brand"><span class="mark"></span> <strong>بطاقتي (Bitaqti)</strong></div>
+        <h1>فاتورة الطلب</h1>
+      </div>
+      <div class="meta">
+        <div>${o.order_code || '#—'}</div>
+        <div>${o.order_date || '—'}</div>
+        <div class="status-pill" style="background:${statusColor};">${o.status || '—'}</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div class="lbl">العميل</div>
+        <div class="val">${o.customer_name || maskPhone(phone) || '—'}</div>
+        <div style="font-size:9pt;color:#8A8D93;margin-top:2px;" dir="ltr">${maskPhone(phone)}</div>
+      </div>
+      <div class="card">
+        <div class="lbl">معلومات إضافية</div>
+        <div class="val" style="font-size:10pt;" dir="ltr">${o.customer_email || '—'}</div>
+        <div style="font-size:9pt;color:#8A8D93;margin-top:2px;">${o.customer_country || 'مملكة البحرين'}</div>
+      </div>
+    </div>
+
+    <div class="row"><span class="k">الباقة</span><span class="v">${o.package || '—'}</span></div>
+    <div class="row"><span class="k">طريقة الدفع</span><span class="v">${o.payment_method || '—'}</span></div>
+    <div class="row"><span class="k">حالة الدفع</span><span class="v">${o.payment_status || '—'}</span></div>
+    <div class="row"><span class="k">تاريخ التسليم</span><span class="v" dir="ltr">${o.delivery_date || '—'}</span></div>
+    ${o.cv_link ? `<div class="row"><span class="k">رابط البطاقة</span><span class="v" style="font-size:10pt;" dir="ltr">${o.cv_link}</span></div>` : ''}
+    ${o.assigned_designer ? `<div class="row"><span class="k">المصمم</span><span class="v">${o.assigned_designer}</span></div>` : ''}
+
+    <div class="breakdown">
+      <div class="row"><span>المجموع الفرعي</span><span class="v" dir="ltr">${fmtMoney(subtotal)}</span></div>
+      ${discount > 0 ? `<div class="row"><span>الخصم</span><span class="v" style="color:#0C9A63;" dir="ltr">− ${fmtMoney(discount)}</span></div>` : ''}
+      <div class="row"><span>ضريبة القيمة المضافة (10%)</span><span class="v" style="color:#9C7A3C;" dir="ltr">${fmtMoney(vat)}</span></div>
+    </div>
+    <div class="total"><span>الإجمالي شامل الضريبة</span><span class="v" dir="ltr">${fmtMoney(total)}</span></div>
+
+    ${o.cv_link ? `
+    <div class="qr-wrap">
+      <div class="qr-box">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=2&data=${encodeURIComponent(o.cv_link)}" alt="QR">
+      </div>
+      <div class="qr-info">
+        <div class="qt">رمز QR لبطاقتك الرقمية</div>
+        <div class="qd">${o.cv_link}</div>
+        <div style="font-size:9pt;color:#8A8D93;margin-top:4px;">امسح الرمز بكاميرا الهاتف لفتح البطاقة مباشرة</div>
+      </div>
+    </div>` : ''}
+
+    ${timelineHtml}
+
+    ${o.subpage_content ? `<div style="margin:12px 0;background:#FBE9EA;border-radius:8px;padding:10px 14px;font-size:10pt;color:#9C0E1E;line-height:1.6;">${o.subpage_content}</div>` : ''}
+
+    <div class="foot">
+      <strong>بطاقتي (Bitaqti)</strong> · بطاقات رقمية تعريفية · مملكة البحرين<br>
+      واتساب: <span dir="ltr">+973 6630 2585</span> · بريد: <span dir="ltr">bitaqti.bh@gmail.com</span>
+    </div>
+  </div>`;
+
+    const fullHtml = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -1904,84 +1961,58 @@
   .qr-info .qd{font-size:9pt;color:#8A8D93;word-break:break-all;}
   .foot{margin-top:18px;padding-top:12px;border-top:1px solid #E3E1D9;text-align:center;font-size:9pt;color:#8A8D93;}
   .foot strong{color:#17181C;}
-  @media print{body{font-size:11pt;}.sheet{padding:0;}}
+  *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
+  a[href]:after{content:"" !important;}
+  tr,td,th{page-break-inside:avoid;}
 </style>
 </head>
-<body>
-<div class="sheet">
-  <div class="head">
-    <div>
-      <div class="brand"><span class="mark"></span> <strong>بطاقتي (Bitaqti)</strong></div>
-      <h1>فاتورة الطلب</h1>
-    </div>
-    <div class="meta">
-      <div>${o.order_code || '#—'}</div>
-      <div>${o.order_date || '—'}</div>
-      <div class="status-pill" style="background:${statusColor};">${o.status || '—'}</div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="card">
-      <div class="lbl">العميل</div>
-      <div class="val">${o.customer_name || maskPhone(phone) || '—'}</div>
-      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;" dir="ltr">${maskPhone(phone)}</div>
-    </div>
-    <div class="card">
-      <div class="lbl">معلومات إضافية</div>
-      <div class="val" style="font-size:10pt;" dir="ltr">${o.customer_email || '—'}</div>
-      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;">${o.customer_country || 'مملكة البحرين'}</div>
-    </div>
-  </div>
-
-  <div class="row"><span class="k">الباقة</span><span class="v">${o.package || '—'}</span></div>
-  <div class="row"><span class="k">طريقة الدفع</span><span class="v">${o.payment_method || '—'}</span></div>
-  <div class="row"><span class="k">حالة الدفع</span><span class="v">${o.payment_status || '—'}</span></div>
-  <div class="row"><span class="k">تاريخ التسليم</span><span class="v" dir="ltr">${o.delivery_date || '—'}</span></div>
-  ${o.cv_link ? `<div class="row"><span class="k">رابط البطاقة</span><span class="v" style="font-size:10pt;" dir="ltr">${o.cv_link}</span></div>` : ''}
-  ${o.assigned_designer ? `<div class="row"><span class="k">المصمم</span><span class="v">${o.assigned_designer}</span></div>` : ''}
-
-  <div class="breakdown">
-    <div class="row"><span>المجموع الفرعي</span><span class="v" dir="ltr">${fmtMoney(subtotal)}</span></div>
-    ${discount > 0 ? `<div class="row"><span>الخصم</span><span class="v" style="color:#0C9A63;" dir="ltr">− ${fmtMoney(discount)}</span></div>` : ''}
-    <div class="row"><span>ضريبة القيمة المضافة (10%)</span><span class="v" style="color:#9C7A3C;" dir="ltr">${fmtMoney(vat)}</span></div>
-  </div>
-  <div class="total"><span>الإجمالي شامل الضريبة</span><span class="v" dir="ltr">${fmtMoney(total)}</span></div>
-
-  ${o.cv_link ? `
-  <div class="qr-wrap">
-    <div class="qr-box">
-      <img src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=2&data=${encodeURIComponent(o.cv_link)}" alt="QR">
-    </div>
-    <div class="qr-info">
-      <div class="qt">رمز QR لبطاقتك الرقمية</div>
-      <div class="qd">${o.cv_link}</div>
-      <div style="font-size:9pt;color:#8A8D93;margin-top:4px;">امسح الرمز بكاميرا الهاتف لفتح البطاقة مباشرة</div>
-    </div>
-  </div>` : ''}
-
-  ${timelineHtml}
-
-  ${o.subpage_content ? `<div style="margin:12px 0;background:#FBE9EA;border-radius:8px;padding:10px 14px;font-size:10pt;color:#9C0E1E;line-height:1.6;">${o.subpage_content}</div>` : ''}
-
-  <div class="foot">
-    <strong>بطاقتي (Bitaqti)</strong> · بطاقات رقمية تعريفية · مملكة البحرين<br>
-    واتساب: <span dir="ltr">+973 6630 2585</span> · بريد: <span dir="ltr">bitaqti.bh@gmail.com</span>
-  </div>
-</div>
-<script>
-  // ننتظر تحميل الخطوط ثم نطبع تلقائياً
-  if(document.fonts && document.fonts.ready){
-    document.fonts.ready.then(() => setTimeout(() => window.print(), 200));
-  } else {
-    window.onload = () => setTimeout(() => window.print(), 500);
-  }
-<\/script>
-</body>
+<body>${invoiceHtml}</body>
 </html>`;
-    win.document.open();
-    win.document.write(html);
-    win.document.close();
+
+    // إنشاء iframe مخفي
+    let iframe = document.getElementById('printFrame');
+    if(!iframe){
+      iframe = document.createElement('iframe');
+      iframe.id = 'printFrame';
+      iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:none;background:#fff;';
+      document.body.appendChild(iframe);
+    }
+
+    // التحقق من توفر contentWindow
+    if(!iframe.contentWindow){
+      console.error('[printInvoiceViaIframe] iframe.contentWindow is null, falling back to window.print()');
+      window.print();
+      return;
+    }
+
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(fullHtml);
+    doc.close();
+
+    const doPrint = () => {
+      try{
+        if(!iframe.contentWindow){
+          window.print();
+          return;
+        }
+        iframe.contentWindow.focus();
+        iframe.contentWindow.print();
+      }catch(e){
+        console.error('[printInvoiceViaIframe] print failed:', e);
+        window.print();
+      }
+    };
+
+    try {
+      if(iframe.contentWindow.document.fonts && iframe.contentWindow.document.fonts.ready){
+        iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 200));
+      } else {
+        setTimeout(doPrint, 500);
+      }
+    } catch(e) {
+      setTimeout(doPrint, 500);
+    }
   }
 
   // زر "عرض الفاتورة" داخل بطاقة نتيجة التتبع
