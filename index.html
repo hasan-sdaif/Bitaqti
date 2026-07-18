@@ -430,16 +430,69 @@
   .inv-foot .btn-ico{display:inline-flex;align-items:center;justify-content:center;gap:5px;}
   .inv-foot .btn-ico svg{width:14px;height:14px;}
   @media (max-width:480px){ .inv-body{padding:22px 18px 18px;} .inv-head{padding:20px 18px 16px;} .inv-qr-wrap{flex-direction:column;text-align:center;} .inv-qr{margin:0 auto;} }
-  /* print styles */
+  /* print styles — v2 محسّن */
   @media print{
-    body * {visibility:hidden;}
-    .modal-overlay, .modal-overlay * {visibility:visible;}
-    .modal-overlay{position:static;background:none;backdrop-filter:none;padding:0;display:block;opacity:1;pointer-events:auto;}
-    .invoice{max-width:100%;max-height:none;box-shadow:none;transform:none;opacity:1;border-radius:0;border:none;}
-    .inv-head .inv-close, .inv-foot .btn-line, .inv-foot .btn-red{display:none !important;}
+    @page{size:A4;margin:8mm;}
+    html,body{background:#fff !important;margin:0 !important;padding:0 !important;}
+
+    /* إخفاء كل شيء في الصفحة */
+    body * {visibility:hidden !important;}
+
+    /* إظهار فقط الفاتورة المنبثقة ومحتوياتها */
+    .modal-overlay,
+    .modal-overlay *{visibility:visible !important;}
+
+    /* إجبار النافذة على الظهور حتى لو لم تكن مفتوحة */
+    .modal-overlay{
+      display:block !important;
+      opacity:1 !important;
+      position:static !important;
+      background:none !important;
+      backdrop-filter:none !important;
+      padding:0 !important;
+      pointer-events:auto !important;
+    }
+
+    /* إلغاء تأثيرات الظهور وإجبار الفاتورة على ملء الصفحة */
+    .invoice{
+      display:block !important;
+      opacity:1 !important;
+      transform:none !important;
+      max-width:100% !important;
+      max-height:none !important;
+      overflow:visible !important;
+      box-shadow:none !important;
+      border:none !important;
+      border-radius:0 !important;
+      margin:0 !important;
+    }
+
+    /* إخفاء أزرار التحكم في الطباعة */
+    .inv-head .inv-close,
+    .inv-foot .btn-line,
+    .inv-foot .btn-red{display:none !important;}
+
+    /* إظهار العلامة المائية بوضوح */
     .inv-watermark{color:rgba(0,0,0,.12) !important;}
-    .inv-body{padding:18px 0;}
-    @page{margin:14mm;}
+
+    /* ضبط الحشو والأبعاد للطباعة */
+    .inv-body{padding:18mm 12mm !important;}
+    .inv-head{padding:14mm 12mm 10mm !important;}
+
+    /* إجبار طباعة الألوان */
+    *{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+      color-adjust:exact !important;
+    }
+
+    /* الروابط لا تُظهر URL */
+    a[href]:after{content:"" !important;}
+
+    /* الخطوط بحجم مناسب للطباعة */
+    body{font-size:11pt;line-height:1.55;}
+    .inv-head h3{font-size:16pt !important;}
+    .inv-total .v{font-size:22pt !important;}
   }
 
   /* ── contact ── */
