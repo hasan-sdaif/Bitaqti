@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -609,80 +610,119 @@
   .autocomplete-item .ai-name{font-weight:600;}
   .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
-  /* ═══ PRINT — v2 محسّن: حلّ مشكلة اختفاء المعاينة عند الطباعة ═══ */
+  /* ═══ PRINT — v2.2 محسّن: حلّ مشكلة اختفاء المعاينة عند الطباعة ═══ */
+  /* القاعدة الذهبية: عند الطباعة، نُخفي كل شيء ثم نُظهر فقط المعاينة */
   @media print{
     @page{size:A4;margin:0;}
-    html,body{background:#fff !important;}
-    body{margin:0;padding:0;}
+    html,body{
+      background:#fff !important;
+      margin:0 !important;
+      padding:0 !important;
+      width:100% !important;
+      height:auto !important;
+      overflow:visible !important;
+    }
 
-    /* إخفاء كل العناصر غير المطلوبة للطباعة */
-    .no-print,
+    /* ═══ 1) إخفاء كل شيء افتراضياً ═══ */
+    body *{visibility:hidden !important;}
+
+    /* ═══ 2) إظهار عناصر المعاينة فقط ═══ */
+    /* نُظهر: المعاينة، ورقة A4، وجميع أبنائها */
+    #previewWrap,
+    #previewWrap *,
+    #sheet,
+    #sheet *{visibility:visible !important;}
+
+    /* ═══ 3) ضبط موضع وحجم المعاينة ═══ */
+    /* إخفاء كل الحاويات الأب لإزالة أي تأثير عليها */
     .lock-screen,
     .topbar,
     .toast-container,
     .modal-overlay,
     .order-bar,
     .to-top,
-    .preview-label{display:none !important;}
+    .preview-label,
+    .tabs,
+    .topbar-actions,
+    .panel-header,
+    .history-toolbar,
+    .bulk-bar,
+    #tab-new .inv-layout > .panel,
+    .tab-panel:not(#tab-new){display:none !important;}
 
-    /* إخفاء كل التبويبات غير النشطة */
-    .tab-panel:not(.active){display:none !important;}
+    /* ضبط الحاويات الأب لتصبح شفافة وغير محدودة */
+    .app,
+    .main,
+    #app,
+    #tab-new,
+    #tab-new.active,
+    .inv-layout,
+    #tab-new .inv-layout{
+      display:block !important;
+      position:static !important;
+      width:100% !important;
+      max-width:none !important;
+      margin:0 !important;
+      padding:0 !important;
+      background:#fff !important;
+      overflow:visible !important;
+      box-shadow:none !important;
+      border:none !important;
+    }
 
-    /* داخل تبويب «فاتورة جديدة»: نُخفي لوحة النموذج ونُبقي المعاينة فقط */
-    #tab-new .inv-layout{display:block !important;}
-    #tab-new .inv-layout > .panel{display:none !important;}
-    #tab-new .inv-layout > .preview-wrap{display:block !important;}
-
-    /* داخل تبويب «السجل»: نطبع الجدول فقط */
-    #tab-history .history-toolbar,
-    #tab-history .panel-header,
-    #tab-history .bulk-bar{display:none !important;}
-
-    .main{padding:0;max-width:100%;}
-
-    /* المعاينة: نُلغي كل تأثيرات العرض ونُحوّلها لصفحة A4 حقيقية */
+    /* المعاينة نفسها: نُحوّلها لصفحة A4 حقيقية */
+    #previewWrap,
     .preview-wrap{
+      position:static !important;
+      display:block !important;
       background:#fff !important;
       border:none !important;
       padding:0 !important;
+      margin:0 !important;
       box-shadow:none !important;
-      position:static !important;
       max-height:none !important;
       overflow:visible !important;
-      display:block !important;
+      width:100% !important;
     }
 
-    /* ورقة A4: نُلغي التحويل ونضبط الحجم */
+    /* ورقة A4: نُلغي كل تأثيرات التحويل ونضبط الحجم */
+    #sheet,
     .a4-sheet{
       box-shadow:none !important;
       margin:0 !important;
       transform:none !important;
       width:100% !important;
       min-height:auto !important;
+      max-width:none !important;
       padding:14mm 12mm !important;
       page-break-after:always;
+      page-break-inside:avoid;
+      background:#fff !important;
+      border:none !important;
     }
     .a4-sheet:last-child{page-break-after:auto;}
 
-    /* الألوان: نجبر المتصفح على طباعة الألوان كما هي */
+    /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) */
     *{
       -webkit-print-color-adjust:exact !important;
       print-color-adjust:exact !important;
       color-adjust:exact !important;
     }
 
-    /* الروابط لا تظهر URL في الطباعة */
-    a[href]:after{content:"";}
-    a[href^="#"]:after{content:"";}
+    /* الروابط لا تُظهر URL */
+    a[href]:after,
+    a[href^="#"]:after{content:"" !important;}
 
-    /* الجداول: لا تنكسر الصفوف عبر الصفحات */
+    /* الجداول: لا تنكسر الصفوف */
     tr,td,th{page-break-inside:avoid;}
 
-    /* النوع الأساسي */
+    /* أحجام الخطوط للطباعة */
     body{font-size:11pt;line-height:1.5;}
     h1{font-size:20pt;}
     h2{font-size:16pt;}
     h3{font-size:13pt;}
+    .a4-sheet{font-size:11pt !important;}
+    .inv-meta h1{font-size:20pt !important;}
   }
   .print-only{display:none;}
   @media print{.print-only{display:block !important;}}
@@ -2918,7 +2958,16 @@ function initApp(){
   // Buttons
   $('btnAddItem').addEventListener('click', () => addItem());
   $('btnSave').addEventListener('click', saveInvoice);
-  $('btnPrint').addEventListener('click', () => window.print());
+  $('btnPrint').addEventListener('click', () => {
+    // ننتقل لتبويب "فاتورة جديدة" أولاً (إن لم نكن فيه) لضمان ظهور المعاينة عند الطباعة
+    if(!$('#tab-new').classList.contains('active')){
+      switchTab('new');
+    }
+    // نُحدّث المعاينة مرة أخيرة قبل الطباعة
+    if(typeof updatePreview === 'function') updatePreview();
+    // ننتظر قليلاً ليكتمل إعادة الرسم ثم نطبع
+    setTimeout(() => window.print(), 120);
+  });
   $('btnNew').addEventListener('click', () => {
     if(editingId || items.some(i => i.description) || $('fName').value){
       showModal('warning', 'فاتورة جديدة', 'سيتم مسح البيانات الحالية. هل تريد المتابعة؟', resetForm);
