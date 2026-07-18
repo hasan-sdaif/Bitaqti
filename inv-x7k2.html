@@ -1,555 +1,686 @@
 <!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  بطاقتي — نظام الفواتير المحسّن (Bitaqti Enhanced Invoice System)
+  ────────────────────────────────────────────────────────────────────
+  نسخة مطوّرة من نظام الفواتير الداخلي، تتضمّن:
+
+  ★ الميزات الجديدة:
+    1. بنود متعددة (Multi-line items) — أضف أي عدد من الخدمات/المنتجات.
+    2. ترقيم تلقائي للفواتير (Auto-incrementing codes) BH-CV-YYYY-NNN.
+    3. حساب ضريبة القيمة المضافة (VAT 10% البحرين) — قابل للتفعيل.
+    4. خصم (نسبة مئوية أو مبلغ ثابت).
+    5. سجل كامل للفواتير (localStorage) مع بحث وفلترة وترتيب.
+    6. تتبّع الحالة (مسودة / مُرسلة / مدفوعة / ملغاة).
+    7. QR Code على الفاتورة يربط ببطاقة العميل.
+    8. لوحة إحصائيات (إيرادات، عدّاد، متوسط، رسم بياني شهري).
+    9. تصدير/استيراد (JSON backup + CSV export).
+    10. تكرار الفاتورة (Duplicate) — نسخ سريعة.
+    11. إكمال تلقائي لبيانات العميل من السجل.
+    12. إشعارات Toast + نوافذ تأكيد.
+    13. اختصارات لوحة المفاتيح (Ctrl+P, Ctrl+S, Esc).
+    14. إعدادات قابلة للتخصيص (نسبة VAT، العملة، بادئة الترقيم).
+    15. علامة مائية للحالة على الفاتورة (PAID / DRAFT).
+
+  ★ الأمان:
+    • نفس آلية المصادقة الأصلية (Netlify Function — كلمة السر على السيرفر).
+    • البيانات تُحفظ محلياً في المتصفح فقط (localStorage) — لا تُرسل لأي سيرفر.
+
+  ★ لوحة الألوان: مطابقة للموقع الأصلي (paper/ink/red/gold).
+  ════════════════════════════════════════════════════════════════════
+-->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>نظام فواتير بطاقتي (Bitaqti)</title>
+<title>نظام فواتير بطاقتي (المحسّن)</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='44' y='46' width='28' height='5' rx='2.5' fill='%238A8D93'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 <style>
-  :root {
-    --bg-app: #f4f5f8;
-    --bg-paper: #ffffff;
-    --text-main: #111827;
-    --text-muted: #6b7280;
-    --border-color: #e5e7eb;
-    --primary-color: #CE1126; /* أحمر بطاقتي */
-    --primary-hover: #b00f20;
-    --accent-color: #1f2937;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9;
+    --red:#CE1126; --red-deep:#9C0E1E; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --green:#0C9A63; --green-tint:#E7F6EE;
+    --blue:#2563EB; --blue-tint:#DBEAFE;
+    --amber:#D97706; --amber-tint:#FEF3C7;
+    --shadow:0 16px 38px rgba(23,24,28,.10);
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    background:var(--paper);color:var(--ink);
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  h1,h2,h3,h4,.disp{font-family:'El Messiri',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  [dir="ltr"]{unicode-bidi:isolate;}
+  button,input,select,textarea{font-family:inherit;font-size:16px;}
+  a{color:var(--red);text-decoration:none;font-weight:700;}
+  a:hover{text-decoration:underline;}
+
+  /* ═══ LOCK SCREEN ═══ */
+  .lock-screen{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(135deg,var(--ink) 0%,#0a0a0f 100%);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .lock-card{
+    background:var(--surface);border-radius:20px;padding:36px 32px;
+    max-width:380px;width:100%;text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+  .lock-icon{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--red-tint);color:var(--red);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;
+  }
+  .lock-icon svg{width:30px;height:30px;}
+  .lock-card h1{font-size:22px;font-weight:700;margin-bottom:6px;}
+  .lock-card p{font-size:13px;color:var(--ink-soft);margin-bottom:22px;}
+  .lock-input-wrap{position:relative;margin-bottom:14px;}
+  .lock-input{
+    width:100%;padding:14px 48px 14px 16px;border:1.5px solid var(--line);
+    border-radius:10px;background:var(--paper);font-size:16px;
+    text-align:center;letter-spacing:2px;direction:ltr;
+  }
+  .lock-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .lock-toggle{
+    position:absolute;left:8px;top:50%;transform:translateY(-50%);
+    background:none;border:none;color:var(--ink-faint);cursor:pointer;
+    padding:8px;border-radius:8px;
+  }
+  .lock-toggle:hover{color:var(--ink);}
+  .lock-toggle svg{width:18px;height:18px;}
+  .lock-btn{
+    width:100%;padding:14px;border:none;border-radius:10px;
+    background:var(--ink);color:#fff;font-size:14px;font-weight:700;
+    cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .lock-btn:hover{background:#000;}
+  .lock-btn:disabled{opacity:.6;cursor:not-allowed;}
+  .lock-btn .spinner{
+    width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none;
+  }
+  .lock-btn.loading .spinner{display:block;}
+  .lock-btn.loading .lock-btn-text{display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .lock-error{
+    margin-top:14px;padding:10px 14px;background:var(--red-tint);
+    color:var(--red-deep);border-radius:8px;font-size:12.5px;font-weight:600;
+    display:none;
+  }
+  .lock-error.show{display:block;}
+
+  /* ═══ APP LAYOUT ═══ */
+  .app{display:none;}
+  .app.unlocked{display:block;}
+
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(244,243,239,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:calc(8px + var(--safe-top)) 0 8px;
+  }
+  .topbar-inner{
+    max-width:1400px;margin:0 auto;padding:0 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;
+  }
+  .brand:hover{text-decoration:none;}
+  .brand .mark{
+    width:34px;height:24px;border-radius:5px;background:var(--ink);
+    position:relative;flex-shrink:0;
+  }
+  .brand .mark::before{content:'';position:absolute;right:5px;top:6px;width:9px;height:9px;border-radius:2px;background:var(--paper);}
+  .brand .mark::after{content:'';position:absolute;left:5px;top:8px;width:13px;height:3px;border-radius:2px;background:var(--red);box-shadow:0 5px 0 var(--ink-faint);}
+  .brand small{display:block;font-weight:400;font-size:10px;color:var(--ink-faint);margin-top:1px;}
+
+  .tabs{
+    display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;padding:3px;
+  }
+  .tab{
+    padding:8px 16px;border:none;background:transparent;color:var(--ink-soft);
+    font-size:12.5px;font-weight:700;cursor:pointer;border-radius:7px;
+    transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap;
+  }
+  .tab svg{width:15px;height:15px;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{background:var(--ink);color:#fff;}
+  .tab .badge{
+    background:var(--red);color:#fff;font-size:10px;font-weight:700;
+    padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;
+  }
+  .tab.active .badge{background:#fff;color:var(--ink);}
+
+  .topbar-actions{display:flex;align-items:center;gap:8px;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:9px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;
+  }
+  .icon-btn:hover{color:var(--red);border-color:var(--red);}
+  .icon-btn svg{width:17px;height:17px;}
+
+  /* ═══ MAIN CONTAINER ═══ */
+  .main{
+    max-width:1400px;margin:0 auto;padding:20px;
+    padding-bottom:calc(60px + var(--safe-bottom));
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ═══ NEW INVOICE TAB ═══ */
+  .inv-layout{
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    gap:20px;align-items:start;
+  }
+  @media(max-width:1100px){.inv-layout{grid-template-columns:1fr;}}
+
+  .panel{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow-sm);
+    overflow:hidden;
+  }
+  .panel-header{
+    padding:18px 22px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    background:linear-gradient(180deg,var(--surface),var(--paper));
+  }
+  .panel-header h2{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .panel-header h2 svg{width:20px;height:20px;color:var(--red);}
+  .panel-header .sub{font-size:12px;color:var(--ink-faint);}
+  .panel-body{padding:20px 22px;}
+
+  .form-section-title{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    color:var(--ink-faint);margin:18px 0 10px;padding-bottom:6px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;
+  }
+  .form-section-title:first-child{margin-top:0;}
+  .form-section-title svg{width:13px;height:13px;color:var(--gold);}
+
+  .form-row{display:grid;gap:12px;margin-bottom:12px;}
+  .form-row.cols-2{grid-template-columns:1fr 1fr;}
+  .form-row.cols-3{grid-template-columns:1fr 1fr 1fr;}
+  @media(max-width:600px){.form-row.cols-2,.form-row.cols-3{grid-template-columns:1fr;}}
+
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group label{
+    font-size:12px;font-weight:700;color:var(--ink-soft);
+    display:flex;align-items:center;gap:5px;
+  }
+  .form-group label .hint{font-weight:400;color:var(--ink-faint);font-size:11px;}
+  .form-control{
+    width:100%;padding:11px 14px;border:1.5px solid var(--line);
+    border-radius:9px;background:var(--paper);color:var(--ink);
+    transition:border-color .2s,box-shadow .2s;font-size:14px;
+  }
+  .form-control:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .form-control:disabled{background:var(--line);color:var(--ink-faint);cursor:not-allowed;}
+  textarea.form-control{resize:vertical;min-height:60px;font-family:inherit;}
+  select.form-control{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2353565C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 12px center;background-size:16px;padding-left:38px;}
+
+  /* Items table */
+  .items-table{width:100%;border-collapse:collapse;margin-bottom:12px;}
+  .items-table th{
+    font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--ink-faint);padding:8px 6px;text-align:right;border-bottom:1.5px solid var(--line);
+  }
+  .items-table th.col-desc{width:40%;}
+  .items-table th.col-qty{width:12%;text-align:center;}
+  .items-table th.col-price{width:18%;text-align:center;}
+  .items-table th.col-total{width:20%;text-align:center;}
+  .items-table th.col-action{width:10%;}
+  .items-table td{padding:6px;}
+  .items-table .item-row td{vertical-align:middle;}
+  .items-table input{
+    width:100%;padding:8px 10px;border:1.5px solid var(--line);border-radius:7px;
+    background:var(--paper);font-size:13px;direction:ltr;text-align:center;
+  }
+  html[dir="rtl"] .items-table input.col-desc-input{text-align:right;direction:rtl;}
+  .items-table input:focus{outline:none;border-color:var(--red);}
+  .items-table .item-total{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
+    color:var(--ink);text-align:center;padding:8px 10px;
+    background:var(--paper);border-radius:7px;border:1px solid var(--line);
+  }
+  .item-del{
+    width:32px;height:32px;border-radius:7px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;margin:0 auto;
+  }
+  .item-del:hover{color:var(--red);border-color:var(--red);background:var(--red-tint);}
+  .item-del svg{width:14px;height:14px;}
+  .add-item-btn{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 14px;
+    border:1.5px dashed var(--line);background:transparent;color:var(--ink-soft);
+    border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:700;
+    transition:all .15s;
+  }
+  .add-item-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-tint);}
+  .add-item-btn svg{width:14px;height:14px;}
+
+  /* Totals */
+  .totals-section{background:var(--paper);border-radius:10px;padding:14px 16px;margin-top:8px;}
+  .total-row{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:5px 0;font-size:13px;color:var(--ink-soft);
+  }
+  .total-row .lbl{font-weight:600;}
+  .total-row .val{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);direction:ltr;}
+  .total-row.grand{
+    border-top:1.5px solid var(--line);margin-top:6px;padding-top:10px;
+    font-size:16px;
+  }
+  .total-row.grand .lbl{color:var(--ink);font-weight:700;}
+  .total-row.grand .val{color:var(--red-deep);font-size:18px;}
+  .total-row.discount .val{color:var(--green);}
+  .total-row.vat .val{color:var(--amber);}
+
+  /* Status & payment */
+  .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .status-pill{
+    display:inline-flex;align-items:center;gap:5px;padding:4px 10px;
+    border-radius:14px;font-size:11px;font-weight:700;
+  }
+  .status-draft{background:var(--ink-faint);color:#fff;opacity:.5;}
+  .status-draft.active{background:var(--ink-faint);color:#fff;opacity:1;}
+  .status-sent{background:var(--blue-tint);color:var(--blue);}
+  .status-paid{background:var(--green-tint);color:var(--green);}
+  .status-cancelled{background:var(--red-tint);color:var(--red-deep);}
+
+  /* Actions */
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    padding:11px 18px;border:none;border-radius:9px;cursor:pointer;
+    font-size:13px;font-weight:700;transition:all .15s;
+  }
+  .btn svg{width:16px;height:16px;}
+  .btn-primary{background:var(--ink);color:#fff;}
+  .btn-primary:hover{background:#000;transform:translateY(-1px);}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{background:var(--red-deep);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-green:hover{background:#0a7a4f;}
+  .btn-gold{background:var(--gold);color:#fff;}
+  .btn-gold:hover{background:#7d6128;}
+  .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+  .btn-outline:hover{border-color:var(--ink);background:var(--paper);}
+  .btn-ghost{background:transparent;color:var(--ink-soft);}
+  .btn-ghost:hover{background:var(--paper);color:var(--ink);}
+  .btn-sm{padding:7px 12px;font-size:12px;}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  /* ═══ INVOICE PREVIEW (A4) ═══ */
+  .preview-wrap{
+    background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;overflow:auto;
+    position:sticky;top:80px;max-height:calc(100vh - 100px);
+  }
+  @media(max-width:1100px){.preview-wrap{position:static;max-height:none;}}
+  .preview-label{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+    color:var(--ink-faint);margin-bottom:10px;display:flex;align-items:center;gap:6px;
+  }
+  .preview-label svg{width:13px;height:13px;}
+
+  .a4-sheet{
+    width:210mm;min-height:297mm;background:#fff;margin:0 auto;
+    padding:18mm 16mm;box-shadow:0 4px 20px rgba(0,0,0,.08);
+    position:relative;font-size:13px;line-height:1.6;
+    transform-origin:top center;
+  }
+  @media(max-width:1100px){
+    .a4-sheet{transform:scale(var(--preview-scale,0.85));margin-bottom:calc((297mm * (var(--preview-scale,0.85) - 1)));}
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { -webkit-text-size-adjust: 100%; }
-
-  body {
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
-    background-color: var(--bg-app);
-    color: var(--text-main);
-    -webkit-print-color-adjust: exact !important;
-    print-color-adjust: exact !important;
+  /* Watermark for status */
+  .a4-sheet .watermark{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    pointer-events:none;z-index:0;font-family:'El Messiri',serif;
+    font-size:120px;font-weight:700;color:rgba(0,0,0,.04);
+    transform:rotate(-30deg);text-transform:uppercase;letter-spacing:8px;
   }
+  .a4-sheet > *:not(.watermark){position:relative;z-index:1;}
 
-  [dir="ltr"] { unicode-bidi: isolate; }
-  .mono { font-family: 'IBM Plex Mono', monospace; }
-  button, input, select, textarea { font-family: inherit; }
-  /* منع تكبير iOS التلقائي للحقول (يحدث إذا كان font-size أقل من 16px) */
-  input, select, textarea { font-size: 16px; }
+  .inv-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;gap:20px;}
+  .inv-brand{display:flex;align-items:center;gap:12px;}
+  .inv-brand .logo{width:50px;height:35px;border-radius:6px;background:var(--ink);position:relative;flex-shrink:0;}
+  .inv-brand .logo::before{content:'';position:absolute;right:7px;top:9px;width:13px;height:13px;border-radius:3px;background:var(--paper);}
+  .inv-brand .logo::after{content:'';position:absolute;left:7px;top:12px;width:18px;height:4px;border-radius:2px;background:var(--red);box-shadow:0 7px 0 var(--ink-faint);}
+  .inv-brand-text h2{font-size:20px;font-weight:700;}
+  .inv-brand-text p{font-size:11px;color:var(--ink-soft);}
+  .inv-meta{text-align:left;}
+  html[dir="rtl"] .inv-meta{text-align:right;}
+  .inv-meta h1{font-size:28px;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .inv-meta .meta-item{font-size:12px;color:var(--ink-soft);margin-bottom:2px;}
+  .inv-meta .meta-item strong{color:var(--ink);font-family:'IBM Plex Mono',monospace;direction:ltr;display:inline-block;}
 
-  /* ══════════════════════════════════════════════
-     شاشة كلمة السر
-  ══════════════════════════════════════════════ */
-  .lock-screen {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(160deg, #1a1d23, #111318);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1000;
+  .inv-customer{
+    background:var(--paper);border-radius:10px;padding:14px 16px;margin-bottom:20px;
+    display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;
   }
+  .inv-customer h3{font-size:12px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+  .inv-customer .cust-name{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:3px;}
+  .inv-customer .cust-phone{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);direction:ltr;}
+  .inv-customer .cust-link{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--red);direction:ltr;margin-top:3px;}
+  .inv-qr{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .inv-qr canvas{width:80px;height:80px;border:1px solid var(--line);border-radius:6px;padding:3px;}
+  .inv-qr span{font-size:9px;color:var(--ink-faint);}
 
-  .lock-card {
-    background: var(--bg-paper);
-    border-radius: 20px;
-    padding: 32px 26px;
-    width: 100%;
-    max-width: 360px;
-    text-align: center;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  .inv-items-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  .inv-items-table th{
+    background:var(--ink);color:#fff;font-size:11px;font-weight:700;
+    padding:9px 10px;text-align:right;
   }
+  .inv-items-table th:first-child{border-radius:6px 0 0 6px;}
+  .inv-items-table th:last-child{border-radius:0 6px 6px 0;text-align:center;}
+  .inv-items-table th.col-num{text-align:center;width:40px;}
+  .inv-items-table th.col-qty{text-align:center;width:60px;}
+  .inv-items-table th.col-price{text-align:center;width:90px;}
+  .inv-items-table th.col-total{text-align:center;width:100px;}
+  .inv-items-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .inv-items-table td.col-num{text-align:center;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
+  .inv-items-table td.col-qty{text-align:center;font-family:'IBM Plex Mono',monospace;}
+  .inv-items-table td.col-price{text-align:center;font-family:'IBM Plex Mono',monospace;direction:ltr;}
+  .inv-items-table td.col-total{text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;direction:ltr;}
+  .inv-items-table tr:last-child td{border-bottom:none;}
 
-  .lock-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: #fef2f2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 18px;
+  .inv-totals{margin-left:auto;width:280px;margin-bottom:16px;}
+  html[dir="rtl"] .inv-totals{margin-left:auto;margin-right:0;}
+  .inv-totals .total-row{padding:4px 0;font-size:12.5px;}
+  .inv-totals .total-row.grand{font-size:15px;}
+  .inv-totals .total-row .val{direction:ltr;}
+
+  .inv-notes{
+    background:#FFFBEB;border:1px solid #FDE68A;border-radius:8px;
+    padding:10px 14px;margin-bottom:16px;font-size:12px;color:#92400E;
   }
-  .lock-icon svg { width: 24px; height: 24px; color: var(--primary-color); }
+  .inv-notes h4{font-size:11px;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;}
 
-  .lock-card h1 {
-    font-family: 'El Messiri', sans-serif;
-    font-size: 19px;
-    color: var(--accent-color);
-    margin-bottom: 6px;
+  .inv-payment-info{
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    padding:12px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:16px;
   }
-  .lock-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+  .inv-payment-info .pi-item{font-size:11px;color:var(--ink-soft);}
+  .inv-payment-info .pi-item strong{color:var(--ink);display:block;font-size:12px;}
 
-  .lock-input-wrap { position: relative; margin-bottom: 14px; }
-  .lock-input {
-    width: 100%;
-    padding: 14px 46px 14px 16px;
-    border: 1.5px solid var(--border-color);
-    border-radius: 12px;
-    background: #f9fafb;
-    text-align: center;
-    letter-spacing: 2px;
+  .inv-footer{text-align:center;padding-top:14px;border-top:2px solid var(--ink);font-size:11px;color:var(--ink-soft);}
+  .inv-footer p{margin-bottom:3px;}
+  .inv-footer strong{color:var(--ink);}
+  .inv-footer .contact-info{display:flex;justify-content:center;gap:15px;margin-top:6px;font-family:'IBM Plex Mono',monospace;direction:ltr;}
+
+  /* ═══ HISTORY TAB ═══ */
+  .history-toolbar{
+    display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;
   }
-  .lock-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(206,17,38,.1);
+  .search-box{
+    flex:1;min-width:200px;position:relative;
   }
-  .lock-toggle {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: var(--text-muted);
-    cursor: pointer;
-    padding: 6px;
-    display: flex;
+  .search-box input{
+    width:100%;padding:10px 14px 10px 40px;border:1.5px solid var(--line);
+    border-radius:9px;background:var(--surface);font-size:13px;
   }
-  .lock-toggle svg { width: 18px; height: 18px; }
+  html[dir="rtl"] .search-box input{padding:10px 40px 10px 14px;}
+  .search-box input:focus{outline:none;border-color:var(--red);}
+  .search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink-faint);}
+  html[dir="rtl"] .search-box svg{left:auto;right:12px;}
 
-  .lock-btn {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    background: var(--primary-color);
-    color: #fff;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    transition: background .2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  .filter-select{
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:9px;
+    background:var(--surface);font-size:13px;cursor:pointer;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2353565C' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:left 10px center;background-size:14px;
+    padding-left:32px;
   }
-  .lock-btn:hover { background: var(--primary-hover); }
-  .lock-btn:disabled { opacity: .6; cursor: not-allowed; }
-  .lock-btn .spinner {
-    width: 16px; height: 16px;
-    border: 2px solid rgba(255,255,255,.4);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin .7s linear infinite;
-    display: none;
+  html[dir="rtl"] .filter-select{padding-left:14px;padding-right:32px;background-position:right 10px center;}
+
+  .history-table-wrap{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow-sm);
   }
-  .lock-btn.loading .spinner { display: inline-block; }
-  .lock-btn.loading .lock-btn-text { display: none; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .lock-error {
-    margin-top: 14px;
-    font-size: 12.5px;
-    color: var(--primary-color);
-    background: #fef2f2;
-    border-radius: 8px;
-    padding: 10px 12px;
-    display: none;
+  .history-table{width:100%;border-collapse:collapse;}
+  .history-table th{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--ink-faint);padding:12px 14px;text-align:right;
+    border-bottom:1.5px solid var(--line);background:var(--paper);
+    cursor:pointer;user-select:none;white-space:nowrap;
   }
-  .lock-error.show { display: block; }
-
-  /* ══════════════════════════════════════════════
-     التطبيق الرئيسي (يظهر بعد فتح القفل)
-  ══════════════════════════════════════════════ */
-  .app { display: none; }
-  .app.unlocked { display: block; }
-
-  /* ── شريط علوي جوال فقط: أزرار وحفظ ── */
-  .mobile-topbar {
-    display: none;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: var(--bg-paper);
-    border-bottom: 1px solid var(--border-color);
-    padding: calc(12px + var(--safe-top)) 16px 12px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+  .history-table th:hover{color:var(--ink);}
+  .history-table th .sort-icon{display:inline-block;margin-right:4px;opacity:.4;}
+  .history-table th.sorted .sort-icon{opacity:1;color:var(--red);}
+  .history-table td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle;}
+  .history-table tr:last-child td{border-bottom:none;}
+  .history-table tr:hover{background:var(--paper);}
+  .history-table .col-code{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);direction:ltr;}
+  .history-table .col-date{font-family:'IBM Plex Mono',monospace;color:var(--ink-soft);direction:ltr;font-size:12px;}
+  .history-table .col-name{font-weight:600;}
+  .history-table .col-amount{font-family:'IBM Plex Mono',monospace;font-weight:700;direction:ltr;text-align:left;}
+  html[dir="rtl"] .history-table .col-amount{text-align:right;}
+  .history-table .col-actions{white-space:nowrap;text-align:left;}
+  html[dir="rtl"] .history-table .col-actions{text-align:left;}
+  .history-table .row-action{
+    width:30px;height:30px;border-radius:7px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:all .15s;margin-right:3px;
   }
-  .mobile-topbar h1 {
-    font-family: 'El Messiri', sans-serif;
-    font-size: 16px;
-    color: var(--accent-color);
+  .history-table .row-action:hover{color:var(--red);border-color:var(--red);}
+  .history-table .row-action.view:hover{color:var(--blue);border-color:var(--blue);}
+  .history-table .row-action.duplicate:hover{color:var(--gold);border-color:var(--gold);}
+  .history-table .row-action.paid:hover{color:var(--green);border-color:var(--green);}
+  .history-table .row-action svg{width:13px;height:13px;}
+
+  .empty-state{
+    text-align:center;padding:60px 20px;color:var(--ink-faint);
   }
-  .mobile-topbar .lock-out-btn {
-    background: none; border: none; color: var(--text-muted);
-    font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
+  .empty-state svg{width:48px;height:48px;margin:0 auto 14px;opacity:.4;}
+  .empty-state h3{font-size:16px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .empty-state p{font-size:13px;}
+
+  /* Bulk actions bar */
+  .bulk-bar{
+    display:none;align-items:center;justify-content:space-between;gap:12px;
+    padding:10px 14px;background:var(--ink);color:#fff;border-radius:10px;margin-bottom:12px;
   }
-  .mobile-topbar .lock-out-btn svg { width: 14px; height: 14px; }
+  .bulk-bar.show{display:flex;}
+  .bulk-bar .bulk-count{font-size:13px;font-weight:700;}
+  .bulk-bar .bulk-actions{display:flex;gap:6px;}
+  .bulk-bar .btn{padding:6px 12px;font-size:12px;}
 
-  /* ── Layout ── */
-  .container {
-    display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 30px;
-    max-width: 1300px;
-    margin: 0 auto;
-    padding: 30px;
-    align-items: start;
+  /* ═══ STATS TAB ═══ */
+  .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+  @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
   }
-
-  /* ── Form Panel (لوحة التحكم) ── */
-  .control-panel {
-    background: var(--bg-paper);
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-    position: sticky;
-    top: 30px;
-    border: 1px solid var(--border-color);
+  .stat-card .stat-icon{
+    position:absolute;top:14px;left:14px;width:36px;height:36px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
   }
+  html[dir="rtl"] .stat-card .stat-icon{left:auto;right:14px;}
+  .stat-card .stat-icon svg{width:18px;height:18px;}
+  .stat-card.revenue .stat-icon{background:var(--green-tint);color:var(--green);}
+  .stat-card.pending .stat-icon{background:var(--amber-tint);color:var(--amber);}
+  .stat-card.count .stat-icon{background:var(--blue-tint);color:var(--blue);}
+  .stat-card.avg .stat-icon{background:var(--gold-tint);color:var(--gold);}
+  .stat-card .stat-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:6px;padding-left:46px;}
+  html[dir="rtl"] .stat-card .stat-label{padding-left:0;padding-right:46px;}
+  .stat-card .stat-value{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;color:var(--ink);direction:ltr;text-align:right;}
+  html[dir="rtl"] .stat-card .stat-value{text-align:left;}
 
-  .panel-header {
-    margin-bottom: 24px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 16px;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
+  .chart-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow-sm);margin-bottom:16px;
   }
-
-  .panel-header h1 {
-    font-family: 'El Messiri', sans-serif;
-    font-size: 22px;
-    color: var(--accent-color);
+  .chart-card h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+  .chart-card h3 svg{width:17px;height:17px;color:var(--red);}
+  .bar-chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding:10px 0;border-bottom:1.5px solid var(--line);overflow-x:auto;}
+  .bar-col{flex:1;min-width:40px;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end;}
+  .bar-col .bar{
+    width:100%;max-width:40px;background:linear-gradient(180deg,var(--red),var(--red-deep));
+    border-radius:6px 6px 0 0;min-height:3px;transition:height .4s ease;position:relative;
   }
+  .bar-col .bar:hover{filter:brightness(1.1);}
+  .bar-col .bar-val{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .bar-col .bar-lbl{font-size:10px;color:var(--ink-faint);font-weight:600;white-space:nowrap;}
 
-  .panel-header p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 4px;
+  .status-breakdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+  @media(max-width:600px){.status-breakdown{grid-template-columns:repeat(2,1fr);}}
+  .status-card{
+    background:var(--paper);border:1px solid var(--line);border-radius:10px;
+    padding:14px;text-align:center;
   }
+  .status-card .sc-count{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;}
+  .status-card .sc-label{font-size:11px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
+  .status-card.draft .sc-count{color:var(--ink-faint);}
+  .status-card.sent .sc-count{color:var(--blue);}
+  .status-card.paid .sc-count{color:var(--green);}
+  .status-card.cancelled .sc-count{color:var(--red-deep);}
 
-  .desktop-lock-out {
-    background: none; border: 1px solid var(--border-color); border-radius: 8px;
-    color: var(--text-muted); font-size: 11px; padding: 6px 10px; cursor: pointer;
-    display: flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;
+  /* ═══ SETTINGS TAB ═══ */
+  .settings-grid{display:grid;gap:16px;}
+  .setting-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow-sm);
   }
-  .desktop-lock-out:hover { background: #f9fafb; }
-  .desktop-lock-out svg { width: 12px; height: 12px; }
+  .setting-card h3{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;padding-bottom:10px;border-bottom:1px solid var(--line);}
+  .setting-card h3 svg{width:17px;height:17px;color:var(--gold);}
+  .setting-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+  @media(max-width:600px){.setting-row{grid-template-columns:1fr;}}
+  .setting-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
 
-  .form-section-title {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    margin: 22px 0 12px;
+  .danger-zone{
+    background:var(--red-tint);border:1px solid var(--red);border-radius:10px;
+    padding:14px 16px;margin-top:14px;
   }
-  .form-section-title:first-of-type { margin-top: 0; }
+  .danger-zone h4{font-size:13px;font-weight:700;color:var(--red-deep);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+  .danger-zone h4 svg{width:15px;height:15px;}
+  .danger-zone p{font-size:12px;color:var(--red-deep);margin-bottom:10px;}
 
-  .form-group { margin-bottom: 16px; }
-
-  .form-group label {
-    display: block;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--accent-color);
+  /* ═══ TOAST ═══ */
+  .toast-container{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    z-index:9000;display:flex;flex-direction:column;gap:8px;align-items:center;
+    pointer-events:none;
   }
-
-  .form-group .hint {
-    font-size: 11px;
-    color: var(--text-muted);
-    font-weight: 400;
-    margin-inline-start: 4px;
+  .toast{
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:10px;
+    font-size:13px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.25);
+    display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(20px);
+    transition:all .3s ease;pointer-events:auto;
   }
+  .toast.show{opacity:1;transform:translateY(0);}
+  .toast svg{width:16px;height:16px;flex-shrink:0;}
+  .toast.success svg{color:var(--green);}
+  .toast.error svg{color:var(--red);}
+  .toast.info svg{color:var(--blue);}
 
-  .form-control {
-    width: 100%;
-    padding: 13px 14px;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    font-size: 15px;
-    transition: all 0.3s ease;
-    background-color: #f9fafb;
+  /* ═══ MODAL ═══ */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.5);
+    display:none;align-items:center;justify-content:center;padding:20px;
+    backdrop-filter:blur(4px);
   }
-
-  .form-control:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background-color: #fff;
-    box-shadow: 0 0 0 3px rgba(206, 17, 38, 0.1);
+  .modal-overlay.show{display:flex;}
+  .modal{
+    background:var(--surface);border-radius:16px;padding:28px;max-width:420px;width:100%;
+    box-shadow:0 24px 60px rgba(0,0,0,.3);text-align:center;
   }
+  .modal-icon{width:56px;height:56px;border-radius:50%;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;}
+  .modal-icon.danger{background:var(--red-tint);color:var(--red);}
+  .modal-icon.warning{background:var(--amber-tint);color:var(--amber);}
+  .modal-icon.info{background:var(--blue-tint);color:var(--blue);}
+  .modal-icon svg{width:26px;height:26px;}
+  .modal h3{font-size:18px;font-weight:700;margin-bottom:8px;}
+  .modal p{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;line-height:1.6;}
+  .modal-actions{display:flex;gap:10px;justify-content:center;}
+  .modal-actions .btn{flex:1;max-width:160px;}
 
-  textarea.form-control { resize: vertical; min-height: 80px; }
-
-  .actions { display: flex; gap: 10px; margin-top: 24px; }
-
-  .btn {
-    flex: 1;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
+  /* ═══ AUTOCOMPLETE ═══ */
+  .autocomplete-list{
+    position:absolute;z-index:50;background:var(--surface);border:1px solid var(--line);
+    border-radius:0 0 9px 9px;box-shadow:var(--shadow);max-height:200px;overflow-y:auto;
+    display:none;width:100%;
   }
-
-  .btn-print { background: var(--primary-color); color: #fff; }
-  .btn-print:hover { background: var(--primary-hover); }
-  .btn-print:active { transform: scale(.98); }
-
-  .btn-reset {
-    background: transparent;
-    border: 2px solid var(--border-color);
-    color: var(--text-muted);
+  .autocomplete-list.show{display:block;}
+  .autocomplete-item{
+    padding:9px 14px;cursor:pointer;font-size:13px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
   }
-  .btn-reset:hover { background: #f3f4f6; color: var(--text-main); }
-  .btn-reset:active { transform: scale(.98); }
+  .autocomplete-item:last-child{border-bottom:none;}
+  .autocomplete-item:hover,.autocomplete-item.selected{background:var(--paper);}
+  .autocomplete-item .ai-name{font-weight:600;}
+  .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
-  /* ── A4 Invoice Sheet ── */
-  .invoice-preview { display: flex; justify-content: center; }
-
-  .a4-sheet {
-    background: var(--bg-paper);
-    width: 210mm;
-    min-height: 297mm;
-    padding: 20mm;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    position: relative;
-    display: flex;
-    flex-direction: column;
+  /* ═══ PRINT ═══ */
+  @media print{
+    @page{size:A4;margin:0;}
+    body{background:#fff;}
+    .no-print{display:none !important;}
+    .lock-screen{display:none !important;}
+    .topbar,.main > *:not(.print-only){display:none !important;}
+    .main{padding:0;max-width:100%;}
+    .print-only{display:block !important;}
+    .preview-wrap{background:#fff;border:none;padding:0;box-shadow:none;position:static;max-height:none;overflow:visible;}
+    .a4-sheet{box-shadow:none;margin:0;transform:none !important;width:100%;min-height:100vh;padding:14mm 12mm;}
   }
+  .print-only{display:none;}
 
-  .inv-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-bottom: 2px solid var(--accent-color);
-    padding-bottom: 20px;
-    margin-bottom: 30px;
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:768px){
+    .tabs{flex-wrap:wrap;}
+    .tab span:not(.badge){display:none;}
+    .tab{padding:8px 10px;}
+    .topbar-inner{flex-wrap:wrap;}
+    .brand small{display:none;}
   }
-
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .logo-svg { width: 45px; height: auto; }
-
-  .brand-text h2 {
-    font-family: 'El Messiri', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--accent-color);
-    line-height: 1.2;
-  }
-  .brand-text p { font-size: 12px; color: var(--text-muted); letter-spacing: 0.5px; }
-
-  .inv-meta { text-align: left; }
-  .inv-meta h1 {
-    font-family: 'El Messiri', sans-serif;
-    font-size: 28px;
-    color: var(--primary-color);
-    margin-bottom: 10px;
-  }
-  .meta-item { margin-bottom: 4px; font-size: 13px; }
-  .meta-item span { color: var(--text-muted); display: inline-block; width: 60px; }
-
-  .customer-card {
-    background: #f9fafb;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 30px;
-    border: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .customer-info h3 { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; }
-  .customer-info p { font-size: 16px; font-weight: 600; color: var(--accent-color); }
-  .customer-info .phone { font-size: 14px; color: var(--text-muted); margin-top: 4px; direction: ltr; text-align: right; }
-  .customer-info .cv-link { font-size: 12.5px; color: var(--primary-color); margin-top: 6px; direction: ltr; text-align: right; font-family: 'IBM Plex Mono', monospace; word-break: break-all; }
-
-  .inv-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-  .inv-table th {
-    background: var(--accent-color);
-    color: #fff;
-    padding: 12px 16px;
-    text-align: right;
-    font-size: 13px;
-    font-weight: 500;
-  }
-  .inv-table th:last-child { text-align: left; border-radius: 8px 0 0 8px; }
-  .inv-table th:first-child { border-radius: 0 8px 8px 0; }
-  .inv-table td { padding: 16px; border-bottom: 1px solid var(--border-color); font-size: 15px; font-weight: 600; }
-  .inv-table td:last-child { text-align: left; color: var(--primary-color); font-size: 18px; }
-
-  .notes-section {
-    background: #fef2f2;
-    border-right: 4px solid var(--primary-color);
-    padding: 15px 20px;
-    margin-bottom: auto;
-  }
-  .notes-section h4 { font-size: 13px; color: var(--primary-color); margin-bottom: 6px; }
-  .notes-section p { font-size: 13px; color: var(--accent-color); line-height: 1.6; white-space: pre-wrap; }
-
-  .inv-footer {
-    margin-top: 40px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-muted);
-  }
-  .inv-footer p { margin-bottom: 5px; }
-  .contact-info { display: flex; justify-content: center; gap: 15px; margin-top: 8px; font-family: 'IBM Plex Mono', monospace; }
-
-  /* ── زر عائم لمعاينة/رجوع للنموذج بالجوال ── */
-  .mobile-preview-fab {
-    display: none;
-    position: fixed;
-    left: 16px;
-    bottom: calc(16px + var(--safe-bottom));
-    z-index: 60;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: var(--accent-color);
-    color: #fff;
-    border: none;
-    box-shadow: 0 8px 20px rgba(0,0,0,.25);
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  .mobile-preview-fab svg { width: 22px; height: 22px; }
-
-  /* ══════════════════════════════════════════════
-     الاستجابة للجوال
-  ══════════════════════════════════════════════ */
-  @media (max-width: 992px) {
-    body { background: var(--bg-app); }
-    .mobile-topbar { display: flex; }
-    .mobile-preview-fab { display: flex; }
-
-    .container {
-      display: block;
-      padding: 16px 16px calc(100px + var(--safe-bottom));
-      gap: 0;
-    }
-
-    /* بالجوال: النموذج هو الوضع الافتراضي، والفاتورة تُعرض كوضع "معاينة" منفصل */
-    .control-panel {
-      position: static;
-      border-radius: 16px;
-      padding: 18px 16px 22px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
-    }
-    .panel-header { display: block; }
-    .panel-header .desktop-lock-out { display: none; }
-
-    .form-control { padding: 14px; }
-
-    /* الفاتورة نفسها تُخفى افتراضياً بالجوال، وتظهر فقط عند الضغط على زر المعاينة */
-    .invoice-preview {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: #3d4148;
-      padding: 12px;
-      overflow-y: auto;
-      justify-content: flex-start;
-    }
-    .invoice-preview.show { display: flex; }
-
-    .a4-sheet {
-      /* تصغير الورقة لتناسب عرض الشاشة مع الحفاظ على أبعاد A4 الحقيقية */
-      width: 210mm;
-      min-height: 297mm;
-      transform-origin: top center;
-      transform: scale(var(--mobile-scale, 0.42));
-      margin-bottom: calc((297mm * (var(--mobile-scale, 0.42) - 1)) + 16px);
-      flex-shrink: 0;
-    }
-
-    .mobile-preview-topbar {
-      display: flex;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: #3d4148;
-      padding: calc(10px + var(--safe-top)) 4px 10px;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-    }
-    .mobile-preview-topbar .mp-close {
-      background: rgba(255,255,255,.12);
-      border: none; color: #fff; border-radius: 10px;
-      padding: 9px 16px; font-size: 13px; font-weight: 600;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .mobile-preview-topbar .mp-print {
-      background: var(--primary-color);
-      border: none; color: #fff; border-radius: 10px;
-      padding: 9px 16px; font-size: 13px; font-weight: 700;
-      display: flex; align-items: center; gap: 6px;
-    }
-
-    .actions { position: sticky; bottom: 0; background: var(--bg-app); padding-top: 10px; margin-top: 18px; }
-  }
-
-  @media (min-width: 993px) {
-    .mobile-preview-topbar, .mobile-preview-fab { display: none !important; }
-  }
-
-  /* ── Print Settings ── */
-  @media print {
-    @page { size: A4; margin: 0; }
-    body { background: #fff; }
-    .no-print { display: none !important; }
-    .lock-screen { display: none !important; }
-    .mobile-topbar, .mobile-preview-fab, .mobile-preview-topbar { display: none !important; }
-    .container { display: block; padding: 0; margin: 0; max-width: 100%; }
-    .invoice-preview {
-      display: block !important;
-      position: static !important;
-      background: #fff !important;
-      padding: 0 !important;
-      inset: auto !important;
-    }
-    .a4-sheet {
-      box-shadow: none;
-      margin: 0 !important;
-      width: 100%;
-      height: 100vh;
-      transform: none !important;
-      page-break-after: avoid;
-    }
+  @media(max-width:600px){
+    .main{padding:14px;}
+    .panel-body{padding:16px;}
+    .a4-sheet{padding:14mm 10mm;}
   }
 </style>
 </head>
 <body>
 
-<!-- ══════════════════════════════════════════════
-     شاشة كلمة السر — تظهر أولاً دائماً
-══════════════════════════════════════════════ -->
-<div class="lock-screen no-print" id="lockScreen">
+<!-- ═══ LOCK SCREEN ═══ -->
+<div class="lock-screen" id="lockScreen">
   <div class="lock-card">
     <div class="lock-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
     </div>
     <h1>صفحة داخلية محمية</h1>
     <p>أدخل كلمة السر للوصول لنظام فواتير بطاقتي</p>
-
     <form id="lockForm">
       <div class="lock-input-wrap">
         <input type="password" class="lock-input mono" id="lockPassword" placeholder="••••••••" autocomplete="current-password" required>
         <button type="button" class="lock-toggle" id="lockToggle" aria-label="إظهار كلمة السر">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
       <button type="submit" class="lock-btn" id="lockSubmitBtn">
@@ -557,409 +688,1500 @@
         <span class="lock-btn-text">دخول</span>
       </button>
     </form>
-
     <div class="lock-error" id="lockError"></div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════
-     التطبيق — يظهر فقط بعد نجاح التحقق
-══════════════════════════════════════════════ -->
+<!-- ═══ APP ═══ -->
 <div class="app" id="app">
 
-  <div class="mobile-topbar no-print">
-    <h1>نظام الفواتير</h1>
-    <button class="lock-out-btn" id="mobileLockOutBtn">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-      خروج
-    </button>
-  </div>
-
-  <div class="container">
-
-    <!-- لوحة التحكم -->
-    <div class="control-panel no-print">
-      <div class="panel-header">
-        <div>
-          <h1>إصدار فاتورة</h1>
-          <p>قم بتعبئة البيانات أدناه، وستنعكس فوراً على الفاتورة.</p>
-        </div>
-        <button class="desktop-lock-out" id="desktopLockOutBtn">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
-          خروج
+  <!-- Topbar -->
+  <nav class="topbar no-print">
+    <div class="topbar-inner">
+      <a href="../index.html" class="brand">
+        <span class="mark"></span>
+        <span>بطاقتي <small>Bitaqti — نظام الفواتير</small></span>
+      </a>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="new">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          <span>فاتورة جديدة</span>
+        </button>
+        <button class="tab" data-tab="history">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span>السجل</span>
+          <span class="badge" id="historyBadge" style="display:none">0</span>
+        </button>
+        <button class="tab" data-tab="stats">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
+          <span>إحصائيات</span>
+        </button>
+        <button class="tab" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span>إعدادات</span>
         </button>
       </div>
-
-      <div class="form-section-title">بيانات الطلب</div>
-
-      <div class="form-group">
-        <label>رقم الفاتورة</label>
-        <input type="text" class="form-control mono" id="fCode" dir="ltr" value="BH-CV-2026-001">
-      </div>
-
-      <div class="form-group">
-        <label>تاريخ الإصدار</label>
-        <input type="date" class="form-control" id="fDate">
-      </div>
-
-      <div class="form-section-title">بيانات العميل</div>
-
-      <div class="form-group">
-        <label>اسم العميل</label>
-        <input type="text" class="form-control" id="fName" placeholder="الاسم الكامل">
-      </div>
-
-      <div class="form-group">
-        <label>رقم الهاتف</label>
-        <input type="text" class="form-control mono" id="fPhone" dir="ltr" placeholder="+973 XXXXXXXX" inputmode="tel">
-      </div>
-
-      <div class="form-group">
-        <label>رابط بطاقة العميل <span class="hint">(الملف الفرعي بالموقع، مثال: hasan_sdaif)</span></label>
-        <input type="text" class="form-control mono" id="fCvLink" dir="ltr" placeholder="bitaqti.com/hasan_sdaif">
-      </div>
-
-      <div class="form-section-title">تفاصيل الباقة</div>
-
-      <div class="form-group">
-        <label>الباقة المختارة</label>
-        <select class="form-control" id="fPackage">
-          <option value="الباقة الأساسية">الباقة الأساسية</option>
-          <option value="الباقة القياسية">الباقة القياسية</option>
-          <option value="الباقة المميزة">الباقة المميزة</option>
-          <option value="__other__">باقة مخصصة (أخرى)</option>
-        </select>
-      </div>
-
-      <div class="form-group" id="fPackageOtherWrap" style="display:none;">
-        <label>اسم الباقة المخصصة</label>
-        <input type="text" class="form-control" id="fPackageOther" placeholder="اكتب اسم الباقة والتفاصيل">
-      </div>
-
-      <div class="form-group">
-        <label>المبلغ الإجمالي (د.ب)</label>
-        <input type="text" class="form-control mono" id="fPrice" dir="ltr" placeholder="مثال: 15.000" inputmode="decimal">
-      </div>
-
-      <div class="form-group">
-        <label>ملاحظات إضافية <span class="hint">(تظهر في الفاتورة)</span></label>
-        <textarea class="form-control" id="fNotes" placeholder="مثال: تم دفع عربون، أو تفاصيل إضافية للخدمة..."></textarea>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-print" id="btnPrint">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"></path></svg>
-          طباعة / حفظ PDF
+      <div class="topbar-actions">
+        <button class="icon-btn" id="lockOutBtn" title="خروج">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
         </button>
-        <button class="btn btn-reset" id="btnClear">مسح</button>
       </div>
     </div>
+  </nav>
 
-    <!-- معاينة الفاتورة (مخفية بالجوال حتى الضغط على زر المعاينة) -->
-    <div class="invoice-preview" id="invoicePreview">
+  <div class="main">
 
-      <!-- شريط علوي يظهر فقط داخل وضع المعاينة بالجوال -->
-      <div class="mobile-preview-topbar no-print">
-        <button class="mp-close" id="mpCloseBtn">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          رجوع للنموذج
-        </button>
-        <button class="mp-print" id="mpPrintBtn">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"></path></svg>
-          طباعة
-        </button>
-      </div>
+    <!-- ═══ TAB: NEW INVOICE ═══ -->
+    <div class="tab-panel active" id="tab-new">
+      <div class="inv-layout">
+        <!-- Form Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>إصدار فاتورة</h2>
+              <div class="sub">عبّئ البيانات — المعاينة تتحدّث فوراً</div>
+            </div>
+            <button class="btn btn-ghost btn-sm" id="btnDuplicate" title="تكرار آخر فاتورة">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              تكرار الأخيرة
+            </button>
+          </div>
+          <div class="panel-body">
 
-      <div class="a4-sheet" id="sheet">
+            <div class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              بيانات الطلب
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label>رقم الفاتورة <span class="hint">(تلقائي)</span></label>
+                <input type="text" class="form-control mono" id="fCode" dir="ltr">
+              </div>
+              <div class="form-group">
+                <label>تاريخ الإصدار</label>
+                <input type="date" class="form-control" id="fDate">
+              </div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label>الحالة</label>
+                <select class="form-control" id="fStatus">
+                  <option value="draft">مسودة</option>
+                  <option value="sent">مُرسلة</option>
+                  <option value="paid">مدفوعة</option>
+                  <option value="cancelled">ملغاة</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>طريقة الدفع</label>
+                <select class="form-control" id="fPayment">
+                  <option value="">— غير محدّد —</option>
+                  <option value="cash">نقداً</option>
+                  <option value="bank">تحويل بنكي</option>
+                  <option value="online">دفع إلكتروني</option>
+                  <option value="card">بطاقة</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="inv-header">
-          <div class="brand">
-            <svg class="logo-svg" viewBox="0 0 100 70" xmlns="http://www.w3.org/2000/svg">
-              <rect x="5" y="10" width="90" height="50" rx="8" fill="#1f2937"/>
-              <rect x="75" y="20" width="12" height="12" rx="2" fill="#ffffff"/>
-              <rect x="15" y="45" width="40" height="4" rx="2" fill="#CE1126"/>
-            </svg>
-            <div class="brand-text">
-              <h2>بطاقتي</h2>
-              <p>Bitaqti · بطاقات رقمية تعريفية</p>
+            <div class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              بيانات العميل
+            </div>
+            <div class="form-group" style="position:relative;">
+              <label>اسم العميل</label>
+              <input type="text" class="form-control" id="fName" placeholder="الاسم الكامل" autocomplete="off">
+              <div class="autocomplete-list" id="nameAutocomplete"></div>
+            </div>
+            <div class="form-row cols-2">
+              <div class="form-group">
+                <label>رقم الهاتف</label>
+                <input type="text" class="form-control mono" id="fPhone" dir="ltr" placeholder="+973 XXXXXXXX" inputmode="tel">
+              </div>
+              <div class="form-group">
+                <label>رابط بطاقة العميل <span class="hint">(اسم المستخدم)</span></label>
+                <input type="text" class="form-control mono" id="fCvLink" dir="ltr" placeholder="username">
+              </div>
+            </div>
+
+            <div class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+              البنود (Items)
+            </div>
+            <table class="items-table" id="itemsTable">
+              <thead>
+                <tr>
+                  <th class="col-desc">البيان / الوصف</th>
+                  <th class="col-qty">الكمية</th>
+                  <th class="col-price">سعر الوحدة</th>
+                  <th class="col-total">الإجمالي</th>
+                  <th class="col-action"></th>
+                </tr>
+              </thead>
+              <tbody id="itemsBody"></tbody>
+            </table>
+            <button class="add-item-btn" id="btnAddItem">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              إضافة بند
+            </button>
+
+            <div class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+              الخصم والضريبة
+            </div>
+            <div class="form-row cols-3">
+              <div class="form-group">
+                <label>نوع الخصم</label>
+                <select class="form-control" id="fDiscountType">
+                  <option value="none">بدون</option>
+                  <option value="percent">نسبة %</option>
+                  <option value="fixed">مبلغ ثابت</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>قيمة الخصم</label>
+                <input type="text" class="form-control mono" id="fDiscountValue" dir="ltr" placeholder="0" inputmode="decimal" disabled>
+              </div>
+              <div class="form-group">
+                <label>نسبة VAT (%)</label>
+                <input type="text" class="form-control mono" id="fVatRate" dir="ltr" placeholder="0" inputmode="decimal" value="0">
+              </div>
+            </div>
+
+            <div class="form-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+              ملاحظات
+            </div>
+            <div class="form-group">
+              <textarea class="form-control" id="fNotes" placeholder="مثال: تم دفع عربون، أو تفاصيل إضافية للخدمة..."></textarea>
+            </div>
+
+            <!-- Totals summary in form -->
+            <div class="totals-section" id="formTotals"></div>
+
+            <div class="actions">
+              <button class="btn btn-green" id="btnSave">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+                حفظ الفاتورة
+              </button>
+              <button class="btn btn-red" id="btnPrint">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>
+                طباعة / PDF
+              </button>
+              <button class="btn btn-outline" id="btnNew">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                فاتورة جديدة
+              </button>
             </div>
           </div>
+        </div>
 
-          <div class="inv-meta">
-            <h1>فاتورة</h1>
-            <div class="meta-item"><span>رقم:</span> <strong class="mono" id="pCode" dir="ltr">BH-CV-2026-001</strong></div>
-            <div class="meta-item"><span>التاريخ:</span> <strong class="mono" id="pDate"></strong></div>
+        <!-- Preview Panel -->
+        <div class="preview-wrap no-print" id="previewWrap">
+          <div class="preview-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            معاينة مباشرة (A4)
           </div>
-        </div>
-
-        <div class="customer-card">
-          <div class="customer-info">
-            <h3>فاتورة إلى:</h3>
-            <p id="pName">اسم العميل</p>
-            <div class="phone mono" id="pPhone"></div>
-            <div class="cv-link" id="pCvLink" style="display:none;"></div>
-          </div>
-        </div>
-
-        <table class="inv-table">
-          <thead>
-            <tr>
-              <th>البيان / تفاصيل الباقة</th>
-              <th>المبلغ</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td id="pPackage">الباقة الأساسية</td>
-              <td class="mono" id="pPrice" dir="ltr">0.000 د.ب</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <div class="notes-section" id="pNotesWrap" style="display:none;">
-          <h4>ملاحظات هامة:</h4>
-          <p id="pNotes"></p>
-        </div>
-
-        <div class="inv-footer">
-          <p><strong>شكراً لثقتكم بخدمات بطاقتي (Bitaqti)</strong></p>
-          <p>مملكة البحرين</p>
-          <div class="contact-info">
-            <span>📞 wa.me/97366302585</span>
-            <span>✉️ bitaqti.bh@gmail.com</span>
+          <div class="a4-sheet" id="sheet">
+            <div class="watermark" id="watermark"></div>
+            <div class="inv-header">
+              <div class="inv-brand">
+                <div class="logo"></div>
+                <div class="inv-brand-text">
+                  <h2 id="pBrandName">بطاقتي</h2>
+                  <p id="pBrandSub">Bitaqti · بطاقات رقمية تعريفية</p>
+                </div>
+              </div>
+              <div class="inv-meta">
+                <h1>فاتورة</h1>
+                <div class="meta-item">رقم: <strong id="pCode">—</strong></div>
+                <div class="meta-item">التاريخ: <strong id="pDate">—</strong></div>
+                <div class="meta-item">الحالة: <strong id="pStatus">مسودة</strong></div>
+              </div>
+            </div>
+            <div class="inv-customer">
+              <div>
+                <h3>فاتورة إلى:</h3>
+                <div class="cust-name" id="pName">اسم العميل</div>
+                <div class="cust-phone" id="pPhone"></div>
+                <div class="cust-link" id="pCvLink" style="display:none;"></div>
+              </div>
+              <div class="inv-qr" id="pQrWrap" style="display:none;">
+                <canvas id="pQrCanvas"></canvas>
+                <span>امسح للوصول للبطاقة</span>
+              </div>
+            </div>
+            <table class="inv-items-table" id="pItemsTable">
+              <thead>
+                <tr>
+                  <th class="col-num">#</th>
+                  <th>البيان / الوصف</th>
+                  <th class="col-qty">كمية</th>
+                  <th class="col-price">سعر الوحدة</th>
+                  <th class="col-total">الإجمالي</th>
+                </tr>
+              </thead>
+              <tbody id="pItemsBody"></tbody>
+            </table>
+            <div class="inv-totals" id="pTotals"></div>
+            <div class="inv-notes" id="pNotesWrap" style="display:none;">
+              <h4>ملاحظات هامة:</h4>
+              <p id="pNotes"></p>
+            </div>
+            <div class="inv-payment-info" id="pPaymentWrap" style="display:none;">
+              <div class="pi-item">طريقة الدفع: <strong id="pPayment">—</strong></div>
+              <div class="pi-item">حالة الدفع: <strong id="pPayStatus">—</strong></div>
+            </div>
+            <div class="inv-footer">
+              <p><strong>شكراً لثقتكم بخدمات بطاقتي (Bitaqti)</strong></p>
+              <p id="pCountry">مملكة البحرين</p>
+              <div class="contact-info" id="pContact">
+                <span id="pContactPhone">📞 wa.me/97336166806</span>
+                <span id="pContactEmail">✉️ Hasan.sdaif16@gmail.com</span>
+              </div>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
 
+    <!-- ═══ TAB: HISTORY ═══ -->
+    <div class="tab-panel" id="tab-history">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>سجل الفواتير</h2>
+            <div class="sub" id="historyCount">0 فاتورة</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="btnExportCsv">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            تصدير CSV
+          </button>
+        </div>
+        <div class="panel-body">
+          <div class="history-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="searchInput" placeholder="بحث برقم الفاتورة، اسم العميل، الهاتف...">
+            </div>
+            <select class="filter-select" id="filterStatus">
+              <option value="">كل الحالات</option>
+              <option value="draft">مسودة</option>
+              <option value="sent">مُرسلة</option>
+              <option value="paid">مدفوعة</option>
+              <option value="cancelled">ملغاة</option>
+            </select>
+            <select class="filter-select" id="sortBy">
+              <option value="date-desc">الأحدث أولاً</option>
+              <option value="date-asc">الأقدم أولاً</option>
+              <option value="amount-desc">المبلغ (الأعلى)</option>
+              <option value="amount-asc">المبلغ (الأقل)</option>
+              <option value="name-asc">الاسم (أ-ي)</option>
+            </select>
+          </div>
+          <div class="bulk-bar" id="bulkBar">
+            <span class="bulk-count" id="bulkCount">0 محدّد</span>
+            <div class="bulk-actions">
+              <button class="btn btn-green btn-sm" id="bulkMarkPaid">تعليم كمدفوعة</button>
+              <button class="btn btn-red btn-sm" id="bulkDelete">حذف المحدّد</button>
+              <button class="btn btn-ghost btn-sm" id="bulkClear" style="color:#fff">إلغاء التحديد</button>
+            </div>
+          </div>
+          <div class="history-table-wrap">
+            <table class="history-table" id="historyTable">
+              <thead>
+                <tr>
+                  <th style="width:36px;"><input type="checkbox" id="selectAll"></th>
+                  <th data-sort="code">رقم الفاتورة</th>
+                  <th data-sort="date">التاريخ</th>
+                  <th data-sort="name">العميل</th>
+                  <th data-sort="amount">المبلغ</th>
+                  <th>الحالة</th>
+                  <th class="col-actions">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="historyEmpty" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 14h5"/></svg>
+            <h3>لا توجد فواتير بعد</h3>
+            <p>ابدأ بإنشاء فاتورتك الأولى من تبويب "فاتورة جديدة"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: STATS ═══ -->
+    <div class="tab-panel" id="tab-stats">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="chart-card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>الإيرادات الشهرية (آخر 6 أشهر)</h3>
+        <div class="bar-chart" id="monthlyChart"></div>
+      </div>
+      <div class="chart-card">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>توزيع الفواتير حسب الحالة</h3>
+        <div class="status-breakdown" id="statusBreakdown"></div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: SETTINGS ═══ -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="settings-grid">
+        <div class="setting-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1"/></svg>إعدادات الفاتورة</h3>
+          <div class="setting-row">
+            <div class="form-group">
+              <label>بادئة رقم الفاتورة</label>
+              <input type="text" class="form-control mono" id="setPrefix" dir="ltr" value="BH-CV">
+            </div>
+            <div class="form-group">
+              <label>السنة في الترقيم</label>
+              <input type="text" class="form-control mono" id="setYear" dir="ltr" value="2026">
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="form-group">
+              <label>الرقم التسلسلي التالي</label>
+              <input type="number" class="form-control mono" id="setSeq" dir="ltr" value="1">
+            </div>
+            <div class="form-group">
+              <label>نسبة VAT الافتراضية (%)</label>
+              <input type="text" class="form-control mono" id="setVat" dir="ltr" value="0" inputmode="decimal">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>رمز العملة</label>
+            <input type="text" class="form-control" id="setCurrency" value="د.ب">
+          </div>
+          <div class="setting-actions">
+            <button class="btn btn-green btn-sm" id="btnSaveSettings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+              حفظ الإعدادات
+            </button>
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>بيانات النشاط التجاري</h3>
+          <div class="setting-row">
+            <div class="form-group">
+              <label>اسم النشاط</label>
+              <input type="text" class="form-control" id="setBizName" value="بطاقتي">
+            </div>
+            <div class="form-group">
+              <label>الوصف</label>
+              <input type="text" class="form-control" id="setBizSub" value="Bitaqti · بطاقات رقمية تعريفية">
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="form-group">
+              <label>الهاتف</label>
+              <input type="text" class="form-control mono" id="setBizPhone" dir="ltr" value="+973 36166806">
+            </div>
+            <div class="form-group">
+              <label>البريد</label>
+              <input type="text" class="form-control mono" id="setBizEmail" dir="ltr" value="Hasan.sdaif16@gmail.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>الدولة</label>
+            <input type="text" class="form-control" id="setBizCountry" value="مملكة البحرين">
+          </div>
+        </div>
+
+        <div class="setting-card">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>النسخ الاحتياطي والاستعادة</h3>
+          <p style="font-size:12.5px;color:var(--ink-soft);margin-bottom:14px;line-height:1.7;">احفظ نسخة كاملة من جميع فواتيرك وإعداداتك في ملف JSON، أو استوردها لاحقاً على أي جهاز.</p>
+          <div class="setting-actions">
+            <button class="btn btn-outline" id="btnExportJson">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              تصدير كل البيانات (JSON)
+            </button>
+            <button class="btn btn-outline" id="btnImportJson">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              استيراد JSON
+            </button>
+            <input type="file" id="importFile" accept=".json" style="display:none;">
+          </div>
+          <div class="danger-zone">
+            <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>منطقة الخطر</h4>
+            <p>حذف جميع الفواتير والإعدادات نهائياً. لا يمكن التراجع عن هذا الإجراء.</p>
+            <button class="btn btn-red btn-sm" id="btnClearAll">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              حذف كل البيانات
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
+</div>
 
-  <!-- زر عائم لفتح المعاينة بالجوال -->
-  <button class="mobile-preview-fab no-print" id="mobilePreviewFab" aria-label="معاينة الفاتورة">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-  </button>
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    </div>
+    <h3 id="modalTitle">تأكيد</h3>
+    <p id="modalBody">هل أنت متأكد؟</p>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modalCancel">إلغاء</button>
+      <button class="btn btn-red" id="modalConfirm">تأكيد</button>
+    </div>
+  </div>
 </div>
 
 <script>
-  const $ = id => document.getElementById(id);
-  const todayISO = () => new Date().toISOString().slice(0,10);
-  const formatDate = iso => { if(!iso) return ''; const [y,m,d] = iso.split('-'); return `${d} / ${m} / ${y}`; };
+// ════════════════════════════════════════════════════════════════
+//  نظام الفواتير المحسّن — Bitaqti Enhanced Invoice System
+// ════════════════════════════════════════════════════════════════
 
-  /* ══════════════════════════════════════════════
-     منطق القفل — التحقق يتم دائماً عبر السيرفر (Netlify Function)
-     كلمة السر نفسها لا توجد أبداً في كود هذه الصفحة.
-  ══════════════════════════════════════════════ */
-  const AUTH_ENDPOINT = '/.netlify/functions/invoice-auth';
-  const SESSION_KEY = 'bitaqti_invoice_session';
+const $ = id => document.getElementById(id);
+const todayISO = () => new Date().toISOString().slice(0,10);
+const formatDate = iso => { if(!iso) return ''; const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; };
+const formatMoney = (n, currency) => {
+  const v = (Math.round((Number(n)||0) * 1000) / 1000).toFixed(3);
+  return v + ' ' + (currency || 'د.ب');
+};
 
-  function getSavedSession() {
-    try {
-      const raw = sessionStorage.getItem(SESSION_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed.token || !parsed.expiresAt) return null;
-      if (Date.now() > parsed.expiresAt) {
-        sessionStorage.removeItem(SESSION_KEY);
-        return null;
-      }
-      return parsed;
-    } catch (err) {
-      return null;
-    }
+// ════════════════════════════════════════════════════════════════
+//  AUTH — نفس آلية المصادقة الأصلية (Netlify Function)
+// ════════════════════════════════════════════════════════════════
+const AUTH_ENDPOINT = '/.netlify/functions/invoice-auth';
+const SESSION_KEY = 'bitaqti_invoice_session';
+
+function getSavedSession(){
+  try{
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(!p.token || !p.expiresAt) return null;
+    if(Date.now() > p.expiresAt){ sessionStorage.removeItem(SESSION_KEY); return null; }
+    return p;
+  }catch(e){ return null; }
+}
+function saveSession(token, expiresAt){ sessionStorage.setItem(SESSION_KEY, JSON.stringify({token, expiresAt})); }
+function clearSession(){ sessionStorage.removeItem(SESSION_KEY); }
+
+function unlockApp(){ $('lockScreen').style.display='none'; $('app').classList.add('unlocked'); initApp(); }
+function lockApp(){
+  clearSession();
+  $('lockScreen').style.display='flex';
+  $('app').classList.remove('unlocked');
+  $('lockPassword').value='';
+  $('lockError').classList.remove('show');
+}
+
+(function checkExistingSession(){
+  const s = getSavedSession();
+  if(s) unlockApp();
+})();
+
+$('lockToggle').addEventListener('click', () => {
+  const inp = $('lockPassword');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+$('lockForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const password = $('lockPassword').value;
+  if(!password) return;
+  const btn = $('lockSubmitBtn');
+  btn.disabled = true; btn.classList.add('loading');
+  $('lockError').classList.remove('show');
+  try{
+    const res = await fetch(AUTH_ENDPOINT, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({password})
+    });
+    if(res.status === 429){ showError('محاولات كثيرة جداً. انتظر دقيقة.'); return; }
+    if(res.status === 500){ showError('السيرفر غير مُعدّ — أضف INVOICE_PASSWORD في Netlify.'); return; }
+    if(res.status === 401){ showError('كلمة السر غير صحيحة.'); $('lockPassword').value=''; $('lockPassword').focus(); return; }
+    if(!res.ok){ showError(`خطأ (${res.status}). حاول لاحقاً.`); return; }
+    const data = await res.json();
+    saveSession(data.token, data.expiresAt);
+    unlockApp();
+  }catch(err){
+    showError('تعذّر الاتصال بالسيرفر. تحقق من الإنترنت.');
+  }finally{
+    btn.disabled = false; btn.classList.remove('loading');
   }
-
-  function saveSession(token, expiresAt) {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({ token, expiresAt }));
+  function showError(msg){
+    $('lockError').textContent = msg;
+    $('lockError').classList.add('show');
   }
+});
 
-  function clearSession() {
-    sessionStorage.removeItem(SESSION_KEY);
+$('lockOutBtn').addEventListener('click', lockApp);
+
+// ════════════════════════════════════════════════════════════════
+//  DATA LAYER — localStorage persistence
+// ════════════════════════════════════════════════════════════════
+const STORAGE_KEY = 'bitaqti_invoices_v1';
+const SETTINGS_KEY = 'bitaqti_invoice_settings_v1';
+
+const DEFAULT_SETTINGS = {
+  prefix: 'BH-CV',
+  year: String(new Date().getFullYear()),
+  nextSeq: 1,
+  defaultVat: 0,
+  currency: 'د.ب',
+  business: {
+    name: 'بطاقتي',
+    sub: 'Bitaqti · بطاقات رقمية تعريفية',
+    phone: '+973 36166806',
+    email: 'Hasan.sdaif16@gmail.com',
+    country: 'مملكة البحرين'
   }
+};
 
-  function unlockApp() {
-    $('lockScreen').style.display = 'none';
-    $('app').classList.add('unlocked');
-    initApp();
+let invoices = [];
+let settings = {...DEFAULT_SETTINGS};
+let editingId = null; // null = new invoice, string = editing existing
+let currentSort = 'date-desc';
+let selectedIds = new Set();
+
+function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    invoices = raw ? JSON.parse(raw) : [];
+  }catch(e){ invoices = []; }
+  try{
+    const rawS = localStorage.getItem(SETTINGS_KEY);
+    if(rawS){ settings = {...DEFAULT_SETTINGS, ...JSON.parse(rawS)}; }
+  }catch(e){ settings = {...DEFAULT_SETTINGS}; }
+}
+
+function saveInvoices(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(invoices)); }
+  catch(e){ toast('فشل حفظ البيانات — قد تكون الذاكرة ممتلئة', 'error'); }
+}
+
+function saveSettings(){
+  try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
+  catch(e){ toast('فشل حفظ الإعدادات', 'error'); }
+}
+
+function genInvoiceCode(){
+  const seq = String(settings.nextSeq).padStart(3, '0');
+  return `${settings.prefix}-${settings.year}-${seq}`;
+}
+
+function generateId(){
+  return 'inv_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  FORM & PREVIEW LOGIC
+// ════════════════════════════════════════════════════════════════
+let items = []; // [{description, qty, unitPrice}]
+
+function addItem(desc='', qty=1, price=0){
+  items.push({description:desc, qty:qty, unitPrice:price});
+  renderItemsTable();
+  updatePreview();
+}
+
+function removeItem(idx){
+  items.splice(idx, 1);
+  renderItemsTable();
+  updatePreview();
+}
+
+function renderItemsTable(){
+  const body = $('itemsBody');
+  body.innerHTML = '';
+  if(items.length === 0){
+    items.push({description:'', qty:1, unitPrice:0});
   }
-
-  function lockApp() {
-    clearSession();
-    $('lockScreen').style.display = 'flex';
-    $('app').classList.remove('unlocked');
-    $('lockPassword').value = '';
-    $('lockError').classList.remove('show');
-  }
-
-  // عند فتح الصفحة: هل يوجد جلسة صالحة محفوظة (لا حاجة لإعادة كتابة كلمة السر)؟
-  (function checkExistingSession() {
-    const session = getSavedSession();
-    if (session) {
-      unlockApp();
-    }
-  })();
-
-  const lockForm = $('lockForm');
-  const lockPasswordInput = $('lockPassword');
-  const lockSubmitBtn = $('lockSubmitBtn');
-  const lockError = $('lockError');
-
-  $('lockToggle').addEventListener('click', () => {
-    lockPasswordInput.type = lockPasswordInput.type === 'password' ? 'text' : 'password';
+  items.forEach((item, i) => {
+    const tr = document.createElement('tr');
+    tr.className = 'item-row';
+    tr.innerHTML = `
+      <td><input type="text" class="col-desc-input" placeholder="وصف البند..." value="${escapeHtml(item.description)}" data-idx="${i}" data-field="description"></td>
+      <td><input type="number" class="col-qty-input" placeholder="1" value="${item.qty}" min="0" step="1" data-idx="${i}" data-field="qty"></td>
+      <td><input type="text" class="col-price-input" placeholder="0.000" value="${item.unitPrice}" data-idx="${i}" data-field="unitPrice" inputmode="decimal"></td>
+      <td><div class="item-total">${(Number(item.qty) * Number(item.unitPrice)).toFixed(3)}</div></td>
+      <td><button class="item-del" data-idx="${i}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></td>
+    `;
+    body.appendChild(tr);
   });
 
-  lockForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const password = lockPasswordInput.value;
-    if (!password) return;
-
-    lockSubmitBtn.disabled = true;
-    lockSubmitBtn.classList.add('loading');
-    lockError.classList.remove('show');
-
-    try {
-      const res = await fetch(AUTH_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
-      });
-
-      if (res.status === 429) {
-        lockError.textContent = 'محاولات كثيرة جداً خلال وقت قصير. انتظر دقيقة وحاول مجدداً.';
-        lockError.classList.add('show');
-        return;
+  // Bind events
+  body.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      if(field === 'qty' || field === 'unitPrice'){
+        items[idx][field] = parseFloat(e.target.value) || 0;
+      }else{
+        items[idx][field] = e.target.value;
       }
-
-      if (res.status === 500) {
-        lockError.textContent = 'الصفحة غير مُعدّة بعد على السيرفر — متغيّر INVOICE_PASSWORD غير موجود في إعدادات Netlify، أو لم تتم إعادة الرفع (deploy) بعد إضافته.';
-        lockError.classList.add('show');
-        return;
+      // Update only the total cell
+      const row = e.target.closest('tr');
+      if(row){
+        const totalCell = row.querySelector('.item-total');
+        if(totalCell){
+          totalCell.textContent = (Number(items[idx].qty) * Number(items[idx].unitPrice)).toFixed(3);
+        }
       }
+      updatePreview();
+    });
+  });
+  body.querySelectorAll('.item-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      removeItem(parseInt(btn.dataset.idx));
+    });
+  });
+}
 
-      if (res.status === 401) {
-        lockError.textContent = 'كلمة السر غير صحيحة.';
-        lockError.classList.add('show');
-        lockPasswordInput.value = '';
-        lockPasswordInput.focus();
-        return;
-      }
+function escapeHtml(s){
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
-      if (!res.ok) {
-        lockError.textContent = `خطأ غير متوقع من السيرفر (رمز ${res.status}). حاول لاحقاً.`;
-        lockError.classList.add('show');
-        return;
-      }
+function calculateTotals(){
+  const subtotal = items.reduce((sum, it) => sum + (Number(it.qty) * Number(it.unitPrice)), 0);
+  const discType = $('fDiscountType').value;
+  const discVal = parseFloat($('fDiscountValue').value) || 0;
+  let discount = 0;
+  if(discType === 'percent') discount = subtotal * (discVal / 100);
+  else if(discType === 'fixed') discount = discVal;
+  if(discount > subtotal) discount = subtotal;
+  const afterDiscount = subtotal - discount;
+  const vatRate = parseFloat($('fVatRate').value) || 0;
+  const vat = afterDiscount * (vatRate / 100);
+  const grand = afterDiscount + vat;
+  return {subtotal, discount, vat, grand, vatRate, discType, discVal};
+}
 
-      const data = await res.json();
-      saveSession(data.token, data.expiresAt);
-      unlockApp();
+function updatePreview(){
+  // Basic fields
+  $('pCode').textContent = $('fCode').value.trim() || '—';
+  $('pDate').textContent = formatDate($('fDate').value) || '—';
+  const statusVal = $('fStatus').value;
+  const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
+  $('pStatus').textContent = statusLabels[statusVal] || 'مسودة';
+  $('pStatus').className = 'status-pill status-' + statusVal;
 
-    } catch (err) {
-      lockError.textContent = 'تعذّر الاتصال بالسيرفر. تحقق من الإنترنت وحاول مجدداً.';
-      lockError.classList.add('show');
-    } finally {
-      lockSubmitBtn.disabled = false;
-      lockSubmitBtn.classList.remove('loading');
-    }
+  // Watermark
+  const wm = $('watermark');
+  if(statusVal === 'paid') wm.textContent = 'PAID';
+  else if(statusVal === 'cancelled') wm.textContent = 'CANCELLED';
+  else if(statusVal === 'sent') wm.textContent = 'SENT';
+  else wm.textContent = 'DRAFT';
+
+  // Customer
+  $('pName').textContent = $('fName').value.trim() || 'اسم العميل';
+  $('pPhone').textContent = $('fPhone').value.trim() || '';
+  const cvLink = $('fCvLink').value.trim();
+  const pCvLink = $('pCvLink');
+  if(cvLink){
+    const cleanLink = cvLink.replace(/^https?:\/\//, '');
+    pCvLink.textContent = cleanLink.startsWith('bitaqti.com') ? cleanLink : 'bitaqti.com/' + cleanLink.replace(/^\/+/,'');
+    pCvLink.style.display = 'block';
+  }else{
+    pCvLink.style.display = 'none';
+  }
+
+  // QR Code — only if cvLink exists
+  const qrWrap = $('pQrWrap');
+  if(cvLink){
+    qrWrap.style.display = 'flex';
+    generateInvoiceQR(cvLink);
+  }else{
+    qrWrap.style.display = 'none';
+  }
+
+  // Brand
+  $('pBrandName').textContent = settings.business.name;
+  $('pBrandSub').textContent = settings.business.sub;
+  $('pCountry').textContent = settings.business.country;
+  $('pContactPhone').textContent = '📞 ' + settings.business.phone;
+  $('pContactEmail').textContent = '✉️ ' + settings.business.email;
+
+  // Items table
+  const pItemsBody = $('pItemsBody');
+  pItemsBody.innerHTML = '';
+  items.forEach((item, i) => {
+    const total = Number(item.qty) * Number(item.unitPrice);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="col-num">${i + 1}</td>
+      <td>${escapeHtml(item.description) || '—'}</td>
+      <td class="col-qty">${item.qty}</td>
+      <td class="col-price">${Number(item.unitPrice).toFixed(3)}</td>
+      <td class="col-total">${total.toFixed(3)}</td>
+    `;
+    pItemsBody.appendChild(tr);
   });
 
-  $('mobileLockOutBtn').addEventListener('click', lockApp);
-  $('desktopLockOutBtn').addEventListener('click', lockApp);
+  // Totals
+  const t = calculateTotals();
+  const cur = settings.currency;
+  let totalsHtml = `
+    <div class="total-row"><span class="lbl">المجموع الفرعي</span><span class="val">${t.subtotal.toFixed(3)} ${cur}</span></div>
+  `;
+  if(t.discount > 0){
+    const discLabel = t.discType === 'percent' ? `خصم (${t.discVal}%)` : 'خصم';
+    totalsHtml += `<div class="total-row discount"><span class="lbl">${discLabel}</span><span class="val">-${t.discount.toFixed(3)} ${cur}</span></div>`;
+  }
+  if(t.vat > 0){
+    totalsHtml += `<div class="total-row vat"><span class="lbl">ضريبة القيمة المضافة (${t.vatRate}%)</span><span class="val">${t.vat.toFixed(3)} ${cur}</span></div>`;
+  }
+  totalsHtml += `<div class="total-row grand"><span class="lbl">الإجمالي النهائي</span><span class="val">${t.grand.toFixed(3)} ${cur}</span></div>`;
+  $('pTotals').innerHTML = totalsHtml;
 
-  /* ══════════════════════════════════════════════
-     منطق التطبيق — يعمل فقط بعد فتح القفل
-  ══════════════════════════════════════════════ */
-  function initApp() {
-    if (initApp._done) return; // تجنّب تكرار ربط الأحداث لو فُتح القفل أكثر من مرة
-    initApp._done = true;
+  // Form totals summary
+  $('formTotals').innerHTML = totalsHtml;
 
-    function updatePreview() {
-      $('pCode').textContent = $('fCode').value.trim() || '---';
-      $('pDate').textContent = formatDate($('fDate').value) || '---';
+  // Notes
+  const notes = $('fNotes').value.trim();
+  $('pNotesWrap').style.display = notes ? 'block' : 'none';
+  $('pNotes').textContent = notes;
 
-      $('pName').textContent = $('fName').value.trim() || 'عميل غير محدد';
-      $('pPhone').textContent = $('fPhone').value.trim() || '';
+  // Payment info
+  const payMethod = $('fPayment').value;
+  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة'};
+  if(payMethod || statusVal !== 'draft'){
+    $('pPaymentWrap').style.display = 'flex';
+    $('pPayment').textContent = payLabels[payMethod] || '—';
+    $('pPayStatus').textContent = statusVal === 'paid' ? 'مدفوع' : (statusVal === 'cancelled' ? 'ملغى' : (statusVal === 'sent' ? 'بانتظار الدفع' : '—'));
+  }else{
+    $('pPaymentWrap').style.display = 'none';
+  }
+}
 
-      const cvLink = $('fCvLink').value.trim();
-      const pCvLink = $('pCvLink');
-      if (cvLink) {
-        pCvLink.textContent = cvLink.replace(/^https?:\/\//, '');
-        pCvLink.style.display = 'block';
-      } else {
-        pCvLink.style.display = 'none';
+function generateInvoiceQR(cvLink){
+  try{
+    let url = cvLink;
+    if(!/^https?:\/\//i.test(url)){
+      url = 'https://bitaqti.com/' + url.replace(/^\/+/,'').replace(/\/+$/,'') + '/';
+    }
+    const qr = qrcode(0, 'M');
+    qr.addData(url);
+    qr.make();
+    const moduleCount = qr.getModuleCount();
+    const canvas = $('pQrCanvas');
+    const size = 200;
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#FFFFFF';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = '#000000';
+    const pixelSize = size / (moduleCount + 4);
+    for(let r = 0; r < moduleCount; r++){
+      for(let c = 0; c < moduleCount; c++){
+        if(qr.isDark(r, c)){
+          ctx.fillRect((c + 2) * pixelSize, (r + 2) * pixelSize, pixelSize, pixelSize);
+        }
       }
-
-      const pkgSel = $('fPackage').value;
-      $('pPackage').textContent = pkgSel === '__other__'
-        ? ($('fPackageOther').value.trim() || 'باقة مخصصة')
-        : pkgSel;
-
-      const price = $('fPrice').value.trim();
-      $('pPrice').textContent = price ? price + ' د.ب' : '---';
-
-      const notes = $('fNotes').value.trim();
-      $('pNotesWrap').style.display = notes ? 'block' : 'none';
-      $('pNotes').textContent = notes;
     }
+  }catch(e){ console.warn('QR gen failed:', e); }
+}
 
-    ['fCode', 'fDate', 'fName', 'fPhone', 'fCvLink', 'fPackageOther', 'fPrice', 'fNotes'].forEach(id => {
-      $(id).addEventListener('input', updatePreview);
+// ════════════════════════════════════════════════════════════════
+//  INVOICE CRUD
+// ════════════════════════════════════════════════════════════════
+function collectInvoiceData(){
+  return {
+    code: $('fCode').value.trim(),
+    date: $('fDate').value,
+    status: $('fStatus').value,
+    paymentMethod: $('fPayment').value,
+    customer: {
+      name: $('fName').value.trim(),
+      phone: $('fPhone').value.trim(),
+      cvLink: $('fCvLink').value.trim()
+    },
+    items: items.filter(it => it.description || it.unitPrice > 0).map(it => ({
+      description: it.description,
+      qty: Number(it.qty) || 1,
+      unitPrice: Number(it.unitPrice) || 0
+    })),
+    discount: {type: $('fDiscountType').value, value: parseFloat($('fDiscountValue').value) || 0},
+    vatRate: parseFloat($('fVatRate').value) || 0,
+    notes: $('fNotes').value.trim(),
+    totals: calculateTotals()
+  };
+}
+
+function saveInvoice(){
+  const data = collectInvoiceData();
+  if(!data.customer.name){
+    toast('يرجى إدخال اسم العميل', 'error');
+    $('fName').focus();
+    return;
+  }
+  if(data.items.length === 0){
+    toast('أضف بنداً واحداً على الأقل', 'error');
+    return;
+  }
+  const now = Date.now();
+  if(editingId){
+    // Update existing
+    const idx = invoices.findIndex(i => i.id === editingId);
+    if(idx >= 0){
+      invoices[idx] = {...invoices[idx], ...data, updatedAt: now};
+    }
+    toast('تم تحديث الفاتورة', 'success');
+  }else{
+    // Create new
+    const inv = {...data, id: generateId(), createdAt: now, updatedAt: now};
+    invoices.push(inv);
+    settings.nextSeq++;
+    saveSettings();
+    toast('تم حفظ الفاتورة بنجاح', 'success');
+  }
+  saveInvoices();
+  editingId = null;
+  updateHistoryBadge();
+  resetForm();
+}
+
+function loadInvoice(id){
+  const inv = invoices.find(i => i.id === id);
+  if(!inv) return;
+  editingId = id;
+  $('fCode').value = inv.code;
+  $('fDate').value = inv.date;
+  $('fStatus').value = inv.status;
+  $('fPayment').value = inv.paymentMethod || '';
+  $('fName').value = inv.customer.name;
+  $('fPhone').value = inv.customer.phone;
+  $('fCvLink').value = inv.customer.cvLink;
+  items = inv.items.length ? inv.items.map(it => ({...it})) : [{description:'', qty:1, unitPrice:0}];
+  $('fDiscountType').value = inv.discount.type;
+  $('fDiscountValue').value = inv.discount.value;
+  $('fVatRate').value = inv.vatRate;
+  $('fNotes').value = inv.notes;
+  $('fDiscountValue').disabled = inv.discount.type === 'none';
+  renderItemsTable();
+  updatePreview();
+  switchTab('new');
+  toast('تم تحميل الفاتورة للتعديل', 'info');
+}
+
+function duplicateInvoice(id){
+  const inv = invoices.find(i => i.id === id);
+  if(!inv) return;
+  editingId = null;
+  $('fDate').value = todayISO();
+  $('fStatus').value = 'draft';
+  $('fPayment').value = '';
+  $('fName').value = inv.customer.name;
+  $('fPhone').value = inv.customer.phone;
+  $('fCvLink').value = inv.customer.cvLink;
+  items = inv.items.map(it => ({...it}));
+  $('fDiscountType').value = inv.discount.type;
+  $('fDiscountValue').value = inv.discount.value;
+  $('fVatRate').value = inv.vatRate;
+  $('fNotes').value = inv.notes;
+  $('fDiscountValue').disabled = inv.discount.type === 'none';
+  // New code
+  settings.nextSeq++;
+  saveSettings();
+  $('fCode').value = genInvoiceCode();
+  renderItemsTable();
+  updatePreview();
+  switchTab('new');
+  toast('تم نسخ الفاتورة — احفظها لتثبيتها', 'info');
+}
+
+function deleteInvoice(id){
+  showModal('danger', 'حذف الفاتورة', 'هل تريد حذف هذه الفاتورة نهائياً؟ لا يمكن التراجع.', () => {
+    invoices = invoices.filter(i => i.id !== id);
+    saveInvoices();
+    updateHistoryBadge();
+    renderHistory();
+    toast('تم حذف الفاتورة', 'success');
+  });
+}
+
+function markAsPaid(id){
+  const idx = invoices.findIndex(i => i.id === id);
+  if(idx < 0) return;
+  invoices[idx].status = 'paid';
+  invoices[idx].updatedAt = Date.now();
+  saveInvoices();
+  renderHistory();
+  toast('تم تعليم الفاتورة كمدفوعة', 'success');
+}
+
+function duplicateLastInvoice(){
+  if(invoices.length === 0){
+    toast('لا توجد فواتير سابقة للنسخ', 'error');
+    return;
+  }
+  const last = invoices[invoices.length - 1];
+  duplicateInvoice(last.id);
+}
+
+function resetForm(){
+  editingId = null;
+  $('fCode').value = genInvoiceCode();
+  $('fDate').value = todayISO();
+  $('fStatus').value = 'draft';
+  $('fPayment').value = '';
+  $('fName').value = '';
+  $('fPhone').value = '';
+  $('fCvLink').value = '';
+  items = [{description:'', qty:1, unitPrice:0}];
+  $('fDiscountType').value = 'none';
+  $('fDiscountValue').value = '';
+  $('fDiscountValue').disabled = true;
+  $('fVatRate').value = settings.defaultVat;
+  $('fNotes').value = '';
+  renderItemsTable();
+  updatePreview();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  HISTORY RENDERING
+// ════════════════════════════════════════════════════════════════
+function updateHistoryBadge(){
+  const badge = $('historyBadge');
+  if(invoices.length > 0){
+    badge.textContent = invoices.length;
+    badge.style.display = 'inline-block';
+  }else{
+    badge.style.display = 'none';
+  }
+  $('historyCount').textContent = invoices.length + ' فاتورة';
+}
+
+function getFilteredInvoices(){
+  const search = $('searchInput').value.trim().toLowerCase();
+  const statusFilter = $('filterStatus').value;
+  let filtered = invoices.filter(inv => {
+    if(statusFilter && inv.status !== statusFilter) return false;
+    if(search){
+      const haystack = (inv.code + ' ' + inv.customer.name + ' ' + inv.customer.phone + ' ' + (inv.customer.cvLink||'')).toLowerCase();
+      if(!haystack.includes(search)) return false;
+    }
+    return true;
+  });
+  // Sort
+  const [field, dir] = currentSort.split('-');
+  filtered.sort((a, b) => {
+    let av, bv;
+    if(field === 'code'){ av = a.code; bv = b.code; }
+    else if(field === 'date'){ av = a.date; bv = b.date; }
+    else if(field === 'name'){ av = a.customer.name; bv = b.customer.name; }
+    else if(field === 'amount'){ av = a.totals.grand; bv = b.totals.grand; }
+    else { av = a.date; bv = b.date; }
+    if(av < bv) return dir === 'asc' ? -1 : 1;
+    if(av > bv) return dir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  return filtered;
+}
+
+function renderHistory(){
+  const body = $('historyBody');
+  const filtered = getFilteredInvoices();
+  body.innerHTML = '';
+  if(filtered.length === 0){
+    $('historyEmpty').style.display = 'block';
+    $('historyTable').style.display = 'none';
+    return;
+  }
+  $('historyEmpty').style.display = 'none';
+  $('historyTable').style.display = '';
+  const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
+  filtered.forEach(inv => {
+    const tr = document.createElement('tr');
+    const isChecked = selectedIds.has(inv.id) ? 'checked' : '';
+    tr.innerHTML = `
+      <td><input type="checkbox" class="row-check" data-id="${inv.id}" ${isChecked}></td>
+      <td class="col-code">${escapeHtml(inv.code)}</td>
+      <td class="col-date">${formatDate(inv.date)}</td>
+      <td class="col-name">${escapeHtml(inv.customer.name)}</td>
+      <td class="col-amount">${inv.totals.grand.toFixed(3)} ${settings.currency}</td>
+      <td><span class="status-pill status-${inv.status}">${statusLabels[inv.status]}</span></td>
+      <td class="col-actions">
+        <button class="row-action view" data-action="view" data-id="${inv.id}" title="عرض/تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="row-action duplicate" data-action="duplicate" data-id="${inv.id}" title="تكرار"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+        ${inv.status !== 'paid' ? `<button class="row-action paid" data-action="paid" data-id="${inv.id}" title="تعليم كمدفوعة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></button>` : ''}
+        <button class="row-action" data-action="delete" data-id="${inv.id}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+  // Bind row actions
+  body.querySelectorAll('.row-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if(action === 'view') loadInvoice(id);
+      else if(action === 'duplicate') duplicateInvoice(id);
+      else if(action === 'paid') markAsPaid(id);
+      else if(action === 'delete') deleteInvoice(id);
     });
+  });
+  body.querySelectorAll('.row-check').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if(cb.checked) selectedIds.add(cb.dataset.id);
+      else selectedIds.delete(cb.dataset.id);
+      updateBulkBar();
+    });
+  });
+  updateBulkBar();
+}
 
-    $('fPackage').addEventListener('change', () => {
-      $('fPackageOtherWrap').style.display = $('fPackage').value === '__other__' ? 'block' : 'none';
+function updateBulkBar(){
+  const count = selectedIds.size;
+  $('bulkBar').classList.toggle('show', count > 0);
+  $('bulkCount').textContent = count + ' محدّد';
+  $('selectAll').checked = count > 0 && count === invoices.length;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  STATS DASHBOARD
+// ════════════════════════════════════════════════════════════════
+function renderStats(){
+  const paid = invoices.filter(i => i.status === 'paid');
+  const pending = invoices.filter(i => i.status === 'sent');
+  const draft = invoices.filter(i => i.status === 'draft');
+  const cancelled = invoices.filter(i => i.status === 'cancelled');
+  const totalRevenue = paid.reduce((s, i) => s + i.totals.grand, 0);
+  const pendingAmount = pending.reduce((s, i) => s + i.totals.grand, 0);
+  const avgInv = invoices.length > 0 ? totalRevenue / (paid.length || 1) : 0;
+
+  const grid = $('statsGrid');
+  grid.innerHTML = `
+    <div class="stat-card revenue">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+      <div class="stat-label">إجمالي الإيرادات</div>
+      <div class="stat-value">${totalRevenue.toFixed(3)} ${settings.currency}</div>
+    </div>
+    <div class="stat-card pending">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+      <div class="stat-label">مبالغ معلّقة</div>
+      <div class="stat-value">${pendingAmount.toFixed(3)} ${settings.currency}</div>
+    </div>
+    <div class="stat-card count">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 14h5"/></svg></div>
+      <div class="stat-label">إجمالي الفواتير</div>
+      <div class="stat-value">${invoices.length}</div>
+    </div>
+    <div class="stat-card avg">
+      <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
+      <div class="stat-label">متوسط الفاتورة</div>
+      <div class="stat-value">${avgInv.toFixed(3)} ${settings.currency}</div>
+    </div>
+  `;
+
+  // Monthly chart (last 6 months)
+  const now = new Date();
+  const months = [];
+  for(let i = 5; i >= 0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push({
+      label: d.toLocaleDateString('ar', {month:'short'}),
+      year: d.getFullYear(),
+      month: d.getMonth(),
+      revenue: 0
+    });
+  }
+  paid.forEach(inv => {
+    const d = new Date(inv.date);
+    const m = months.find(mo => mo.year === d.getFullYear() && mo.month === d.getMonth());
+    if(m) m.revenue += inv.totals.grand;
+  });
+  const maxRev = Math.max(...months.map(m => m.revenue), 1);
+  const chart = $('monthlyChart');
+  chart.innerHTML = months.map(m => `
+    <div class="bar-col">
+      <span class="bar-val">${m.revenue > 0 ? m.revenue.toFixed(0) : ''}</span>
+      <div class="bar" style="height:${(m.revenue / maxRev) * 100}%"></div>
+      <span class="bar-lbl">${m.label}</span>
+    </div>
+  `).join('');
+
+  // Status breakdown
+  $('statusBreakdown').innerHTML = `
+    <div class="status-card draft"><div class="sc-count">${draft.length}</div><div class="sc-label">مسودة</div></div>
+    <div class="status-card sent"><div class="sc-count">${pending.length}</div><div class="sc-label">مُرسلة</div></div>
+    <div class="status-card paid"><div class="sc-count">${paid.length}</div><div class="sc-label">مدفوعة</div></div>
+    <div class="status-card cancelled"><div class="sc-count">${cancelled.length}</div><div class="sc-label">ملغاة</div></div>
+  `;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SETTINGS
+// ════════════════════════════════════════════════════════════════
+function loadSettingsForm(){
+  $('setPrefix').value = settings.prefix;
+  $('setYear').value = settings.year;
+  $('setSeq').value = settings.nextSeq;
+  $('setVat').value = settings.defaultVat;
+  $('setCurrency').value = settings.currency;
+  $('setBizName').value = settings.business.name;
+  $('setBizSub').value = settings.business.sub;
+  $('setBizPhone').value = settings.business.phone;
+  $('setBizEmail').value = settings.business.email;
+  $('setBizCountry').value = settings.business.country;
+}
+
+function saveSettingsForm(){
+  settings.prefix = $('setPrefix').value.trim() || 'BH-CV';
+  settings.year = $('setYear').value.trim() || String(new Date().getFullYear());
+  settings.nextSeq = parseInt($('setSeq').value) || 1;
+  settings.defaultVat = parseFloat($('setVat').value) || 0;
+  settings.currency = $('setCurrency').value.trim() || 'د.ب';
+  settings.business.name = $('setBizName').value.trim() || 'بطاقتي';
+  settings.business.sub = $('setBizSub').value.trim();
+  settings.business.phone = $('setBizPhone').value.trim();
+  settings.business.email = $('setBizEmail').value.trim();
+  settings.business.country = $('setBizCountry').value.trim();
+  saveSettings();
+  toast('تم حفظ الإعدادات', 'success');
+  updatePreview();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  EXPORT / IMPORT
+// ════════════════════════════════════════════════════════════════
+function exportJSON(){
+  const data = {
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    invoices: invoices,
+    settings: settings
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bitaqti-backup-${todayISO()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('تم تصدير البيانات', 'success');
+}
+
+function exportCSV(){
+  if(invoices.length === 0){ toast('لا توجد فواتير للتصدير', 'error'); return; }
+  const rows = [['رقم الفاتورة','التاريخ','العميل','الهاتف','البطاقة','الحالة','المجموع الفرعي','الخصم','VAT','الإجمالي','طريقة الدفع','ملاحظات']];
+  const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
+  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة'};
+  invoices.forEach(inv => {
+    rows.push([
+      inv.code, inv.date, inv.customer.name, inv.customer.phone, inv.customer.cvLink,
+      statusLabels[inv.status] || inv.status,
+      inv.totals.subtotal.toFixed(3),
+      inv.totals.discount.toFixed(3),
+      inv.totals.vat.toFixed(3),
+      inv.totals.grand.toFixed(3),
+      payLabels[inv.paymentMethod] || '',
+      (inv.notes || '').replace(/"/g,'""').replace(/\n/g,' ')
+    ]);
+  });
+  const csv = '\uFEFF' + rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bitaqti-invoices-${todayISO()}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('تم تصدير CSV', 'success');
+}
+
+function importJSON(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!data.invoices || !Array.isArray(data.invoices)) throw new Error('Invalid format');
+      showModal('warning', 'استيراد البيانات',
+        `سيتم استبدال ${invoices.length} فاتورة موجودة بـ ${data.invoices.length} فاتورة من الملف. هل تريد المتابعة؟`,
+        () => {
+          invoices = data.invoices;
+          if(data.settings) settings = {...DEFAULT_SETTINGS, ...data.settings};
+          saveInvoices(); saveSettings();
+          updateHistoryBadge(); renderHistory(); loadSettingsForm();
+          toast('تم استيراد البيانات بنجاح', 'success');
+        });
+    }catch(err){
+      toast('ملف غير صالح: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearAllData(){
+  showModal('danger', 'حذف كل البيانات',
+    'سيتم حذف جميع الفواتير والإعدادات نهائياً. لا يمكن التراجع. ننصح بتصدير نسخة احتياطية أولاً.',
+    () => {
+      invoices = [];
+      settings = {...DEFAULT_SETTINGS};
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SETTINGS_KEY);
+      editingId = null;
+      selectedIds.clear();
+      resetForm();
+      updateHistoryBadge();
+      renderHistory();
+      loadSettingsForm();
+      toast('تم حذف جميع البيانات', 'success');
+    });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  AUTOCOMPLETE
+// ════════════════════════════════════════════════════════════════
+let acSelected = -1;
+function showAutocomplete(){
+  const val = $('fName').value.trim().toLowerCase();
+  const list = $('nameAutocomplete');
+  if(!val){ list.classList.remove('show'); return; }
+  // Find unique customers matching
+  const seen = new Set();
+  const matches = [];
+  for(const inv of invoices){
+    if(inv.customer.name && inv.customer.name.toLowerCase().includes(val)){
+      const key = inv.customer.phone || inv.customer.name;
+      if(!seen.has(key)){
+        seen.add(key);
+        matches.push(inv.customer);
+      }
+    }
+  }
+  if(matches.length === 0){ list.classList.remove('show'); return; }
+  list.innerHTML = matches.slice(0, 6).map((c, i) => `
+    <div class="autocomplete-item" data-idx="${i}">
+      <span class="ai-name">${escapeHtml(c.name)}</span>
+      <span class="ai-phone">${escapeHtml(c.phone)}</span>
+    </div>
+  `).join('');
+  list.classList.add('show');
+  acSelected = -1;
+  list.querySelectorAll('.autocomplete-item').forEach((el, i) => {
+    el.addEventListener('click', () => {
+      $('fName').value = matches[i].name;
+      $('fPhone').value = matches[i].phone;
+      $('fCvLink').value = matches[i].cvLink || '';
+      list.classList.remove('show');
       updatePreview();
     });
+  });
+}
 
-    function doPrint() { window.print(); }
+// ════════════════════════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  if(name === 'history') renderHistory();
+  if(name === 'stats') renderStats();
+  if(name === 'settings') loadSettingsForm();
+}
 
-    $('btnPrint').addEventListener('click', doPrint);
-    $('mpPrintBtn').addEventListener('click', doPrint);
+// ════════════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════════════
+let toastTimer = null;
+function toast(msg, type='info'){
+  const container = $('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  const icons = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M15 9l-6 6M9 9l6 6"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>'
+  };
+  el.innerHTML = (icons[type] || icons.info) + '<span>' + escapeHtml(msg) + '</span>';
+  container.appendChild(el);
+  setTimeout(() => el.classList.add('show'), 10);
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
+}
 
-    $('btnClear').addEventListener('click', () => {
-      $('fCode').value = 'BH-CV-2026-';
-      $('fName').value = '';
-      $('fPhone').value = '';
-      $('fCvLink').value = '';
-      $('fPackage').value = 'الباقة الأساسية';
-      $('fPackageOther').value = '';
-      $('fPackageOtherWrap').style.display = 'none';
-      $('fPrice').value = '';
-      $('fNotes').value = '';
-      $('fDate').value = todayISO();
-      updatePreview();
-    });
+// ════════════════════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════════════════════
+let modalCallback = null;
+function showModal(type, title, body, callback){
+  const iconClass = type === 'danger' ? 'danger' : (type === 'warning' ? 'warning' : 'info');
+  $('modalIcon').className = 'modal-icon ' + iconClass;
+  $('modalTitle').textContent = title;
+  $('modalBody').textContent = body;
+  modalCallback = callback;
+  $('modalOverlay').classList.add('show');
+}
+function closeModal(){ $('modalOverlay').classList.remove('show'); modalCallback = null; }
 
-    // ── تبديل وضع المعاينة بالجوال ──
-    const invoicePreview = $('invoicePreview');
-    function openPreview() {
-      invoicePreview.classList.add('show');
-      fitSheetToScreen();
-      document.body.style.overflow = 'hidden';
-    }
-    function closePreview() {
-      invoicePreview.classList.remove('show');
-      document.body.style.overflow = '';
-    }
-    $('mobilePreviewFab').addEventListener('click', openPreview);
-    $('mpCloseBtn').addEventListener('click', closePreview);
+// ════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════
+function initApp(){
+  if(initApp._done) return;
+  initApp._done = true;
+  loadData();
+  loadSettingsForm();
+  resetForm();
+  $('fVatRate').value = settings.defaultVat;
+  updatePreview();
+  updateHistoryBadge();
 
-    // حساب نسبة تصغير ورقة A4 لتناسب عرض شاشة الجوال بدقة
-    function fitSheetToScreen() {
-      const sheet = $('sheet');
-      const availableWidth = window.innerWidth - 24; // هامش بسيط
-      const a4WidthPx = 210 * 3.7795; // تقريب mm إلى px
-      const scale = Math.min(availableWidth / a4WidthPx, 0.55);
-      document.documentElement.style.setProperty('--mobile-scale', scale.toFixed(3));
-    }
-    window.addEventListener('resize', () => {
-      if (invoicePreview.classList.contains('show')) fitSheetToScreen();
-    });
+  // Tabs
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => switchTab(t.dataset.tab));
+  });
 
-    $('fDate').value = todayISO();
+  // Form events
+  ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes'].forEach(id => {
+    $(id).addEventListener('input', updatePreview);
+    $(id).addEventListener('change', updatePreview);
+  });
+
+  // Discount type toggle
+  $('fDiscountType').addEventListener('change', () => {
+    $('fDiscountValue').disabled = $('fDiscountType').value === 'none';
+    if($('fDiscountType').value === 'none') $('fDiscountValue').value = '';
     updatePreview();
+  });
+
+  // Buttons
+  $('btnAddItem').addEventListener('click', () => addItem());
+  $('btnSave').addEventListener('click', saveInvoice);
+  $('btnPrint').addEventListener('click', () => window.print());
+  $('btnNew').addEventListener('click', () => {
+    if(editingId || items.some(i => i.description) || $('fName').value){
+      showModal('warning', 'فاتورة جديدة', 'سيتم مسح البيانات الحالية. هل تريد المتابعة؟', resetForm);
+    }else{
+      resetForm();
+    }
+  });
+  $('btnDuplicate').addEventListener('click', duplicateLastInvoice);
+
+  // Autocomplete
+  $('fName').addEventListener('input', showAutocomplete);
+  $('fName').addEventListener('blur', () => {
+    setTimeout(() => $('nameAutocomplete').classList.remove('show'), 200);
+  });
+
+  // History
+  $('searchInput').addEventListener('input', renderHistory);
+  $('filterStatus').addEventListener('change', renderHistory);
+  $('sortBy').addEventListener('change', (e) => { currentSort = e.target.value; renderHistory(); });
+  $('selectAll').addEventListener('change', (e) => {
+    if(e.target.checked){
+      getFilteredInvoices().forEach(inv => selectedIds.add(inv.id));
+    }else{
+      selectedIds.clear();
+    }
+    renderHistory();
+  });
+  $('bulkMarkPaid').addEventListener('click', () => {
+    if(selectedIds.size === 0) return;
+    showModal('warning', 'تعليم كمدفوعة', `تعليم ${selectedIds.size} فاتورة كمدفوعة؟`, () => {
+      selectedIds.forEach(id => {
+        const idx = invoices.findIndex(i => i.id === id);
+        if(idx >= 0){ invoices[idx].status = 'paid'; invoices[idx].updatedAt = Date.now(); }
+      });
+      saveInvoices();
+      selectedIds.clear();
+      renderHistory();
+      toast('تم تعليم الفواتير كمدفوعة', 'success');
+    });
+  });
+  $('bulkDelete').addEventListener('click', () => {
+    if(selectedIds.size === 0) return;
+    showModal('danger', 'حذف الفواتير', `حذف ${selectedIds.size} فاتورة نهائياً؟`, () => {
+      invoices = invoices.filter(i => !selectedIds.has(i.id));
+      saveInvoices();
+      selectedIds.clear();
+      updateHistoryBadge();
+      renderHistory();
+      toast('تم حذف الفواتير', 'success');
+    });
+  });
+  $('bulkClear').addEventListener('click', () => { selectedIds.clear(); renderHistory(); });
+  $('btnExportCsv').addEventListener('click', exportCSV);
+
+  // Settings
+  $('btnSaveSettings').addEventListener('click', saveSettingsForm);
+  $('btnExportJson').addEventListener('click', exportJSON);
+  $('btnImportJson').addEventListener('click', () => $('importFile').click());
+  $('importFile').addEventListener('change', (e) => {
+    if(e.target.files[0]) importJSON(e.target.files[0]);
+    e.target.value = '';
+  });
+  $('btnClearAll').addEventListener('click', clearAllData);
+
+  // Modal
+  $('modalCancel').addEventListener('click', closeModal);
+  $('modalConfirm').addEventListener('click', () => {
+    if(modalCallback) modalCallback();
+    closeModal();
+  });
+  $('modalOverlay').addEventListener('click', (e) => {
+    if(e.target === $('modalOverlay')) closeModal();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if(e.ctrlKey || e.metaKey){
+      if(e.key === 'p' || e.key === 'P'){
+        if($('app').classList.contains('unlocked')){
+          e.preventDefault();
+          window.print();
+        }
+      }
+      if(e.key === 's' || e.key === 'S'){
+        if($('app').classList.contains('unlocked') && $('tab-new').classList.contains('active')){
+          e.preventDefault();
+          saveInvoice();
+        }
+      }
+    }
+    if(e.key === 'Escape'){
+      if($('modalOverlay').classList.contains('show')) closeModal();
+      if($('nameAutocomplete').classList.contains('show')) $('nameAutocomplete').classList.remove('show');
+    }
+  });
+
+  // Preview scale on mobile
+  function fitPreview(){
+    if(window.innerWidth <= 1100){
+      const wrap = $('previewWrap');
+      const sheet = $('sheet');
+      const availWidth = wrap.clientWidth - 40;
+      const a4Width = 210 * 3.7795;
+      const scale = Math.min(availWidth / a4Width, 0.85);
+      document.documentElement.style.setProperty('--preview-scale', scale.toFixed(3));
+    }
   }
+  window.addEventListener('resize', fitPreview);
+  fitPreview();
+
+  // Click on history table headers to sort
+  document.querySelectorAll('.history-table th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const field = th.dataset.sort;
+      const [curField, curDir] = currentSort.split('-');
+      let newDir = 'desc';
+      if(curField === field && curDir === 'desc') newDir = 'asc';
+      currentSort = field + '-' + newDir;
+      $('sortBy').value = currentSort;
+      renderHistory();
+    });
+  });
+
+  toast('مرحباً بك في نظام الفواتير المحسّن', 'info');
+}
 </script>
 </body>
 </html>
