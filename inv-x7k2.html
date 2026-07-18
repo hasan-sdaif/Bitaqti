@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -2836,10 +2835,13 @@ function toast(msg, type='info'){
 //   1) showModal(type, title, body, callback)            — القديمة
 //   2) showModal({ title, body, bodyHtml, confirmText,
 //                  cancelText, onConfirm, onCancel, hideCancel,
-//                  type })                                — الجديدة
+//                  autoClose, type })                    — الجديدة
+//  افتراضياً: autoClose=true (تُغلق النافذة تلقائياً بعد onConfirm).
+//  لو أردت إبقاء النافذة مفتوحة (مثلاً للتحقق من إدخال)، مرّر autoClose:false.
 // ════════════════════════════════════════════════════════════════
 let modalCallback = null;
 let modalOnCancel = null;
+let modalAutoClose = true;
 function showModal(arg1, title, body, callback){
   let opts;
   if(typeof arg1 === 'object' && arg1 !== null){
@@ -2871,12 +2873,14 @@ function showModal(arg1, title, body, callback){
 
   modalCallback = opts.onConfirm || null;
   modalOnCancel = opts.onCancel || null;
+  modalAutoClose = opts.autoClose !== false; // افتراضي true
   $('modalOverlay').classList.add('show');
 }
 function closeModal(){
   $('modalOverlay').classList.remove('show');
   modalCallback = null;
   modalOnCancel = null;
+  modalAutoClose = true;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2995,12 +2999,17 @@ function initApp(){
 
   // Modal
   $('modalCancel').addEventListener('click', () => {
+    // cancel: نُنفّذ onCancel إن وُجد، ثم نُغلق دائماً
     if(modalOnCancel) modalOnCancel();
     else closeModal();
+    // إن onCancel لم يُغلق النافذة بنفسه، نُغلقها
+    if($('modalOverlay').classList.contains('show')) closeModal();
   });
   $('modalConfirm').addEventListener('click', () => {
+    // confirm: نُنفّذ onConfirm إن وُجد
     if(modalCallback) modalCallback();
-    else closeModal();
+    // autoClose افتراضي true: نُغلق النافذة بعد التأكيد
+    if(modalAutoClose && $('modalOverlay').classList.contains('show')) closeModal();
   });
   $('modalOverlay').addEventListener('click', (e) => {
     if(e.target === $('modalOverlay')) closeModal();
