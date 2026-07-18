@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -2337,6 +2336,101 @@ function updateCustStatsBar(list){
   if($('custStatAvg'))      $('custStatAvg').textContent      = avg.toFixed(3);
 }
 
+/**
+ * يطبع المحتوى عبر iframe مخفي — الحل الأكثر موثوقية ضد حاجزي النوافذ المنبثقة.
+ * يأخذ HTML كاملاً للفاتورة ويكتبه في iframe مؤقت ثم يستدعي print() عليه.
+ */
+function printViaIframe(htmlContent){
+  // إن لم يُمرر HTML، نستخرجه من المعاينة الحالية
+  if(!htmlContent){
+    const sheet = document.getElementById('sheet');
+    if(!sheet){ toast('لا توجد معاينة للطباعة', 'error'); return; }
+    // نأخذ HTML ورقة A4 فقط
+    htmlContent = sheet.outerHTML;
+  }
+
+  // نبني صفحة HTML كاملة
+  const fullHtml = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>طباعة فاتورة</title>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page{size:A4;margin:10mm;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#fff;color:#17181C;line-height:1.6;font-size:11pt;}
+  .a4-sheet{
+    width:100% !important;
+    min-height:auto !important;
+    padding:0 !important;
+    margin:0 !important;
+    box-shadow:none !important;
+    transform:none !important;
+    background:#fff !important;
+  }
+  *{
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+    color-adjust:exact !important;
+  }
+  a[href]:after{content:"" !important;}
+  tr,td,th{page-break-inside:avoid;}
+</style>
+</head>
+<body>${htmlContent}</body>
+</html>`;
+
+  // إنشاء iframe مخفي
+  let iframe = document.getElementById('printFrame');
+  if(!iframe){
+    iframe = document.createElement('iframe');
+    iframe.id = 'printFrame';
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:none;background:#fff;';
+    document.body.appendChild(iframe);
+  }
+
+  // التحقق من توفر contentWindow
+  if(!iframe.contentWindow){
+    console.error('[printViaIframe] iframe.contentWindow is null, falling back to window.print()');
+    window.print();
+    return;
+  }
+
+  // كتابة المحتوى في الـ iframe
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(fullHtml);
+  doc.close();
+
+  // ننتظر تحميل الإطار ثم نطبع
+  const doPrint = () => {
+    try{
+      if(!iframe.contentWindow){
+        window.print();
+        return;
+      }
+      iframe.contentWindow.focus();
+      iframe.contentWindow.print();
+    }catch(e){
+      console.error('[printViaIframe] print failed:', e);
+      // fallback: نطبع الصفحة الأم
+      window.print();
+    }
+  };
+
+  // ننتظر تحميل الخطوط إن أمكن
+  try {
+    if(iframe.contentWindow.document.fonts && iframe.contentWindow.document.fonts.ready){
+      iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 200));
+    } else {
+      setTimeout(doPrint, 500);
+    }
+  } catch(e) {
+    setTimeout(doPrint, 500);
+  }
+}
+
 /** يطبع فاتورة العميل عبر فتح نافذة جديدة محتواها الفاتورة فقط */
 function printCustomerInvoice(c){
   const win = window.open('', '_blank', 'width=820,height=900');
@@ -2733,32 +2827,63 @@ function exportCustomersXlsx(){
 }
 
 // ════════════════════════════════════════════════════════════════
-//  SYNC FROM GOOGLE SHEETS — جلب كل العملاء من Google Sheets
-//  يستخدم Netlify Function: customers-list.js (يتطلب توكن مصادقة)
+//  SYNC FROM GOOGLE SHEETS — مزامنة عبر track-order.js (وضع admin)
+//  يستخدم نفس رمز الأمان الخاص بلوحة الفواتير
 // ════════════════════════════════════════════════════════════════
-const CUSTOMERS_LIST_ENDPOINT = '/.netlify/functions/customers-list';
+const SYNC_ENDPOINT = '/.netlify/functions/track-order';
 
-/** يحفظ/يقرأ التوكن من sessionStorage (نفس آلية لوحة الفواتير) */
-function getAuthToken(){
-  try{
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if(!raw) return null;
-    const p = JSON.parse(raw);
-    if(!p.token || !p.expiresAt) return null;
-    if(Date.now() > p.expiresAt){ sessionStorage.removeItem(SESSION_KEY); return null; }
-    return p.token;
-  }catch(e){ return null; }
-}
-
-/** يجلب قائمة العملاء من Google Sheets عبر Netlify Function */
+/** يجلب قائمة العملاء من Google Sheets عبر track-order.js بوضع admin */
 async function syncFromSheet(){
-  const token = getAuthToken();
-  if(!token){
-    toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
-    lockApp();
+  // نحاول أولاً جلب كلمة السر من الجلسة (إن كانت محفوظة)
+  let adminPassword = '';
+  try {
+    adminPassword = sessionStorage.getItem('bitaqti_admin_password') || '';
+  } catch(e) {
+    // sessionStorage قد لا يكون متاحاً في بعض البيئات
+    adminPassword = '';
+  }
+
+  // إن لم تكن محفوظة، نطلبها من المستخدم
+  if(!adminPassword){
+    showModal({
+      title: 'مزامنة من Google Sheets',
+      bodyHtml: `
+        <div style="text-align:right;margin-bottom:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.7;">
+          لإجراء المزامنة، أدخل رمز الأمان الخاص بصاحب المشروع (نفس كلمة سر لوحة الفواتير).
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="display:block;font-size:11px;color:var(--ink-faint);margin-bottom:4px;">رمز الأمان</label>
+          <input type="password" id="syncAdminPwd" autocomplete="off" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;direction:ltr;text-align:left;" placeholder="••••••••">
+        </div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:8px;cursor:pointer;">
+          <input type="checkbox" id="syncRememberPwd" style="margin:0;">
+          تذكّر الرمز في هذه الجلسة
+        </label>
+      `,
+      confirmText: 'مزامنة',
+      cancelText: 'إلغاء',
+      autoClose: false,
+      onConfirm: async () => {
+        const pwd = document.getElementById('syncAdminPwd')?.value || '';
+        const remember = document.getElementById('syncRememberPwd')?.checked;
+        if(!pwd){
+          toast('يرجى إدخال رمز الأمان', 'error');
+          return;
+        }
+        if(remember){
+          try { sessionStorage.setItem('bitaqti_admin_password', pwd); } catch(e) {}
+        }
+        closeModal();
+        await doSync(pwd);
+      },
+    });
     return;
   }
 
+  await doSync(adminPassword);
+}
+
+async function doSync(adminPassword){
   const btn = $('btnSyncSheet');
   if(btn){
     btn.disabled = true;
@@ -2768,18 +2893,19 @@ async function syncFromSheet(){
   }
 
   try{
-    const res = await fetch(CUSTOMERS_LIST_ENDPOINT, {
+    const res = await fetch(SYNC_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({}),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        admin_password: adminPassword,
+        mode: 'sync',
+      }),
     });
 
     if(res.status === 401){
-      toast('انتهت صلاحية الجلسة. أعد تسجيل الدخول.', 'error');
-      lockApp();
+      // رمز خاطئ — نحذف الرمز المحفوظ ونعود للوحة كلمة السر
+      try { sessionStorage.removeItem('bitaqti_admin_password'); } catch(e) {}
+      toast('رمز الأمان غير صحيح.', 'error');
       return;
     }
     if(res.status === 429){
@@ -2799,7 +2925,6 @@ async function syncFromSheet(){
       return;
     }
 
-    // نعرض إحصائيات سريعة في نافذة تأكيد
     const stats = data.stats || {};
     showModal({
       title: 'مزامنة من Google Sheets',
@@ -2807,7 +2932,6 @@ async function syncFromSheet(){
       confirmText: 'دمج (إضافة الجديد فقط)',
       cancelText: 'استبدال الكل',
       onConfirm: () => {
-        // دمج: نتجنّب التكرار عبر (phone + order_code)
         const existingKeys = new Set(customers.map(c => `${c.phone}_${c.order_code}`));
         let added = 0;
         remote.forEach(c => {
@@ -2817,7 +2941,6 @@ async function syncFromSheet(){
             existingKeys.add(key);
             added++;
           } else {
-            // إن وُجد، نُحدّثه بالقيم الأحدث
             const idx = customers.findIndex(x => `${x.phone}_${x.order_code}` === key);
             if(idx > -1) customers[idx] = { ...customers[idx], ...c };
           }
@@ -2960,13 +3083,14 @@ function initApp(){
   $('btnSave').addEventListener('click', saveInvoice);
   $('btnPrint').addEventListener('click', () => {
     // ننتقل لتبويب "فاتورة جديدة" أولاً (إن لم نكن فيه) لضمان ظهور المعاينة عند الطباعة
-    if(!$('#tab-new').classList.contains('active')){
+    const tabNew = $('#tab-new');
+    if(tabNew && !tabNew.classList.contains('active')){
       switchTab('new');
     }
     // نُحدّث المعاينة مرة أخيرة قبل الطباعة
     if(typeof updatePreview === 'function') updatePreview();
-    // ننتظر قليلاً ليكتمل إعادة الرسم ثم نطبع
-    setTimeout(() => window.print(), 120);
+    // ننتظر قليلاً ليكتمل إعادة الرسم ثم نطبع عبر iframe مخفي
+    setTimeout(() => printViaIframe(), 150);
   });
   $('btnNew').addEventListener('click', () => {
     if(editingId || items.some(i => i.description) || $('fName').value){
