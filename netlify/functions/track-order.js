@@ -92,19 +92,42 @@ async function handleAdminSync(body){
   }
 
   const SHEET_ID = process.env.ORDERS_SHEET_ID;
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '0';
   if (!SHEET_ID) {
     return jsonResponse(500, { error: 'server_not_configured', message: 'ORDERS_SHEET_ID غير مُعدّ.' }, corsHeaders());
   }
 
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+  // ═══ بناء URL التصدير ═══
+  // ملاحظة مهمة: بعض أوراق Google Sheets المنشورة لا تقبل gid=0 وتُرجع HTTP 400.
+  // الحل: نستخدم URL بدون gid إن لم يُحدّد، أو مع gid إن حُدد بقيمة غير 0.
+  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+  const csvUrl = SHEET_GID && SHEET_GID !== '0'
+    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
   try {
     const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(15000) });
     if (!sheetRes.ok) {
-      return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى Google Sheets.' }, corsHeaders());
+      console.error('[track-order/admin] sheet fetch failed', sheetRes.status, csvUrl);
+      const msg = sheetRes.status === 400
+        ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة: File → Share → Publish to web. أو أن ORDERS_SHEET_GID صحيح.'
+        : sheetRes.status === 404
+        ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
+        : `تعذّر الوصول إلى Google Sheets (HTTP ${sheetRes.status}).`;
+      return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
     }
 
-    const rows = parseCSV(await sheetRes.text());
+    const csvText = await sheetRes.text();
+
+    // تحقق إن كان الرد HTML (خطأ) بدلاً من CSV
+    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+      console.error('[track-order/admin] got HTML instead of CSV');
+      return jsonResponse(502, {
+        error: 'source_unavailable',
+        message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web → Entire document → CSV.',
+      }, corsHeaders());
+    }
+
+    const rows = parseCSV(csvText);
 
     // نتخطّى صف العناوين العربية تلقائياً
     let dataRows = rows.filter(r => {
@@ -170,16 +193,36 @@ async function handleCustomerTrack(body){
     return jsonResponse(500, { error: 'server_not_configured', message: 'الخدمة غير مُعدّة بشكل صحيح.' }, corsHeaders());
   }
 
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '0';
-  const csvUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`;
+  // ═══ بناء URL التصدير (بدون gid إن لم يُحدّد لتجنب HTTP 400) ═══
+  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+  const csvUrl = SHEET_GID && SHEET_GID !== '0'
+    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
 
   try {
     const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
     if (!sheetRes.ok) {
-      return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى مصدر البيانات.' }, corsHeaders());
+      console.error('[track-order/customer] sheet fetch failed', sheetRes.status, csvUrl);
+      const msg = sheetRes.status === 400
+        ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة.'
+        : sheetRes.status === 404
+        ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
+        : `تعذّر الوصول إلى مصدر البيانات (HTTP ${sheetRes.status}).`;
+      return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
     }
 
-    const rows = parseCSV(await sheetRes.text());
+    const csvText = await sheetRes.text();
+
+    // تحقق إن كان الرد HTML (خطأ) بدلاً من CSV
+    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+      console.error('[track-order/customer] got HTML instead of CSV');
+      return jsonResponse(502, {
+        error: 'source_unavailable',
+        message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web.',
+      }, corsHeaders());
+    }
+
+    const rows = parseCSV(csvText);
     const dataRows = rows.filter(r => {
       const p = String(r.phone || '').trim();
       return p && /^[\d.+]+$/.test(p);
