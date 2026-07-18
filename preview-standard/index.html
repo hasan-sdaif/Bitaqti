@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  بطاقتي — الباقة القياسية | معاينة (محامٍ / مستشار قانوني)
+  ────────────────────────────────────────────────────────────────────
+  ⚠️  معاينة ONLY — جميع البيانات والأسماء والأرقام والروابط وهمية.
+
+  ما تتضمنه الباقة القياسية (مطابقة للمواصفات في الصفحة الرئيسية):
+    ✓ كل ما في الباقة الأساسية.
+    ✓ دعم لغتين (عربي/إنجليزي) بزر تبديل في الأعلى — يعمل بالكامل.
+    ✓ أقسام إنجازات وشهادات منظّمة.
+    ✓ ترجمة تلقائية للغة أخرى عند الطلب.
+    ✓ حتى 3 شهادات فعلية (PDF) بزر يفتحها من بطاقتك.
+    ✓ صورة شخصية مستطيلة عمودية (هنا أيقونة وجه بلا ملامح).
+    ✓ وضع فاتح/داكن (Theme Toggle) بجانب زر اللغة.
+
+  لوحة الألوان:
+    الوضع الداكن الافتراضي: onyx-950 (#14110A) + ذهبي (#B9922E)
+    الوضع الفاتح: cream (#F8F4E9) + ذهبي عميق (#8E6E1F) + نص بني داكن (#221D12)
+  ════════════════════════════════════════════════════════════════════
+-->
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>معاينة — الباقة القياسية | بطاقتي</title>
+<meta name="description" content="معاينة تصميم الباقة القياسية — محامٍ ومستشار قانوني. جميع البيانات وهمية." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2314110A'/%3E%3Cpath d='M50 25l8 15h-16zM50 75l-8-15h16zM25 50l15-8v16zM75 50l-15 8v-16z' fill='%23B9922E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  /* ═══ متغيّرات الوضع الداكن (الافتراضي) ═══ */
+  :root{
+    --onyx-950:#14110A;
+    --onyx-800:#1E1A10;
+    --onyx-700:#2C2617;
+    --gold-600:#8E6E1F;
+    --gold-500:#B9922E;
+    --gold-400:#D9B968;
+    --cream:#F8F4E9;
+    --card:#FFFFFF;
+    --ink:#221D12;
+    --ink-mid:#5B5340;
+    --ink-soft:#948B6E;
+    --line:#E6DFC9;
+    --shadow:0 14px 34px rgba(30,20,10,.10);
+    --radius:10px;
+
+    /* متغيّرات مرنة تتغيّر مع الوضع */
+    --bg-page:var(--cream);
+    --bg-card:#FFFFFF;
+    --bg-alt:#FFFFFF;
+    --nav-bg:rgba(20,17,10,.96);
+    --hero-bg:linear-gradient(165deg,var(--onyx-950),var(--onyx-800) 70%);
+    --hero-text:var(--cream);
+    --hero-name:rgba(248,244,233,.85);
+    --hero-name-strong:#fff;
+    --hero-role:var(--gold-400);
+    --hero-bio:rgba(248,244,233,.78);
+    --hero-lic-bg:rgba(255,255,255,.06);
+    --hero-lic-border:rgba(255,255,255,.2);
+    --hero-lic-color:rgba(248,244,233,.8);
+    --hero-btn-line-bg:rgba(255,255,255,.05);
+    --hero-btn-line-border:rgba(217,185,104,.35);
+    --hero-btn-line-color:var(--cream);
+    --stats-bg:#FFFFFF;
+    --stats-b-color:var(--onyx-950);
+    --demo-bg:linear-gradient(135deg,var(--onyx-950),var(--onyx-700));
+    --demo-body-color:rgba(248,244,233,.78);
+    --demo-text-color:rgba(248,244,233,.92);
+    --demo-head-color:var(--gold-400);
+    --demo-note-bg:rgba(0,0,0,.18);
+    --footer-bg:var(--onyx-950);
+    --footer-text:rgba(248,244,233,.65);
+    --fab-bg:rgba(20,17,10,.95);
+  }
+  /* ═══ متغيّرات الوضع الفاتح ═══ */
+  html[data-theme="light"]{
+    --bg-page:#FBF8F1;
+    --bg-card:#FFFFFF;
+    --bg-alt:#FFFFFF;
+    --nav-bg:rgba(255,255,255,.92);
+    --hero-bg:linear-gradient(165deg,#FAF4E6 0%,#F0E6CC 100%);
+    --hero-text:var(--ink);
+    --hero-name:var(--onyx-950);
+    --hero-name-strong:var(--onyx-950);
+    --hero-role:var(--gold-600);
+    --hero-bio:var(--ink-mid);
+    --hero-lic-bg:rgba(184,149,106,.08);
+    --hero-lic-border:rgba(184,149,106,.3);
+    --hero-lic-color:var(--ink-mid);
+    --hero-btn-line-bg:#FFFFFF;
+    --hero-btn-line-border:var(--line);
+    --hero-btn-line-color:var(--onyx-950);
+    --stats-bg:#FFFFFF;
+    --stats-b-color:var(--onyx-950);
+    --demo-bg:linear-gradient(135deg,var(--onyx-950),var(--onyx-700));
+    --demo-body-color:rgba(248,244,233,.78);
+    --demo-text-color:rgba(248,244,233,.92);
+    --demo-head-color:var(--gold-400);
+    --demo-note-bg:rgba(0,0,0,.18);
+    --footer-bg:var(--onyx-950);
+    --footer-text:rgba(248,244,233,.65);
+    --fab-bg:rgba(20,17,10,.95);
+  }
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--bg-page);
+    color:var(--ink);
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+    transition:background .3s ease,color .3s ease;
+  }
+  html[lang="ar"] h2,html[lang="ar"] .serif{font-family:'Aref Ruqaa',serif;color:var(--onyx-950);font-weight:700;}
+  html[lang="en"] h2,html[lang="en"] .serif{font-family:'Playfair Display',serif;color:var(--onyx-950);font-weight:700;}
+  /* h1 (placeholder-name) له لون مخصّص في كل الوضعين، لا يُجبر هنا */
+  html[lang="en"] body{font-family:'Playfair Display','IBM Plex Sans Arabic',serif;}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1000px;margin:0 auto;padding:0 22px;}
+
+  /* ═══ DEMO NOTE ═══ */
+  .demo-note{
+    background:var(--demo-bg);
+    color:var(--cream);padding:16px 0 18px;
+  }
+  .demo-note .container{
+    border:1.5px dashed rgba(217,185,104,.45);
+    border-radius:10px;padding:14px 18px;
+    display:flex;flex-direction:column;gap:10px;
+    background:rgba(0,0,0,.06);
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:9px;
+    font-weight:800;font-size:15px;color:var(--demo-head-color);
+  }
+  html[lang="en"] .dn-head{font-family:'Playfair Display',serif;}
+  html[lang="ar"] .dn-head{font-family:'Aref Ruqaa',serif;}
+  .dn-head svg{width:18px;height:18px;color:var(--gold-500);}
+  .dn-head .tier-chip{
+    margin-right:auto;
+    font-size:10px;font-weight:800;color:#000;
+    background:linear-gradient(135deg,var(--gold-400),var(--gold-500));
+    padding:4px 9px;border-radius:14px;letter-spacing:.4px;
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  .dn-body{font-size:12.5px;color:var(--demo-body-color);line-height:1.7;}
+  .dn-body strong{color:var(--gold-400);}
+  .dn-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 18px;margin-top:4px;}
+  .dn-list li{
+    font-size:12.5px;color:var(--demo-text-color);
+    display:flex;gap:7px;align-items:flex-start;
+  }
+  .dn-list li svg{width:13px;height:13px;color:var(--gold-500);flex-shrink:0;margin-top:3px;}
+  .dn-note{
+    font-size:11.5px;color:rgba(248,244,233,.85);
+    background:var(--demo-note-bg);border-right:3px solid var(--gold-500);
+    padding:8px 12px;border-radius:6px;line-height:1.6;
+  }
+  html[dir="ltr"] .dn-note{border-right:none;border-left:3px solid var(--gold-500);}
+  .dn-note strong{color:#fff;}
+  @media(max-width:600px){.dn-list{grid-template-columns:1fr;}}
+
+  /* ═══ NAV — ثابت لا يتأثر بتبديل اللغة ═══ */
+  nav.top{
+    position:sticky;top:0;z-index:60;
+    background:var(--nav-bg);
+    backdrop-filter:blur(8px);
+    border-bottom:2px solid var(--gold-600);
+    transition:background .3s ease;
+  }
+  nav.top .container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;color:#fff;flex-shrink:0;}
+  html[data-theme="light"] .brand{color:var(--onyx-950);}
+  .brand .crest{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--onyx-700);border:1.5px solid var(--gold-500);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  html[data-theme="light"] .brand .crest{background:var(--cream);border-color:var(--gold-600);}
+  .brand .crest svg{width:18px;height:18px;color:var(--gold-400);}
+  .brand-text{display:flex;flex-direction:column;line-height:1.2;}
+  html[lang="ar"] .brand-name{font-family:'Aref Ruqaa',serif;font-weight:700;font-size:15.5px;color:#fff;}
+  html[lang="en"] .brand-name{font-family:'Playfair Display',serif;font-weight:700;font-size:15.5px;color:#fff;}
+  html[data-theme="light"] .brand-name{color:var(--onyx-950) !important;}
+  .brand-sub{font-size:10.5px;color:var(--gold-400);font-weight:500;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  html[data-theme="light"] .brand-sub{color:var(--gold-600);}
+
+  /* nav-links ترتيب ثابت */
+  .nav-links{
+    display:flex;gap:22px;
+    flex-direction:row; /* ثابت دائماً */
+  }
+  .nav-links a{
+    color:rgba(248,244,233,.7);font-size:13px;font-weight:600;
+    position:relative;padding:6px 0;transition:color .2s ease;
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  html[data-theme="light"] .nav-links a{color:var(--ink-mid);}
+  .nav-links a:hover{color:var(--gold-400);}
+  html[data-theme="light"] .nav-links a:hover{color:var(--gold-600);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:0;right:0;
+    width:0;height:2px;background:var(--gold-500);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+
+  /* nav-right: ترتيب ثابت دائماً (lang + theme + burger) */
+  .nav-right{
+    display:flex;align-items:center;gap:10px;
+    flex-direction:row; /* ثابت */
+    flex-shrink:0;
+  }
+
+  /* lang-toggle */
+  .lang-toggle{
+    display:flex;align-items:center;
+    background:rgba(255,255,255,.06);border:1px solid rgba(217,185,104,.35);
+    border-radius:20px;padding:2px;flex-shrink:0;
+    flex-direction:row;
+  }
+  html[data-theme="light"] .lang-toggle{
+    background:rgba(184,149,106,.08);border-color:rgba(184,149,106,.3);
+  }
+  .lang-toggle button{
+    background:transparent;border:0;color:rgba(248,244,233,.65);
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:16px;
+    cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;
+  }
+  html[data-theme="light"] .lang-toggle button{color:var(--ink-mid);}
+  .lang-toggle button.active{background:var(--gold-500);color:var(--onyx-950);}
+  .lang-toggle button:not(.active):hover{color:var(--gold-400);}
+
+  /* theme-toggle button */
+  .theme-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,.06);border:1px solid rgba(217,185,104,.35);
+    color:var(--gold-400);cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  html[data-theme="light"] .theme-btn{
+    background:rgba(184,149,106,.1);border-color:rgba(184,149,106,.3);
+    color:var(--gold-600);
+  }
+  .theme-btn:hover{background:rgba(217,185,104,.15);}
+  .theme-btn svg{width:16px;height:16px;}
+  .theme-btn .moon{display:none;}
+  html[data-theme="light"] .theme-btn .sun{display:none;}
+  html[data-theme="light"] .theme-btn .moon{display:block;}
+
+  .burger{
+    display:none;width:38px;height:38px;border-radius:8px;
+    background:rgba(255,255,255,.06);border:1px solid var(--gold-600);
+    color:#fff;align-items:center;justify-content:center;cursor:pointer;
+    flex-shrink:0;
+  }
+  html[data-theme="light"] .burger{background:rgba(184,149,106,.08);color:var(--onyx-950);}
+  .burger svg{width:18px;height:18px;}
+  .mobile-panel{
+    display:none;position:fixed;inset:62px 0 0 0;
+    background:var(--onyx-950);z-index:59;padding:22px;
+  }
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:block;color:#fff;padding:15px 4px;
+    border-bottom:1px solid rgba(217,185,104,.15);
+    font-weight:600;font-size:16px;
+  }
+  .mobile-panel a:hover{color:var(--gold-400);}
+
+  /* ═══ HERO ═══ */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(900px 460px at 18% -10%,rgba(217,185,104,.18),transparent),
+      var(--hero-bg);
+    color:var(--hero-text);padding:54px 0 46px;
+    transition:background .3s ease,color .3s ease;
+  }
+  .hero::after{
+    content:'';position:absolute;inset:0;
+    background-image:repeating-linear-gradient(45deg,rgba(217,185,104,.05) 0 1px,transparent 1px 24px);
+    pointer-events:none;
+  }
+  .hero .container{
+    position:relative;display:flex;gap:38px;align-items:center;flex-wrap:wrap;
+    flex-direction:row; /* ثابت */
+  }
+  .frame{position:relative;width:150px;height:186px;flex-shrink:0;}
+  .frame-inner{
+    position:absolute;inset:0;
+    background:linear-gradient(160deg,var(--onyx-700),var(--onyx-950));
+    border:1px solid rgba(217,185,104,.4);
+    display:flex;align-items:center;justify-content:center;
+    border-radius:4px;
+  }
+  html[data-theme="light"] .frame-inner{
+    background:linear-gradient(160deg,#F0E6CC,#E5D5A8);
+    border-color:rgba(184,149,106,.4);
+  }
+  .frame-inner svg{width:74px;height:74px;color:rgba(217,185,104,.6);}
+  html[data-theme="light"] .frame-inner svg{color:rgba(142,110,31,.6);}
+  .frame-corner{
+    position:absolute;width:22px;height:22px;
+    border:2px solid var(--gold-500);
+  }
+  .frame-corner.tl{top:-6px;right:-6px;border-left:none;border-bottom:none;}
+  .frame-corner.br{bottom:-6px;left:-6px;border-right:none;border-top:none;}
+  .hero-text{flex:1;min-width:260px;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;flex-direction:row;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  .badge-tier{
+    background:rgba(217,185,104,.15);border:1px solid var(--gold-500);
+    color:var(--gold-400);
+  }
+  html[data-theme="light"] .badge-tier{
+    background:rgba(184,149,106,.12);border-color:var(--gold-600);color:var(--gold-600);
+  }
+  .badge-lic{
+    background:var(--hero-lic-bg);border:1px solid var(--hero-lic-border);
+    color:var(--hero-lic-color);
+  }
+  .badge svg{width:11px;height:11px;}
+  /* ✅ إصلاح: لون الاسم يبقى واضحاً على الخلفية الداكنة والفاتحة */
+  .placeholder-name{
+    font-weight:700;
+    font-size:clamp(26px,4.4vw,36px);
+    color:var(--hero-name);
+    letter-spacing:.5px;
+    line-height:1.15;
+  }
+  .role{
+    font-size:16px;font-weight:700;color:var(--hero-role);
+    margin-top:8px;font-family:'Aref Ruqaa',serif;
+  }
+  html[lang="en"] .role{font-family:'Playfair Display',serif;}
+  .bio{
+    font-size:13.5px;color:var(--hero-bio);
+    margin-top:13px;max-width:560px;line-height:1.85;
+  }
+  /* cta-row: ترتيب ثابت */
+  .cta-row{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;
+    flex-direction:row;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:700;font-family:'IBM Plex Sans Arabic';
+    padding:10px 17px;border-radius:6px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn svg{width:15px;height:15px;}
+  .btn-gold{background:var(--gold-500);color:var(--onyx-950);}
+  .btn-gold:hover{background:var(--gold-400);transform:translateY(-2px);box-shadow:0 10px 22px rgba(184,149,106,.35);}
+  .btn-line{background:var(--hero-btn-line-bg);color:var(--hero-btn-line-color);border:1px solid var(--hero-btn-line-border);}
+  .btn-line:hover{background:rgba(217,185,104,.1);}
+
+  /* ═══ STATS ═══ */
+  .stats{background:var(--stats-bg);border-bottom:1px solid var(--line);}
+  .stats .container{display:grid;grid-template-columns:repeat(4,1fr);}
+  .stat{
+    padding:22px 14px;text-align:center;
+    border-left:1px solid var(--line);
+    position:relative;
+  }
+  .stat:last-child{border-left:none;}
+  .stat b{
+    display:block;font-family:'Aref Ruqaa',serif;font-size:24px;
+    color:var(--stats-b-color);font-weight:700;
+  }
+  html[lang="en"] .stat b{font-family:'Playfair Display',serif;}
+  .stat span{font-size:11px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.6px;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .stat::before{
+    content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:30px;height:2px;background:var(--gold-500);
+  }
+
+  /* ═══ SECTIONS ═══ */
+  section{padding:54px 0;scroll-margin-top:74px;}
+  section:nth-of-type(even){background:var(--bg-page);}
+  section:nth-of-type(odd){background:var(--bg-card);}
+  html[data-theme="dark"] section:nth-of-type(even){background:var(--cream);}
+  html[data-theme="dark"] section:nth-of-type(odd){background:#FFFFFF;}
+  html[data-theme="light"] section:nth-of-type(even){background:#FBF8F1;}
+  html[data-theme="light"] section:nth-of-type(odd){background:#FFFFFF;}
+  .sec-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:28px;
+    padding-bottom:12px;border-bottom:1px solid var(--line);
+  }
+  .sec-num{
+    font-family:'Aref Ruqaa',serif;font-size:14px;color:var(--gold-600);
+    font-weight:700;
+  }
+  html[lang="en"] .sec-num{font-family:'Playfair Display',serif;}
+  .sec-head h2{font-size:24px;color:var(--onyx-950);font-weight:700;}
+  .sec-line{flex:1;height:1px;background:var(--line);}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  .about-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
+    border-right:3px solid var(--gold-500);
+  }
+  html[dir="ltr"] .about-card{border-right:1px solid var(--line);border-left:3px solid var(--gold-500);}
+  .about-card p{font-size:13.5px;color:var(--ink-mid);margin-bottom:11px;line-height:1.85;}
+  .about-card p:last-child{margin-bottom:0;}
+  .info-list li{
+    font-size:13.5px;color:var(--ink-mid);
+    padding:9px 0;border-bottom:1px dashed var(--line);
+    display:flex;justify-content:space-between;gap:14px;
+  }
+  .info-list li:last-child{border-bottom:none;}
+  .info-list .lbl{color:var(--ink-soft);font-size:12px;}
+  .info-list .val{font-weight:700;color:var(--onyx-950);font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .info-list .val{font-family:'Playfair Display',serif;}
+
+  /* practice areas */
+  .practice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .practice-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px 18px;
+    transition:transform .2s ease,box-shadow .2s ease;
+    position:relative;
+  }
+  .practice-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .practice-card .ic{
+    width:42px;height:42px;border-radius:8px;
+    background:var(--cream);border:1px solid var(--gold-400);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:12px;color:var(--onyx-950);
+  }
+  html[data-theme="light"] .practice-card .ic{background:#F8F4E9;}
+  .practice-card .ic svg{width:20px;height:20px;}
+  .practice-card h3{font-size:15px;color:var(--onyx-950);margin-bottom:6px;}
+  html[lang="ar"] .practice-card h3{font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .practice-card h3{font-family:'Playfair Display',serif;}
+  .practice-card p{font-size:12.5px;color:var(--ink-mid);line-height:1.7;}
+
+  /* timeline */
+  .timeline{position:relative;padding-right:32px;}
+  html[dir="ltr"] .timeline{padding-right:0;padding-left:32px;}
+  .timeline::before{
+    content:'';position:absolute;right:7px;top:8px;bottom:8px;
+    width:2px;background:var(--line);
+  }
+  html[dir="ltr"] .timeline::before{right:auto;left:7px;}
+  .t-item{position:relative;padding-bottom:28px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;right:-32px;top:5px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--cream);border:3px solid var(--gold-500);
+  }
+  html[dir="ltr"] .t-dot{right:auto;left:-32px;}
+  .t-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
+  .t-title{font-weight:700;font-size:15.5px;color:var(--onyx-950);}
+  html[lang="ar"] .t-title{font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .t-title{font-family:'Playfair Display',serif;}
+  .t-date{
+    font-size:11.5px;font-weight:700;color:var(--gold-600);
+    background:rgba(184,149,106,.14);padding:3px 11px;border-radius:20px;
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  .t-org{font-size:13px;font-weight:600;color:var(--gold-600);margin-top:3px;}
+  .t-note{font-size:13px;color:var(--ink-mid);margin-top:5px;line-height:1.75;}
+  .t-ul{margin-top:8px;}
+  .t-ul li{
+    font-size:13px;color:var(--ink-mid);
+    padding-right:15px;position:relative;margin-bottom:5px;line-height:1.65;
+  }
+  html[dir="ltr"] .t-ul li{padding-right:0;padding-left:15px;}
+  .t-ul li::before{
+    content:'◆';position:absolute;right:0;top:2px;
+    color:var(--gold-500);font-size:8px;
+  }
+  html[dir="ltr"] .t-ul li::before{right:auto;left:0;}
+
+  /* education + bar */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .info-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+  }
+  .info-card h3{
+    font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+    color:var(--gold-600);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  .info-card h3 svg{width:15px;height:15px;}
+  .info-card .item{padding:11px 0;border-bottom:1px dashed var(--line);}
+  .info-card .item:last-child{border-bottom:none;padding-bottom:0;}
+  .info-card .item:first-child{padding-top:0;}
+  .info-card .item .title{font-size:14px;font-weight:700;color:var(--onyx-950);}
+  html[lang="ar"] .info-card .item .title{font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .info-card .item .title{font-family:'Playfair Display',serif;}
+  .info-card .item .meta{font-size:12px;color:var(--ink-soft);margin-top:3px;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .info-card .item .desc{font-size:12.5px;color:var(--ink-mid);margin-top:4px;line-height:1.65;}
+
+  /* certifications */
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .cert-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;
+    display:flex;gap:11px;align-items:flex-start;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .cert-card:hover{transform:translateY(-2px);border-color:var(--gold-500);}
+  .cert-card .ic{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--cream);border:1px solid var(--gold-400);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-600);flex-shrink:0;
+  }
+  html[data-theme="light"] .cert-card .ic{background:#F8F4E9;}
+  .cert-card .ic svg{width:15px;height:15px;}
+  .cert-card .name{font-weight:700;font-size:13.5px;color:var(--onyx-950);}
+  html[lang="ar"] .cert-card .name{font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .cert-card .name{font-family:'Playfair Display',serif;}
+  .cert-card .meta{font-size:11.5px;color:var(--ink-soft);margin-top:2px;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .cert-card .pdf-link{
+    display:inline-flex;align-items:center;gap:5px;
+    margin-top:8px;font-size:11px;font-weight:700;
+    color:var(--gold-600);font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+  }
+  .cert-card .pdf-link svg{width:11px;height:11px;}
+
+  /* languages */
+  .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .lang-row{margin-bottom:13px;}
+  .lang-row:last-child{margin-bottom:0;}
+  .lang-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:5px;}
+  .lang-top span:last-child{font-weight:500;color:var(--ink-soft);font-size:11.5px;}
+  .bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .bar-f{height:100%;background:linear-gradient(90deg,var(--gold-600),var(--gold-400));border-radius:3px;}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .contact-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:22px 14px;text-align:center;
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .contact-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .contact-card .ic{
+    width:46px;height:46px;border-radius:50%;
+    background:var(--cream);border:1px solid var(--gold-400);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 12px;color:var(--onyx-950);
+  }
+  html[data-theme="light"] .contact-card .ic{background:#F8F4E9;}
+  .contact-card .ic svg{width:21px;height:21px;}
+  .contact-card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--ink-soft);margin-bottom:5px;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .contact-card .val{font-size:13px;font-weight:700;color:var(--onyx-950);word-break:break-word;font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] .contact-card .val{font-family:'Playfair Display',serif;}
+
+  /* footer */
+  footer{
+    background:var(--footer-bg);color:var(--footer-text);
+    padding:30px 0 110px;text-align:center;font-size:12.5px;
+    border-top:2px solid var(--gold-600);
+  }
+  footer .brand-foot{color:var(--gold-400);font-weight:700;font-size:14px;font-family:'Aref Ruqaa',serif;}
+  html[lang="en"] footer .brand-foot{font-family:'Playfair Display',serif;}
+
+  /* floating action bar */
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:var(--fab-bg);backdrop-filter:blur(10px);
+    border-top:1px solid rgba(217,185,104,.2);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:8px 14px;flex-direction:row;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 4px;border-radius:8px;color:rgba(248,244,233,.85);
+    transition:background .2s ease;
+  }
+  .fab:hover{background:rgba(217,185,104,.1);}
+  .fab svg{width:20px;height:20px;color:var(--gold-400);}
+  .fab span{font-size:10px;font-weight:600;font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+
+  .to-top{
+    position:fixed;bottom:74px;z-index:91;
+    width:42px;height:42px;border-radius:50%;
+    background:var(--gold-500);color:var(--onyx-950);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;border:none;cursor:pointer;
+  }
+  html[dir="rtl"] .to-top{left:18px;}
+  html[dir="ltr"] .to-top{right:18px;}
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+  body{padding-bottom:64px;}
+
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:900px){
+    .practice-grid{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr;}
+    .lang-grid{grid-template-columns:1fr;}
+  }
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .hero .container{flex-direction:column;text-align:center;}
+    .cta-row{justify-content:center;}
+    .stats .container{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-left:none;}
+    .stat{border-bottom:1px solid var(--line);}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:none;}
+    .grid-2{grid-template-columns:1fr;}
+    .cert-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+    .fab span{display:none;}
+  }
+  @media(min-width:761px){
+    .fab-bar{display:none;}
+    body{padding-bottom:0;}
+    .to-top{bottom:24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ DEMO NOTE ═══ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6M9 11h.01M15 11h.01"/></svg>
+      <span data-i18n="demo.title">معاينة الباقة القياسية — محامٍ ومستشار قانوني</span>
+      <span class="tier-chip">STANDARD</span>
+    </div>
+    <div class="dn-body">
+      <span data-i18n="demo.body">هذه معاينة توضيحية فقط، جميع البيانات والأسماء وأرقام القضايا وهمية.</span>
+      <strong data-i18n="demo.body2">ما تتضمنه الباقة القياسية:</strong>
+    </div>
+    <ul class="dn-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f1">كل ما في الباقة الأساسية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f2">دعم لغتين (عربي/إنجليزي) بزر تبديل</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f3">صورة شخصية مستطيلة عمودية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f4">أقسام إنجازات وشهادات منظّمة</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f5">ترجمة تلقائية للغة أخرى عند الطلب</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f6">حتى 3 شهادات PDF فعلية بزر يفتحها</span></li>
+    </ul>
+    <div class="dn-note">
+      <strong data-i18n="demo.noteL">ملاحظة:</strong>
+      <span data-i18n="demo.noteB">جرّب زر التبديل بين العربية والإنجليزية وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل في هذه الباقة.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="top">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="crest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18M7 7l10 10M17 7L7 17"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name" data-i18n="nav.brandName">مكتب المحاماة</span>
+        <span class="brand-sub" data-i18n="nav.brandSub">الباقة القياسية</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav.about">نبذة</a></li>
+      <li><a href="#practice" data-i18n="nav.practice">الممارسة</a></li>
+      <li><a href="#experience" data-i18n="nav.experience">الخبرات</a></li>
+      <li><a href="#education" data-i18n="nav.education">التعليم</a></li>
+      <li><a href="#certifications" data-i18n="nav.certifications">الشهادات</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">تواصل</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="تبديل الوضع" type="button">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="burger" id="burgerBtn" aria-label="القائمة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about" data-i18n="nav.about">نبذة</a>
+  <a href="#practice" data-i18n="nav.practice">الممارسة</a>
+  <a href="#experience" data-i18n="nav.experience">الخبرات</a>
+  <a href="#education" data-i18n="nav.education">التعليم</a>
+  <a href="#certifications" data-i18n="nav.certifications">الشهادات</a>
+  <a href="#contact" data-i18n="nav.contact">تواصل</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="frame">
+      <div class="frame-inner">
+        <svg viewBox="0 0 64 80" fill="currentColor" aria-hidden="true">
+          <rect x="0" y="0" width="64" height="80" fill="none"/>
+          <circle cx="32" cy="28" r="13"/>
+          <path d="M6 80c0-15 12-24 26-24s26 9 26 24z"/>
+        </svg>
+      </div>
+      <div class="frame-corner tl"></div>
+      <div class="frame-corner br"></div>
+    </div>
+    <div class="hero-text">
+      <div class="badge-row">
+        <span class="badge badge-tier">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 4 1 5.5L12 15l-5 2.3 1-5.5-4-4 5.5-.8z"/></svg>
+          <span data-i18n="hero.tier">الباقة القياسية</span>
+        </span>
+        <span class="badge badge-lic" data-i18n="hero.lic">عضو نقابة المحامين — رقم وهمي</span>
+      </div>
+      <h1 class="placeholder-name" data-i18n="hero.name">[ الاسم الكامل ]</h1>
+      <div class="role" data-i18n="hero.role">محامٍ ومستشار قانوني</div>
+      <p class="bio" data-i18n="hero.bio">
+        محامٍ مرخّص بخبرة تتجاوز اثنتي عشرة سنة في التقاضي التجاري والمدني،
+        وممارسة التحكيم دوليًا. أُمثّل الأفراد والشركات في النزاعات أمام
+        المحاكم البحرينية وهيئات التحكيم الإقليمية. أُؤمن بأن العدالة تبدأ
+        من فهم دقيق لملف العميل وبناء استراتيجية قانونية واضحة قابلة للتنفيذ.
+      </p>
+      <div class="cta-row">
+        <a href="tel:+97300000000" class="btn btn-gold">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <span data-i18n="hero.btnCall">اتصال مباشر</span>
+        </a>
+        <a href="https://wa.me/97300000000" class="btn btn-line" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+          <span data-i18n="hero.btnWa">واتساب</span>
+        </a>
+        <a href="mailto:example@example.com" class="btn btn-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span data-i18n="hero.btnMail">بريد إلكتروني</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats">
+  <div class="container">
+    <div class="stat"><b data-i18n="stat.exp">+12</b><span data-i18n="stat.expL">سنة خبرة</span></div>
+    <div class="stat"><b data-i18n="stat.cases">+250</b><span data-i18n="stat.casesL">قضية منتهية</span></div>
+    <div class="stat"><b data-i18n="stat.rate">94%</b><span data-i18n="stat.rateL">نسبة نجاح</span></div>
+    <div class="stat"><b data-i18n="stat.langs">3</b><span data-i18n="stat.langsL">لغات عمل</span></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.aboutN">I.</span>
+      <h2 data-i18n="sec.about">نبذة عن المحامي</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <p data-i18n="about.p1">
+          محامٍ ومستشار قانوني يمتلك خبرة واسعة في النزاعات التجارية والعقود
+          المدنية وقضايا التحكيم الدولي. أُتقن صياغة العقود التجارية المعقدة
+          وإدارة مفاوضات الصفقات الكبرى، مع التركيز على حماية مصالح العميل
+          وتقليل المخاطر القانونية إلى أدنى حد ممكن.
+        </p>
+        <p data-i18n="about.p2">
+          أمضيت سنوات في التدرّج لدى كبار المكاتب القانونية في المنطقة،
+          واكتسبت بذلك فهماً عميقاً لبيئة الأعمال الخليجية وأطرها التنظيمية.
+          أُولي اهتماماً خاصاً بالتسوية البديلة للنزاعات (ADR) وأسعى دائماً
+          إلى إيجاد حلول عملية توفّر على العميل الوقت والمال قبل اللجوء
+          إلى التقاضي.
+        </p>
+      </div>
+      <div class="about-card">
+        <ul class="info-list">
+          <li><span class="lbl" data-i18n="info.role">المسمى</span><span class="val" data-i18n="info.roleV">محامٍ أول</span></li>
+          <li><span class="lbl" data-i18n="info.lic">رقم القيد</span><span class="val" data-i18n="info.licV">0000 / وهمي</span></li>
+          <li><span class="lbl" data-i18n="info.bar">جهة القيد</span><span class="val" data-i18n="info.barV">نقابة المحامين</span></li>
+          <li><span class="lbl" data-i18n="info.office">المكتب</span><span class="val" data-i18n="info.officeV">المنامة، البحرين</span></li>
+          <li><span class="lbl" data-i18n="info.year">سنة الترخيص</span><span class="val" data-i18n="info.yearV">2013</span></li>
+          <li><span class="lbl" data-i18n="info.clients">المستشار لـ</span><span class="val" data-i18n="info.clientsV">شركات وأفراد</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PRACTICE AREAS ═══ -->
+<section id="practice">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.practiceN">II.</span>
+      <h2 data-i18n="sec.practice">مجالات الممارسة</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="practice-grid">
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 9h6M9 13h6M9 17h6"/></svg></div>
+        <h3 data-i18n="prac.1t">التقاضي التجاري</h3>
+        <p data-i18n="prac.1p">تمثيل الشركات في النزاعات التجارية أمام المحاكم وهيئات التحكيم المحلية والدولية.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h8M8 9h2"/></svg></div>
+        <h3 data-i18n="prac.2t">صياغة العقود</h3>
+        <p data-i18n="prac.2p">إعداد وصياغة العقود التجارية، شراكات الأعمال، واتفاقيات التوزيع والوكالة.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <h3 data-i18n="prac.3t">التحكيم الدولي</h3>
+        <p data-i18n="prac.3p">إدارة إجراءات التحكيم وفق قواعد الـICC والـDIAC والـLCIA نيابة عن المدّعين والمدّعى عليهم.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7v6c0 5 3 9 8 10 5-1 8-5 8-10V7z"/></svg></div>
+        <h3 data-i18n="prac.4t">تأسيس الشركات</h3>
+        <p data-i18n="prac.4p">استشارات قانونية لتأسيس الشركات المحلية والأجنبية، وصياغة عقود التأسيس واللوائح.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3 data-i18n="prac.5t">قانون العمل</h3>
+        <p data-i18n="prac.5p">إعداد عقود العمل، اللوائح الداخلية، وتمثيل أصحاب العمل والعاملين في النزاعات العمالية.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg></div>
+        <h3 data-i18n="prac.6t">القضايا العقارية</h3>
+        <p data-i18n="prac.6p">نقل الملكية، نزاعات الإيجار، الرهون العقارية، وقضايا التقسيم والشراكة في الأملاك.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.expN">III.</span>
+      <h2 data-i18n="sec.exp">الخبرات المهنية</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.1t">شريك مؤسس</span>
+            <span class="t-date" data-i18n="exp.1d">2019 — الآن</span>
+          </div>
+          <div class="t-org" data-i18n="exp.1o">مكتب [الاسم] للمحاماة والاستشارات — المنامة</div>
+          <p class="t-note" data-i18n="exp.1n">
+            تأسيس المكتب وتوسيع محفظة العملاء لتشمل شركات إقليمية وعائلية
+            كبرى. إدارة فريق من ثمانية محامين ومستشارين قانونيين.
+          </p>
+          <ul class="t-ul">
+            <li data-i18n="exp.1l1">إدارة +150 قضية تجارية بنسبة نجاح فاقت 92%.</li>
+            <li data-i18n="exp.1l2">إبرام تسويات وديّة وفّرت على العملاء أكثر من 4 ملايين دينار.</li>
+            <li data-i18n="exp.1l3">تمثيل شركات أمام هيئات تحكيم دولية في لندن ودبي.</li>
+          </ul>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.2t">محامٍ أول</span>
+            <span class="t-date" data-i18n="exp.2d">2015 — 2019</span>
+          </div>
+          <div class="t-org" data-i18n="exp.2o">مكتب محاماة إقليمي — المنامة</div>
+          <p class="t-note" data-i18n="exp.2n">
+            ترقّي إلى محامٍ أول بعد أربع سنوات من التدرّج. تولّيت ملفات الشركات
+            الكبرى في قطاعي البنوك والعقار.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.3t">محامٍ متدرّب</span>
+            <span class="t-date" data-i18n="exp.3d">2013 — 2015</span>
+          </div>
+          <div class="t-org" data-i18n="exp.3o">مكتب محاماة تجاري — المحرق</div>
+          <p class="t-note" data-i18n="exp.3n">
+            مرحلة التدرّج الإلزامية بعد الترخيص، شملت إعداد المذكرات القانونية،
+            حضور الجلسات، ومساعدة المحامين الأقدم في القضايا المدنية.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION + BAR ═══ -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.eduN">IV.</span>
+      <h2 data-i18n="sec.edu">التعليم والقبول</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="grid-2">
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg>
+          <span data-i18n="edu.title">المؤهلات العلمية</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="edu.1t">ماجستير القانون التجاري (LL.M)</div>
+          <div class="meta" data-i18n="edu.1m">جامعة [الاسم] — 2012</div>
+          <div class="desc" data-i18n="edu.1d">رسالة في تحكيم النزاعات البنكية الإسلامية.</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="edu.2t">بكالوريوس حقوق (LL.B)</div>
+          <div class="meta" data-i18n="edu.2m">جامعة [الاسم] — 2010</div>
+          <div class="desc" data-i18n="edu.2d">تخرّج بمرتبة الشرف الأولى.</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="bar.title">القبول والعضويات</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="bar.1t">نقابة المحامين — البحرين</div>
+          <div class="meta" data-i18n="bar.1m">عضو عامل منذ 2013</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.2t">غرفة التجارة الدولية — ICC</div>
+          <div class="meta" data-i18n="bar.2m">عضو لجنة التحكيم</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.3t">جمعية المحامين العرب</div>
+          <div class="meta" data-i18n="bar.3m">عضو منذ 2016</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section id="certifications">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.certN">V.</span>
+      <h2 data-i18n="sec.cert">الشهادات والجوائز</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.1t">دبلوم التحكيم التجاري الدولي</div>
+          <div class="meta" data-i18n="cert.1m">معهد التحكيم — لندن · 2018</div>
+          <a href="#" class="pdf-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="cert.pdf">عرض الشهادة PDF</span>
+          </a>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.2t">شهادة صياغة العقود التجارية</div>
+          <div class="meta" data-i18n="cert.2m">الأكاديمية القانونية — دبي · 2017</div>
+          <a href="#" class="pdf-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="cert.pdf">عرض الشهادة PDF</span>
+          </a>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.3t">محامي العام — جائزة [الاسم]</div>
+          <div class="meta" data-i18n="cert.3m">جهة تقييم قانونية · 2022</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.4t">أفضل مكاتب المحاماة — البحرين</div>
+          <div class="meta" data-i18n="cert.4m">تصنيف Legal 500 · 2023</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LANGUAGES ═══ -->
+<section id="languages">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.langN">VI.</span>
+      <h2 data-i18n="sec.lang">اللغات</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-card">
+      <div class="lang-grid">
+        <div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.ar">العربية</span><span data-i18n="lang.arL">اللغة الأم</span></div>
+            <div class="bar"><div class="bar-f" style="width:100%"></div></div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.en">الإنجليزية</span><span data-i18n="lang.enL">إجادة كاملة مهنية</span></div>
+            <div class="bar"><div class="bar-f" style="width:92%"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.fr">الفرنسية</span><span data-i18n="lang.frL">مستوى عمل متوسط</span></div>
+            <div class="bar"><div class="bar-f" style="width:65%"></div></div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.de">الألمانية</span><span data-i18n="lang.deL">مبتدئ</span></div>
+            <div class="bar"><div class="bar-f" style="width:25%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.contactN">VII.</span>
+      <h2 data-i18n="sec.contact">تواصل مع المكتب</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="contact-grid">
+      <a href="tel:+97300000000" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <div class="lbl" data-i18n="contact.phoneL">الهاتف</div>
+        <div class="val" dir="ltr">+973 0000 0000</div>
+      </a>
+      <a href="https://wa.me/97300000000" class="contact-card" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></div>
+        <div class="lbl" data-i18n="contact.waL">واتساب</div>
+        <div class="val" data-i18n="contact.waV">راسل الآن</div>
+      </a>
+      <a href="mailto:example@example.com" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+        <div class="lbl" data-i18n="contact.mailL">البريد</div>
+        <div class="val" dir="ltr">example@example.com</div>
+      </a>
+      <a href="#" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg></div>
+        <div class="lbl" data-i18n="contact.liL">لينكدإن</div>
+        <div class="val" dir="ltr">/in/example</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <p><span class="brand-foot" data-i18n="foot.brand">بطاقتي</span> — <span data-i18n="foot.tier">الباقة القياسية</span></p>
+    <p style="margin-top:8px;opacity:.55;font-size:11px;" data-i18n="foot.note">جميع البيانات والأرقام والأسماء في هذه المعاينة وهمية لأغراض العرض فقط.</p>
+  </div>
+</footer>
+
+<!-- Floating action bar -->
+<div class="fab-bar">
+  <div class="container">
+    <a href="tel:+97300000000" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+      <span data-i18n="fab.call">اتصال</span>
+    </a>
+    <a href="https://wa.me/97300000000" class="fab" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+      <span data-i18n="fab.wa">واتساب</span>
+    </a>
+    <a href="mailto:example@example.com" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      <span data-i18n="fab.mail">بريد</span>
+    </a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="للأعلى">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  // ═══ i18n: نظام تبديل اللغة ═══
+  const I18N = {
+    ar: {
+      "demo.title":"معاينة الباقة القياسية — محامٍ ومستشار قانوني",
+      "demo.body":"هذه معاينة توضيحية فقط، جميع البيانات والأسماء وأرقام القضايا وهمية.",
+      "demo.body2":"ما تتضمنه الباقة القياسية:",
+      "demo.f1":"كل ما في الباقة الأساسية",
+      "demo.f2":"دعم لغتين (عربي/إنجليزي) بزر تبديل",
+      "demo.f3":"صورة شخصية مستطيلة عمودية",
+      "demo.f4":"أقسام إنجازات وشهادات منظّمة",
+      "demo.f5":"ترجمة تلقائية للغة أخرى عند الطلب",
+      "demo.f6":"حتى 3 شهادات PDF فعلية بزر يفتحها",
+      "demo.noteL":"ملاحظة:",
+      "demo.noteB":"جرّب زر التبديل بين العربية والإنجليزية وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل في هذه الباقة.",
+      "nav.brandName":"مكتب المحاماة","nav.brandSub":"الباقة القياسية",
+      "nav.about":"نبذة","nav.practice":"الممارسة","nav.experience":"الخبرات",
+      "nav.education":"التعليم","nav.certifications":"الشهادات","nav.contact":"تواصل",
+      "hero.tier":"الباقة القياسية","hero.lic":"عضو نقابة المحامين — رقم وهمي",
+      "hero.name":"[ الاسم الكامل ]","hero.role":"محامٍ ومستشار قانوني",
+      "hero.bio":"محامٍ مرخّص بخبرة تتجاوز اثنتي عشرة سنة في التقاضي التجاري والمدني، وممارسة التحكيم دوليًا. أُمثّل الأفراد والشركات في النزاعات أمام المحاكم البحرينية وهيئات التحكيم الإقليمية. أُؤمن بأن العدالة تبدأ من فهم دقيق لملف العميل وبناء استراتيجية قانونية واضحة قابلة للتنفيذ.",
+      "hero.btnCall":"اتصال مباشر","hero.btnWa":"واتساب","hero.btnMail":"بريد إلكتروني",
+      "stat.exp":"+12","stat.expL":"سنة خبرة","stat.cases":"+250","stat.casesL":"قضية منتهية","stat.rate":"94%","stat.rateL":"نسبة نجاح","stat.langs":"3","stat.langsL":"لغات عمل",
+      "sec.aboutN":"I.","sec.about":"نبذة عن المحامي",
+      "about.p1":"محامٍ ومستشار قانوني يمتلك خبرة واسعة في النزاعات التجارية والعقود المدنية وقضايا التحكيم الدولي. أُتقن صياغة العقود التجارية المعقدة وإدارة مفاوضات الصفقات الكبرى، مع التركيز على حماية مصالح العميل وتقليل المخاطر القانونية إلى أدنى حد ممكن.",
+      "about.p2":"أمضيت سنوات في التدرّج لدى كبار المكاتب القانونية في المنطقة، واكتسبت بذلك فهماً عميقاً لبيئة الأعمال الخليجية وأطرها التنظيمية. أُولي اهتماماً خاصاً بالتسوية البديلة للنزاعات (ADR) وأسعى دائماً إلى إيجاد حلول عملية توفّر على العميل الوقت والمال قبل اللجوء إلى التقاضي.",
+      "info.role":"المسمى","info.roleV":"محامٍ أول","info.lic":"رقم القيد","info.licV":"0000 / وهمي","info.bar":"جهة القيد","info.barV":"نقابة المحامين","info.office":"المكتب","info.officeV":"المنامة، البحرين","info.year":"سنة الترخيص","info.yearV":"2013","info.clients":"المستشار لـ","info.clientsV":"شركات وأفراد",
+      "sec.practiceN":"II.","sec.practice":"مجالات الممارسة",
+      "prac.1t":"التقاضي التجاري","prac.1p":"تمثيل الشركات في النزاعات التجارية أمام المحاكم وهيئات التحكيم المحلية والدولية.",
+      "prac.2t":"صياغة العقود","prac.2p":"إعداد وصياغة العقود التجارية، شراكات الأعمال، واتفاقيات التوزيع والوكالة.",
+      "prac.3t":"التحكيم الدولي","prac.3p":"إدارة إجراءات التحكيم وفق قواعد الـICC والـDIAC والـLCIA نيابة عن المدّعين والمدّعى عليهم.",
+      "prac.4t":"تأسيس الشركات","prac.4p":"استشارات قانونية لتأسيس الشركات المحلية والأجنبية، وصياغة عقود التأسيس واللوائح.",
+      "prac.5t":"قانون العمل","prac.5p":"إعداد عقود العمل، اللوائح الداخلية، وتمثيل أصحاب العمل والعاملين في النزاعات العمالية.",
+      "prac.6t":"القضايا العقارية","prac.6p":"نقل الملكية، نزاعات الإيجار، الرهون العقارية، وقضايا التقسيم والشراكة في الأملاك.",
+      "sec.expN":"III.","sec.exp":"الخبرات المهنية",
+      "exp.1t":"شريك مؤسس","exp.1d":"2019 — الآن","exp.1o":"مكتب [الاسم] للمحاماة والاستشارات — المنامة","exp.1n":"تأسيس المكتب وتوسيع محفظة العملاء لتشمل شركات إقليمية وعائلية كبرى. إدارة فريق من ثمانية محامين ومستشارين قانونيين.",
+      "exp.1l1":"إدارة +150 قضية تجارية بنسبة نجاح فاقت 92%.","exp.1l2":"إبرام تسويات وديّة وفّرت على العملاء أكثر من 4 ملايين دينار.","exp.1l3":"تمثيل شركات أمام هيئات تحكيم دولية في لندن ودبي.",
+      "exp.2t":"محامٍ أول","exp.2d":"2015 — 2019","exp.2o":"مكتب محاماة إقليمي — المنامة","exp.2n":"ترقّي إلى محامٍ أول بعد أربع سنوات من التدرّج. تولّيت ملفات الشركات الكبرى في قطاعي البنوك والعقار.",
+      "exp.3t":"محامٍ متدرّب","exp.3d":"2013 — 2015","exp.3o":"مكتب محاماة تجاري — المحرق","exp.3n":"مرحلة التدرّج الإلزامية بعد الترخيص، شملت إعداد المذكرات القانونية، حضور الجلسات، ومساعدة المحامين الأقدم في القضايا المدنية.",
+      "sec.eduN":"IV.","sec.edu":"التعليم والقبول",
+      "edu.title":"المؤهلات العلمية","edu.1t":"ماجستير القانون التجاري (LL.M)","edu.1m":"جامعة [الاسم] — 2012","edu.1d":"رسالة في تحكيم النزاعات البنكية الإسلامية.","edu.2t":"بكالوريوس حقوق (LL.B)","edu.2m":"جامعة [الاسم] — 2010","edu.2d":"تخرّج بمرتبة الشرف الأولى.",
+      "bar.title":"القبول والعضويات","bar.1t":"نقابة المحامين — البحرين","bar.1m":"عضو عامل منذ 2013","bar.2t":"غرفة التجارة الدولية — ICC","bar.2m":"عضو لجنة التحكيم","bar.3t":"جمعية المحامين العرب","bar.3m":"عضو منذ 2016",
+      "sec.certN":"V.","sec.cert":"الشهادات والجوائز",
+      "cert.1t":"دبلوم التحكيم التجاري الدولي","cert.1m":"معهد التحكيم — لندن · 2018","cert.pdf":"عرض الشهادة PDF",
+      "cert.2t":"شهادة صياغة العقود التجارية","cert.2m":"الأكاديمية القانونية — دبي · 2017",
+      "cert.3t":"محامي العام — جائزة [الاسم]","cert.3m":"جهة تقييم قانونية · 2022",
+      "cert.4t":"أفضل مكاتب المحاماة — البحرين","cert.4m":"تصنيف Legal 500 · 2023",
+      "sec.langN":"VI.","sec.lang":"اللغات",
+      "lang.ar":"العربية","lang.arL":"اللغة الأم","lang.en":"الإنجليزية","lang.enL":"إجادة كاملة مهنية","lang.fr":"الفرنسية","lang.frL":"مستوى عمل متوسط","lang.de":"الألمانية","lang.deL":"مبتدئ",
+      "sec.contactN":"VII.","sec.contact":"تواصل مع المكتب",
+      "contact.phoneL":"الهاتف","contact.waL":"واتساب","contact.waV":"راسل الآن","contact.mailL":"البريد","contact.liL":"لينكدإن",
+      "foot.brand":"بطاقتي","foot.tier":"الباقة القياسية","foot.note":"جميع البيانات والأرقام والأسماء في هذه المعاينة وهمية لأغراض العرض فقط.",
+      "fab.call":"اتصال","fab.wa":"واتساب","fab.mail":"بريد"
+    },
+    en: {
+      "demo.title":"Standard Package Preview — Lawyer & Legal Counsel",
+      "demo.body":"This is a demonstration preview only; all data, names, and case numbers are fictional.",
+      "demo.body2":"What the Standard package includes:",
+      "demo.f1":"Everything in the Basic package",
+      "demo.f2":"Two-language support (Arabic/English) with a toggle button",
+      "demo.f3":"Portrait rectangular personal photo",
+      "demo.f4":"Organized achievements & certifications sections",
+      "demo.f5":"Automatic translation to another language on request",
+      "demo.f6":"Up to 3 real PDF certificates with open buttons",
+      "demo.noteL":"Note:",
+      "demo.noteB":"Try the Arabic/English toggle and the light/dark mode button at the top — both work fully in this package.",
+      "nav.brandName":"Law Office","nav.brandSub":"Standard Package",
+      "nav.about":"About","nav.practice":"Practice","nav.experience":"Experience",
+      "nav.education":"Education","nav.certifications":"Certifications","nav.contact":"Contact",
+      "hero.tier":"Standard Package","hero.lic":"Bar Association Member — fictional ID",
+      "hero.name":"[ Full Name ]","hero.role":"Lawyer & Legal Counsel",
+      "hero.bio":"A licensed lawyer with over twelve years of experience in commercial and civil litigation, and international arbitration practice. I represent individuals and companies in disputes before Bahraini courts and regional arbitration bodies. I believe justice begins with a precise understanding of the client's file and a clear, actionable legal strategy.",
+      "hero.btnCall":"Direct Call","hero.btnWa":"WhatsApp","hero.btnMail":"Email",
+      "stat.exp":"+12","stat.expL":"Years Experience","stat.cases":"+250","stat.casesL":"Closed Cases","stat.rate":"94%","stat.rateL":"Success Rate","stat.langs":"3","stat.langsL":"Working Languages",
+      "sec.aboutN":"I.","sec.about":"About the Lawyer",
+      "about.p1":"A lawyer and legal counsel with extensive experience in commercial disputes, civil contracts, and international arbitration cases. I master the drafting of complex commercial contracts and managing negotiations of major deals, with a focus on protecting the client's interests and minimizing legal risk as much as possible.",
+      "about.p2":"I spent years training at major law firms in the region, gaining a deep understanding of the Gulf business environment and its regulatory frameworks. I pay special attention to Alternative Dispute Resolution (ADR) and always strive to find practical solutions that save the client time and money before resorting to litigation.",
+      "info.role":"Title","info.roleV":"Senior Lawyer","info.lic":"License No.","info.licV":"0000 / fictional","info.bar":"Bar Authority","info.barV":"Lawyers' Association","info.office":"Office","info.officeV":"Manama, Bahrain","info.year":"Licensed Year","info.yearV":"2013","info.clients":"Advises","info.clientsV":"Companies & Individuals",
+      "sec.practiceN":"II.","sec.practice":"Practice Areas",
+      "prac.1t":"Commercial Litigation","prac.1p":"Representing companies in commercial disputes before local and international courts and arbitration bodies.",
+      "prac.2t":"Contract Drafting","prac.2p":"Preparing and drafting commercial contracts, business partnerships, distribution and agency agreements.",
+      "prac.3t":"International Arbitration","prac.3p":"Managing arbitration procedures under ICC, DIAC, and LCIA rules on behalf of claimants and respondents.",
+      "prac.4t":"Company Formation","prac.4p":"Legal consulting for establishing local and foreign companies, and drafting articles of incorporation and bylaws.",
+      "prac.5t":"Labor Law","prac.5p":"Preparing employment contracts, internal policies, and representing employers and employees in labor disputes.",
+      "prac.6t":"Real Estate Cases","prac.6p":"Title transfers, lease disputes, real estate mortgages, and property division and partnership cases.",
+      "sec.expN":"III.","sec.exp":"Professional Experience",
+      "exp.1t":"Founding Partner","exp.1d":"2019 — Present","exp.1o":"[Name] Law & Consulting Office — Manama","exp.1n":"Founded the office and expanded the client portfolio to include major regional and family-owned companies. Managing a team of eight lawyers and legal consultants.",
+      "exp.1l1":"Managed 150+ commercial cases with a success rate exceeding 92%.","exp.1l2":"Concluded amicable settlements saving clients over 4 million dinars.","exp.1l3":"Represented companies before international arbitration bodies in London and Dubai.",
+      "exp.2t":"Senior Lawyer","exp.2d":"2015 — 2019","exp.2o":"Regional Law Firm — Manama","exp.2n":"Promoted to senior lawyer after four years of training. Handled major corporate files in banking and real estate sectors.",
+      "exp.3t":"Trainee Lawyer","exp.3d":"2013 — 2015","exp.3o":"Commercial Law Firm — Muharraq","exp.3n":"Mandatory training period after licensing, including preparing legal memos, attending sessions, and assisting senior lawyers in civil cases.",
+      "sec.eduN":"IV.","sec.edu":"Education & Admission",
+      "edu.title":"Academic Qualifications","edu.1t":"Master of Commercial Law (LL.M)","edu.1m":"[Name] University — 2012","edu.1d":"Thesis on Islamic banking dispute arbitration.","edu.2t":"Bachelor of Law (LL.B)","edu.2m":"[Name] University — 2010","edu.2d":"Graduated with first-class honors.",
+      "bar.title":"Admissions & Memberships","bar.1t":"Bahrain Lawyers' Association","bar.1m":"Active member since 2013","bar.2t":"International Chamber of Commerce — ICC","bar.2m":"Arbitration Committee Member","bar.3t":"Arab Lawyers' Union","bar.3m":"Member since 2016",
+      "sec.certN":"V.","sec.cert":"Certifications & Awards",
+      "cert.1t":"International Commercial Arbitration Diploma","cert.1m":"Arbitration Institute — London · 2018","cert.pdf":"View Certificate PDF",
+      "cert.2t":"Commercial Contract Drafting Certificate","cert.2m":"Legal Academy — Dubai · 2017",
+      "cert.3t":"Lawyer of the Year — [Name] Award","cert.3m":"Legal rating entity · 2022",
+      "cert.4t":"Best Law Firms — Bahrain","cert.4m":"Legal 500 ranking · 2023",
+      "sec.langN":"VI.","sec.lang":"Languages",
+      "lang.ar":"Arabic","lang.arL":"Native","lang.en":"English","lang.enL":"Full Professional Proficiency","lang.fr":"French","lang.frL":"Intermediate Working Level","lang.de":"German","lang.deL":"Beginner",
+      "sec.contactN":"VII.","sec.contact":"Contact the Office",
+      "contact.phoneL":"Phone","contact.waL":"WhatsApp","contact.waV":"Message Now","contact.mailL":"Email","contact.liL":"LinkedIn",
+      "foot.brand":"Bitaqti","foot.tier":"Standard Package","foot.note":"All data, numbers, and names in this preview are fictional for display purposes only.",
+      "fab.call":"Call","fab.wa":"WhatsApp","fab.mail":"Email"
+    }
+  };
+
+  // ✅ applyLanguage: لا تُبدّل ترتيب أي عنصر، فقط تغيّر المحتوى والاتجاه
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+
+  // ✅ Theme toggle: الوضع الفاتح/الداكن
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    try{ localStorage.setItem('bitaqti_theme', theme); }catch(e){}
+  }
+  const themeBtn = document.getElementById('themeBtn');
+  if(themeBtn){
+    themeBtn.addEventListener('click', ()=>{
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  // ✅ التهيئة الأولية للّغة والوضع
+  (function init(){
+    let savedLang = 'ar', savedTheme = 'dark';
+    try{ savedLang = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    try{ savedTheme = localStorage.getItem('bitaqti_theme') || 'dark'; }catch(e){}
+    applyLanguage(savedLang);
+    applyTheme(savedTheme);
+  })();
+
+  // Burger + to-top
+  const burger = document.getElementById('burgerBtn');
+  const panel = document.getElementById('mobilePanel');
+  if(burger){
+    burger.addEventListener('click', ()=>panel.classList.toggle('open'));
+    panel.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>panel.classList.remove('open')));
+  }
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 300) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
