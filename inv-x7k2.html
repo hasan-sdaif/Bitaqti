@@ -362,18 +362,18 @@
   .inv-qr canvas{width:80px;height:80px;border:1px solid var(--line);border-radius:6px;padding:3px;}
   .inv-qr span{font-size:9px;color:var(--ink-faint);}
 
-  .inv-items-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  .inv-items-table{width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:16px;}
   .inv-items-table th{
     background:var(--ink);color:#fff;font-size:11px;font-weight:700;
-    padding:9px 10px;text-align:right;
+    padding:9px 8px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .inv-items-table th:first-child{border-radius:6px 0 0 6px;}
   .inv-items-table th:last-child{border-radius:0 6px 6px 0;text-align:center;}
-  .inv-items-table th.col-num{text-align:center;width:40px;}
-  .inv-items-table th.col-qty{text-align:center;width:60px;}
-  .inv-items-table th.col-price{text-align:center;width:90px;}
-  .inv-items-table th.col-total{text-align:center;width:100px;}
-  .inv-items-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .inv-items-table th.col-num{text-align:center;width:8%;}
+  .inv-items-table th.col-qty{text-align:center;width:12%;}
+  .inv-items-table th.col-price{text-align:center;width:17%;}
+  .inv-items-table th.col-total{text-align:center;width:18%;}
+  .inv-items-table td{padding:9px 8px;border-bottom:1px solid var(--line);font-size:12.5px;overflow-wrap:break-word;word-break:break-word;}
   .inv-items-table td.col-num{text-align:center;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-qty{text-align:center;font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-price{text-align:center;font-family:'IBM Plex Mono',monospace;direction:ltr;}
@@ -687,26 +687,33 @@
     /* ورقة A4: نُلغي كل تأثيرات التحويل ونضبط الحجم */
     #sheet,
     .a4-sheet{
+      box-sizing:border-box !important;
       box-shadow:none !important;
       margin:0 !important;
       transform:none !important;
       width:100% !important;
       min-height:auto !important;
-      max-width:none !important;
+      max-width:100% !important;
       padding:14mm 12mm !important;
       page-break-after:always;
       page-break-inside:avoid;
       background:#fff !important;
       border:none !important;
+      overflow:hidden !important; /* شبكة أمان: يمنع أي عنصر داخلي من الخروج عن حدود الصفحة */
     }
     .a4-sheet:last-child{page-break-after:auto;}
 
-    /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) */
+    /* شبكة أمان إضافية على كل الحاويات بين الجذر والورقة */
+    html,body,#previewWrap,.preview-wrap{overflow-x:hidden !important;}
+
+    /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) + ضبط صندوق القياس لكل شيء داخل الورقة */
     *{
+      box-sizing:border-box !important;
       -webkit-print-color-adjust:exact !important;
       print-color-adjust:exact !important;
       color-adjust:exact !important;
     }
+    #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
 
     /* الروابط لا تُظهر URL */
     a[href]:after,
@@ -2371,43 +2378,47 @@ function printViaIframe(htmlContent){
 <!-- نسخ كل CSS من الصفحة الأم للحفاظ على التنسيق -->
 ${cssHtml}
 <style>
-  /* قواعد طباعة إضافية */
-  @page{size:A4;margin:10mm;}
+  /* قواعد طباعة إضافية — نفس هوامش @page المستخدمة في الصفحة الأصلية تماماً لتفادي أي تعارض */
+  @page{size:A4;margin:0;}
   html,body{
     background:#fff !important;
     margin:0 !important;
     padding:0 !important;
     width:100% !important;
-    overflow:visible !important;
+    overflow-x:hidden !important;
   }
   body{font-size:11pt;line-height:1.6;}
 
-  /* ضبط ورقة A4 للطباعة: نُلغي كل تأثيرات العرض */
+  /* ضبط ورقة A4 للطباعة: نُلغي كل تأثيرات العرض، ونُبقي حشوة الورقة (14mm/12mm) القادمة
+     من قواعد الطباعة الأصلية المنسوخة أعلاه دون الكتابة فوقها هنا لتفادي التعارض */
   .preview-wrap,
   #previewWrap,
   #sheet,
   .a4-sheet{
+    box-sizing:border-box !important;
     position:static !important;
     display:block !important;
     background:#fff !important;
     border:none !important;
-    padding:0 !important;
     margin:0 !important;
     box-shadow:none !important;
     transform:none !important;
     max-height:none !important;
-    overflow:visible !important;
+    overflow:hidden !important;
     width:100% !important;
     min-height:auto !important;
-    max-width:none !important;
+    max-width:100% !important;
   }
+  .preview-wrap,#previewWrap{padding:0 !important;overflow:visible !important;}
 
-  /* ضمان طباعة الألوان كما هي (خلفيات، نصوص ملونة، إطارات) */
+  /* ضمان طباعة الألوان كما هي (خلفيات، نصوص ملونة، إطارات) + توحيد صندوق القياس */
   *{
+    box-sizing:border-box !important;
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
     color-adjust:exact !important;
   }
+  #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
 
   /* الروابط لا تُظهر URL في الطباعة */
   a[href]:after,
