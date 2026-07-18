@@ -2338,7 +2338,7 @@ function updateCustStatsBar(list){
 
 /**
  * يطبع المحتوى عبر iframe مخفي — الحل الأكثر موثوقية ضد حاجزي النوافذ المنبثقة.
- * يأخذ HTML كاملاً للفاتورة ويكتبه في iframe مؤقت ثم يستدعي print() عليه.
+ * يأخذ HTML كاملاً للفاتورة ويكتبه في iframe مؤقت مع نسخ كل CSS من الصفحة الأم.
  */
 function printViaIframe(htmlContent){
   // إن لم يُمرر HTML، نستخرجه من المعاينة الحالية
@@ -2349,33 +2349,76 @@ function printViaIframe(htmlContent){
     htmlContent = sheet.outerHTML;
   }
 
-  // نبني صفحة HTML كاملة
+  // ═══ نسخ كل CSS من الصفحة الأم (مهم جداً للحفاظ على التنسيق) ═══
+  // نأخذ كل عناصر <style> و <link rel="stylesheet"> من <head>
+  let cssHtml = '';
+  document.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => {
+    if(el.tagName === 'STYLE'){
+      // ننسخ محتوى الـ <style> tag كاملاً
+      cssHtml += '<style>' + el.innerHTML + '</style>\n';
+    } else if(el.tagName === 'LINK'){
+      // ننسخ الـ <link> tag كاملاً (للخطوط والـ stylesheets الخارجية)
+      cssHtml += el.outerHTML + '\n';
+    }
+  });
+
+  // نبني صفحة HTML كاملة مع نسخ كل CSS من الصفحة الأم
   const fullHtml = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <title>طباعة فاتورة</title>
-<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- نسخ كل CSS من الصفحة الأم للحفاظ على التنسيق -->
+${cssHtml}
 <style>
+  /* قواعد طباعة إضافية */
   @page{size:A4;margin:10mm;}
-  *{margin:0;padding:0;box-sizing:border-box;}
-  body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#fff;color:#17181C;line-height:1.6;font-size:11pt;}
-  .a4-sheet{
+  html,body{
+    background:#fff !important;
+    margin:0 !important;
+    padding:0 !important;
     width:100% !important;
-    min-height:auto !important;
+    overflow:visible !important;
+  }
+  body{font-size:11pt;line-height:1.6;}
+
+  /* ضبط ورقة A4 للطباعة: نُلغي كل تأثيرات العرض */
+  .preview-wrap,
+  #previewWrap,
+  #sheet,
+  .a4-sheet{
+    position:static !important;
+    display:block !important;
+    background:#fff !important;
+    border:none !important;
     padding:0 !important;
     margin:0 !important;
     box-shadow:none !important;
     transform:none !important;
-    background:#fff !important;
+    max-height:none !important;
+    overflow:visible !important;
+    width:100% !important;
+    min-height:auto !important;
+    max-width:none !important;
   }
+
+  /* ضمان طباعة الألوان كما هي (خلفيات، نصوص ملونة، إطارات) */
   *{
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
     color-adjust:exact !important;
   }
-  a[href]:after{content:"" !important;}
+
+  /* الروابط لا تُظهر URL في الطباعة */
+  a[href]:after,
+  a[href^="#"]:after{content:"" !important;}
+
+  /* الجداول: لا تنكسر الصفوف عبر الصفحات */
   tr,td,th{page-break-inside:avoid;}
+
+  /* إخفاء العناصر غير المطلوبة للطباعة */
+  .preview-label,
+  .no-print{display:none !important;}
 </style>
 </head>
 <body>${htmlContent}</body>
@@ -2419,15 +2462,15 @@ function printViaIframe(htmlContent){
     }
   };
 
-  // ننتظر تحميل الخطوط إن أمكن
+  // ننتظر تحميل الخطوط إن أمكن (مهم جداً للخطوط العربية)
   try {
     if(iframe.contentWindow.document.fonts && iframe.contentWindow.document.fonts.ready){
-      iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 200));
+      iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 300));
     } else {
-      setTimeout(doPrint, 500);
+      setTimeout(doPrint, 600);
     }
   } catch(e) {
-    setTimeout(doPrint, 500);
+    setTimeout(doPrint, 600);
   }
 }
 
