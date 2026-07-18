@@ -637,6 +637,11 @@
     #previewWrap{display:block !important;}
     #sheet{display:block !important;}
 
+    /* نُخفي صراحة الشريط العلوي الإداري (.topbar) وأي عنصر آخر يحمل no-print، لأن
+       إعادة إظهار .app أعلاه تُعيد إظهار كل أبنائها المباشرين ما لم نستثنِهم هنا */
+    .topbar,
+    .no-print{display:none !important;}
+
     /* داخل ورقة الفاتورة: نُحدّد صراحة كل عنصر يحتاج display:flex (بدل الاعتماد على
        revert الذي كسر عنصر الـ watermark)؛ باقي العناصر تبقى على block الافتراضي وهذا سليم */
     #sheet .inv-header{display:flex !important;}
