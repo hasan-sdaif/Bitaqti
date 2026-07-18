@@ -35,13 +35,18 @@
   a:focus-visible{outline:2px solid var(--red);outline-offset:3px;border-radius:4px;}
 
   .nav{position:sticky;top:0;z-index:10;background:rgba(244,243,239,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
-  .nav .container{max-width:900px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+  .nav .container{max-width:900px;display:flex;align-items:center;justify-content:space-between;height:60px;gap:10px;}
   .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14.5px;color:var(--ink);text-decoration:none;}
   .brand .mark{width:30px;height:21px;border-radius:5px;background:var(--ink);position:relative;flex-shrink:0;}
   .brand .mark::before{content:'';position:absolute;right:4px;top:5px;width:8px;height:8px;border-radius:2px;background:var(--paper);}
   .back-link{font-size:13px;font-weight:700;color:var(--ink-soft);display:flex;align-items:center;gap:6px;}
   .back-link:hover{color:var(--red);text-decoration:none;}
   .back-link svg{width:15px;height:15px;}
+  .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .lang-toggle{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:2px;flex-shrink:0;}
+  .lang-toggle button{background:transparent;border:0;color:var(--ink-soft);font-family:'IBM Plex Sans Arabic',Arial,sans-serif;font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:16px;cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;}
+  .lang-toggle button.active{background:var(--ink);color:#fff;}
+  .lang-toggle button:not(.active):hover{color:var(--red);}
 
   .hero{padding:44px 0 8px;text-align:center;}
   .eyebrow{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--red);text-transform:uppercase;margin-bottom:10px;}
@@ -96,20 +101,26 @@
 
 <nav class="nav">
   <div class="container">
-    <a href="index.html" class="brand"><span class="mark"></span> بطاقتي <small style="font-weight:400;color:var(--ink-faint);">Bitaqti</small></a>
-    <a href="index.html" class="back-link">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-      الرئيسية
-    </a>
+    <a href="index.html" class="brand"><span class="mark"></span> <span data-i18n="nav.brand">بطاقتي</span> <small style="font-weight:400;color:var(--ink-faint);">Bitaqti</small></a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <a href="index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span data-i18n="nav.home">الرئيسية</span>
+      </a>
+    </div>
   </div>
 </nav>
 
 <header class="hero">
   <div class="container">
-    <div class="eyebrow">اقرأ قبل أن تطلب</div>
-    <h1>الأمور التي يجب معرفتها قبل الطلب</h1>
-    <div class="updated">آخر تحديث: 17 يوليو 2026 · خدمة بطاقتي (Bitaqti) — bitaqti.com</div>
-    <p class="lede">هذه الصفحة تلخّص أهم النقاط العملية قبل أن ترسل الدفعة وتطلب بطاقتك — بشكل مختصر ومباشر. للتفاصيل القانونية الكاملة حول بياناتك، راجع <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>.</p>
+    <div class="eyebrow" data-i18n="hero.eyebrow">اقرأ قبل أن تطلب</div>
+    <h1 data-i18n="hero.title">الأمور التي يجب معرفتها قبل الطلب</h1>
+    <div class="updated" data-i18n="hero.updated">آخر تحديث: 17 يوليو 2026 · خدمة بطاقتي (Bitaqti) — bitaqti.com</div>
+    <p class="lede" data-i18n="hero.lede">هذه الصفحة تلخّص أهم النقاط العملية قبل أن ترسل الدفعة وتطلب بطاقتك — بشكل مختصر ومباشر. للتفاصيل القانونية الكاملة حول بياناتك، راجع <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>.</p>
   </div>
 </header>
 
@@ -117,86 +128,86 @@
   <div class="container">
 
     <div class="summary">
-      <h2>ملخص سريع</h2>
+      <h2 data-i18n="summary.title">ملخص سريع</h2>
       <ul>
-        <li>بطاقتك رابط عام — أي شخص يملك الرابط أو رمز QR يمكنه فتحها.</li>
-        <li>أضع وسم منع الفهرسة (noindex) على بطاقتك افتراضياً، إلا إن طلبت مني نشرها وإتاحتها للفهرسة.</li>
-        <li>أزيل تلقائياً الرقم الشخصي (CPR) والعنوان الدقيق للسكن، إلا بموافقتك الصريحة.</li>
-        <li>لك جولتان مجانيتان من التعديل بعد التسليم الأول.</li>
-        <li>الدفع يعني تأكيد الطلب، والعمل يبدأ فوراً بعده — راجع سياسة الاسترجاع أدناه.</li>
+        <li data-i18n="summary.li1">بطاقتك رابط عام — أي شخص يملك الرابط أو رمز QR يمكنه فتحها.</li>
+        <li data-i18n="summary.li2">أضع وسم منع الفهرسة (noindex) على بطاقتك افتراضياً، إلا إن طلبت مني نشرها وإتاحتها للفهرسة.</li>
+        <li data-i18n="summary.li3">أزيل تلقائياً الرقم الشخصي (CPR) والعنوان الدقيق للسكن، إلا بموافقتك الصريحة.</li>
+        <li data-i18n="summary.li4">لك جولتان مجانيتان من التعديل بعد التسليم الأول.</li>
+        <li data-i18n="summary.li5">الدفع يعني تأكيد الطلب، والعمل يبدأ فوراً بعده — راجع سياسة الاسترجاع أدناه.</li>
       </ul>
     </div>
 
     <div class="card">
 
       <section class="pol">
-        <h2><span class="num">١</span> لماذا هذه الصفحة؟</h2>
-        <p>خدمة «بطاقتي» بسيطة ومباشرة، لكن بعض تفاصيلها التقنية تستحق أن تعرفها قبل أن تدفع وترسل سيرتك — لا بعد ذلك. هذه الصفحة إعلامية بالدرجة الأولى، وليست عقداً قانونياً موقعاً بالمعنى الرسمي (راجع القسم ٨).</p>
+        <h2><span class="num">١</span> <span data-i18n="s1.h">لماذا هذه الصفحة؟</span></h2>
+        <p data-i18n="s1.p">خدمة «بطاقتي» بسيطة ومباشرة، لكن بعض تفاصيلها التقنية تستحق أن تعرفها قبل أن تدفع وترسل سيرتك — لا بعد ذلك. هذه الصفحة إعلامية بالدرجة الأولى، وليست عقداً قانونياً موقعاً بالمعنى الرسمي (راجع القسم ٨).</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٢</span> بطاقتك رابط عام على الإنترنت</h2>
-        <p>بمجرد نشر بطاقتك الرقمية على <strong>bitaqti.com</strong>، تصبح صفحة ويب عامة تماماً مثل أي موقع آخر — أي شخص يعرف الرابط المباشر أو يمسح رمز QR الخاص بك يمكنه فتحها، دون الحاجة لكلمة مرور أو تسجيل دخول.</p>
+        <h2><span class="num">٢</span> <span data-i18n="s2.h">بطاقتك رابط عام على الإنترنت</span></h2>
+        <p data-i18n="s2.p">بمجرد نشر بطاقتك الرقمية على <strong>bitaqti.com</strong>، تصبح صفحة ويب عامة تماماً مثل أي موقع آخر — أي شخص يعرف الرابط المباشر أو يمسح رمز QR الخاص بك يمكنه فتحها، دون الحاجة لكلمة مرور أو تسجيل دخول.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٣</span> هل تظهر بطاقتك في نتائج بحث Google؟</h2>
-        <p>محركات البحث مثل Google تكتشف الصفحات العامة على الإنترنت وتفهرسها تلقائياً بمرور الوقت. الطريقة المعتادة لمنع فهرسة صفحة معينة هي إضافة وسم برمجي خاص داخل كودها (يُعرف باسم <span class="mono">noindex</span>) يخبر محركات البحث صراحةً بعدم إدراجها في نتائجها.</p>
+        <h2><span class="num">٣</span> <span data-i18n="s3.h">هل تظهر بطاقتك في نتائج بحث Google؟</span></h2>
+        <p data-i18n="s3.p1">محركات البحث مثل Google تكتشف الصفحات العامة على الإنترنت وتفهرسها تلقائياً بمرور الوقت. الطريقة المعتادة لمنع فهرسة صفحة معينة هي إضافة وسم برمجي خاص داخل كودها (يُعرف باسم <span class="mono">noindex</span>) يخبر محركات البحث صراحةً بعدم إدراجها في نتائجها.</p>
         <div class="callout">
-          <strong>الوضع الافتراضي لبطاقتك:</strong>
-          أضع وسم <span class="mono">noindex</span> على بطاقتك <strong>افتراضياً</strong> عند التسليم، بحيث لا تُدرَج ضمن نتائج البحث. إن كنت تريد العكس — أن تنتشر بطاقتك وتظهر في نتائج البحث ليجدك بها أصحاب العمل أو من تتعامل معهم مثلاً — أخبرني وسأزيل هذا الوسم عنها.
+          <strong data-i18n="s3.calloutTitle">الوضع الافتراضي لبطاقتك:</strong>
+          <span data-i18n="s3.calloutBody">أضع وسم <span class="mono">noindex</span> على بطاقتك <strong>افتراضياً</strong> عند التسليم، بحيث لا تُدرَج ضمن نتائج البحث. إن كنت تريد العكس — أن تنتشر بطاقتك وتظهر في نتائج البحث ليجدك بها أصحاب العمل أو من تتعامل معهم مثلاً — أخبرني وسأزيل هذا الوسم عنها.</span>
         </div>
-        <p>لاحظ أن وسم <span class="mono">noindex</span> يقلل احتمال الفهرسة ولا يمنعها بشكل مطلق (خصوصاً مع وجود روابط خارجية تشير إلى بطاقتك)، ولا يمنع أي شخص يملك الرابط المباشر أو رمز QR من فتح الصفحة في كل الأحوال. يمكنك تغيير قرارك بخصوص الفهرسة في أي وقت بالتواصل معي.</p>
+        <p data-i18n="s3.p2">لاحظ أن وسم <span class="mono">noindex</span> يقلل احتمال الفهرسة ولا يمنعها بشكل مطلق (خصوصاً مع وجود روابط خارجية تشير إلى بطاقتك)، ولا يمنع أي شخص يملك الرابط المباشر أو رمز QR من فتح الصفحة في كل الأحوال. يمكنك تغيير قرارك بخصوص الفهرسة في أي وقت بالتواصل معي.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٤</span> من يمكنه رؤية بياناتك</h2>
-        <p>الملفات المرتبطة ببطاقتك (نسخة سيرتك الأصلية PDF وصورتك) هي أيضاً ملفات عامة يمكن لأي شخص يعرف رابطها المباشر فتحها. بيانات تتبّع الطلبات (رقم هاتفك، رمز التحقق، الباقة، السعر) محفوظة في جدول بيانات خاص غير معلن للعامة — التفاصيل الكاملة في القسم ٩ من سياسة الخصوصية.</p>
+        <h2><span class="num">٤</span> <span data-i18n="s4.h">من يمكنه رؤية بياناتك</span></h2>
+        <p data-i18n="s4.p">الملفات المرتبطة ببطاقتك (نسخة سيرتك الأصلية PDF وصورتك) هي أيضاً ملفات عامة يمكن لأي شخص يعرف رابطها المباشر فتحها. بيانات تتبّع الطلبات (رقم هاتفك، رمز التحقق، الباقة، السعر) محفوظة في جدول بيانات خاص غير معلن للعامة — التفاصيل الكاملة في القسم ٩ من سياسة الخصوصية.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٥</span> البيانات الحساسة تُزال تلقائياً</h2>
-        <p>لحمايتك، أزيل تلقائياً من بطاقتك الرقمية أي بيانات حساسة ترد في سيرتك الأصلية، وتحديداً الرقم الشخصي (CPR) والعنوان الدقيق للسكن. لا تُنشَر هذه البيانات على بطاقتك <strong>إلا بموافقتك الصريحة أنت شخصياً</strong> وبطلب واضح منك يفيد بأنك تريد تضمينها رغم التوصية بعدم ذلك.</p>
+        <h2><span class="num">٥</span> <span data-i18n="s5.h">البيانات الحساسة تُزال تلقائياً</span></h2>
+        <p data-i18n="s5.p">لحمايتك، أزيل تلقائياً من بطاقتك الرقمية أي بيانات حساسة ترد في سيرتك الأصلية، وتحديداً الرقم الشخصي (CPR) والعنوان الدقيق للسكن. لا تُنشَر هذه البيانات على بطاقتك <strong>إلا بموافقتك الصريحة أنت شخصياً</strong> وبطلب واضح منك يفيد بأنك تريد تضمينها رغم التوصية بعدم ذلك.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٦</span> سياسة التعديلات</h2>
-        <p>يشمل كل طلب <strong>جولتين مجانيتين من التعديل</strong> على محتوى بطاقتك بعد التسليم الأول، تُطلَبان معاً دفعة واحدة قدر الإمكان لتسريع التنفيذ. أي تعديلات إضافية بعد ذلك يتم الاتفاق عليها معك مباشرة حسب حجم التغيير.</p>
+        <h2><span class="num">٦</span> <span data-i18n="s6.h">سياسة التعديلات</span></h2>
+        <p data-i18n="s6.p">يشمل كل طلب <strong>جولتين مجانيتين من التعديل</strong> على محتوى بطاقتك بعد التسليم الأول، تُطلَبان معاً دفعة واحدة قدر الإمكان لتسريع التنفيذ. أي تعديلات إضافية بعد ذلك يتم الاتفاق عليها معك مباشرة حسب حجم التغيير.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٧</span> بياناتك باقية حتى تطلب إزالتها</h2>
-        <p>أحتفظ بملف بطاقتك وسجل طلبك طالما بطاقتك منشورة ونشطة، لتتمكن من التتبّع والتعديل عند الحاجة. لا أحذف شيئاً من تلقاء نفسي. إن طلبت في أي وقت إلغاء النشر نهائياً، أحذف الملفات والسجل خلال مدة معقولة لا تتجاوز أسبوعاً من طلبك.</p>
+        <h2><span class="num">٧</span> <span data-i18n="s7.h">بياناتك باقية حتى تطلب إزالتها</span></h2>
+        <p data-i18n="s7.p">أحتفظ بملف بطاقتك وسجل طلبك طالما بطاقتك منشورة ونشطة، لتتمكن من التتبّع والتعديل عند الحاجة. لا أحذف شيئاً من تلقاء نفسي. إن طلبت في أي وقت إلغاء النشر نهائياً، أحذف الملفات والسجل خلال مدة معقولة لا تتجاوز أسبوعاً من طلبك.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٨</span> خدمة فردية، وليست شركة</h2>
-        <p>«بطاقتي» (Bitaqti) خدمة يقدّمها شخص واحد في البحرين، وليست شركة أو كياناً قانونياً مسجّلاً. هذه الصفحة وسياسة الخصوصية توضحان تفاهمنا المشترك حول كيفية عملي مع بياناتك، لكنهما وثيقة إعلامية وليستا عقداً قانونياً موقعاً بالمعنى الرسمي.</p>
+        <h2><span class="num">٨</span> <span data-i18n="s8.h">خدمة فردية، وليست شركة</span></h2>
+        <p data-i18n="s8.p">«بطاقتي» (Bitaqti) خدمة يقدّمها شخص واحد في البحرين، وليست شركة أو كياناً قانونياً مسجّلاً. هذه الصفحة وسياسة الخصوصية توضحان تفاهمنا المشترك حول كيفية عملي مع بياناتك، لكنهما وثيقة إعلامية وليستا عقداً قانونياً موقعاً بالمعنى الرسمي.</p>
       </section>
 
       <section class="pol">
-        <h2><span class="num">٩</span> الدفع والاسترجاع</h2>
+        <h2><span class="num">٩</span> <span data-i18n="s9.h">الدفع والاسترجاع</span></h2>
         <ul>
-          <li>يُعتبر الطلب مؤكَّداً بعد استلام الدفعة وإرسال الفاتورة الرقمية لك، ولكل طلب رمز فريد مثل <span class="mono">BH-CV-2026-0001</span></li>
-          <li>العمل يبدأ فوراً بعد تأكيد الطلب، لذلك لا يوجد استرجاع للمبلغ بعد بدء التصميم إلا في حالات استثنائية تُقيَّم فردياً</li>
-          <li>إذا لم تصلك بطاقتك خلال 24-48 ساعة لأسباب من طرفي، يحق لك طلب استرجاع كامل المبلغ</li>
+          <li data-i18n="s9.li1">يُعتبر الطلب مؤكَّداً بعد استلام الدفعة وإرسال الفاتورة الرقمية لك، ولكل طلب رمز فريد مثل <span class="mono">BH-CV-2026-0001</span></li>
+          <li data-i18n="s9.li2">العمل يبدأ فوراً بعد تأكيد الطلب، لذلك لا يوجد استرجاع للمبلغ بعد بدء التصميم إلا في حالات استثنائية تُقيَّم فردياً</li>
+          <li data-i18n="s9.li3">إذا لم تصلك بطاقتك خلال 24-48 ساعة لأسباب من طرفي، يحق لك طلب استرجاع كامل المبلغ</li>
         </ul>
         <div class="callout gold">
-          <strong>الأسعار قابلة للتغيير:</strong>
-          الأسعار المذكورة في الموقع، بما فيها عرض الافتتاح، قابلة للتغيير بعد انتهاء الفترة الترويجية المعلنة.
+          <strong data-i18n="s9.calloutTitle">الأسعار قابلة للتغيير:</strong>
+          <span data-i18n="s9.calloutBody">الأسعار المذكورة في الموقع، بما فيها عرض الافتتاح، قابلة للتغيير بعد انتهاء الفترة الترويجية المعلنة.</span>
         </div>
       </section>
 
     </div>
 
     <div class="ack">
-      <h2>بإرسال الدفعة، فأنت توافق على ما سبق</h2>
-      <p>تزويدي بسيرتك الذاتية وصورتك وإرسال الدفعة يعني أنك اطّلعت على هذه الصفحة وعلى <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a> وتوافق على محتواهما. إن كان لديك أي استفسار أو تحفّظ، تواصل معي قبل الدفع وليس بعده.</p>
+      <h2 data-i18n="ack.h">بإرسال الدفعة، فأنت توافق على ما سبق</h2>
+      <p data-i18n="ack.p">تزويدي بسيرتك الذاتية وصورتك وإرسال الدفعة يعني أنك اطّلعت على هذه الصفحة وعلى <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a> وتوافق على محتواهما. إن كان لديك أي استفسار أو تحفّظ، تواصل معي قبل الدفع وليس بعده.</p>
     </div>
 
     <div class="contact-strip">
-      <a class="contact-pill" href="https://wa.me/97336166806" target="_blank" rel="noopener"><div class="lbl">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div></a>
-      <a class="contact-pill" href="mailto:Hasan.sdaif16@gmail.com"><div class="lbl">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div></a>
+      <a class="contact-pill" href="https://wa.me/97336166806" target="_blank" rel="noopener"><div class="lbl" data-i18n="contact.whatsapp">واتساب</div><div class="val" dir="ltr">+973 3616 6806</div></a>
+      <a class="contact-pill" href="mailto:Hasan.sdaif16@gmail.com"><div class="lbl" data-i18n="contact.email">البريد الإلكتروني</div><div class="val">Hasan.sdaif16@gmail.com</div></a>
     </div>
 
   </div>
@@ -204,14 +215,124 @@
 
 <footer>
   <div class="container">
-    <strong>بطاقتي</strong> (Bitaqti) — بطاقات رقمية تعريفية · البحرين
+    <strong data-i18n="nav.brand">بطاقتي</strong> <span data-i18n="footer.tag">(Bitaqti) — بطاقات رقمية تعريفية · البحرين</span>
     <div class="f-links">
-      <a href="index.html">الصفحة الرئيسية</a>
-      <a href="privacy.html">سياسة الخصوصية وإخلاء المسؤولية</a>
-      <a href="https://wa.me/97336166806" target="_blank" rel="noopener">واتساب</a>
+      <a href="index.html" data-i18n="footer.home">الصفحة الرئيسية</a>
+      <a href="privacy.html" data-i18n="footer.privacy">سياسة الخصوصية وإخلاء المسؤولية</a>
+      <a href="https://wa.me/97336166806" target="_blank" rel="noopener" data-i18n="contact.whatsapp">واتساب</a>
     </div>
   </div>
 </footer>
+
+<script>
+  const I18N = {
+    ar: {
+      "nav.brand":"بطاقتي","nav.home":"الرئيسية",
+      "hero.eyebrow":"اقرأ قبل أن تطلب",
+      "hero.title":"الأمور التي يجب معرفتها قبل الطلب",
+      "hero.updated":"آخر تحديث: 17 يوليو 2026 · خدمة بطاقتي (Bitaqti) — bitaqti.com",
+      "hero.lede":"هذه الصفحة تلخّص أهم النقاط العملية قبل أن ترسل الدفعة وتطلب بطاقتك — بشكل مختصر ومباشر. للتفاصيل القانونية الكاملة حول بياناتك، راجع <a href=\"privacy.html\">سياسة الخصوصية وإخلاء المسؤولية</a>.",
+      "summary.title":"ملخص سريع",
+      "summary.li1":"بطاقتك رابط عام — أي شخص يملك الرابط أو رمز QR يمكنه فتحها.",
+      "summary.li2":"أضع وسم منع الفهرسة (noindex) على بطاقتك افتراضياً، إلا إن طلبت مني نشرها وإتاحتها للفهرسة.",
+      "summary.li3":"أزيل تلقائياً الرقم الشخصي (CPR) والعنوان الدقيق للسكن، إلا بموافقتك الصريحة.",
+      "summary.li4":"لك جولتان مجانيتان من التعديل بعد التسليم الأول.",
+      "summary.li5":"الدفع يعني تأكيد الطلب، والعمل يبدأ فوراً بعده — راجع سياسة الاسترجاع أدناه.",
+      "s1.h":"لماذا هذه الصفحة؟",
+      "s1.p":"خدمة «بطاقتي» بسيطة ومباشرة، لكن بعض تفاصيلها التقنية تستحق أن تعرفها قبل أن تدفع وترسل سيرتك — لا بعد ذلك. هذه الصفحة إعلامية بالدرجة الأولى، وليست عقداً قانونياً موقعاً بالمعنى الرسمي (راجع القسم ٨).",
+      "s2.h":"بطاقتك رابط عام على الإنترنت",
+      "s2.p":"بمجرد نشر بطاقتك الرقمية على <strong>bitaqti.com</strong>، تصبح صفحة ويب عامة تماماً مثل أي موقع آخر — أي شخص يعرف الرابط المباشر أو يمسح رمز QR الخاص بك يمكنه فتحها، دون الحاجة لكلمة مرور أو تسجيل دخول.",
+      "s3.h":"هل تظهر بطاقتك في نتائج بحث Google؟",
+      "s3.p1":"محركات البحث مثل Google تكتشف الصفحات العامة على الإنترنت وتفهرسها تلقائياً بمرور الوقت. الطريقة المعتادة لمنع فهرسة صفحة معينة هي إضافة وسم برمجي خاص داخل كودها (يُعرف باسم <span class=\"mono\">noindex</span>) يخبر محركات البحث صراحةً بعدم إدراجها في نتائجها.",
+      "s3.calloutTitle":"الوضع الافتراضي لبطاقتك:",
+      "s3.calloutBody":"أضع وسم <span class=\"mono\">noindex</span> على بطاقتك <strong>افتراضياً</strong> عند التسليم، بحيث لا تُدرَج ضمن نتائج البحث. إن كنت تريد العكس — أن تنتشر بطاقتك وتظهر في نتائج البحث ليجدك بها أصحاب العمل أو من تتعامل معهم مثلاً — أخبرني وسأزيل هذا الوسم عنها.",
+      "s3.p2":"لاحظ أن وسم <span class=\"mono\">noindex</span> يقلل احتمال الفهرسة ولا يمنعها بشكل مطلق (خصوصاً مع وجود روابط خارجية تشير إلى بطاقتك)، ولا يمنع أي شخص يملك الرابط المباشر أو رمز QR من فتح الصفحة في كل الأحوال. يمكنك تغيير قرارك بخصوص الفهرسة في أي وقت بالتواصل معي.",
+      "s4.h":"من يمكنه رؤية بياناتك",
+      "s4.p":"الملفات المرتبطة ببطاقتك (نسخة سيرتك الأصلية PDF وصورتك) هي أيضاً ملفات عامة يمكن لأي شخص يعرف رابطها المباشر فتحها. بيانات تتبّع الطلبات (رقم هاتفك، رمز التحقق، الباقة، السعر) محفوظة في جدول بيانات خاص غير معلن للعامة — التفاصيل الكاملة في القسم ٩ من سياسة الخصوصية.",
+      "s5.h":"البيانات الحساسة تُزال تلقائياً",
+      "s5.p":"لحمايتك، أزيل تلقائياً من بطاقتك الرقمية أي بيانات حساسة ترد في سيرتك الأصلية، وتحديداً الرقم الشخصي (CPR) والعنوان الدقيق للسكن. لا تُنشَر هذه البيانات على بطاقتك <strong>إلا بموافقتك الصريحة أنت شخصياً</strong> وبطلب واضح منك يفيد بأنك تريد تضمينها رغم التوصية بعدم ذلك.",
+      "s6.h":"سياسة التعديلات",
+      "s6.p":"يشمل كل طلب <strong>جولتين مجانيتين من التعديل</strong> على محتوى بطاقتك بعد التسليم الأول، تُطلَبان معاً دفعة واحدة قدر الإمكان لتسريع التنفيذ. أي تعديلات إضافية بعد ذلك يتم الاتفاق عليها معك مباشرة حسب حجم التغيير.",
+      "s7.h":"بياناتك باقية حتى تطلب إزالتها",
+      "s7.p":"أحتفظ بملف بطاقتك وسجل طلبك طالما بطاقتك منشورة ونشطة، لتتمكن من التتبّع والتعديل عند الحاجة. لا أحذف شيئاً من تلقاء نفسي. إن طلبت في أي وقت إلغاء النشر نهائياً، أحذف الملفات والسجل خلال مدة معقولة لا تتجاوز أسبوعاً من طلبك.",
+      "s8.h":"خدمة فردية، وليست شركة",
+      "s8.p":"«بطاقتي» (Bitaqti) خدمة يقدّمها شخص واحد في البحرين، وليست شركة أو كياناً قانونياً مسجّلاً. هذه الصفحة وسياسة الخصوصية توضحان تفاهمنا المشترك حول كيفية عملي مع بياناتك، لكنهما وثيقة إعلامية وليستا عقداً قانونياً موقعاً بالمعنى الرسمي.",
+      "s9.h":"الدفع والاسترجاع",
+      "s9.li1":"يُعتبر الطلب مؤكَّداً بعد استلام الدفعة وإرسال الفاتورة الرقمية لك، ولكل طلب رمز فريد مثل <span class=\"mono\">BH-CV-2026-0001</span>",
+      "s9.li2":"العمل يبدأ فوراً بعد تأكيد الطلب، لذلك لا يوجد استرجاع للمبلغ بعد بدء التصميم إلا في حالات استثنائية تُقيَّم فردياً",
+      "s9.li3":"إذا لم تصلك بطاقتك خلال 24-48 ساعة لأسباب من طرفي، يحق لك طلب استرجاع كامل المبلغ",
+      "s9.calloutTitle":"الأسعار قابلة للتغيير:",
+      "s9.calloutBody":"الأسعار المذكورة في الموقع، بما فيها عرض الافتتاح، قابلة للتغيير بعد انتهاء الفترة الترويجية المعلنة.",
+      "ack.h":"بإرسال الدفعة، فأنت توافق على ما سبق",
+      "ack.p":"تزويدي بسيرتك الذاتية وصورتك وإرسال الدفعة يعني أنك اطّلعت على هذه الصفحة وعلى <a href=\"privacy.html\">سياسة الخصوصية وإخلاء المسؤولية</a> وتوافق على محتواهما. إن كان لديك أي استفسار أو تحفّظ، تواصل معي قبل الدفع وليس بعده.",
+      "contact.whatsapp":"واتساب","contact.email":"البريد الإلكتروني",
+      "footer.tag":"(Bitaqti) — بطاقات رقمية تعريفية · البحرين",
+      "footer.home":"الصفحة الرئيسية","footer.privacy":"سياسة الخصوصية وإخلاء المسؤولية"
+    },
+    en: {
+      "nav.brand":"Bitaqti","nav.home":"Home",
+      "hero.eyebrow":"Read before you order",
+      "hero.title":"What you should know before ordering",
+      "hero.updated":"Last updated: July 17, 2026 · Bitaqti service — bitaqti.com",
+      "hero.lede":"This page summarizes the key practical points before you send payment and order your card — briefly and directly. For the full legal details about your data, see the <a href=\"privacy.html\">Privacy Policy &amp; Disclaimer</a>.",
+      "summary.title":"Quick summary",
+      "summary.li1":"Your card is a public link — anyone with the link or QR code can open it.",
+      "summary.li2":"I set a no-index tag on your card by default, unless you ask me to publish it and make it indexable.",
+      "summary.li3":"I automatically remove the personal ID number (CPR) and exact home address, unless you explicitly agree otherwise.",
+      "summary.li4":"You get two free rounds of edits after the first delivery.",
+      "summary.li5":"Payment means the order is confirmed, and work starts immediately after — see the refund policy below.",
+      "s1.h":"Why this page?",
+      "s1.p":"The \"Bitaqti\" service is simple and direct, but some of its technical details are worth knowing before you pay and send your CV — not after. This page is primarily informational, and is not a formally signed legal contract (see section 8).",
+      "s2.h":"Your card is a public link on the internet",
+      "s2.p":"Once your digital card is published on <strong>bitaqti.com</strong>, it becomes a fully public web page just like any other website — anyone who knows the direct link or scans your QR code can open it, without needing a password or login.",
+      "s3.h":"Does your card appear in Google search results?",
+      "s3.p1":"Search engines like Google discover public pages on the internet and index them automatically over time. The usual way to prevent a specific page from being indexed is adding a special code tag (known as <span class=\"mono\">noindex</span>) that explicitly tells search engines not to include it in their results.",
+      "s3.calloutTitle":"Your card's default setting:",
+      "s3.calloutBody":"I set a <span class=\"mono\">noindex</span> tag on your card <strong>by default</strong> upon delivery, so it won't be included in search results. If you want the opposite — for your card to spread and appear in search results so employers or others can find you — let me know and I'll remove this tag.",
+      "s3.p2":"Note that the <span class=\"mono\">noindex</span> tag reduces the likelihood of indexing but doesn't prevent it absolutely (especially if external links point to your card), and it doesn't prevent anyone with the direct link or QR code from opening the page regardless. You can change your indexing decision at any time by contacting me.",
+      "s4.h":"Who can see your data",
+      "s4.p":"The files linked to your card (your original CV as a PDF and your photo) are also public files that anyone who knows the direct link can open. Order-tracking data (your phone number, verification code, package, price) is stored in a private spreadsheet not disclosed to the public — full details in section 9 of the Privacy Policy.",
+      "s5.h":"Sensitive data is removed automatically",
+      "s5.p":"To protect you, I automatically remove any sensitive data appearing in your original CV, specifically the personal ID number (CPR) and exact home address. This data is not published on your card <strong>unless you personally give explicit consent</strong> and clearly request that it be included despite the recommendation not to.",
+      "s6.h":"Edits policy",
+      "s6.p":"Every order includes <strong>two free rounds of edits</strong> to your card's content after the first delivery, ideally requested together in one batch to speed up execution. Any additional edits after that are agreed upon directly with you based on the scope of the change.",
+      "s7.h":"Your data stays until you request its removal",
+      "s7.p":"I keep your card's file and order record as long as your card is published and active, so you can track and edit it when needed. I don't delete anything on my own. If you ever request permanent unpublishing, I delete the files and record within a reasonable period not exceeding one week from your request.",
+      "s8.h":"A solo service, not a company",
+      "s8.p":"\"Bitaqti\" is a service provided by one individual in Bahrain, not a registered company or legal entity. This page and the Privacy Policy explain our mutual understanding of how I work with your data, but they are informational documents and not a formally signed legal contract.",
+      "s9.h":"Payment and refunds",
+      "s9.li1":"An order is considered confirmed once payment is received and your digital invoice is sent to you, with each order given a unique code such as <span class=\"mono\">BH-CV-2026-0001</span>",
+      "s9.li2":"Work begins immediately after the order is confirmed, so there is no refund once design work has started, except in exceptional cases evaluated individually",
+      "s9.li3":"If your card doesn't reach you within 24-48 hours for reasons on my end, you're entitled to a full refund",
+      "s9.calloutTitle":"Prices are subject to change:",
+      "s9.calloutBody":"The prices listed on the site, including the launch offer, are subject to change after the announced promotional period ends.",
+      "ack.h":"By sending payment, you agree to the above",
+      "ack.p":"Providing me with your CV and photo and sending payment means you have reviewed this page and the <a href=\"privacy.html\">Privacy Policy &amp; Disclaimer</a> and agree to their content. If you have any question or reservation, contact me before paying, not after.",
+      "contact.whatsapp":"WhatsApp","contact.email":"Email",
+      "footer.tag":"(Bitaqti) — Digital identity cards · Bahrain",
+      "footer.home":"Home page","footer.privacy":"Privacy Policy & Disclaimer"
+    }
+  };
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+  (function initLanguage(){
+    let saved = 'ar';
+    try{ saved = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    applyLanguage(saved);
+  })();
+</script>
 
 </body>
 </html>
