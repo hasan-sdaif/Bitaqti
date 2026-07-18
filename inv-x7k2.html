@@ -610,19 +610,84 @@
   .autocomplete-item .ai-name{font-weight:600;}
   .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
-  /* ═══ PRINT ═══ */
+  /* ═══ PRINT — v2 محسّن: حلّ مشكلة اختفاء المعاينة عند الطباعة ═══ */
   @media print{
     @page{size:A4;margin:0;}
-    body{background:#fff;}
-    .no-print{display:none !important;}
-    .lock-screen{display:none !important;}
-    .topbar,.main > *:not(.print-only){display:none !important;}
+    html,body{background:#fff !important;}
+    body{margin:0;padding:0;}
+
+    /* إخفاء كل العناصر غير المطلوبة للطباعة */
+    .no-print,
+    .lock-screen,
+    .topbar,
+    .toast-container,
+    .modal-overlay,
+    .order-bar,
+    .to-top,
+    .preview-label{display:none !important;}
+
+    /* إخفاء كل التبويبات غير النشطة */
+    .tab-panel:not(.active){display:none !important;}
+
+    /* داخل تبويب «فاتورة جديدة»: نُخفي لوحة النموذج ونُبقي المعاينة فقط */
+    #tab-new .inv-layout{display:block !important;}
+    #tab-new .inv-layout > .panel{display:none !important;}
+    #tab-new .inv-layout > .preview-wrap{display:block !important;}
+
+    /* داخل تبويب «السجل»: نطبع الجدول فقط */
+    #tab-history .history-toolbar,
+    #tab-history .panel-header,
+    #tab-history .bulk-bar{display:none !important;}
+
     .main{padding:0;max-width:100%;}
-    .print-only{display:block !important;}
-    .preview-wrap{background:#fff;border:none;padding:0;box-shadow:none;position:static;max-height:none;overflow:visible;}
-    .a4-sheet{box-shadow:none;margin:0;transform:none !important;width:100%;min-height:100vh;padding:14mm 12mm;}
+
+    /* المعاينة: نُلغي كل تأثيرات العرض ونُحوّلها لصفحة A4 حقيقية */
+    .preview-wrap{
+      background:#fff !important;
+      border:none !important;
+      padding:0 !important;
+      box-shadow:none !important;
+      position:static !important;
+      max-height:none !important;
+      overflow:visible !important;
+      display:block !important;
+    }
+
+    /* ورقة A4: نُلغي التحويل ونضبط الحجم */
+    .a4-sheet{
+      box-shadow:none !important;
+      margin:0 !important;
+      transform:none !important;
+      width:100% !important;
+      min-height:auto !important;
+      padding:14mm 12mm !important;
+      page-break-after:always;
+    }
+    .a4-sheet:last-child{page-break-after:auto;}
+
+    /* الألوان: نجبر المتصفح على طباعة الألوان كما هي */
+    *{
+      -webkit-print-color-adjust:exact !important;
+      print-color-adjust:exact !important;
+      color-adjust:exact !important;
+    }
+
+    /* الروابط لا تظهر URL في الطباعة */
+    a[href]:after{content:"";}
+    a[href^="#"]:after{content:"";}
+
+    /* الجداول: لا تنكسر الصفوف عبر الصفحات */
+    tr,td,th{page-break-inside:avoid;}
+
+    /* النوع الأساسي */
+    body{font-size:11pt;line-height:1.5;}
+    h1{font-size:20pt;}
+    h2{font-size:16pt;}
+    h3{font-size:13pt;}
   }
   .print-only{display:none;}
+  @media print{.print-only{display:block !important;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
 
   /* ═══ RESPONSIVE ═══ */
   @media(max-width:768px){
@@ -855,7 +920,7 @@
         </div>
 
         <!-- Preview Panel -->
-        <div class="preview-wrap no-print" id="previewWrap">
+        <div class="preview-wrap" id="previewWrap">
           <div class="preview-label">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             معاينة مباشرة (A4)
@@ -1000,6 +1065,10 @@
             <div class="sub" id="customersCount">0 عميل</div>
           </div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" id="btnSyncSheet" title="جلب العملاء من Google Sheets">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              مزامنة من Google Sheets
+            </button>
             <button class="btn btn-outline btn-sm" id="btnImportCustomers">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
               استيراد Excel/CSV
@@ -1009,6 +1078,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
               تصدير CSV
             </button>
+            <button class="btn btn-outline btn-sm" id="btnExportCustomersXlsx" title="تصدير كملف Excel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              تصدير Excel
+            </button>
             <button class="btn btn-red btn-sm" id="btnAddCustomer">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
               عميل جديد
@@ -1016,6 +1089,29 @@
           </div>
         </div>
         <div class="panel-body">
+          <!-- ═══ شريط الإحصائيات السريعة (يُحدّث عند كل render) ═══ -->
+          <div id="custStatsBar" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px;">
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;">إجمالي العملاء</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--ink);margin-top:3px;" id="custStatTotal">0</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;">الإيرادات</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#0C9A63;margin-top:3px;" id="custStatRevenue">0.000</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;">مستحقة</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--red);margin-top:3px;" id="custStatPending">0.000</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;">مدفوعة</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:#0C9A63;margin-top:3px;" id="custStatPaid">0</div>
+            </div>
+            <div style="background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;">
+              <div style="font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;">متوسط القيمة</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--gold);margin-top:3px;" id="custStatAvg">0.000</div>
+            </div>
+          </div>
           <div class="history-toolbar">
             <div class="search-box">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -1058,7 +1154,7 @@
           <div class="empty-state" id="customersEmpty" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3>لا يوجد عملاء بعد</h3>
-            <p>استورد ملف Excel المُرفق أو أضف عميلاً يدوياً للبدء.</p>
+            <p>استورد ملف Excel المُرفق أو أضف عميلاً يدوياً للبدء، أو اضغط «مزامنة من Google Sheets».</p>
           </div>
           <div style="margin-top:14px;padding:12px 14px;background:var(--blue-tint);border-radius:10px;font-size:11.5px;color:#1E3A8A;line-height:1.7;">
             <b>ℹ️ ملاحظة:</b> قاعدة البيانات هذه هي نسخة محلية في المتصفح (localStorage). لمزامنتها مع خدمة التتبع في الصفحة الرئيسية، يجب رفع ملف Excel/CSV إلى Google Sheets وضبط <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">ORDERS_SHEET_ID</code> في متغيرات بيئة Netlify.
@@ -2128,6 +2224,9 @@ function renderCustomers(){
   if(customers.length){ badge.style.display = ''; badge.textContent = customers.length; }
   else { badge.style.display = 'none'; }
 
+  // ═══ تحديث شريط الإحصائيات السريعة ═══
+  updateCustStatsBar(customers);
+
   body.innerHTML = '';
   if(!list.length){
     $('customersEmpty').style.display = 'block';
@@ -2155,6 +2254,8 @@ function renderCustomers(){
         <button class="row-action view" data-act="view" data-phone="${escapeAttr(c.phone)}" title="عرض"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         <button class="row-action" data-act="edit" data-phone="${escapeAttr(c.phone)}" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg></button>
         <button class="row-action duplicate" data-act="invoice" data-phone="${escapeAttr(c.phone)}" title="إنشاء فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></button>
+        <button class="row-action view" data-act="print" data-phone="${escapeAttr(c.phone)}" title="طباعة فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
+        <button class="row-action paid" data-act="whatsapp" data-phone="${escapeAttr(c.phone)}" title="واتساب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></button>
         <button class="row-action" data-act="delete" data-phone="${escapeAttr(c.phone)}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
       </td>
     `;
@@ -2168,12 +2269,169 @@ function renderCustomers(){
       const phone = btn.dataset.phone;
       const cust = customers.find(c => String(c.phone) === phone);
       if(!cust) return;
-      if(act === 'view')   viewCustomer(cust);
-      else if(act === 'edit')   editCustomer(cust);
-      else if(act === 'invoice') createInvoiceFromCustomer(cust);
-      else if(act === 'delete') deleteCustomer(cust);
+      if(act === 'view')      viewCustomer(cust);
+      else if(act === 'edit')     editCustomer(cust);
+      else if(act === 'invoice')  createInvoiceFromCustomer(cust);
+      else if(act === 'print')    printCustomerInvoice(cust);
+      else if(act === 'whatsapp') shareCustomerInvoice(cust);
+      else if(act === 'delete')   deleteCustomer(cust);
     });
   });
+}
+
+/** يحدّث شريط الإحصائيات السريعة في تبويب العملاء */
+function updateCustStatsBar(list){
+  const total = list.length;
+  let revenue = 0, pending = 0, paid = 0;
+  list.forEach(c => {
+    const v = Number(c.total_with_vat) || Number(c.price) || 0;
+    if(c.status === 'ملغي') return;
+    if(c.payment_status === 'مدفوع'){ revenue += v; paid++; }
+    else if(c.payment_status === 'غير مدفوع') pending += v;
+    else if(c.payment_status === 'مدفوع جزئياً'){ revenue += v*0.5; pending += v*0.5; }
+  });
+  const avg = total > 0 ? ((revenue + pending) / total) : 0;
+  if($('custStatTotal'))    $('custStatTotal').textContent    = total;
+  if($('custStatRevenue'))  $('custStatRevenue').textContent  = revenue.toFixed(3);
+  if($('custStatPending'))  $('custStatPending').textContent  = pending.toFixed(3);
+  if($('custStatPaid'))     $('custStatPaid').textContent     = paid;
+  if($('custStatAvg'))      $('custStatAvg').textContent      = avg.toFixed(3);
+}
+
+/** يطبع فاتورة العميل عبر فتح نافذة جديدة محتواها الفاتورة فقط */
+function printCustomerInvoice(c){
+  const win = window.open('', '_blank', 'width=820,height=900');
+  if(!win){ toast('يُرجى السماح بالنوافذ المنبثقة للطباعة', 'error'); return; }
+  const total = Number(c.total_with_vat) || Number(c.price) || 0;
+  const vat = Number(c.vat_amount) || (total > 0 ? total * 0.1 / 1.1 : 0);
+  const subtotal = total - vat;
+  const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>فاتورة ${escapeHtml(c.order_code || '')}</title>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  @page{size:A4;margin:10mm;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'IBM Plex Sans Arabic',sans-serif;background:#fff;color:#17181C;line-height:1.6;font-size:11pt;}
+  .sheet{max-width:190mm;margin:0 auto;padding:6mm 4mm;}
+  .head{background:#17181C;color:#fff;padding:18px 22px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
+  .head .brand{display:flex;align-items:center;gap:10px;}
+  .head .mark{width:30px;height:22px;border-radius:4px;background:#fff;position:relative;}
+  .head .mark::after{content:'';position:absolute;right:5px;left:5px;top:9px;height:2px;border-radius:2px;background:#CE1126;}
+  .head h1{font-family:'El Messiri',sans-serif;font-size:18pt;font-weight:700;}
+  .head .meta{text-align:left;font-family:'IBM Plex Mono',monospace;font-size:10pt;opacity:.7;}
+  .status-pill{display:inline-block;padding:4px 12px;border-radius:14px;color:#fff;font-size:10pt;font-weight:700;margin-top:8px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+  .card{background:#F4F3EF;border-radius:8px;padding:12px 14px;}
+  .card .lbl{font-size:9pt;color:#8A8D93;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;}
+  .card .val{font-weight:700;font-size:11pt;}
+  .row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #E3E1D9;font-size:11pt;}
+  .row .k{color:#53565C;}
+  .row .v{font-weight:700;}
+  .breakdown{background:#F4F3EF;border-radius:8px;padding:10px 14px;margin:10px 0;}
+  .breakdown .row{border-bottom:1px dashed #E3E1D9;}
+  .total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-top:10px;border-top:2px solid #17181C;}
+  .total .v{font-family:'IBM Plex Mono',monospace;font-size:18pt;font-weight:700;color:#CE1126;}
+  .timeline{margin:14px 0;}
+  .timeline h3{font-size:10pt;color:#8A8D93;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;}
+  .tl-item{padding:5px 0 5px 18px;border-right:2px solid #CE1126;margin-right:5px;font-size:10pt;}
+  .tl-item b{display:block;color:#17181C;font-size:9pt;margin-bottom:1px;}
+  .foot{margin-top:18px;padding-top:12px;border-top:1px solid #E3E1D9;text-align:center;font-size:9pt;color:#8A8D93;}
+  .foot strong{color:#17181C;}
+  @media print{body{font-size:11pt;}.sheet{padding:0;}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="head">
+    <div>
+      <div class="brand"><span class="mark"></span> <strong>بطاقتي (Bitaqti)</strong></div>
+      <h1>فاتورة الطلب</h1>
+    </div>
+    <div class="meta">
+      <div>${escapeHtml(c.order_code || '#—')}</div>
+      <div>${escapeHtml(c.order_date || '—')}</div>
+      <div class="status-pill" style="background:${STATUS_COLORS_CUST[c.status] || '#53565C'};">${escapeHtml(c.status || '—')}</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="lbl">العميل</div>
+      <div class="val">${escapeHtml(c.customer_name || '—')}</div>
+      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;" dir="ltr">${escapeHtml(c.phone || '—')}</div>
+    </div>
+    <div class="card">
+      <div class="lbl">البريد / الدولة</div>
+      <div class="val" style="font-size:10pt;" dir="ltr">${escapeHtml(c.customer_email || '—')}</div>
+      <div style="font-size:9pt;color:#8A8D93;margin-top:2px;">${escapeHtml(c.customer_country || '—')}</div>
+    </div>
+  </div>
+
+  <div class="row"><span class="k">الباقة</span><span class="v">${escapeHtml(c.package || '—')}</span></div>
+  <div class="row"><span class="k">طريقة الدفع</span><span class="v">${escapeHtml(c.payment_method || '—')}</span></div>
+  <div class="row"><span class="k">حالة الدفع</span><span class="v">${escapeHtml(c.payment_status || '—')}</span></div>
+  <div class="row"><span class="k">تاريخ التسليم</span><span class="v" dir="ltr">${escapeHtml(c.delivery_date || '—')}</span></div>
+  ${c.cv_link ? `<div class="row"><span class="k">رابط البطاقة</span><span class="v" style="font-size:10pt;" dir="ltr">${escapeHtml(c.cv_link)}</span></div>` : ''}
+
+  <div class="breakdown">
+    <div class="row"><span>المجموع الفرعي</span><span class="v" dir="ltr">${subtotal.toFixed(3)} ${settings.currency}</span></div>
+    ${Number(c.discount_amount) > 0 ? `<div class="row"><span>الخصم</span><span class="v" style="color:#0C9A63;" dir="ltr">− ${Number(c.discount_amount).toFixed(3)}</span></div>` : ''}
+    <div class="row"><span>ضريبة القيمة المضافة (10%)</span><span class="v" style="color:#9C7A3C;" dir="ltr">${vat.toFixed(3)}</span></div>
+  </div>
+  <div class="total"><span>الإجمالي شامل الضريبة</span><span class="v" dir="ltr">${total.toFixed(3)} ${settings.currency}</span></div>
+
+  ${c.actions_log ? `
+  <div class="timeline">
+    <h3>سجل الإجراءات</h3>
+    ${c.actions_log.split('|').map(s => s.trim()).filter(Boolean).map(step => {
+      const idx = step.indexOf(' - ');
+      const date = idx > -1 ? step.slice(0, idx) : '';
+      const desc = idx > -1 ? step.slice(idx + 3) : step;
+      return `<div class="tl-item">${date ? `<b>${escapeHtml(date)}</b>` : ''}${escapeHtml(desc)}</div>`;
+    }).join('')}
+  </div>` : ''}
+
+  ${c.subpage_content ? `<div style="margin:12px 0;background:#FBE9EA;border-radius:8px;padding:10px 14px;font-size:10pt;color:#9C0E1E;line-height:1.6;">${escapeHtml(c.subpage_content)}</div>` : ''}
+
+  <div class="foot">
+    <strong>${escapeHtml(settings.business.name || 'بطاقتي')}</strong> · ${escapeHtml(settings.business.sub || 'Bitaqti · بطاقات رقمية تعريفية')}<br>
+    ${escapeHtml(settings.business.country || 'مملكة البحرين')} · <span dir="ltr">${escapeHtml(settings.business.phone || '')}</span> · <span dir="ltr">${escapeHtml(settings.business.email || '')}</span>
+  </div>
+</div>
+<script>window.onload = () => { setTimeout(() => { window.print(); }, 500); };<\/script>
+</body>
+</html>`;
+  win.document.open();
+  win.document.write(html);
+  win.document.close();
+}
+
+/** يفتح واتساب برسالة تحتوي ملخص الفاتورة */
+function shareCustomerInvoice(c){
+  const total = Number(c.total_with_vat) || Number(c.price) || 0;
+  const lines = [
+    `*فاتورة من بطاقتي (Bitaqti)*`,
+    ``,
+    `*رمز الطلب:* ${c.order_code || '—'}`,
+    `*التاريخ:* ${c.order_date || '—'}`,
+    `*العميل:* ${c.customer_name || '—'}`,
+    `*الباقة:* ${c.package || '—'}`,
+    `*الإجمالي:* ${total.toFixed(3)} ${settings.currency}`,
+    `*الحالة:* ${c.status || '—'}`,
+    `*حالة الدفع:* ${c.payment_status || '—'}`,
+  ];
+  if(c.cv_link) lines.push(``, `*رابط بطاقتك:* ${c.cv_link}`);
+  if(c.subpage_content) lines.push(``, c.subpage_content);
+  lines.push(``, `_بطاقتي (Bitaqti) — بطاقات رقمية تعريفية · البحرين_`);
+
+  // إن كان رقم الهاتف بحرينياً، نُضيف 973 تلقائياً
+  let phone = String(c.phone || '').replace(/[^\d]/g, '');
+  if(phone.length === 8 && !phone.startsWith('973')) phone = '973' + phone;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(lines.join('\n'))}`;
+  window.open(url, '_blank', 'noopener');
 }
 
 function escapeHtml(s){
@@ -2436,6 +2694,121 @@ function exportCustomersXlsx(){
 }
 
 // ════════════════════════════════════════════════════════════════
+//  SYNC FROM GOOGLE SHEETS — جلب كل العملاء من Google Sheets
+//  يستخدم Netlify Function: customers-list.js (يتطلب توكن مصادقة)
+// ════════════════════════════════════════════════════════════════
+const CUSTOMERS_LIST_ENDPOINT = '/.netlify/functions/customers-list';
+
+/** يحفظ/يقرأ التوكن من sessionStorage (نفس آلية لوحة الفواتير) */
+function getAuthToken(){
+  try{
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(!p.token || !p.expiresAt) return null;
+    if(Date.now() > p.expiresAt){ sessionStorage.removeItem(SESSION_KEY); return null; }
+    return p.token;
+  }catch(e){ return null; }
+}
+
+/** يجلب قائمة العملاء من Google Sheets عبر Netlify Function */
+async function syncFromSheet(){
+  const token = getAuthToken();
+  if(!token){
+    toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+    lockApp();
+    return;
+  }
+
+  const btn = $('btnSyncSheet');
+  if(btn){
+    btn.disabled = true;
+    btn.classList.add('loading');
+    const original = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 11-3-6.7L21 8"/></svg> جارٍ المزامنة...`;
+  }
+
+  try{
+    const res = await fetch(CUSTOMERS_LIST_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({}),
+    });
+
+    if(res.status === 401){
+      toast('انتهت صلاحية الجلسة. أعد تسجيل الدخول.', 'error');
+      lockApp();
+      return;
+    }
+    if(res.status === 429){
+      toast('محاولات كثيرة. انتظر دقيقة.', 'error');
+      return;
+    }
+    if(!res.ok){
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || `خطأ في المزامنة (${res.status})`, 'error');
+      return;
+    }
+
+    const data = await res.json();
+    const remote = Array.isArray(data.customers) ? data.customers : [];
+    if(!remote.length){
+      toast('الشيت فارغ أو لا يحتوي على عملاء', 'error');
+      return;
+    }
+
+    // نعرض إحصائيات سريعة في نافذة تأكيد
+    const stats = data.stats || {};
+    showModal({
+      title: 'مزامنة من Google Sheets',
+      body: `تم جلب ${remote.length} عميل بنجاح.\n\nإحصائيات الشيت:\n• الإيرادات المدفوعة: ${(stats.total_revenue || 0).toFixed(3)} ${settings.currency}\n• المستحقات: ${(stats.pending_amount || 0).toFixed(3)} ${settings.currency}\n• مدفوعة: ${stats.paid_count || 0} · غير مدفوعة: ${stats.unpaid_count || 0}\n\nالقائمة المحلية حالياً: ${customers.length} عميل.\n\nهل تريد دمجها أم استبدال القائمة المحلية بالكامل؟`,
+      confirmText: 'دمج (إضافة الجديد فقط)',
+      cancelText: 'استبدال الكل',
+      onConfirm: () => {
+        // دمج: نتجنّب التكرار عبر (phone + order_code)
+        const existingKeys = new Set(customers.map(c => `${c.phone}_${c.order_code}`));
+        let added = 0;
+        remote.forEach(c => {
+          const key = `${c.phone}_${c.order_code}`;
+          if(!existingKeys.has(key)){
+            customers.push(c);
+            existingKeys.add(key);
+            added++;
+          } else {
+            // إن وُجد، نُحدّثه بالقيم الأحدث
+            const idx = customers.findIndex(x => `${x.phone}_${x.order_code}` === key);
+            if(idx > -1) customers[idx] = { ...customers[idx], ...c };
+          }
+        });
+        saveCustomers();
+        renderCustomers();
+        closeModal();
+        toast(`تم دمج ${added} عميل جديد من Google Sheets`, 'success');
+      },
+      onCancel: () => {
+        customers = remote;
+        saveCustomers();
+        renderCustomers();
+        closeModal();
+        toast(`تم استبدال القائمة بـ ${remote.length} عميل من Google Sheets`, 'success');
+      },
+    });
+  }catch(err){
+    console.error('[syncFromSheet]', err);
+    toast('تعذّر الاتصال بالخادم. تحقق من الإنترنت.', 'error');
+  }finally{
+    if(btn){
+      btn.disabled = false;
+      btn.classList.remove('loading');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> مزامنة من Google Sheets`;
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
 //  TOAST
 // ════════════════════════════════════════════════════════════════
 let toastTimer = null;
@@ -2604,6 +2977,8 @@ function initApp(){
     e.target.value = '';
   });
   $('btnExportCustomersCsv').addEventListener('click', exportCustomersCsv);
+  $('btnExportCustomersXlsx').addEventListener('click', exportCustomersXlsx);
+  $('btnSyncSheet').addEventListener('click', syncFromSheet);
   $('custSearchInput').addEventListener('input', renderCustomers);
   $('custFilterStatus').addEventListener('change', renderCustomers);
   $('custFilterPayment').addEventListener('change', renderCustomers);
