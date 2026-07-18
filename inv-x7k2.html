@@ -609,113 +609,111 @@
   .autocomplete-item .ai-name{font-weight:600;}
   .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
-  /* ═══ PRINT — v2.2 محسّن: حلّ مشكلة اختفاء المعاينة عند الطباعة ═══ */
-  /* القاعدة الذهبية: عند الطباعة، نُخفي كل شيء ثم نُظهر فقط المعاينة */
+  /* ═══ PRINT — v3.0: طباعة مباشرة لنفس المستند (بدون iframe)، بنفس فلسفة النظام
+     القديم الناجحة: نُخفي كل شيء بـ display:none (وليس visibility) حتى لا يترك أي
+     عنصر مخفي أثراً على ارتفاع/عرض الصفحة المطبوعة، ثم نُظهر ورقة A4 فقط بحجمها
+     الحقيقي بعد إلغاء أي transform:scale() كان مستخدَماً للمعاينة على الجوال. ═══ */
   @media print{
     @page{size:A4;margin:0;}
+
     html,body{
       background:#fff !important;
       margin:0 !important;
       padding:0 !important;
-      width:100% !important;
+      width:auto !important;
       height:auto !important;
       overflow:visible !important;
     }
 
-    /* ═══ 1) إخفاء كل شيء افتراضياً ═══ */
-    body *{visibility:hidden !important;}
+    /* ═══ 1) نُخفي كل بنية التطبيق بـ display:none — هذا (وليس visibility)
+       يضمن أن العناصر المخفية لا تحجز أي مساحة تؤثر على حجم صفحة الطباعة ═══ */
+    body > *{display:none !important;}
 
-    /* ═══ 2) إظهار عناصر المعاينة فقط ═══ */
-    /* نُظهر: المعاينة، ورقة A4، وجميع أبنائها */
-    #previewWrap,
-    #previewWrap *,
-    #sheet,
-    #sheet *{visibility:visible !important;}
+    /* ═══ 2) نُعيد إظهار مسار الاحتواء فقط، وصولاً لورقة الفاتورة ═══ */
+    .app{display:block !important;}
+    .main{display:block !important;}
+    #tab-new{display:block !important;}
+    .inv-layout{display:block !important;}
+    #previewWrap{display:block !important;}
+    #sheet{display:block !important;}
 
-    /* ═══ 3) ضبط موضع وحجم المعاينة ═══ */
-    /* إخفاء كل الحاويات الأب لإزالة أي تأثير عليها */
-    .lock-screen,
-    .topbar,
-    .toast-container,
-    .modal-overlay,
-    .order-bar,
-    .to-top,
-    .preview-label,
-    .tabs,
-    .topbar-actions,
-    .panel-header,
-    .history-toolbar,
-    .bulk-bar,
+    /* داخل ورقة الفاتورة: نُحدّد صراحة كل عنصر يحتاج display:flex (بدل الاعتماد على
+       revert الذي كسر عنصر الـ watermark)؛ باقي العناصر تبقى على block الافتراضي وهذا سليم */
+    #sheet .inv-header{display:flex !important;}
+    #sheet .inv-brand{display:flex !important;}
+    #sheet .inv-customer{display:flex !important;}
+    #sheet .inv-qr{display:flex !important;}
+    #sheet .inv-payment-info{display:flex !important;}
+    #sheet .inv-footer .contact-info{display:flex !important;}
+    /* الـ watermark: نضمن انحصارها صراحة داخل حدود الورقة (inset:0 بشكل صريح) بدل الاعتماد
+       على وراثة القيمة، لأن هذا العنصر هو سبب فيضان الصفحة لصفحة ثانية فارغة إن لم يُضبط */
+    #sheet .watermark{
+      display:flex !important;
+      position:absolute !important;
+      inset:0 !important;
+      top:0 !important;right:0 !important;bottom:0 !important;left:0 !important;
+      height:auto !important;width:auto !important;
+    }
+    #sheet table{display:table !important;}
+    #sheet thead{display:table-header-group !important;}
+    #sheet tbody{display:table-row-group !important;}
+    #sheet tr{display:table-row !important;}
+    #sheet td,#sheet th{display:table-cell !important;}
+
+    /* نُخفي تحديداً لوحة النموذج (العمود الأول) داخل inv-layout، ونُخفي تسمية المعاينة */
     #tab-new .inv-layout > .panel,
-    .tab-panel:not(#tab-new){display:none !important;}
+    .preview-label{display:none !important;}
 
-    /* ضبط الحاويات الأب لتصبح شفافة وغير محدودة */
-    .app,
-    .main,
-    #app,
-    #tab-new,
-    #tab-new.active,
-    .inv-layout,
-    #tab-new .inv-layout{
-      display:block !important;
+    /* ═══ 3) تصفير كل الحاويات الوسيطة بين body وورقة A4 من أي أبعاد/حشوة/ظل
+       قد تُبقي مساحة إضافية أو تُخل بموضع الورقة ═══ */
+    .app,.main,#tab-new,.inv-layout,#previewWrap,.preview-wrap{
       position:static !important;
       width:100% !important;
       max-width:none !important;
-      margin:0 !important;
-      padding:0 !important;
-      background:#fff !important;
-      overflow:visible !important;
-      box-shadow:none !important;
-      border:none !important;
-    }
-
-    /* المعاينة نفسها: نُحوّلها لصفحة A4 حقيقية */
-    #previewWrap,
-    .preview-wrap{
-      position:static !important;
-      display:block !important;
-      background:#fff !important;
-      border:none !important;
-      padding:0 !important;
-      margin:0 !important;
-      box-shadow:none !important;
+      min-height:0 !important;
       max-height:none !important;
+      margin:0 !important;
+      padding:0 !important;
+      background:#fff !important;
+      border:none !important;
+      box-shadow:none !important;
       overflow:visible !important;
-      width:100% !important;
+      grid-template-columns:none !important;
     }
 
-    /* ورقة A4: نُلغي كل تأثيرات التحويل ونضبط الحجم */
+    /* ═══ 4) ورقة A4 نفسها: تُلغى كل تأثيرات المعاينة على الجوال (transform:scale)
+       ويُعاد ضبطها لأبعادها الحقيقية 210mm×297mm مع حشوة الطباعة ═══ */
     #sheet,
     .a4-sheet{
       box-sizing:border-box !important;
       box-shadow:none !important;
+      position:relative !important;
       margin:0 !important;
       transform:none !important;
-      width:100% !important;
-      min-height:auto !important;
-      max-width:100% !important;
+      transform-origin:top right !important;
+      width:210mm !important;
+      min-height:297mm !important; /* صفحة كاملة كحدّ أدنى؛ الصندوق نفسه يتمدّد طبيعياً لو كان المحتوى أطول */
+      max-width:none !important;
       padding:14mm 12mm !important;
-      page-break-after:always;
-      page-break-inside:avoid;
       background:#fff !important;
       border:none !important;
-      overflow:hidden !important; /* شبكة أمان: يمنع أي عنصر داخلي من الخروج عن حدود الصفحة */
+      page-break-after:avoid;
     }
-    .a4-sheet:last-child{page-break-after:auto;}
-
-    /* شبكة أمان إضافية على كل الحاويات بين الجذر والورقة */
-    html,body,#previewWrap,.preview-wrap{overflow-x:hidden !important;}
+    /* الحماية من الفيضان الأفقي تُطبَّق على المحتوى الداخلي مباشرة (وليس على #sheet نفسها)
+       حتى لا تُخفي overflow-y أي امتداد رأسي طبيعي للصندوق عند طول المحتوى */
+    #sheet,.a4-sheet,
+    #sheet *,.a4-sheet *{overflow-x:hidden !important;}
 
     /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) + ضبط صندوق القياس لكل شيء داخل الورقة */
     *{
-      box-sizing:border-box !important;
       -webkit-print-color-adjust:exact !important;
       print-color-adjust:exact !important;
       color-adjust:exact !important;
     }
+    #sheet *,.a4-sheet *{box-sizing:border-box !important;}
     #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
     /* قفل نهائي: لا شيء داخل الورقة يمكن أن يكون أعرض منها، مهما كان السبب */
-    #sheet > *,.a4-sheet > *{max-width:100% !important;box-sizing:border-box !important;}
+    #sheet > *,.a4-sheet > *{max-width:100% !important;}
 
     /* الروابط لا تُظهر URL */
     a[href]:after,
@@ -725,11 +723,10 @@
     tr,td,th{page-break-inside:avoid;}
 
     /* أحجام الخطوط للطباعة */
-    body{font-size:11pt;line-height:1.5;}
-    h1{font-size:20pt;}
-    h2{font-size:16pt;}
-    h3{font-size:13pt;}
-    .a4-sheet{font-size:11pt !important;}
+    #sheet,.a4-sheet{font-size:11pt !important;line-height:1.5;}
+    #sheet h1,.a4-sheet h1{font-size:20pt;}
+    #sheet h2,.a4-sheet h2{font-size:16pt;}
+    #sheet h3,.a4-sheet h3{font-size:13pt;}
     .inv-meta h1{font-size:20pt !important;}
   }
   .print-only{display:none;}
@@ -2345,148 +2342,6 @@ function updateCustStatsBar(list){
   if($('custStatAvg'))      $('custStatAvg').textContent      = avg.toFixed(3);
 }
 
-/**
- * يطبع المحتوى عبر iframe مخفي — الحل الأكثر موثوقية ضد حاجزي النوافذ المنبثقة.
- * يأخذ HTML كاملاً للفاتورة ويكتبه في iframe مؤقت مع نسخ كل CSS من الصفحة الأم.
- */
-function printViaIframe(htmlContent){
-  // إن لم يُمرر HTML، نستخرجه من المعاينة الحالية
-  if(!htmlContent){
-    const sheet = document.getElementById('sheet');
-    if(!sheet){ toast('لا توجد معاينة للطباعة', 'error'); return; }
-    // نأخذ HTML ورقة A4 فقط
-    htmlContent = sheet.outerHTML;
-  }
-
-  // ═══ نسخ كل CSS من الصفحة الأم (مهم جداً للحفاظ على التنسيق) ═══
-  // نأخذ كل عناصر <style> و <link rel="stylesheet"> من <head>
-  let cssHtml = '';
-  document.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => {
-    if(el.tagName === 'STYLE'){
-      // ننسخ محتوى الـ <style> tag كاملاً
-      cssHtml += '<style>' + el.innerHTML + '</style>\n';
-    } else if(el.tagName === 'LINK'){
-      // ننسخ الـ <link> tag كاملاً (للخطوط والـ stylesheets الخارجية)
-      cssHtml += el.outerHTML + '\n';
-    }
-  });
-
-  // نبني صفحة HTML كاملة مع نسخ كل CSS من الصفحة الأم
-  const fullHtml = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>طباعة فاتورة</title>
-<!-- نسخ كل CSS من الصفحة الأم للحفاظ على التنسيق -->
-${cssHtml}
-<style>
-  /* قواعد طباعة إضافية — نفس هوامش @page المستخدمة في الصفحة الأصلية تماماً لتفادي أي تعارض */
-  @page{size:A4;margin:0;}
-  html,body{
-    background:#fff !important;
-    margin:0 !important;
-    padding:0 !important;
-    width:100% !important;
-    overflow-x:hidden !important;
-  }
-  body{font-size:11pt;line-height:1.6;}
-
-  /* ضبط ورقة A4 للطباعة: نُلغي كل تأثيرات العرض، ونُبقي حشوة الورقة (14mm/12mm) القادمة
-     من قواعد الطباعة الأصلية المنسوخة أعلاه دون الكتابة فوقها هنا لتفادي التعارض */
-  .preview-wrap,
-  #previewWrap,
-  #sheet,
-  .a4-sheet{
-    box-sizing:border-box !important;
-    position:static !important;
-    display:block !important;
-    background:#fff !important;
-    border:none !important;
-    margin:0 !important;
-    box-shadow:none !important;
-    transform:none !important;
-    max-height:none !important;
-    overflow:hidden !important;
-    width:100% !important;
-    min-height:auto !important;
-    max-width:100% !important;
-  }
-  .preview-wrap,#previewWrap{padding:0 !important;overflow:visible !important;}
-
-  /* ضمان طباعة الألوان كما هي (خلفيات، نصوص ملونة، إطارات) + توحيد صندوق القياس */
-  *{
-    box-sizing:border-box !important;
-    -webkit-print-color-adjust:exact !important;
-    print-color-adjust:exact !important;
-    color-adjust:exact !important;
-  }
-  #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
-
-  /* الروابط لا تُظهر URL في الطباعة */
-  a[href]:after,
-  a[href^="#"]:after{content:"" !important;}
-
-  /* الجداول: لا تنكسر الصفوف عبر الصفحات */
-  tr,td,th{page-break-inside:avoid;}
-
-  /* إخفاء العناصر غير المطلوبة للطباعة */
-  .preview-label,
-  .no-print{display:none !important;}
-</style>
-</head>
-<body>${htmlContent}</body>
-</html>`;
-
-  // إنشاء iframe مخفي
-  let iframe = document.getElementById('printFrame');
-  if(!iframe){
-    iframe = document.createElement('iframe');
-    iframe.id = 'printFrame';
-    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:none;background:#fff;';
-    document.body.appendChild(iframe);
-  }
-
-  // التحقق من توفر contentWindow
-  if(!iframe.contentWindow){
-    console.error('[printViaIframe] iframe.contentWindow is null, falling back to window.print()');
-    window.print();
-    return;
-  }
-
-  // كتابة المحتوى في الـ iframe
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(fullHtml);
-  doc.close();
-
-  // ننتظر تحميل الإطار ثم نطبع
-  const doPrint = () => {
-    try{
-      if(!iframe.contentWindow){
-        window.print();
-        return;
-      }
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }catch(e){
-      console.error('[printViaIframe] print failed:', e);
-      // fallback: نطبع الصفحة الأم
-      window.print();
-    }
-  };
-
-  // ننتظر تحميل الخطوط إن أمكن (مهم جداً للخطوط العربية)
-  try {
-    if(iframe.contentWindow.document.fonts && iframe.contentWindow.document.fonts.ready){
-      iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 300));
-    } else {
-      setTimeout(doPrint, 600);
-    }
-  } catch(e) {
-    setTimeout(doPrint, 600);
-  }
-}
-
 /** يطبع فاتورة العميل عبر فتح نافذة جديدة محتواها الفاتورة فقط */
 function printCustomerInvoice(c){
   const win = window.open('', '_blank', 'width=820,height=900');
@@ -3145,8 +3000,9 @@ function initApp(){
     }
     // نُحدّث المعاينة مرة أخيرة قبل الطباعة
     if(typeof updatePreview === 'function') updatePreview();
-    // ننتظر قليلاً ليكتمل إعادة الرسم ثم نطبع عبر iframe مخفي
-    setTimeout(() => printViaIframe(), 150);
+    // نطبع نفس المستند مباشرة (بنفس طريقة النظام القديم التي كانت تعمل بشكل ممتاز)
+    // قواعد @media print في <head> تتكفّل بإخفاء كل شيء عدا ورقة A4 وإلغاء أي تصغير (transform)
+    setTimeout(() => window.print(), 150);
   });
   $('btnNew').addEventListener('click', () => {
     if(editingId || items.some(i => i.description) || $('fName').value){
