@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  بطاقتي — الباقة المميزة | صفحة معرض الأعمال (Portfolio)
+  ────────────────────────────────────────────────────────────────────
+  ⚠️  معاينة ONLY — جميع البيانات والمستودعات والروابط وهمية لأغراض العرض.
+
+  هذه الصفحة هي إحدى الصفحات الفرعية الإضافية التي تُتاح حصراً في
+  الباقة المميزة (Premium) — صفحة معرض أعمال تفصيلية لكل مشروع.
+
+  تحتوي على:
+    • بطاقة Project Hero لتلخيص المشروع المختار.
+    • جدول معلومات تقنية مفصّل (Stack, Status, Stars, License, Repo).
+    • وصف طويل للمشروع مع خلفية + المشكلة + الحل + التأثير.
+    • قسم Features (الميزات الرئيسية).
+    • قسم Architecture (البنية التقنية).
+    • قسم Metrics (مقاييس الأداء).
+    • زر العودة للصفحة الرئيسية.
+    • دعم اللغتين (عربي/إنجليزي) بزر تبديل.
+    • وضع فاتح/داكن (Theme Toggle).
+    • نفس لوحة الألوان النيلية للباقة المميزة.
+
+  لاحظ: هذه صفحة وهمية لأغراض العرض فقط — لا توجد مستودعات حقيقية.
+  ════════════════════════════════════════════════════════════════════
+-->
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>معرض الأعمال — الباقة المميزة | بطاقتي</title>
+<meta name="description" content="معرض أعمال وهمي — الباقة المميزة. جميع البيانات وهمية." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='80' height='80' rx='14' fill='%230A0E1A'/%3E%3Cpath d='M38 38l-12 12 12 12M62 38l12 12-12 12M56 32l-12 36' stroke='%235B5FEF' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  /* ═══ متغيّرات الوضع الداكن (الافتراضي) ═══ */
+  :root{
+    --void:#0A0E1A;
+    --void2:#111729;
+    --panel:#1A2138;
+    --panel2:#232C47;
+    --indigo:#5B5FEF;
+    --indigo-lt:#8B8FFF;
+    --violet:#A78BFA;
+    --gold-warn:#FFD98E;
+    --mint:#22C55E;
+    --text:#E6EDF3;
+    --mid:#A6B2C9;
+    --soft:#6B7A99;
+    --line:rgba(255,255,255,.08);
+    --line2:rgba(91,95,239,.18);
+    --shadow:0 16px 40px rgba(0,0,0,.5);
+
+    --bg-page:var(--void);
+    --bg-alt:var(--void2);
+    --bg-card:var(--panel);
+    --nav-bg:rgba(10,14,26,.85);
+    --hero-name-color:rgba(230,237,243,.85);
+    --hero-bio-color:var(--mid);
+    --prompt-color:var(--indigo);
+    --sec-h2-color:#fff;
+    --card-h3-color:var(--indigo);
+    --card-p-color:var(--mid);
+    --info-lbl-color:var(--soft);
+    --info-val-color:var(--indigo-lt);
+    --frame-svg-color:rgba(230,237,243,.5);
+    --btn-line-bg:rgba(255,255,255,.04);
+    --btn-line-border:var(--line);
+    --btn-line-color:var(--text);
+    --footer-bg:var(--void2);
+    --footer-text:var(--soft);
+    --demo-bg:linear-gradient(135deg,var(--void2),var(--panel));
+    --demo-text-color:var(--text);
+    --demo-body-color:var(--mid);
+    --demo-head-color:var(--indigo-lt);
+    --demo-note-bg:rgba(91,95,239,.08);
+    --metric-bg:rgba(91,95,239,.06);
+    --metric-border:var(--line);
+  }
+
+  /* ═══ متغيّرات الوضع الفاتح ═══ */
+  html[data-theme="light"]{
+    --void:#0F172A;
+    --void2:#E8ECF4;
+    --panel:#FFFFFF;
+    --panel2:#F4F6FA;
+    --indigo:#3F43C7;
+    --indigo-lt:#4F54DC;
+    --violet:#7C5BE0;
+    --gold-warn:#B88410;
+    --mint:#0E9F6E;
+    --text:#0F172A;
+    --mid:#475569;
+    --soft:#94A3B8;
+    --line:rgba(15,23,42,.08);
+    --line2:rgba(63,67,199,.18);
+    --shadow:0 14px 32px rgba(15,23,42,.08);
+
+    --bg-page:#F4F6FA;
+    --bg-alt:#FFFFFF;
+    --bg-card:#FFFFFF;
+    --nav-bg:rgba(255,255,255,.85);
+    --hero-name-color:#0F172A;
+    --hero-bio-color:var(--mid);
+    --prompt-color:var(--indigo);
+    --sec-h2-color:#0F172A;
+    --card-h3-color:var(--indigo);
+    --card-p-color:var(--mid);
+    --info-lbl-color:var(--soft);
+    --info-val-color:var(--indigo);
+    --frame-svg-color:rgba(63,67,199,.5);
+    --btn-line-bg:#FFFFFF;
+    --btn-line-border:var(--line);
+    --btn-line-color:#0F172A;
+    --footer-bg:#0F172A;
+    --footer-text:rgba(255,255,255,.7);
+    --demo-bg:linear-gradient(135deg,#0F172A,#1E2542);
+    --demo-text-color:#E6EDF3;
+    --demo-body-color:#A6B2C9;
+    --demo-head-color:var(--indigo-lt);
+    --demo-note-bg:rgba(91,95,239,.15);
+    --metric-bg:rgba(63,67,199,.04);
+    --metric-border:var(--line);
+  }
+
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--bg-page);
+    color:var(--text);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition:background .3s ease,color .3s ease;
+  }
+  h1,h2,h3{font-family:'Cairo',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1080px;margin:0 auto;padding:0 22px;}
+
+  /* ═══ DEMO NOTE ═══ */
+  .demo-note{
+    background:var(--demo-bg);
+    padding:14px 0 16px;
+    border-bottom:1px solid var(--line2);
+    position:relative;
+  }
+  .demo-note .container{
+    border:1.5px dashed rgba(139,143,255,.35);
+    border-radius:10px;padding:12px 16px;
+    display:flex;align-items:center;gap:10px;
+    background:rgba(91,95,239,.02);
+    flex-wrap:wrap;
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:8px;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:13.5px;color:var(--demo-head-color);
+  }
+  .dn-head svg{width:16px;height:16px;color:var(--indigo);}
+  .dn-body{font-size:12px;color:var(--demo-body-color);line-height:1.6;flex:1;min-width:200px;}
+  .dn-body strong{color:var(--demo-head-color);}
+
+  /* ═══ NAV ═══ */
+  nav.top{
+    position:sticky;top:0;z-index:60;
+    background:var(--nav-bg);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    transition:background .3s ease;
+  }
+  nav.top .container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14.5px;flex-shrink:0;}
+  .brand .tag{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    display:flex;align-items:center;justify-content:center;
+    color:#000;flex-shrink:0;
+    box-shadow:0 0 16px rgba(91,95,239,.4);
+  }
+  .brand .tag svg{width:18px;height:18px;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.2;}
+  .brand-name{font-family:'IBM Plex Mono';font-size:14px;color:var(--text);font-weight:600;}
+  .brand-sub{font-size:10px;color:var(--indigo-lt);font-family:'IBM Plex Mono';letter-spacing:.5px;}
+
+  .nav-back{
+    display:inline-flex;align-items:center;gap:7px;
+    font-family:'IBM Plex Mono';font-size:12.5px;font-weight:600;
+    color:var(--mid);padding:7px 13px;border-radius:8px;
+    border:1px solid var(--line);background:transparent;
+    transition:all .2s ease;flex-shrink:0;
+  }
+  .nav-back:hover{color:var(--indigo-lt);border-color:var(--indigo);background:rgba(91,95,239,.06);}
+  .nav-back svg{width:14px;height:14px;}
+
+  .nav-right{
+    display:flex;align-items:center;gap:8px;
+    flex-direction:row;flex-shrink:0;
+  }
+  .lang-toggle{
+    display:flex;align-items:center;
+    background:rgba(255,255,255,.05);border:1px solid var(--line2);
+    border-radius:20px;padding:2px;flex-shrink:0;
+    flex-direction:row;
+  }
+  html[data-theme="light"] .lang-toggle{background:rgba(63,67,199,.06);border-color:rgba(63,67,199,.2);}
+  .lang-toggle button{
+    background:transparent;border:0;color:var(--mid);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:16px;
+    cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;
+  }
+  .lang-toggle button.active{background:var(--indigo);color:#fff;}
+  .lang-toggle button:not(.active):hover{color:var(--indigo-lt);}
+
+  .theme-btn{
+    width:34px;height:34px;border-radius:9px;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);
+    color:var(--indigo-lt);cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  html[data-theme="light"] .theme-btn{background:rgba(63,67,199,.06);border-color:var(--line);color:var(--indigo);}
+  .theme-btn:hover{background:rgba(91,95,239,.12);}
+  .theme-btn svg{width:16px;height:16px;}
+  .theme-btn .moon{display:none;}
+  html[data-theme="light"] .theme-btn .sun{display:none;}
+  html[data-theme="light"] .theme-btn .moon{display:block;}
+
+  /* ═══ HERO (Project Header) ═══ */
+  .hero{position:relative;overflow:hidden;padding:50px 0 32px;}
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:22px 22px;
+    mask-image:linear-gradient(180deg,#000,transparent 85%);
+  }
+  html[data-theme="light"] .hero::before{
+    background-image:radial-gradient(rgba(15,23,42,.06) 1px,transparent 1px);
+  }
+  .glow1,.glow2{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+  .glow1{
+    width:480px;height:480px;
+    background:radial-gradient(circle,rgba(91,95,239,.35),transparent 70%);
+    top:-220px;right:-140px;
+  }
+  html[data-theme="light"] .glow1{background:radial-gradient(circle,rgba(63,67,199,.18),transparent 70%);}
+  .glow2{
+    width:420px;height:420px;
+    background:radial-gradient(circle,rgba(167,139,250,.3),transparent 70%);
+    bottom:-220px;left:-140px;
+  }
+  html[data-theme="light"] .glow2{background:radial-gradient(circle,rgba(124,91,224,.15),transparent 70%);}
+  .hero .container{position:relative;}
+  .term-eyebrow{
+    font-family:'IBM Plex Mono';font-size:12px;color:var(--indigo-lt);
+    margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  }
+  .term-eyebrow::before{
+    content:'';width:8px;height:8px;border-radius:50%;
+    background:var(--mint);box-shadow:0 0 10px var(--mint);
+  }
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;flex-direction:row;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:14px;
+    font-family:'IBM Plex Mono';
+  }
+  .badge-tier{
+    background:rgba(91,95,239,.15);border:1px solid rgba(91,95,239,.4);color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .badge-tier{
+    background:rgba(63,67,199,.1);border-color:rgba(63,67,199,.4);color:var(--indigo);
+  }
+  .badge-status{
+    background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);color:var(--mint);
+  }
+  .badge svg{width:11px;height:11px;}
+  .proj-name{
+    font-family:'IBM Plex Mono';font-weight:700;
+    font-size:clamp(28px,5vw,44px);
+    color:var(--hero-name-color);
+    letter-spacing:.5px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .proj-name::before{
+    content:'</>';color:var(--violet);font-size:.6em;
+  }
+  .proj-tagline{
+    font-size:clamp(15px,2.5vw,19px);font-weight:700;color:var(--indigo-lt);
+    margin-top:10px;font-family:'Cairo';
+  }
+  .proj-desc{
+    font-size:14.5px;color:var(--hero-bio-color);
+    margin-top:14px;max-width:760px;line-height:1.85;
+  }
+  .proj-cta{
+    display:flex;gap:9px;flex-wrap:wrap;margin-top:24px;
+    flex-direction:row;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono';
+    padding:10px 16px;border-radius:8px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn svg{width:15px;height:15px;}
+  .btn-grad{
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    color:#fff;
+  }
+  .btn-grad:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(91,95,239,.35);}
+  .btn-line{
+    background:var(--btn-line-bg);color:var(--btn-line-color);
+    border:1px solid var(--btn-line-border);
+  }
+  .btn-line:hover{border-color:var(--indigo);color:var(--indigo-lt);background:rgba(91,95,239,.06);}
+
+  /* ═══ INFO TABLE ═══ */
+  .info-table{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;padding:8px 22px;margin-top:30px;
+    box-shadow:var(--shadow);
+  }
+  .info-row{
+    display:grid;grid-template-columns:200px 1fr;gap:18px;
+    padding:11px 0;border-bottom:1px dashed var(--line);
+    font-family:'IBM Plex Mono';font-size:13px;
+  }
+  .info-row:last-child{border-bottom:none;}
+  .info-row .lbl{color:var(--soft);}
+  .info-row .val{color:var(--info-val-color);font-weight:600;}
+  .info-row .val a{color:var(--indigo-lt);}
+  .info-row .val a:hover{text-decoration:underline;}
+  html[dir="ltr"] .info-table{padding:8px 22px;}
+  @media(max-width:600px){
+    .info-row{grid-template-columns:1fr;gap:4px;}
+    .info-row .lbl{font-size:11px;}
+  }
+
+  /* ═══ SECTIONS ═══ */
+  section{padding:46px 0;scroll-margin-top:74px;}
+  section:nth-of-type(odd){background:var(--bg-page);}
+  section:nth-of-type(even){background:var(--bg-alt);}
+  .sec-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:22px;
+    padding-bottom:10px;border-bottom:1px solid var(--line);
+  }
+  .sec-head .prompt{
+    font-family:'IBM Plex Mono';font-size:13px;
+    color:var(--prompt-color);font-weight:600;
+  }
+  .sec-head .prompt::before{content:'$ ';}
+  .sec-head h2{font-size:22px;color:var(--sec-h2-color);font-weight:800;}
+  .sec-head .cursor-blink{
+    width:8px;height:18px;background:var(--indigo);
+    margin-right:auto;
+    animation:blink 1.1s steps(2) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  /* ═══ CARD ═══ */
+  .card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;padding:22px;box-shadow:var(--shadow);
+  }
+  .card h3{
+    font-size:13px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.7px;color:var(--card-h3-color);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono';
+  }
+  .card h3 svg{width:14px;height:14px;}
+  .card p{font-size:13.5px;color:var(--card-p-color);line-height:1.85;margin-bottom:11px;}
+  .card p:last-child{margin-bottom:0;}
+  .card p strong{color:var(--indigo-lt);font-family:'IBM Plex Mono';}
+  html[data-theme="light"] .card p strong{color:var(--indigo);}
+
+  /* ═══ FEATURES GRID ═══ */
+  .feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .feat-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:10px;padding:18px;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .feat-card:hover{transform:translateY(-2px);border-color:var(--indigo);}
+  .feat-card .ic{
+    width:38px;height:38px;border-radius:8px;
+    background:rgba(91,95,239,.08);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:11px;color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .feat-card .ic{background:rgba(63,67,199,.08);color:var(--indigo);}
+  .feat-card .ic svg{width:18px;height:18px;}
+  .feat-card h4{font-size:14.5px;color:var(--sec-h2-color);margin-bottom:6px;font-family:'Cairo';font-weight:700;}
+  .feat-card p{font-size:12.5px;color:var(--mid);line-height:1.7;}
+
+  /* ═══ ARCHITECTURE STEPS ═══ */
+  .arch-steps{position:relative;padding-right:28px;}
+  html[dir="ltr"] .arch-steps{padding-right:0;padding-left:28px;}
+  .arch-steps::before{
+    content:'';position:absolute;right:7px;top:6px;bottom:6px;
+    width:2px;background:linear-gradient(180deg,var(--indigo),var(--violet),transparent);
+  }
+  html[dir="ltr"] .arch-steps::before{right:auto;left:7px;}
+  .arch-step{position:relative;padding-bottom:22px;}
+  .arch-step:last-child{padding-bottom:0;}
+  .arch-dot{
+    position:absolute;right:-28px;top:5px;
+    width:12px;height:12px;border-radius:50%;
+    background:var(--bg-card);border:2.5px solid var(--indigo);
+    box-shadow:0 0 10px rgba(91,95,239,.6);
+  }
+  html[dir="ltr"] .arch-dot{right:auto;left:-28px;}
+  .arch-step .num{
+    font-family:'IBM Plex Mono';font-size:11px;color:var(--indigo-lt);
+    font-weight:700;margin-bottom:4px;
+  }
+  html[data-theme="light"] .arch-step .num{color:var(--indigo);}
+  .arch-step h4{font-size:14.5px;color:var(--sec-h2-color);font-family:'Cairo';font-weight:700;margin-bottom:5px;}
+  .arch-step p{font-size:13px;color:var(--mid);line-height:1.7;}
+
+  /* ═══ METRICS GRID ═══ */
+  .metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .metric{
+    background:var(--metric-bg);border:1px solid var(--metric-border);
+    border-radius:10px;padding:18px;text-align:center;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .metric:hover{transform:translateY(-2px);border-color:var(--indigo);}
+  .metric b{
+    display:block;font-family:'IBM Plex Mono';font-size:26px;
+    color:var(--indigo-lt);font-weight:700;
+  }
+  html[data-theme="light"] .metric b{color:var(--indigo);}
+  .metric span{font-size:11px;color:var(--soft);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px;}
+
+  /* ═══ TECH STACK GRID ═══ */
+  .stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .stack-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:10px;padding:16px;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .stack-card:hover{transform:translateY(-2px);border-color:var(--indigo);}
+  .stack-card .ic{
+    width:34px;height:34px;border-radius:8px;
+    background:rgba(91,95,239,.08);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:10px;
+    font-family:'IBM Plex Mono';font-weight:700;font-size:14px;color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .stack-card .ic{background:rgba(63,67,199,.08);color:var(--indigo);}
+  .stack-card h3{font-size:13px;color:var(--sec-h2-color);margin-bottom:4px;font-family:'Cairo';}
+  .stack-card .meta{font-size:11px;color:var(--soft);font-family:'IBM Plex Mono';}
+
+  /* ═══ FOOTER ═══ */
+  footer{
+    background:var(--footer-bg);color:var(--footer-text);
+    padding:34px 0 110px;text-align:center;font-size:12.5px;
+    border-top:1px solid var(--line);
+  }
+  footer .brand-foot{
+    font-family:'IBM Plex Mono';font-weight:700;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  footer .ascii{
+    font-family:'IBM Plex Mono';font-size:11px;color:var(--footer-text);
+    margin-top:10px;line-height:1.3;
+  }
+  footer .back-home{
+    display:inline-flex;align-items:center;gap:7px;
+    margin-top:14px;padding:9px 16px;border-radius:8px;
+    background:rgba(91,95,239,.15);color:var(--indigo-lt);
+    border:1px solid rgba(91,95,239,.35);
+    font-family:'IBM Plex Mono';font-size:12px;font-weight:700;
+    transition:all .2s ease;
+  }
+  html[data-theme="light"] footer .back-home{
+    background:rgba(63,67,199,.1);color:var(--indigo);border-color:rgba(63,67,199,.3);
+  }
+  footer .back-home:hover{background:rgba(91,95,239,.25);transform:translateY(-2px);}
+  html[data-theme="light"] footer .back-home:hover{background:rgba(63,67,199,.15);}
+  footer .back-home svg{width:14px;height:14px;}
+
+  /* floating to-top */
+  .to-top{
+    position:fixed;bottom:24px;z-index:91;
+    width:42px;height:42px;border-radius:10px;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 22px rgba(91,95,239,.35);
+    opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;
+    border:none;cursor:pointer;
+  }
+  html[dir="rtl"] .to-top{left:18px;}
+  html[dir="ltr"] .to-top{right:18px;}
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:900px){
+    .feat-grid{grid-template-columns:1fr;}
+    .stack-grid{grid-template-columns:repeat(2,1fr);}
+    .metrics-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media(max-width:760px){
+    .nav-back span{display:none;}
+    .hero{padding:36px 0 24px;}
+    .metrics-grid{grid-template-columns:repeat(2,1fr);}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ DEMO NOTE ═══ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+      <span data-i18n="demo.title">معرض الأعمال — صفحة فرعية للباقة المميزة</span>
+    </div>
+    <div class="dn-body">
+      <span data-i18n="demo.body"><strong>هذه صفحة فرعية وهمية</strong> لأغراض العرض فقط — جميع البيانات والمستودعات والروابط وهمية. تُتاح صفحات فرعية كهذه حصراً في الباقة المميزة.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="top">
+  <div class="container">
+    <a href="index.html" class="brand">
+      <span class="tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name" data-i18n="nav.brand">dev.profile</span>
+        <span class="brand-sub" data-i18n="nav.tier">PREMIUM</span>
+      </span>
+    </a>
+    <a href="index.html" class="nav-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="nav.back">العودة للرئيسية</span>
+    </a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="تبديل الوضع" type="button">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ PROJECT HERO ═══ -->
+<header class="hero">
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="container">
+    <div class="term-eyebrow" data-i18n="hero.eyebrow">$ cat project-alpha/README.md</div>
+    <div class="badge-row">
+      <span class="badge badge-tier">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+        <span data-i18n="hero.badgeTier">مشروع بارز</span>
+      </span>
+      <span class="badge badge-status">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+        <span data-i18n="hero.badgeStatus">مفتوح المصدر — نشط</span>
+      </span>
+    </div>
+    <h1 class="proj-name">project-alpha</h1>
+    <div class="proj-tagline" data-i18n="hero.tagline">منصّة تعاون مفتوحة المصدر تربط المساهمين بالمشاريع</div>
+    <p class="proj-desc" data-i18n="hero.desc">
+      منصّة ويب كاملة تُسهّل اكتشاف المشاريع مفتوحة المصدر ومطابقتها مع المساهمين
+      المناسبين بناءً على مهاراتهم واهتماماتهم. مبنية بـ Next.js و PostgreSQL،
+      توفّر نظام مصادقة كامل، لوحة تحكم تفاعلية، ونظام تتبّع المساهمات في الوقت الفعلي.
+    </p>
+    <div class="proj-cta">
+      <a href="#" class="btn btn-grad" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+        <span data-i18n="hero.btnRepo">المستودع على GitHub</span>
+      </a>
+      <a href="#" class="btn btn-line" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg>
+        <span data-i18n="hero.btnDemo">عرض مباشر</span>
+      </a>
+      <a href="index.html#projects" class="btn btn-line">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span data-i18n="hero.btnBack">كل المشاريع</span>
+      </a>
+    </div>
+
+    <!-- INFO TABLE -->
+    <div class="info-table">
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.stack">tech_stack</span>
+        <span class="val">Next.js · TypeScript · tRPC · Prisma · PostgreSQL · Redis</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.status">status</span>
+        <span class="val" data-i18n="info.statusV">نشط — تطوير مستمر</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.stars">github_stars</span>
+        <span class="val">★ 1,400+ · 🍴 180 fork</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.license">license</span>
+        <span class="val">MIT</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.version">version</span>
+        <span class="val">v2.4.1</span>
+      </div>
+      <div class="info-row">
+        <span class="lbl" data-i18n="info.started">started_at</span>
+        <span class="val">2023-06</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ OVERVIEW ═══ -->
+<section id="overview">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.overviewCmd">cat overview.md</span>
+      <h2 data-i18n="sec.overview">نظرة عامة</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="card">
+      <p data-i18n="overview.p1">
+        انطلق مشروع <strong>project-alpha</strong> من ملاحظة بسيطة: آلاف المطورين
+        حول العالم يبحثون عن مشاريع مفتوحة المصدر يساهمون فيها، وفي الوقت نفسه
+        يعاني أصحاب المشاريع من إيجاد مساهمين مناسبين. المنصّة تُحلّ هذه المشكلة
+        عبر مطابقة ذكية بين المهارات المتوفّرة لدى المساهم و الاحتياجات الفعلية
+        للمشروع.
+      </p>
+      <p data-i18n="overview.p2">
+        تستخدم المنصّة خوارزمية مطابقة تعتمد على تحليل المهارات المُعلَنة في
+        ملفات GitHub للمستخدمين وعلى وسوم المتطلّبات في المستودعات. عند التطابق،
+        يُرسل إشعار لكلا الطرفين مع رابط مباشر للمهمّة المقترحة. النظام يتعامل
+        مع آلاف الطلبات اليومية بزمن استجابة متوسّط أقل من 200 ميلي ثانية.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROBLEM & SOLUTION ═══ -->
+<section id="problem">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.psCmd">echo $PROBLEM && echo $SOLUTION</span>
+      <h2 data-i18n="sec.ps">المشكلة والحل</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></div>
+        <h4 data-i18n="ps.problemT">المشكلة</h4>
+        <p data-i18n="ps.problemP">المساهمون الجدد يضيّعون ساعات في تصفّح GitHub لإيجاد مشروع يناسب مهاراتهم، وأصحاب المشاريع لا يجدون مساهمين موثوقين للمهام المعلّقة.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h4 data-i18n="ps.solutionT">الحل</h4>
+        <p data-i18n="ps.solutionP">منصّة مطابقة ذكية تحلّل مهارات المستخدمين والمتطلّبات المعلَنة، وتقترح مهام مناسبة تلقائياً مع نظام تقييم للمساهمات السابقة.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section id="features">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.featCmd">ls ./features</span>
+      <h2 data-i18n="sec.feat">الميزات الرئيسية</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75M12 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg></div>
+        <h4 data-i18n="feat.1t">مطابقة ذكية</h4>
+        <p data-i18n="feat.1p">خوارزمية تحليل مهارات تعتمد على NLP لمطابقة المساهمين مع المشاريع المناسبة بنسبة دقّة 87%.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+        <h4 data-i18n="feat.2t">مصادقة كاملة</h4>
+        <p data-i18n="feat.2p">تسجيل دخول عبر GitHub OAuth مع دعم الجلسات JWT وحماية CSRF كاملة.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+        <h4 data-i18n="feat.3t">لوحة تحكم تفاعلية</h4>
+        <p data-i18n="feat.3p">إحصائيات حيّة للمساهمات، رسوم بيانية تفاعلية، وتنبيهات في الوقت الفعلي عبر WebSocket.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h4 data-i18n="feat.4t">نظام تعليقات</h4>
+        <p data-i18n="feat.4p">تعليقات خيطية مع دعم Markdown، إشارات للمستخدمين، وتعديل تعاوني للنصوص.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+        <h4 data-i18n="feat.5t">تتبّع المساهمات</h4>
+        <p data-i18n="feat.5p">ربط تلقائي مع Pull Requests و Commits على GitHub لعرض سجل المساهمة الكامل.</p>
+      </div>
+      <div class="feat-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20M12 2a15 15 0 000 20"/></svg></div>
+        <h4 data-i18n="feat.6t">دعم متعدد اللغات</h4>
+        <p data-i18n="feat.6p">واجهة مترجمة بالكامل للعربية والإنجليزية والفرنسية، مع دعم RTL كامل.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ARCHITECTURE ═══ -->
+<section id="architecture">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.archCmd">cat architecture.md</span>
+      <h2 data-i18n="sec.arch">البنية التقنية</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="card">
+      <div class="arch-steps">
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">01 / FRONTEND</div>
+          <h4 data-i18n="arch.1t">واجهة Next.js 14</h4>
+          <p data-i18n="arch.1p">واجهة React مبنية بـ Next.js مع Server Components لتحسين الأداء وSEO، مصمّمة بـ Tailwind CSS.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">02 / API LAYER</div>
+          <h4 data-i18n="arch.2t">طبقة tRPC</h4>
+          <p data-i18n="arch.2p">API مؤمَّن نوعياً (type-safe) بـ tRPC، يربط الواجهة بالخلفية بدون الحاجة لـ REST أو GraphQL.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">03 / BUSINESS LOGIC</div>
+          <h4 data-i18n="arch.3t">خوارزمية المطابقة</h4>
+          <p data-i18n="arch.3p">خدمة Python منفصلة تُحلّل المهارات عبر NLP، تستقبل الطلبات عبر قائمة انتظار Redis.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">04 / DATABASE</div>
+          <h4 data-i18n="arch.4t">PostgreSQL + Prisma</h4>
+          <p data-i18n="arch.4p">قاعدة بيانات علائقية مع Prisma ORM، تضمّ نسخ احتياطية يومية وفهارس محسّنة للأداء.</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">05 / CACHE & QUEUE</div>
+          <h4 data-i18n="arch.5t">Redis</h4>
+          <p data-i18n="arch.5p">طبقة تخزين مؤقت للجلسات وقوائم انتظار للمهام غير المتزامنة (إرسال بريد، إشعارات).</p>
+        </div>
+        <div class="arch-step">
+          <div class="arch-dot"></div>
+          <div class="num">06 / DEPLOYMENT</div>
+          <h4 data-i18n="arch.6t">Docker + Vercel</h4>
+          <p data-i18n="arch.6p">حاويات Docker للخدمات الخلفية، نشر الواجهة على Vercel، CI/CD عبر GitHub Actions.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ METRICS ═══ -->
+<section id="metrics">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.metricsCmd">curl /api/metrics</span>
+      <h2 data-i18n="sec.metrics">مقاييس الأداء</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="metrics-grid">
+      <div class="metric">
+        <b>180ms</b>
+        <span data-i18n="metric.1">زمن الاستجابة المتوسّط</span>
+      </div>
+      <div class="metric">
+        <b>99.94%</b>
+        <span data-i18n="metric.2">نسبة التوفّر</span>
+      </div>
+      <div class="metric">
+        <b>+12k</b>
+        <span data-i18n="metric.3">مستخدم نشط شهرياً</span>
+      </div>
+      <div class="metric">
+        <b>+850</b>
+        <span data-i18n="metric.4">مساهمة ناجحة</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECH STACK ═══ -->
+<section id="stack">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.stackCmd">cat package.json</span>
+      <h2 data-i18n="sec.stack">التقنيات المستخدمة</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="ic">NX</div><h3>Next.js 14</h3><div class="meta">frontend · App Router</div></div>
+      <div class="stack-card"><div class="ic">TS</div><h3>TypeScript</h3><div class="meta">primary language</div></div>
+      <div class="stack-card"><div class="ic">TR</div><h3>tRPC</h3><div class="meta">API layer</div></div>
+      <div class="stack-card"><div class="ic">PR</div><h3>Prisma</h3><div class="meta">ORM</div></div>
+      <div class="stack-card"><div class="ic">PG</div><h3>PostgreSQL</h3><div class="meta">primary db</div></div>
+      <div class="stack-card"><div class="ic">RD</div><h3>Redis</h3><div class="meta">cache & queue</div></div>
+      <div class="stack-card"><div class="ic">TW</div><h3>Tailwind CSS</h3><div class="meta">styling</div></div>
+      <div class="stack-card"><div class="ic">AC</div><h3>GitHub Actions</h3><div class="meta">CI/CD</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <p><span class="brand-foot" data-i18n="foot.brand">بطاقتي</span> — <span data-i18n="foot.tier">الباقة المميزة — معرض الأعمال</span></p>
+    <div class="ascii" data-i18n="foot.ascii">&lt;/&gt; · صُنع بشغف · جميع البيانات وهمية للعرض فقط</div>
+    <a href="index.html" class="back-home">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="foot.back">العودة إلى الصفحة الرئيسية</span>
+    </a>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="للأعلى">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  // ═══ i18n: نظام تبديل اللغة ═══
+  const I18N = {
+    ar: {
+      "demo.title":"معرض الأعمال — صفحة فرعية للباقة المميزة",
+      "demo.body":"<strong>هذه صفحة فرعية وهمية</strong> لأغراض العرض فقط — جميع البيانات والمستودعات والروابط وهمية. تُتاح صفحات فرعية كهذه حصراً في الباقة المميزة.",
+      "nav.brand":"dev.profile","nav.tier":"PREMIUM","nav.back":"العودة للرئيسية",
+      "hero.eyebrow":"$ cat project-alpha/README.md",
+      "hero.badgeTier":"مشروع بارز","hero.badgeStatus":"مفتوح المصدر — نشط",
+      "hero.tagline":"منصّة تعاون مفتوحة المصدر تربط المساهمين بالمشاريع",
+      "hero.desc":"منصّة ويب كاملة تُسهّل اكتشاف المشاريع مفتوحة المصدر ومطابقتها مع المساهمين المناسبين بناءً على مهاراتهم واهتماماتهم. مبنية بـ Next.js و PostgreSQL، توفّر نظام مصادقة كامل، لوحة تحكم تفاعلية، ونظام تتبّع المساهمات في الوقت الفعلي.",
+      "hero.btnRepo":"المستودع على GitHub","hero.btnDemo":"عرض مباشر","hero.btnBack":"كل المشاريع",
+      "info.stack":"tech_stack","info.status":"status","info.statusV":"نشط — تطوير مستمر","info.stars":"github_stars","info.license":"license","info.version":"version","info.started":"started_at",
+      "sec.overviewCmd":"cat overview.md","sec.overview":"نظرة عامة",
+      "overview.p1":"انطلق مشروع <strong>project-alpha</strong> من ملاحظة بسيطة: آلاف المطورين حول العالم يبحثون عن مشاريع مفتوحة المصدر يساهمون فيها، وفي الوقت نفسه يعاني أصحاب المشاريع من إيجاد مساهمين مناسبين. المنصّة تُحلّ هذه المشكلة عبر مطابقة ذكية بين المهارات المتوفّرة لدى المساهم و الاحتياجات الفعلية للمشروع.",
+      "overview.p2":"تستخدم المنصّة خوارزمية مطابقة تعتمد على تحليل المهارات المُعلَنة في ملفات GitHub للمستخدمين وعلى وسوم المتطلّبات في المستودعات. عند التطابق، يُرسل إشعار لكلا الطرفين مع رابط مباشر للمهمّة المقترحة. النظام يتعامل مع آلاف الطلبات اليومية بزمن استجابة متوسّط أقل من 200 ميلي ثانية.",
+      "sec.psCmd":"echo $PROBLEM && echo $SOLUTION","sec.ps":"المشكلة والحل",
+      "ps.problemT":"المشكلة","ps.problemP":"المساهمون الجدد يضيّعون ساعات في تصفّح GitHub لإيجاد مشروع يناسب مهاراتهم، وأصحاب المشاريع لا يجدون مساهمين موثوقين للمهام المعلّقة.",
+      "ps.solutionT":"الحل","ps.solutionP":"منصّة مطابقة ذكية تحلّل مهارات المستخدمين والمتطلّبات المعلَنة، وتقترح مهام مناسبة تلقائياً مع نظام تقييم للمساهمات السابقة.",
+      "sec.featCmd":"ls ./features","sec.feat":"الميزات الرئيسية",
+      "feat.1t":"مطابقة ذكية","feat.1p":"خوارزمية تحليل مهارات تعتمد على NLP لمطابقة المساهمين مع المشاريع المناسبة بنسبة دقّة 87%.",
+      "feat.2t":"مصادقة كاملة","feat.2p":"تسجيل دخول عبر GitHub OAuth مع دعم الجلسات JWT وحماية CSRF كاملة.",
+      "feat.3t":"لوحة تحكم تفاعلية","feat.3p":"إحصائيات حيّة للمساهمات، رسوم بيانية تفاعلية، وتنبيهات في الوقت الفعلي عبر WebSocket.",
+      "feat.4t":"نظام تعليقات","feat.4p":"تعليقات خيطية مع دعم Markdown، إشارات للمستخدمين، وتعديل تعاوني للنصوص.",
+      "feat.5t":"تتبّع المساهمات","feat.5p":"ربط تلقائي مع Pull Requests و Commits على GitHub لعرض سجل المساهمة الكامل.",
+      "feat.6t":"دعم متعدد اللغات","feat.6p":"واجهة مترجمة بالكامل للعربية والإنجليزية والفرنسية، مع دعم RTL كامل.",
+      "sec.archCmd":"cat architecture.md","sec.arch":"البنية التقنية",
+      "arch.1t":"واجهة Next.js 14","arch.1p":"واجهة React مبنية بـ Next.js مع Server Components لتحسين الأداء وSEO، مصمّمة بـ Tailwind CSS.",
+      "arch.2t":"طبقة tRPC","arch.2p":"API مؤمَّن نوعياً (type-safe) بـ tRPC، يربط الواجهة بالخلفية بدون الحاجة لـ REST أو GraphQL.",
+      "arch.3t":"خوارزمية المطابقة","arch.3p":"خدمة Python منفصلة تُحلّل المهارات عبر NLP، تستقبل الطلبات عبر قائمة انتظار Redis.",
+      "arch.4t":"PostgreSQL + Prisma","arch.4p":"قاعدة بيانات علائقية مع Prisma ORM، تضمّ نسخ احتياطية يومية وفهارس محسّنة للأداء.",
+      "arch.5t":"Redis","arch.5p":"طبقة تخزين مؤقت للجلسات وقوائم انتظار للمهام غير المتزامنة (إرسال بريد، إشعارات).",
+      "arch.6t":"Docker + Vercel","arch.6p":"حاويات Docker للخدمات الخلفية، نشر الواجهة على Vercel، CI/CD عبر GitHub Actions.",
+      "sec.metricsCmd":"curl /api/metrics","sec.metrics":"مقاييس الأداء",
+      "metric.1":"زمن الاستجابة المتوسّط","metric.2":"نسبة التوفّر","metric.3":"مستخدم نشط شهرياً","metric.4":"مساهمة ناجحة",
+      "sec.stackCmd":"cat package.json","sec.stack":"التقنيات المستخدمة",
+      "foot.brand":"بطاقتي","foot.tier":"الباقة المميزة — معرض الأعمال","foot.ascii":"&lt;/&gt; · صُنع بشغف · جميع البيانات وهمية للعرض فقط","foot.back":"العودة إلى الصفحة الرئيسية"
+    },
+    en: {
+      "demo.title":"Portfolio — Sub-page for Premium Package",
+      "demo.body":"<strong>This is a fictional sub-page</strong> for display purposes only — all data, repos, and links are fictional. Sub-pages like this are available exclusively in the Premium package.",
+      "nav.brand":"dev.profile","nav.tier":"PREMIUM","nav.back":"Back to Home",
+      "hero.eyebrow":"$ cat project-alpha/README.md",
+      "hero.badgeTier":"Featured Project","hero.badgeStatus":"Open Source — Active",
+      "hero.tagline":"An open-source collaboration platform connecting contributors with projects",
+      "hero.desc":"A complete web platform that simplifies discovering open-source projects and matching them with suitable contributors based on their skills and interests. Built with Next.js and PostgreSQL, it provides a full authentication system, an interactive dashboard, and a real-time contribution tracking system.",
+      "hero.btnRepo":"Repository on GitHub","hero.btnDemo":"Live Demo","hero.btnBack":"All Projects",
+      "info.stack":"tech_stack","info.status":"status","info.statusV":"Active — Ongoing Development","info.stars":"github_stars","info.license":"license","info.version":"version","info.started":"started_at",
+      "sec.overviewCmd":"cat overview.md","sec.overview":"Overview",
+      "overview.p1":"The <strong>project-alpha</strong> started from a simple observation: thousands of developers worldwide search for open-source projects to contribute to, while project owners struggle to find suitable contributors. The platform solves this problem through smart matching between the contributor's available skills and the project's actual needs.",
+      "overview.p2":"The platform uses a matching algorithm based on analyzing skills declared in users' GitHub profiles and requirement tags in repositories. On a match, a notification is sent to both parties with a direct link to the suggested task. The system handles thousands of daily requests with an average response time under 200 milliseconds.",
+      "sec.psCmd":"echo $PROBLEM && echo $SOLUTION","sec.ps":"Problem & Solution",
+      "ps.problemT":"Problem","ps.problemP":"New contributors waste hours browsing GitHub to find a project matching their skills, while project owners can't find trusted contributors for pending tasks.",
+      "ps.solutionT":"Solution","ps.solutionP":"A smart matching platform that analyzes user skills and stated requirements, automatically suggesting suitable tasks with a contribution rating system.",
+      "sec.featCmd":"ls ./features","sec.feat":"Key Features",
+      "feat.1t":"Smart Matching","feat.1p":"An NLP-based skill analysis algorithm matching contributors with suitable projects at 87% accuracy.",
+      "feat.2t":"Full Authentication","feat.2p":"GitHub OAuth login with JWT session support and full CSRF protection.",
+      "feat.3t":"Interactive Dashboard","feat.3p":"Live contribution stats, interactive charts, and real-time alerts via WebSocket.",
+      "feat.4t":"Comment System","feat.4p":"Threaded comments with Markdown support, user mentions, and collaborative text editing.",
+      "feat.5t":"Contribution Tracking","feat.5p":"Auto-linking with Pull Requests and Commits on GitHub to display full contribution history.",
+      "feat.6t":"Multi-language Support","feat.6p":"Fully translated interface for Arabic, English, and French, with complete RTL support.",
+      "sec.archCmd":"cat architecture.md","sec.arch":"Technical Architecture",
+      "arch.1t":"Next.js 14 Interface","arch.1p":"React interface built with Next.js and Server Components for performance and SEO, designed with Tailwind CSS.",
+      "arch.2t":"tRPC Layer","arch.2p":"Type-safe API with tRPC, connecting the frontend to the backend without needing REST or GraphQL.",
+      "arch.3t":"Matching Algorithm","arch.3p":"A separate Python service that analyzes skills via NLP, receiving requests through a Redis queue.",
+      "arch.4t":"PostgreSQL + Prisma","arch.4p":"Relational database with Prisma ORM, including daily backups and performance-optimized indexes.",
+      "arch.5t":"Redis","arch.5p":"Caching layer for sessions and queues for asynchronous tasks (email sending, notifications).",
+      "arch.6t":"Docker + Vercel","arch.6p":"Docker containers for backend services, frontend deployment on Vercel, CI/CD via GitHub Actions.",
+      "sec.metricsCmd":"curl /api/metrics","sec.metrics":"Performance Metrics",
+      "metric.1":"Avg Response Time","metric.2":"Uptime","metric.3":"Monthly Active Users","metric.4":"Successful Contributions",
+      "sec.stackCmd":"cat package.json","sec.stack":"Technologies Used",
+      "foot.brand":"Bitaqti","foot.tier":"Premium Package — Portfolio","foot.ascii":"&lt;/&gt; · built with passion · all data is fictional for demo","foot.back":"Back to Home Page"
+    }
+  };
+
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+
+  // ✅ Theme toggle
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    try{ localStorage.setItem('bitaqti_theme', theme); }catch(e){}
+  }
+  const themeBtn = document.getElementById('themeBtn');
+  if(themeBtn){
+    themeBtn.addEventListener('click', ()=>{
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  // ✅ التهيئة الأولية للّغة والوضع
+  (function init(){
+    let savedLang = 'ar', savedTheme = 'dark';
+    try{ savedLang = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    try{ savedTheme = localStorage.getItem('bitaqti_theme') || 'dark'; }catch(e){}
+    applyLanguage(savedLang);
+    applyTheme(savedTheme);
+  })();
+
+  // to-top
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 300) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
