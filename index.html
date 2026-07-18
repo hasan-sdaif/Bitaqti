@@ -282,10 +282,12 @@
   .ex-card.locked .ex-preview{background:var(--line);}
   .ex-card.locked .mini-card{opacity:.5;}
   .ex-body{padding:16px 18px;}
-  .ex-body h4{font-size:13.5px;font-weight:700;margin-bottom:4px;}
+  .ex-body h4{font-size:13.5px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;flex-wrap:wrap;gap:6px;}
   .ex-body p{font-size:11.5px;color:var(--ink-soft);margin-bottom:12px;}
   .ex-link{font-size:12px;font-weight:700;color:var(--red);}
   .ex-card.locked .ex-link{color:var(--ink-faint);pointer-events:none;}
+  .ex-approved{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;color:#0C9A63;background:#E4F5EC;padding:3px 8px;border-radius:20px;white-space:nowrap;}
+  .ex-owner{display:inline-flex;align-items:center;gap:3px;font-size:9.5px;font-weight:700;color:var(--gold);background:var(--gold-tint);padding:3px 8px;border-radius:20px;white-space:nowrap;}
 
   /* ── FAQ ── */
   .faq-list{max-width:640px;margin:0 auto;}
@@ -726,11 +728,11 @@
     <div class="ex-grid">
       <div class="ex-card reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
-        <div class="ex-body"><h4 data-i18n="examples.ex1name">حسن سديف</h4><p data-i18n="examples.ex1desc">طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة</p><a class="ex-link" href="https://bitaqti.netlify.app/hasan_sdaif/" target="_blank" rel="noopener" data-i18n="examples.viewcard">عرض البطاقة ←</a></div>
+        <div class="ex-body"><h4><span data-i18n="examples.ex1name">حسن سديف</span><span class="ex-owner" data-i18n="examples.owner">صاحب المشروع</span></h4><p data-i18n="examples.ex1desc">طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة</p><a class="ex-link" href="https://bitaqti.netlify.app/hasan_sdaif/" target="_blank" rel="noopener" data-i18n="examples.viewcard">عرض البطاقة ←</a></div>
       </div>
-      <div class="ex-card locked reveal">
+      <div class="ex-card reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
-        <div class="ex-body"><h4 data-i18n="examples.soon">نموذج قادم</h4><p data-i18n="examples.soondesc">سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link" data-i18n="examples.soonlabel">قريباً</span></div>
+        <div class="ex-body"><h4><span data-i18n="examples.ex2name">عبدالله إكويد</span><span class="ex-approved" data-i18n="examples.approved">تمت بموافقته</span></h4><p data-i18n="examples.ex2desc">طالب علوم حاسوب ومسوّق رقمي</p><a class="ex-link" href="/abdulla_ikywed/index.html" target="_blank" rel="noopener" data-i18n="examples.viewcard">عرض البطاقة ←</a></div>
       </div>
       <div class="ex-card locked reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
@@ -951,7 +953,8 @@
       "addons.note":"الأسعار أعلاه تجريبية وقابلة للتعديل بسهولة قبل النشر، مثل أسعار الباقات الثلاث أعلاه. لطلب أي خدمة إضافية، راسلني مباشرة عبر واتساب.",
 
       "examples.eyebrow":"أعمالي","examples.title":"نماذج حقيقية","examples.sub":"بموافقة أصحابها",
-      "examples.ex1name":"حسن سديف","examples.ex1desc":"طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة","examples.viewcard":"عرض البطاقة ←",
+      "examples.ex1name":"حسن سديف","examples.ex1desc":"طالب علوم دينية ومعلّم — النموذج الشخصي لصاحب الخدمة","examples.viewcard":"عرض البطاقة ←","examples.owner":"صاحب المشروع",
+      "examples.ex2name":"عبدالله إكويد","examples.ex2desc":"طالب علوم حاسوب ومسوّق رقمي","examples.approved":"تمت بموافقته",
       "examples.soon":"نموذج قادم","examples.soondesc":"سيُضاف هنا نموذج عميل بعد الحصول على إذنه","examples.soonlabel":"قريباً",
 
       "faq.eyebrow":"أسئلة شائعة","faq.title":"كل ما تحتاج معرفته",
@@ -1067,7 +1070,8 @@
       "addons.note":"The prices above are sample prices, easy to adjust before launch, just like the three package prices above. To order any add-on, message me directly on WhatsApp.",
 
       "examples.eyebrow":"My work","examples.title":"Real examples","examples.sub":"With their owners' consent",
-      "examples.ex1name":"Hasan Sdaif","examples.ex1desc":"Islamic studies student and teacher — the personal example of the service owner","examples.viewcard":"View card ←",
+      "examples.ex1name":"Hasan Sdaif","examples.ex1desc":"Islamic studies student and teacher — the personal example of the service owner","examples.viewcard":"View card ←","examples.owner":"Project owner",
+      "examples.ex2name":"Abdulla Ikywed","examples.ex2desc":"Computer Science student & digital marketer","examples.approved":"Approved by him",
       "examples.soon":"Coming example","examples.soondesc":"A client example will be added here once permission is granted","examples.soonlabel":"Coming soon",
 
       "faq.eyebrow":"FAQ","faq.title":"Everything you need to know",
