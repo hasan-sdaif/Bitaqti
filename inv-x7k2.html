@@ -1,34 +1,5 @@
 <!DOCTYPE html>
-<!--
-  ════════════════════════════════════════════════════════════════════
-  بطاقتي — نظام الفواتير المحسّن (Bitaqti Enhanced Invoice System)
-  ────────────────────────────────────────────────────────────────────
-  نسخة مطوّرة من نظام الفواتير الداخلي، تتضمّن:
 
-  ★ الميزات الجديدة:
-    1. بنود متعددة (Multi-line items) — أضف أي عدد من الخدمات/المنتجات.
-    2. ترقيم تلقائي للفواتير (Auto-incrementing codes) BH-CV-YYYY-NNN.
-    3. حساب ضريبة القيمة المضافة (VAT 10% البحرين) — قابل للتفعيل.
-    4. خصم (نسبة مئوية أو مبلغ ثابت).
-    5. سجل كامل للفواتير (localStorage) مع بحث وفلترة وترتيب.
-    6. تتبّع الحالة (مسودة / مُرسلة / مدفوعة / ملغاة).
-    7. QR Code على الفاتورة يربط ببطاقة العميل.
-    8. لوحة إحصائيات (إيرادات، عدّاد، متوسط، رسم بياني شهري).
-    9. تصدير/استيراد (JSON backup + CSV export).
-    10. تكرار الفاتورة (Duplicate) — نسخ سريعة.
-    11. إكمال تلقائي لبيانات العميل من السجل.
-    12. إشعارات Toast + نوافذ تأكيد.
-    13. اختصارات لوحة المفاتيح (Ctrl+P, Ctrl+S, Esc).
-    14. إعدادات قابلة للتخصيص (نسبة VAT، العملة، بادئة الترقيم).
-    15. علامة مائية للحالة على الفاتورة (PAID / DRAFT).
-
-  ★ الأمان:
-    • نفس آلية المصادقة الأصلية (Netlify Function — كلمة السر على السيرفر).
-    • البيانات تُحفظ محلياً في المتصفح فقط (localStorage) — لا تُرسل لأي سيرفر.
-
-  ★ لوحة الألوان: مطابقة للموقع الأصلي (paper/ink/red/gold).
-  ════════════════════════════════════════════════════════════════════
--->
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -40,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<!-- SheetJS لقراءة ملفات Excel (xlsx) وكتابتها -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <style>
   :root{
     --paper:#F4F3EF; --surface:#FFFFFF;
@@ -712,6 +685,11 @@
           <span>السجل</span>
           <span class="badge" id="historyBadge" style="display:none">0</span>
         </button>
+        <button class="tab" data-tab="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span>قاعدة العملاء</span>
+          <span class="badge" id="customersBadge" style="display:none">0</span>
+        </button>
         <button class="tab" data-tab="stats">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>
           <span>إحصائيات</span>
@@ -1013,6 +991,82 @@
       </div>
     </div>
 
+    <!-- ═══ TAB: CUSTOMERS (قاعدة بيانات العملاء) ═══ -->
+    <div class="tab-panel" id="tab-customers">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>قاعدة بيانات العملاء</h2>
+            <div class="sub" id="customersCount">0 عميل</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" id="btnImportCustomers">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              استيراد Excel/CSV
+            </button>
+            <input type="file" id="importCustomersFile" accept=".xlsx,.xls,.csv" style="display:none;">
+            <button class="btn btn-outline btn-sm" id="btnExportCustomersCsv">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              تصدير CSV
+            </button>
+            <button class="btn btn-red btn-sm" id="btnAddCustomer">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              عميل جديد
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="history-toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="custSearchInput" placeholder="بحث بالاسم، الهاتف، رمز الطلب، الباقة...">
+            </div>
+            <select class="filter-select" id="custFilterStatus">
+              <option value="">كل الحالات</option>
+              <option value="قيد التنفيذ">قيد التنفيذ</option>
+              <option value="بانتظار الدفع">بانتظار الدفع</option>
+              <option value="تم التصميم">تم التصميم</option>
+              <option value="تم التسليم">تم التسليم</option>
+              <option value="ملغي">ملغي</option>
+            </select>
+            <select class="filter-select" id="custFilterPayment">
+              <option value="">كل حالات الدفع</option>
+              <option value="مدفوع">مدفوع</option>
+              <option value="غير مدفوع">غير مدفوع</option>
+              <option value="مدفوع جزئياً">مدفوع جزئياً</option>
+              <option value="مسترجع">مسترجع</option>
+            </select>
+          </div>
+          <div class="history-table-wrap">
+            <table class="history-table" id="customersTable">
+              <thead>
+                <tr>
+                  <th data-sort="order_code">رمز الطلب</th>
+                  <th data-sort="customer_name">العميل</th>
+                  <th data-sort="phone">الهاتف</th>
+                  <th data-sort="package">الباقة</th>
+                  <th data-sort="total_with_vat">الإجمالي</th>
+                  <th>الدفع</th>
+                  <th>الحالة</th>
+                  <th data-sort="order_date">التاريخ</th>
+                  <th class="col-actions">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="customersEmpty" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h3>لا يوجد عملاء بعد</h3>
+            <p>استورد ملف Excel المُرفق أو أضف عميلاً يدوياً للبدء.</p>
+          </div>
+          <div style="margin-top:14px;padding:12px 14px;background:var(--blue-tint);border-radius:10px;font-size:11.5px;color:#1E3A8A;line-height:1.7;">
+            <b>ℹ️ ملاحظة:</b> قاعدة البيانات هذه هي نسخة محلية في المتصفح (localStorage). لمزامنتها مع خدمة التتبع في الصفحة الرئيسية، يجب رفع ملف Excel/CSV إلى Google Sheets وضبط <code style="background:#fff;padding:1px 5px;border-radius:4px;font-family:monospace;">ORDERS_SHEET_ID</code> في متغيرات بيئة Netlify.
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ═══ TAB: STATS ═══ -->
     <div class="tab-panel" id="tab-stats">
       <div class="stats-grid" id="statsGrid"></div>
@@ -1248,6 +1302,50 @@ let settings = {...DEFAULT_SETTINGS};
 let editingId = null; // null = new invoice, string = editing existing
 let currentSort = 'date-desc';
 let selectedIds = new Set();
+
+// ════════════════════════════════════════════════════════════════
+//  CUSTOMERS DATA LAYER — قاعدة بيانات العملاء
+//  نُخزّنها في localStorage بشكل منفصل عن الفواتير، لكنها تتشارك
+//  نفس الحقول التي تُرجعها Netlify Function (track-order.js) لضمان
+//  الاتساق الكامل بين الواجهتين.
+// ════════════════════════════════════════════════════════════════
+const CUSTOMERS_KEY = 'bitaqti_customers_v1';
+const CUSTOMER_FIELDS = [
+  'phone','code','package','price','order_date','status','order_count',
+  'cv_link','actions_log','subpage_content','order_code',
+  'customer_name','customer_email','customer_country','customer_language',
+  'payment_method','payment_status','payment_date',
+  'vat_amount','discount_amount','total_with_vat',
+  'delivery_date','assigned_designer','design_link','qr_code_path',
+  'invoice_notes','last_updated','invoice_status'
+];
+let customers = [];
+let editingCustomerPhone = null;
+let custSearchQuery = '';
+
+function loadCustomers(){
+  try{
+    const raw = localStorage.getItem(CUSTOMERS_KEY);
+    customers = raw ? JSON.parse(raw) : [];
+  }catch(e){ customers = []; }
+}
+function saveCustomers(){
+  try{ localStorage.setItem(CUSTOMERS_KEY, JSON.stringify(customers)); }
+  catch(e){ console.error('saveCustomers failed', e); }
+}
+
+function genOrderCode(phone){
+  // BH-CV-YYYY-NNN — نستخدم نفس بادئة الفواتير لضمان الاتساق
+  const year = settings.year || String(new Date().getFullYear());
+  const existing = customers.filter(c => c.order_code && c.order_code.startsWith(`${settings.prefix || 'BH-CV'}-${year}`));
+  const nextSeq = String(existing.length + 1).padStart(4, '0');
+  return `${settings.prefix || 'BH-CV'}-${year}-${nextSeq}`;
+}
+
+function genVerificationCode(){
+  // رمز تحقق عشوائي من 4 أرقام
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
 
 function loadData(){
   try{
@@ -1982,8 +2080,359 @@ function switchTab(name){
   document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
   if(name === 'history') renderHistory();
+  if(name === 'customers') renderCustomers();
   if(name === 'stats') renderStats();
   if(name === 'settings') loadSettingsForm();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CUSTOMERS TAB — عرض/بحث/فلترة/استيراد/تصدير قاعدة العملاء
+// ════════════════════════════════════════════════════════════════
+const STATUS_COLORS_CUST = {
+  'قيد التنفيذ':   '#B8924A',
+  'بانتظار الدفع': '#CE1126',
+  'تم التصميم':    '#3730A3',
+  'تم التسليم':    '#0C9A63',
+  'ملغي':          '#53565C',
+};
+const PAYMENT_COLORS = {
+  'مدفوع':         '#0C9A63',
+  'غير مدفوع':     '#CE1126',
+  'مدفوع جزئياً':  '#D97706',
+  'مسترجع':        '#53565C',
+};
+
+function renderCustomers(){
+  const body = $('customersBody');
+  const search = ($('custSearchInput')?.value || '').toLowerCase().trim();
+  const statusFilter = $('custFilterStatus')?.value || '';
+  const paymentFilter = $('custFilterPayment')?.value || '';
+
+  let list = [...customers];
+  if(search){
+    list = list.filter(c =>
+      String(c.customer_name || '').toLowerCase().includes(search) ||
+      String(c.phone || '').toLowerCase().includes(search) ||
+      String(c.order_code || '').toLowerCase().includes(search) ||
+      String(c.package || '').toLowerCase().includes(search) ||
+      String(c.customer_email || '').toLowerCase().includes(search)
+    );
+  }
+  if(statusFilter)  list = list.filter(c => c.status === statusFilter);
+  if(paymentFilter) list = list.filter(c => c.payment_status === paymentFilter);
+
+  list.sort((a, b) => String(b.order_date || '').localeCompare(String(a.order_date || '')));
+
+  $('customersCount').textContent = customers.length + ' عميل' + (list.length !== customers.length ? ` (${list.length} معروض)` : '');
+  const badge = $('customersBadge');
+  if(customers.length){ badge.style.display = ''; badge.textContent = customers.length; }
+  else { badge.style.display = 'none'; }
+
+  body.innerHTML = '';
+  if(!list.length){
+    $('customersEmpty').style.display = 'block';
+    $('customersTable').style.display = 'none';
+    return;
+  }
+  $('customersEmpty').style.display = 'none';
+  $('customersTable').style.display = '';
+
+  list.forEach(c => {
+    const tr = document.createElement('tr');
+    const statusColor = STATUS_COLORS_CUST[c.status] || '#53565C';
+    const payColor    = PAYMENT_COLORS[c.payment_status] || '#53565C';
+    const total = Number(c.total_with_vat) || Number(c.price) || 0;
+    tr.innerHTML = `
+      <td class="col-code">${c.order_code || '—'}</td>
+      <td class="col-name">${escapeHtml(c.customer_name || '—')}</td>
+      <td class="col-code" dir="ltr">${c.phone || '—'}</td>
+      <td>${escapeHtml(c.package || '—')}</td>
+      <td class="col-amount">${total.toFixed(3)} ${settings.currency}</td>
+      <td><span style="display:inline-block;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:12px;color:#fff;background:${payColor};">${c.payment_status || '—'}</span></td>
+      <td><span style="display:inline-block;font-size:10.5px;font-weight:700;padding:3px 10px;border-radius:12px;color:#fff;background:${statusColor};">${c.status || '—'}</span></td>
+      <td class="col-date" dir="ltr">${c.order_date || '—'}</td>
+      <td class="col-actions">
+        <button class="row-action view" data-act="view" data-phone="${escapeAttr(c.phone)}" title="عرض"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="row-action" data-act="edit" data-phone="${escapeAttr(c.phone)}" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg></button>
+        <button class="row-action duplicate" data-act="invoice" data-phone="${escapeAttr(c.phone)}" title="إنشاء فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></button>
+        <button class="row-action" data-act="delete" data-phone="${escapeAttr(c.phone)}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+
+  // ربط الإجراءات
+  body.querySelectorAll('.row-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.act;
+      const phone = btn.dataset.phone;
+      const cust = customers.find(c => String(c.phone) === phone);
+      if(!cust) return;
+      if(act === 'view')   viewCustomer(cust);
+      else if(act === 'edit')   editCustomer(cust);
+      else if(act === 'invoice') createInvoiceFromCustomer(cust);
+      else if(act === 'delete') deleteCustomer(cust);
+    });
+  });
+}
+
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s){ return escapeHtml(s); }
+
+function viewCustomer(c){
+  // نُعيد استخدام نافذة الفاتورة الموجودة في الصفحة الرئيسية بشكل مبسّط
+  const lines = [
+    `الاسم: ${c.customer_name || '—'}`,
+    `الهاتف: ${c.phone || '—'}`,
+    `البريد: ${c.customer_email || '—'}`,
+    `الدولة: ${c.customer_country || '—'}`,
+    `الباقة: ${c.package || '—'}`,
+    `رمز الطلب: ${c.order_code || '—'}`,
+    `تاريخ الطلب: ${c.order_date || '—'}`,
+    `تاريخ التسليم: ${c.delivery_date || '—'}`,
+    `الحالة: ${c.status || '—'}`,
+    `حالة الدفع: ${c.payment_status || '—'}`,
+    `طريقة الدفع: ${c.payment_method || '—'}`,
+    `المجموع: ${(Number(c.total_with_vat) || 0).toFixed(3)} ${settings.currency}`,
+    `رابط البطاقة: ${c.cv_link || '—'}`,
+    `المصمم: ${c.assigned_designer || '—'}`,
+    '',
+    `سجل الإجراءات:\n${(c.actions_log || '—').split('|').join('\n')}`,
+  ];
+  showModal({
+    title: `بطاقة العميل: ${c.customer_name || c.phone}`,
+    body: lines.join('\n'),
+    confirmText: 'إغلاق',
+    onConfirm: () => closeModal(),
+    onCancel: () => closeModal(),
+    hideCancel: true,
+  });
+}
+
+function editCustomer(c){
+  editingCustomerPhone = c.phone;
+  // نفتح نموذجاً بسيطاً عبر modal لتحرير الحقول الرئيسية
+  const fields = [
+    ['customer_name','اسم العميل'],
+    ['phone','الهاتف'],
+    ['code','رمز التحقق'],
+    ['customer_email','البريد'],
+    ['customer_country','الدولة'],
+    ['package','الباقة'],
+    ['price','السعر'],
+    ['discount_amount','الخصم'],
+    ['vat_amount','VAT'],
+    ['total_with_vat','الإجمالي شامل VAT'],
+    ['order_date','تاريخ الطلب'],
+    ['delivery_date','تاريخ التسليم'],
+    ['status','الحالة'],
+    ['payment_method','طريقة الدفع'],
+    ['payment_status','حالة الدفع'],
+    ['cv_link','رابط البطاقة'],
+    ['assigned_designer','المصمم'],
+    ['actions_log','سجل الإجراءات (افصل بـ |)'],
+    ['subpage_content','ملاحظة تظهر للعميل'],
+    ['invoice_notes','ملاحظات داخلية'],
+  ];
+  const html = fields.map(([k, label]) => `
+    <div style="margin-bottom:8px;">
+      <label style="display:block;font-size:11px;color:var(--ink-faint);margin-bottom:3px;">${label}</label>
+      <input type="text" id="ce_${k}" value="${escapeAttr(c[k] ?? '')}" style="width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:7px;font-family:inherit;font-size:13px;${k==='phone'||k==='code'||k==='price'||k==='discount_amount'||k==='vat_amount'||k==='total_with_vat'||k==='cv_link'||k==='order_date'||k==='delivery_date'?'direction:ltr;text-align:left;':''}">
+    </div>
+  `).join('');
+  showModal({
+    title: 'تعديل بيانات العميل',
+    bodyHtml: html,
+    confirmText: 'حفظ',
+    cancelText: 'إلغاء',
+    onConfirm: () => {
+      fields.forEach(([k]) => {
+        const v = $('ce_' + k)?.value;
+        if(v !== undefined) c[k] = v;
+      });
+      c.last_updated = new Date().toLocaleDateString('en-GB').split('/').join('/');
+      // إن تغيّر الهاتف، نُحدّث المفتاح
+      if(c.phone !== editingCustomerPhone){
+        const idx = customers.findIndex(x => String(x.phone) === editingCustomerPhone);
+        if(idx > -1) customers[idx] = c;
+      }
+      saveCustomers();
+      renderCustomers();
+      closeModal();
+      toast('تم حفظ بيانات العميل', 'success');
+    },
+    onCancel: () => closeModal(),
+  });
+}
+
+function deleteCustomer(c){
+  showModal({
+    title: 'حذف العميل',
+    body: `هل أنت متأكد من حذف العميل "${c.customer_name || c.phone}"؟ لا يمكن التراجع.`,
+    confirmText: 'حذف',
+    cancelText: 'إلغاء',
+    onConfirm: () => {
+      customers = customers.filter(x => String(x.phone) !== String(c.phone));
+      saveCustomers();
+      renderCustomers();
+      closeModal();
+      toast('تم حذف العميل', 'success');
+    },
+    onCancel: () => closeModal(),
+  });
+}
+
+function createInvoiceFromCustomer(c){
+  // تحويل عميل إلى فاتورة جديدة: نملأ حقول النموذج وننتقل لتبويب فاتورة جديدة
+  switchTab('new');
+  setTimeout(() => {
+    if($('fName')) $('fName').value = c.customer_name || '';
+    if($('fPhone')) $('fPhone').value = c.phone || '';
+    if($('fCvLink')) $('fCvLink').value = c.cv_link || '';
+    if(typeof updatePreview === 'function') updatePreview();
+    toast('تم تعبئة بيانات الفاتورة من بطاقة العميل', 'success');
+  }, 100);
+}
+
+function addNewCustomer(){
+  const today = new Date().toLocaleDateString('en-GB').split('/').join('/');
+  const newC = {
+    phone: '', code: genVerificationCode(),
+    package: 'الأساسية', price: 5.000, order_date: today, status: 'قيد التنفيذ',
+    order_count: 1, cv_link: '', actions_log: `${today} - استلام الطلب`,
+    subpage_content: 'بطاقتك قيد التصميم، سيصلك رابط المعاينة قريباً.',
+    order_code: genOrderCode(),
+    customer_name: '', customer_email: '', customer_country: 'مملكة البحرين', customer_language: 'العربية',
+    payment_method: 'تحويل بنكي', payment_status: 'غير مدفوع', payment_date: '',
+    vat_amount: 0.500, discount_amount: 0, total_with_vat: 5.500,
+    delivery_date: '', assigned_designer: settings.business?.name || 'حسن سديف',
+    design_link: '', qr_code_path: '',
+    invoice_notes: '', last_updated: today, invoice_status: 'مسودة',
+  };
+  customers.unshift(newC);
+  saveCustomers();
+  renderCustomers();
+  editCustomer(newC);
+}
+
+/** يستورد ملف Excel/CSV ويضيفه إلى قاعدة العملاء (يستبدل الموجود إن طُلب) */
+async function importCustomersFromFile(file){
+  try{
+    const data = await file.arrayBuffer();
+    const wb = XLSX.read(data, { type: 'array' });
+    // نأخذ أول شيت
+    const sheetName = wb.SheetNames[0];
+    const ws = wb.Sheets[sheetName];
+    // header: 1 = صفيف صفوف، نأخذ الصف 1 كمفاتيح إنجليزية
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+    if(rows.length < 3){ // صف المفاتيح + صف العناوين العربية + صف بيانات واحد على الأقل
+      toast('الملف فارغ أو بصيغة غير صحيحة', 'error');
+      return;
+    }
+    const headers = rows[0].map(h => String(h).trim());
+    // نبدأ من الصف 2 (نتخطّي صف العناوين العربية إن وُجد)
+    const startRow = rows[1] && rows[1][0] && /[a-z]/i.test(rows[1][0]) ? 1 : 2;
+    const imported = [];
+    for(let i = startRow; i < rows.length; i++){
+      const row = rows[i];
+      if(!row || !row[0]) continue;
+      const obj = {};
+      headers.forEach((h, idx) => {
+        if(CUSTOMER_FIELDS.includes(h)){
+          obj[h] = row[idx] !== undefined ? String(row[idx]) : '';
+        }
+      });
+      // تحويل الأرقام
+      ['price','vat_amount','discount_amount','total_with_vat','order_count'].forEach(k => {
+        if(obj[k] !== undefined && obj[k] !== ''){
+          const n = Number(String(obj[k]).replace(/[^0-9.\-]/g, ''));
+          if(!isNaN(n)) obj[k] = n;
+        }
+      });
+      if(!obj.order_code) obj.order_code = genOrderCode();
+      if(!obj.code) obj.code = genVerificationCode();
+      if(!obj.order_count) obj.order_count = 1;
+      obj.last_updated = new Date().toLocaleDateString('en-GB').split('/').join('/');
+      imported.push(obj);
+    }
+    if(!imported.length){
+      toast('لم يتم العثور على صفوف صالحة في الملف', 'error');
+      return;
+    }
+    showModal({
+      title: 'استيراد العملاء',
+      body: `تم العثور على ${imported.length} سجل.\nهل تريد دمجها مع القائمة الحالية (${customers.length} عميل) أم استبدالها؟`,
+      confirmText: 'دمج',
+      cancelText: 'استبدال الكل',
+      onConfirm: () => {
+        // دمج: نتجنّب التكرار عبر (phone + order_code)
+        const existing = new Set(customers.map(c => `${c.phone}_${c.order_code}`));
+        imported.forEach(c => {
+          if(!existing.has(`${c.phone}_${c.order_code}`)) customers.push(c);
+        });
+        saveCustomers();
+        renderCustomers();
+        closeModal();
+        toast(`تم دمج ${imported.length} عميل`, 'success');
+      },
+      onCancel: () => {
+        customers = imported;
+        saveCustomers();
+        renderCustomers();
+        closeModal();
+        toast(`تم استبدال القائمة بـ ${imported.length} عميل`, 'success');
+      },
+    });
+  }catch(err){
+    console.error('[importCustomers]', err);
+    toast('تعذّر قراءة الملف. تأكد أنه ملف Excel/CSV صالح', 'error');
+  }
+}
+
+/** يُصدّر قاعدة العملاء كملف CSV (متوافق مع Google Sheets) */
+function exportCustomersCsv(){
+  if(!customers.length){ toast('لا يوجد عملاء للتصدير', 'error'); return; }
+  const headers = CUSTOMER_FIELDS;
+  const lines = [headers.join(',')];
+  customers.forEach(c => {
+    const row = headers.map(h => {
+      const v = String(c[h] ?? '');
+      // تجنّب كسر CSV عبر الفواصل داخل القيم
+      if(v.includes(',') || v.includes('"') || v.includes('\n')){
+        return '"' + v.replace(/"/g, '""') + '"';
+      }
+      return v;
+    });
+    lines.push(row.join(','));
+  });
+  const csv = '\uFEFF' + lines.join('\n'); // BOM لدعم العربية في Excel
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bitaqti_customers_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('تم تصدير قاعدة العملاء بنجاح', 'success');
+}
+
+/** يُصدّر قاعدة العملاء كملف Excel (.xlsx) */
+function exportCustomersXlsx(){
+  if(!customers.length){ toast('لا يوجد عملاء للتصدير', 'error'); return; }
+  if(typeof XLSX === 'undefined'){ toast('مكتبة XLSX غير محمّلة', 'error'); return; }
+  const ws = XLSX.utils.json_to_sheet(customers.map(c => {
+    const o = {};
+    CUSTOMER_FIELDS.forEach(k => o[k] = c[k] ?? '');
+    return o;
+  }), { header: CUSTOMER_FIELDS });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'العملاء');
+  XLSX.writeFile(wb, `bitaqti_customers_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast('تم تصدير ملف Excel', 'success');
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2010,17 +2459,52 @@ function toast(msg, type='info'){
 
 // ════════════════════════════════════════════════════════════════
 //  MODAL
+//  ندعم صيغتين:
+//   1) showModal(type, title, body, callback)            — القديمة
+//   2) showModal({ title, body, bodyHtml, confirmText,
+//                  cancelText, onConfirm, onCancel, hideCancel,
+//                  type })                                — الجديدة
 // ════════════════════════════════════════════════════════════════
 let modalCallback = null;
-function showModal(type, title, body, callback){
+let modalOnCancel = null;
+function showModal(arg1, title, body, callback){
+  let opts;
+  if(typeof arg1 === 'object' && arg1 !== null){
+    opts = arg1;
+  } else {
+    opts = { type: arg1, title, body, onConfirm: callback };
+  }
+  const type = opts.type || 'info';
   const iconClass = type === 'danger' ? 'danger' : (type === 'warning' ? 'warning' : 'info');
   $('modalIcon').className = 'modal-icon ' + iconClass;
-  $('modalTitle').textContent = title;
-  $('modalBody').textContent = body;
-  modalCallback = callback;
+  $('modalTitle').textContent = opts.title || 'تأكيد';
+
+  // body vs bodyHtml
+  const bodyEl = $('modalBody');
+  if(opts.bodyHtml !== undefined){
+    bodyEl.innerHTML = opts.bodyHtml;
+    bodyEl.style.whiteSpace = 'normal';
+  } else {
+    bodyEl.textContent = opts.body || '';
+    bodyEl.style.whiteSpace = 'pre-wrap';
+  }
+
+  // أزرار
+  const confirmBtn = $('modalConfirm');
+  const cancelBtn  = $('modalCancel');
+  confirmBtn.textContent = opts.confirmText || 'تأكيد';
+  cancelBtn.textContent  = opts.cancelText  || 'إلغاء';
+  cancelBtn.style.display = opts.hideCancel ? 'none' : '';
+
+  modalCallback = opts.onConfirm || null;
+  modalOnCancel = opts.onCancel || null;
   $('modalOverlay').classList.add('show');
 }
-function closeModal(){ $('modalOverlay').classList.remove('show'); modalCallback = null; }
+function closeModal(){
+  $('modalOverlay').classList.remove('show');
+  modalCallback = null;
+  modalOnCancel = null;
+}
 
 // ════════════════════════════════════════════════════════════════
 //  INIT
@@ -2029,6 +2513,7 @@ function initApp(){
   if(initApp._done) return;
   initApp._done = true;
   loadData();
+  loadCustomers();          // ← جديد: تحميل قاعدة العملاء
   loadSettingsForm();
   resetForm();
   $('fVatRate').value = settings.defaultVat;
@@ -2111,6 +2596,18 @@ function initApp(){
   $('bulkClear').addEventListener('click', () => { selectedIds.clear(); renderHistory(); });
   $('btnExportCsv').addEventListener('click', exportCSV);
 
+  // Customers (قاعدة العملاء)
+  $('btnAddCustomer').addEventListener('click', addNewCustomer);
+  $('btnImportCustomers').addEventListener('click', () => $('importCustomersFile').click());
+  $('importCustomersFile').addEventListener('change', (e) => {
+    if(e.target.files[0]) importCustomersFromFile(e.target.files[0]);
+    e.target.value = '';
+  });
+  $('btnExportCustomersCsv').addEventListener('click', exportCustomersCsv);
+  $('custSearchInput').addEventListener('input', renderCustomers);
+  $('custFilterStatus').addEventListener('change', renderCustomers);
+  $('custFilterPayment').addEventListener('change', renderCustomers);
+
   // Settings
   $('btnSaveSettings').addEventListener('click', saveSettingsForm);
   $('btnExportJson').addEventListener('click', exportJSON);
@@ -2122,10 +2619,13 @@ function initApp(){
   $('btnClearAll').addEventListener('click', clearAllData);
 
   // Modal
-  $('modalCancel').addEventListener('click', closeModal);
+  $('modalCancel').addEventListener('click', () => {
+    if(modalOnCancel) modalOnCancel();
+    else closeModal();
+  });
   $('modalConfirm').addEventListener('click', () => {
     if(modalCallback) modalCallback();
-    closeModal();
+    else closeModal();
   });
   $('modalOverlay').addEventListener('click', (e) => {
     if(e.target === $('modalOverlay')) closeModal();
