@@ -51,7 +51,7 @@
   .serrate.flip{transform:scaleY(-1);}
 
   /* ═══════════════ NAV ═══════════════ */
-  .nav{position:sticky;top:31px;z-index:100;background:rgba(244,243,239,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav{position:sticky;top:0;z-index:100;background:rgba(244,243,239,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
   .nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;gap:10px;}
   .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;min-width:0;}
   .brand .mark{width:34px;height:24px;border-radius:5px;background:var(--ink);position:relative;flex-shrink:0;}
@@ -61,10 +61,16 @@
   .nav-links{display:flex;gap:22px;}
   .nav-links a{font-size:13px;font-weight:600;color:var(--ink-soft);white-space:nowrap;}
   .nav-links a:hover{color:var(--red);}
-  .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+  .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
   .mini-cd{display:flex;align-items:center;gap:6px;background:var(--ink);color:#fff;font-weight:700;font-size:11px;padding:7px 12px;border-radius:20px;white-space:nowrap;}
   .mini-cd i{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.6s ease-in-out infinite;}
   @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.35;}}
+  /* زر تبديل اللغة — ثابت بجانب التوقيت في شريط التنقل، لا يغيّر اتجاه الصفحة (اختياري بالضغط فقط) */
+  .lang-toggle{display:flex;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:2px;flex-shrink:0;}
+  .lang-toggle button{background:transparent;border:0;color:var(--ink-soft);font-family:'IBM Plex Sans Arabic',Arial,sans-serif;font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:16px;cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;}
+  .lang-toggle button.active{background:var(--ink);color:#fff;}
+  .lang-toggle button:not(.active):hover{color:var(--red);}
+  @media (max-width:400px){.lang-toggle button{padding:5px 8px;font-size:10px;}}
   .burger{display:none;width:36px;height:36px;border-radius:9px;border:1px solid var(--line);background:var(--surface);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
   .burger svg{width:17px;height:17px;color:var(--ink);}
   .mobile-panel{display:none;position:fixed;inset:95px 0 0 0;z-index:99;background:var(--surface);padding:22px 20px;overflow-y:auto;}
@@ -378,11 +384,6 @@
   /* ═══════════════ شريط اللغة العلوي: ثابت في أعلى الصفحة دائماً (فوق شريط التنقل) ═══════════════
      مهم: تبديل اللغة يُترجم النصوص فقط عبر data-en / data-ar المخزّنة في نفس الملف،
      ولا يُغيّر اتجاه الصفحة (تبقى RTL) ولا تصميمها أو ترتيب عناصرها إطلاقاً. */
-  .lang-bar{position:sticky;top:0;z-index:110;background:var(--ink);color:#fff;padding:6px 0;}
-  .lang-bar .container{display:flex;align-items:center;justify-content:flex-end;gap:6px;}
-  .lang-bar button{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.75);font-family:'IBM Plex Sans Arabic',Arial,sans-serif;font-size:11px;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;transition:all .15s ease;}
-  .lang-bar button.active{background:var(--red);border-color:var(--red);color:#fff;}
-  .lang-bar button:not(.active):hover{border-color:rgba(255,255,255,.5);color:#fff;}
 
   /* ═══════════════ RESPONSIVE ═══════════════ */
   @media (max-width:960px){
@@ -409,31 +410,28 @@
 </head>
 <body>
 
-<!-- ═══════════════ شريط اللغة (ثابت في أعلى الصفحة دائماً، فوق شريط التنقل — لا يغيّر اتجاه أو تصميم الصفحة) ═══════════════ -->
-<div class="lang-bar">
-  <div class="container">
-    <button type="button" data-lang="ar" class="active">العربية</button>
-    <button type="button" data-lang="en">English</button>
-  </div>
-</div>
-
 <!-- ═══════════════ NAV ═══════════════ -->
 <nav class="nav">
   <div class="container">
     <a href="#home" class="brand">
       <span class="mark"></span>
-      <span data-ar="بطاقتي" data-en="Bitaqti">بطاقتي<small data-ar="Bitaqti · بطاقات رقمية تعريفية" data-en="Bitaqti · Digital Identity Cards">Bitaqti · بطاقات رقمية تعريفية</small></span>
+      <span data-i18n="nav.brand">بطاقتي<small data-i18n="nav.brandSub">Bitaqti · بطاقات رقمية تعريفية</small></span>
     </a>
     <ul class="nav-links">
-      <li><a href="#how" data-ar="كيف تعمل" data-en="How it works">كيف تعمل</a></li>
-      <li><a href="#pricing" data-ar="الباقات" data-en="Packages">الباقات</a></li>
-      <li><a href="#addons" data-ar="خدمات إضافية" data-en="Add-ons">خدمات إضافية</a></li>
-      <li><a href="#examples" data-ar="نماذج" data-en="Examples">نماذج</a></li>
-      <li><a href="#faq" data-ar="أسئلة شائعة" data-en="FAQ">أسئلة شائعة</a></li>
-      <li><a href="#track" data-ar="تتبع الطلب" data-en="Track order">تتبع الطلب</a></li>
-      <li><a href="#contact" data-ar="تواصل" data-en="Contact">تواصل</a></li>
+      <li><a href="#how" data-i18n="nav.how">كيف تعمل</a></li>
+      <li><a href="#pricing" data-i18n="nav.pricing">الباقات</a></li>
+      <li><a href="#addons" data-i18n="nav.addons">خدمات إضافية</a></li>
+      <li><a href="#examples" data-i18n="nav.examples">نماذج</a></li>
+      <li><a href="#faq" data-i18n="nav.faq">أسئلة شائعة</a></li>
+      <li><a href="#track" data-i18n="nav.track">تتبع الطلب</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">تواصل</a></li>
     </ul>
     <div class="nav-right">
+      <!-- زر ترجمة ثابت بجانب التوقيت — لا يغيّر اتجاه/تخطيط الصفحة، فقط يترجم النصوص -->
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
       <a href="#offer" class="mini-cd"><i></i><span id="miniCd">--:--:--</span></a>
       <button class="burger" id="burgerBtn" aria-label="فتح القائمة" aria-expanded="false">
         <svg id="burgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -661,7 +659,6 @@
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f1">كل ما في الباقة القياسية</span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f2">صفحات فرعية إضافية (إنجازات، معرض أعمال)</span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f3">أولوية في التسليم</span></li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f4">نسخة PDF مطابقة للتصميم الرقمي</span></li>
           <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg> <span data-i18n="pricing.t3f5">إمكانية تثبيت بطاقتك كتطبيق على شاشة الهاتف الرئيسية (PWA)</span></li>
         </ul>
         <div class="ptier-btns">
@@ -869,6 +866,8 @@
      ══════════════════════════════════════════════════════════════════ */
   const I18N = {
     ar: {
+      "nav.brand":"بطاقتي","nav.brandSub":"Bitaqti · بطاقات رقمية تعريفية",
+      "nav.how":"كيف تعمل","nav.pricing":"الباقات","nav.addons":"خدمات إضافية","nav.examples":"نماذج","nav.faq":"أسئلة شائعة","nav.track":"تتبع الطلب","nav.contact":"تواصل",
       "hero.eyebrow":"خدمة فردية جديدة · البحرين",
       "hero.title":"سيرتك الذاتية تستحق أكثر من ملف PDF ينام في المجلدات — تستحق <em>بطاقة رقمية</em> تُفتح بضغطة",
       "hero.desc":"أرسل لي سيرتك الحالية وصورتك والروابط التي تريدها، وأحوّلها إلى بطاقة رقمية برابط خاص ورمز QR، بتصميم يليق بمجالك — خلال 24 إلى 48 ساعة فقط.",
@@ -938,7 +937,6 @@
       "pricing.t3f1":"كل ما في الباقة القياسية",
       "pricing.t3f2":"صفحات فرعية إضافية (إنجازات، معرض أعمال)",
       "pricing.t3f3":"أولوية في التسليم",
-      "pricing.t3f4":"نسخة PDF مطابقة للتصميم الرقمي",
       "pricing.t3f5":"إمكانية تثبيت بطاقتك كتطبيق على شاشة الهاتف الرئيسية (PWA)",
       "pricing.book3":"احجز المميزة",
       "pricing.c1":"رابط خاص + رمز QR","pricing.c2":"دعم لغتين","pricing.c3":"حتى 3 شهادات فعلية (PDF)",
@@ -984,6 +982,8 @@
       "invoice.timeline":"ما تم إنجازه في طلبك","invoice.whatsapp":"تواصل واتساب","invoice.close":"إغلاق"
     },
     en: {
+      "nav.brand":"Bitaqti","nav.brandSub":"Bitaqti · Digital Identity Cards",
+      "nav.how":"How it works","nav.pricing":"Packages","nav.addons":"Add-ons","nav.examples":"Examples","nav.faq":"FAQ","nav.track":"Track order","nav.contact":"Contact",
       "hero.eyebrow":"New solo service · Bahrain",
       "hero.title":"Your CV deserves more than a PDF file sleeping in folders — it deserves a <em>digital card</em> that opens with one tap",
       "hero.desc":"Send me your current CV, your photo and the links you want, and I'll turn them into a digital card with a private link and QR code, in a design that suits your field — within 24 to 48 hours only.",
@@ -1053,7 +1053,6 @@
       "pricing.t3f1":"Everything in the Standard package",
       "pricing.t3f2":"Extra sub-pages (achievements, portfolio)",
       "pricing.t3f3":"Priority delivery",
-      "pricing.t3f4":"A PDF version matching the digital design",
       "pricing.t3f5":"Ability to install your card as an app on your phone's home screen (PWA)",
       "pricing.book3":"Book Premium",
       "pricing.c1":"Private link + QR code","pricing.c2":"Two-language support","pricing.c3":"Up to 3 real certificates (PDF)",
@@ -1106,12 +1105,12 @@
       const dict = I18N[lang] || I18N.ar;
       if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
     });
-    document.querySelectorAll('.lang-bar button[data-lang]').forEach(b=>{
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
       b.classList.toggle('active', b.getAttribute('data-lang') === lang);
     });
     try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
   }
-  document.querySelectorAll('.lang-bar button[data-lang]').forEach(btn=>{
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
     btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
   });
   (function initLanguage(){
@@ -1180,7 +1179,7 @@
     setUnit('cdHours', pad(h));
     setUnit('cdMins', pad(m));
     setUnit('cdSecs', pad(s));
-    const curLang = (document.querySelector('.lang-bar button.active') || {}).getAttribute ? document.querySelector('.lang-bar button.active').getAttribute('data-lang') : 'ar';
+    const curLang = (document.querySelector('.lang-toggle button.active') || {}).getAttribute ? document.querySelector('.lang-toggle button.active').getAttribute('data-lang') : 'ar';
     const dayLetter = curLang === 'en' ? 'd ' : 'ي ';
     const endedLabel = curLang === 'en' ? 'Offer ended' : 'انتهى العرض';
     document.getElementById('miniCd').textContent = diff>0 ? `${d}${dayLetter}${pad(h)}:${pad(m)}:${pad(s)}` : endedLabel;
