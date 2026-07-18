@@ -1,1 +1,1070 @@
-.
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Abdulla Ikywed — System Profile</title>
+<meta name="description" content="Abdulla Jaffar Abdulla Ikywed — Computer Science Student, CCST-Certified, Digital Marketer. Bahrain." />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230B0F14'/%3E%3Cpath d='M25 60 L40 40 L55 55 L75 30' stroke='%23FF6A2B' stroke-width='7' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='75' cy='30' r='6' fill='%233FD0FF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  :root{
+    --ink:#0B0F14; --panel:#11161D; --panel2:#161D26; --panel-line:#232C38;
+    --paper:#F5F3EE; --paper2:#FFFFFF; --paper-line:#E2DED3;
+    --orange:#FF6A2B; --orange-dim:#C9531F;
+    --cyan:#3FD0FF; --cyan-dim:#2AA9D4;
+    --ok:#3ECF8E;
+    --text-lt:#EDEFF2; --mid-lt:#9AA4B2; --lite-lt:#6E7889;
+    --text-dk:#161A1F; --mid-dk:#4C5563; --lite-dk:#7A8394;
+    --shadow:0 20px 50px rgba(11,15,20,.35);
+    --radius:18px;
+    --ink-solid:#0B0F14;
+    --on-ink-line-1:rgba(255,255,255,.06);
+    --on-ink-line-2:rgba(255,255,255,.08);
+    --on-ink-line-3:rgba(255,255,255,.1);
+    --on-ink-line-4:rgba(255,255,255,.12);
+    --on-ink-line-5:rgba(255,255,255,.14);
+    --on-ink-surface-1:rgba(255,255,255,.02);
+    --on-ink-surface-2:rgba(255,255,255,.04);
+    --on-ink-surface-3:rgba(255,255,255,.05);
+    --on-ink-surface-hover:rgba(255,255,255,.06);
+    --on-ink-surface-hover-2:rgba(255,255,255,.1);
+    --on-ink-text:#fff;
+    --on-ink-text-soft:rgba(255,255,255,.85);
+    --nav-bg:rgba(11,15,20,.88);
+    --fab-bg:rgba(11,15,20,.95);
+    --accent-cyan-on-ink:var(--cyan);
+    --accent-orange-on-ink:var(--orange);
+    color-scheme:light;
+  }
+  /* Dark mode: paper (light cream) sections flip to dark; ink chrome flips to a warm beige. */
+  html[data-theme="dark2"]{
+    --paper:#0B0F14; --paper2:#151B23; --paper-line:#26303C;
+    --text-dk:#EDEFF2; --mid-dk:#9AA4B2; --lite-dk:#7E889A;
+    --shadow:0 20px 50px rgba(0,0,0,.5);
+    color-scheme:dark;
+  }
+  /* Light mode: the "ink" chrome (nav, hero, log cards, cert panel, footer, fab bar)
+     flips from near-black to a soft beige/blue-tinted surface, with matching dark-on-light overlays. */
+  html:not([data-theme="dark2"]){
+    --ink:#EDE7D8; --panel:#E4DCC8; --panel2:#DCD2B8; --panel-line:#C9BC9C;
+    --on-ink-line-1:rgba(22,26,31,.08);
+    --on-ink-line-2:rgba(22,26,31,.1);
+    --on-ink-line-3:rgba(22,26,31,.12);
+    --on-ink-line-4:rgba(22,26,31,.14);
+    --on-ink-line-5:rgba(22,26,31,.16);
+    --on-ink-surface-1:rgba(22,26,31,.03);
+    --on-ink-surface-2:rgba(22,26,31,.05);
+    --on-ink-surface-3:rgba(22,26,31,.06);
+    --on-ink-surface-hover:rgba(22,26,31,.07);
+    --on-ink-surface-hover-2:rgba(22,26,31,.12);
+    --on-ink-text:#161A1F;
+    --on-ink-text-soft:rgba(22,26,31,.78);
+    --nav-bg:rgba(237,231,216,.9);
+    --fab-bg:rgba(237,231,216,.95);
+    --mid-lt:#5B6472; --lite-lt:#7A8394; --text-lt:#161A1F;
+    --shadow:0 20px 50px rgba(120,110,80,.18);
+    --accent-cyan-on-ink:#116684;
+    --accent-orange-on-ink:#A83D0B;
+  }
+  body{
+    background:var(--paper); color:var(--text-dk);
+    font-family:'Inter',Arial,sans-serif;
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+    transition:background .25s ease,color .25s ease;
+  }
+  html[data-theme="dark2"] body{ background:var(--ink); }
+  html[lang="ar"] body{ font-family:'IBM Plex Sans Arabic','Inter',Arial,sans-serif; }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  h1,h2,h3{font-family:'Space Grotesk',Arial,sans-serif;}
+  html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3{ font-family:'IBM Plex Sans Arabic',Arial,sans-serif; font-weight:800; }
+
+  a:focus-visible,button:focus-visible{outline:2px solid var(--orange);outline-offset:3px;border-radius:4px;}
+
+  .b-card,.edu-card,.contact-panel,.contact-cell,.sec-head h2,.sec-head p,.b-label,.tag,.stat-big b,.lang-top{
+    transition:background .25s ease,color .25s ease,border-color .25s ease;
+  }
+
+  /* ═══════════════ NAV ═══════════════ */
+  .nav{
+    position:sticky; top:0; z-index:100;
+    background:var(--nav-bg); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--on-ink-line-2);
+  }
+  .nav .container{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px;}
+  .brand{display:flex;align-items:center;gap:10px;color:var(--on-ink-text);font-weight:700;font-size:14.5px;min-width:0;}
+  .brand-mark{
+    width:30px;height:30px;border-radius:8px;background:var(--orange);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .brand-mark svg{width:17px;height:17px;color:var(--ink-solid);}
+  .brand-text{min-width:0;font-family:'Space Grotesk',Arial,sans-serif;}
+  html[lang="ar"] .brand-text{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .brand-sub{color:var(--accent-cyan-on-ink);font-weight:500;font-size:10.5px;display:block;letter-spacing:.3px;white-space:nowrap;font-family:'JetBrains Mono',monospace;}
+  .nav-links{display:flex;gap:4px;list-style:none;}
+  .nav-links a{
+    color:var(--mid-lt); font-size:12.5px; font-weight:600;
+    padding:8px 13px; border-radius:8px; transition:color .2s ease,background .2s ease; white-space:nowrap;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .nav-links a::before{content:'/';color:var(--panel-line);margin-right:2px;}
+  html[dir="rtl"] .nav-links a::before{content:none;}
+  .nav-links a:hover{color:var(--on-ink-text);background:var(--on-ink-surface-hover);}
+  .nav-links a.active{color:var(--accent-orange-on-ink);background:rgba(255,106,43,.1);}
+  .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+  .icon-btn{
+    width:38px;height:38px;border-radius:9px;border:1px solid var(--on-ink-line-4);
+    background:var(--on-ink-surface-2);color:var(--on-ink-text);display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:background .2s ease;flex-shrink:0;
+  }
+  .icon-btn:hover{background:var(--on-ink-surface-hover-2);}
+  .icon-btn svg{width:16px;height:16px;}
+  .icon-btn .moon{display:none;}
+  [data-theme="dark2"] .icon-btn .sun{display:none;}
+  [data-theme="dark2"] .icon-btn .moon{display:block;}
+  .lang-btn{width:auto;min-width:40px;padding:0 12px;border-radius:9px;font-size:11px;font-weight:700;letter-spacing:.2px;font-family:'JetBrains Mono',monospace;}
+  .burger{display:none;}
+
+  .mobile-panel{
+    display:none; position:fixed; inset:64px 0 0 0; z-index:99;
+    background:var(--ink); padding:20px 20px; overflow-y:auto;
+  }
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:flex; align-items:center; gap:10px; color:var(--on-ink-text); font-size:16px; font-weight:600; padding:15px 6px;
+    border-bottom:1px solid var(--on-ink-line-2); font-family:'JetBrains Mono',monospace; font-size:14px;
+  }
+  .mobile-panel a::before{content:'#';color:var(--accent-orange-on-ink);}
+
+  /* ═══════════════ HERO — system-window framing ═══════════════ */
+  .hero{
+    position:relative; overflow:hidden;
+    background:var(--ink); color:var(--on-ink-text); padding:0;
+  }
+  .hero::before{
+    content:''; position:absolute; inset:0; opacity:.5; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(63,208,255,.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(63,208,255,.05) 1px, transparent 1px);
+    background-size:34px 34px;
+    mask-image:radial-gradient(ellipse 80% 60% at 30% 20%,#000,transparent 75%);
+  }
+  .hero-window{
+    position:relative; margin:0 auto; max-width:1180px; padding:0 24px;
+  }
+  .win-bar{
+    display:flex; align-items:center; gap:8px; padding:14px 20px;
+    border-bottom:1px solid var(--on-ink-line-2);
+    background:var(--on-ink-surface-1);
+  }
+  .win-dot{width:10px;height:10px;border-radius:50%;}
+  .win-dot:nth-child(1){background:#FF5F57;}
+  .win-dot:nth-child(2){background:#FEBC2E;}
+  .win-dot:nth-child(3){background:#28C840;}
+  .win-path{
+    margin-left:16px; font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--mid-lt);
+    display:flex; align-items:center; gap:6px;
+  }
+  html[dir="rtl"] .win-path{margin-left:0;margin-right:16px;}
+  .win-path .live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(62,207,142,.18);}
+
+  .hero-grid{
+    display:grid; grid-template-columns:1.35fr 1fr; gap:0;
+    border-left:1px solid var(--on-ink-line-1);
+    border-right:1px solid var(--on-ink-line-1);
+  }
+  .hero-main{padding:44px 40px 48px; border-right:1px solid var(--on-ink-line-2);}
+  html[dir="rtl"] .hero-main{border-right:none;border-left:1px solid var(--on-ink-line-2);}
+  .hero-side{padding:44px 32px 48px; display:flex; flex-direction:column; align-items:center; text-align:center; gap:18px;}
+
+  .hero-tag{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.4px;
+    color:var(--accent-cyan-on-ink); background:rgba(63,208,255,.08); border:1px solid rgba(63,208,255,.25);
+    padding:5px 12px; border-radius:20px; margin-bottom:18px;
+  }
+  .hero-tag svg{width:12px;height:12px;}
+  .hero-main h1{font-size:clamp(30px,4.6vw,48px);font-weight:700;line-height:1.08;letter-spacing:-.5px;}
+  .hero-main h1 .accent{color:var(--accent-orange-on-ink);}
+  .hero-role{
+    font-family:'JetBrains Mono',monospace; font-size:13.5px; font-weight:500; color:var(--accent-cyan-on-ink);
+    margin-top:12px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .hero-role .sep{color:var(--on-ink-line-4);}
+  .hero-p{font-size:14.5px;color:var(--mid-lt);margin-top:18px;max-width:540px;line-height:1.8;}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px;}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; font-size:13px; font-weight:700;
+    padding:11px 19px; border-radius:10px; transition:transform .2s ease,box-shadow .2s ease,background .2s ease;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .btn svg{width:14px;height:14px;flex-shrink:0;}
+  .btn-orange{background:var(--orange);color:var(--ink-solid);}
+  .btn-orange:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(255,106,43,.3);}
+  .btn-line{background:transparent;color:var(--on-ink-text);border:1px solid var(--on-ink-line-5);}
+  .btn-line:hover{background:var(--on-ink-surface-hover);transform:translateY(-2px);}
+
+  .photo-stack{position:relative;}
+  .photo-frame{
+    position:relative; width:150px; height:190px; border-radius:12px; overflow:hidden;
+    border:1px solid var(--on-ink-line-5);
+    background:var(--panel2);
+  }
+  .photo-frame img{
+    width:100%;height:100%;object-fit:cover;object-position:center 18%;
+    position:relative;z-index:2;opacity:0;transition:opacity .3s ease;
+  }
+  .photo-fallback{
+    position:absolute; inset:0; z-index:1;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Space Grotesk',Arial,sans-serif; font-size:34px; font-weight:700; color:var(--on-ink-text-soft);
+    background:linear-gradient(160deg,var(--panel2),var(--ink));
+    letter-spacing:.5px;
+  }
+  html[lang="ar"] .photo-fallback{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .photo-scan{
+    position:absolute; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+    opacity:.85; animation:scan 3.2s ease-in-out infinite;
+  }
+  @keyframes scan{0%,100%{top:6%;}50%{top:92%;}}
+  @media (prefers-reduced-motion:reduce){.photo-scan{animation:none;top:50%;}}
+
+  .status-line{
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mid-lt);
+    display:flex; align-items:center; gap:7px;
+  }
+  .status-line .live-dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex-shrink:0;}
+
+  .side-facts{width:100%;display:flex;flex-direction:column;gap:0;margin-top:6px;}
+  .side-fact{
+    display:flex; justify-content:space-between; align-items:baseline;
+    padding:11px 2px; border-bottom:1px dashed var(--on-ink-line-3); text-align:left;
+  }
+  html[dir="rtl"] .side-fact{text-align:right;}
+  .side-fact:last-child{border-bottom:none;}
+  .side-fact .k{font-size:11px;color:var(--mid-lt);font-family:'JetBrains Mono',monospace;}
+  .side-fact .v{font-size:13px;color:var(--on-ink-text);font-weight:600;}
+
+  /* ═══════════════ SECTIONS ═══════════════ */
+  section{padding:60px 0;scroll-margin-top:82px;}
+  .sec-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono',monospace; font-size:11.5px; font-weight:700; color:var(--orange-dim);
+    background:rgba(255,106,43,.08); border:1px solid rgba(255,106,43,.2);
+    padding:5px 12px; border-radius:20px; margin-bottom:14px;
+  }
+  .sec-head{margin-bottom:34px;max-width:640px;}
+  .sec-head h2{font-size:clamp(22px,3.2vw,30px);color:var(--text-dk);font-weight:700;letter-spacing:-.4px;}
+  .sec-head p{font-size:13.5px;color:var(--lite-dk);margin-top:8px;line-height:1.7;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease;}
+  .reveal.in-view{opacity:1;transform:none;}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none;}html{scroll-behavior:auto;}}
+
+  /* ═══════════════ BENTO SKILLS GRID ═══════════════ */
+  .bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;}
+  .b-card{
+    background:var(--paper2); border:1px solid var(--paper-line); border-radius:var(--radius);
+    padding:22px; box-shadow:0 1px 0 rgba(0,0,0,.02);
+  }
+  .b-span-2{grid-column:span 2;}
+  .b-span-3{grid-column:span 3;}
+  .b-span-4{grid-column:span 4;}
+  .b-span-6{grid-column:span 6;}
+  .b-label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.5px; text-transform:uppercase;
+    color:var(--lite-dk); margin-bottom:14px; display:flex; align-items:center; gap:7px;
+  }
+  .b-label svg{width:13px;height:13px;color:var(--orange-dim);}
+  .tag-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+  .tag{
+    font-size:12px;font-weight:600;color:var(--text-dk);background:var(--paper);
+    border:1px solid var(--paper-line);border-radius:8px;padding:6px 11px;
+  }
+  .tag.hot{background:rgba(255,106,43,.08);border-color:rgba(255,106,43,.25);color:var(--orange-dim);}
+  .tag.data{background:rgba(63,208,255,.08);border-color:rgba(63,208,255,.3);color:var(--cyan-dim);}
+
+  .lang-meter{margin-bottom:16px;}
+  .lang-meter:last-child{margin-bottom:0;}
+  .lang-top{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-bottom:6px;gap:8px;}
+  .lang-top .code{font-family:'JetBrains Mono',monospace;font-weight:500;color:var(--lite-dk);font-size:10.5px;}
+  .meter{height:6px;background:var(--paper);border:1px solid var(--paper-line);border-radius:4px;overflow:hidden;}
+  .meter-f{height:100%;background:linear-gradient(90deg,var(--orange-dim),var(--orange));border-radius:3px;}
+  .meter-f.cyan{background:linear-gradient(90deg,var(--cyan-dim),var(--cyan));}
+
+  .stat-big{display:flex;align-items:baseline;gap:8px;}
+  .stat-big b{font-family:'Space Grotesk',Arial,sans-serif;font-size:38px;color:var(--text-dk);letter-spacing:-1px;}
+  html[lang="ar"] .stat-big b{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .stat-big span{font-size:12px;color:var(--lite-dk);}
+
+  /* ═══════════════ EXPERIENCE — terminal log cards ═══════════════ */
+  .log-card{
+    background:var(--ink); border-radius:16px; overflow:hidden; margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .log-card:last-child{margin-bottom:0;}
+  .log-head{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    padding:16px 22px; border-bottom:1px solid var(--on-ink-line-2);
+  }
+  .log-title-wrap{display:flex;align-items:center;gap:11px;min-width:0;}
+  .log-icon{
+    width:36px;height:36px;border-radius:9px;background:rgba(255,106,43,.12);border:1px solid rgba(255,106,43,.3);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .log-icon svg{width:18px;height:18px;color:var(--accent-orange-on-ink);}
+  .log-title{font-family:'Space Grotesk',Arial,sans-serif;font-weight:700;font-size:15.5px;color:var(--on-ink-text);}
+  html[lang="ar"] .log-title{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .log-org{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--accent-cyan-on-ink);margin-top:2px;}
+  .log-date{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; color:var(--mid-lt);
+    background:var(--on-ink-surface-3); border:1px solid var(--on-ink-line-3); padding:4px 10px; border-radius:20px; white-space:nowrap;
+  }
+  .log-body{padding:18px 22px 22px;}
+  .log-line{
+    display:flex; gap:11px; font-size:13.5px; color:var(--mid-lt); line-height:1.7; margin-bottom:9px;
+  }
+  .log-line:last-child{margin-bottom:0;}
+  .log-line .gt{color:var(--accent-orange-on-ink);font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+
+  /* ═══════════════ EDUCATION ═══════════════ */
+  .edu-list{display:flex;flex-direction:column;gap:14px;}
+  .edu-card{
+    background:var(--paper2); border:1px solid var(--paper-line); border-radius:16px;
+    padding:24px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+  }
+  .edu-badge{
+    width:52px;height:52px;border-radius:12px;background:rgba(63,208,255,.1);border:1px solid rgba(63,208,255,.3);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .edu-badge svg{width:26px;height:26px;color:var(--cyan-dim);}
+  .edu-body{flex:1;min-width:220px;}
+  .edu-title{font-weight:700;font-size:16.5px;color:var(--text-dk);}
+  .edu-org{font-size:13px;color:var(--lite-dk);margin-top:3px;}
+  .edu-status{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--ok);
+    background:rgba(62,207,142,.1); border:1px solid rgba(62,207,142,.3); padding:5px 12px; border-radius:20px; white-space:nowrap;
+  }
+  .edu-status-done{
+    color:var(--orange-dim); background:rgba(255,106,43,.08); border-color:rgba(255,106,43,.25);
+  }
+
+  /* ═══════════════ CERTIFICATION — flagship terminal panel ═══════════════ */
+  .cert-flagship{
+    position:relative; background:var(--ink); border-radius:20px; overflow:hidden;
+    box-shadow:0 24px 60px rgba(11,15,20,.4);
+  }
+  .cert-flagship::before{
+    content:''; position:absolute; inset:0; opacity:.4; pointer-events:none;
+    background-image:linear-gradient(rgba(63,208,255,.06) 1px, transparent 1px),linear-gradient(90deg, rgba(63,208,255,.06) 1px, transparent 1px);
+    background-size:28px 28px;
+    mask-image:radial-gradient(ellipse 70% 70% at 85% 20%,#000,transparent 70%);
+  }
+  .cert-top{
+    position:relative; display:flex; align-items:center; gap:8px; padding:14px 22px;
+    border-bottom:1px solid var(--on-ink-line-2);
+  }
+  .cert-top .win-dot{width:9px;height:9px;}
+  .cert-top-label{margin-left:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mid-lt);}
+  html[dir="rtl"] .cert-top-label{margin-left:0;margin-right:14px;}
+  .cert-body{position:relative;padding:36px 32px 40px;display:flex;align-items:center;gap:28px;flex-wrap:wrap;}
+  .cert-badge-ring{
+    position:relative; flex-shrink:0; width:110px;height:110px;border-radius:50%;
+    background:conic-gradient(from 180deg,var(--orange),var(--cyan),var(--orange));
+    display:flex;align-items:center;justify-content:center;
+    animation:spin 8s linear infinite;
+  }
+  @media (prefers-reduced-motion:reduce){.cert-badge-ring{animation:none;}}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .cert-badge-inner{
+    width:92px;height:92px;border-radius:50%;background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .cert-badge-inner svg{width:44px;height:44px;color:var(--on-ink-text);}
+  .cert-content{flex:1;min-width:260px;}
+  .cert-eyebrow{
+    display:inline-flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:700;
+    letter-spacing:.6px;text-transform:uppercase;color:var(--ink-solid);background:var(--orange);padding:4px 11px;border-radius:20px;margin-bottom:12px;
+  }
+  .cert-name{font-family:'Space Grotesk',Arial,sans-serif;font-size:24px;font-weight:700;color:var(--on-ink-text);line-height:1.25;}
+  html[lang="ar"] .cert-name{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+  .cert-issuer{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--accent-cyan-on-ink);margin-top:8px;}
+  .cert-desc{font-size:13.5px;color:var(--mid-lt);margin-top:12px;max-width:460px;line-height:1.75;}
+  .cert-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+  .cert-chip{
+    font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:var(--mid-lt);
+    background:var(--on-ink-surface-3);border:1px solid var(--on-ink-line-4);padding:6px 12px;border-radius:8px;
+  }
+
+  /* ═══════════════ CONTACT ═══════════════ */
+  .contact-panel{
+    background:var(--paper2); border:1px solid var(--paper-line); border-radius:20px;
+    overflow:hidden;
+  }
+  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+  .contact-cell{
+    padding:26px 20px; text-align:center; border-right:1px solid var(--paper-line);
+    transition:background .2s ease;
+  }
+  html[dir="rtl"] .contact-cell{border-right:none;border-left:1px solid var(--paper-line);}
+  .contact-cell:last-child{border-right:none;}
+  html[dir="rtl"] .contact-cell:last-child{border-left:none;}
+  .contact-cell:hover{background:var(--paper);}
+  .contact-cell svg{width:20px;height:20px;color:var(--orange-dim);margin:0 auto 12px;}
+  .contact-cell .lbl{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--lite-dk);margin-bottom:5px;}
+  .contact-cell .val{font-size:13px;font-weight:700;color:var(--text-dk);word-break:break-word;}
+
+  footer{background:var(--ink);color:var(--mid-lt);padding:28px 0 110px;text-align:center;font-size:12px;font-family:'JetBrains Mono',monospace;}
+  footer strong{color:var(--on-ink-text);font-family:'Space Grotesk',Arial,sans-serif;}
+  html[lang="ar"] footer strong{font-family:'IBM Plex Sans Arabic',Arial,sans-serif;}
+
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:var(--fab-bg);backdrop-filter:blur(12px);
+    border-top:1px solid var(--on-ink-line-3);
+    display:flex;justify-content:center;
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:9px 12px;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+    padding:7px 4px;border-radius:10px;color:var(--mid-lt);transition:background .2s ease;
+  }
+  .fab:hover{background:var(--on-ink-surface-hover);}
+  .fab svg{width:18px;height:18px;color:var(--accent-orange-on-ink);}
+  .fab span{font-size:9px;font-weight:700;letter-spacing:.2px;font-family:'JetBrains Mono',monospace;}
+
+  .to-top{
+    position:fixed;right:18px;bottom:78px;z-index:91;width:44px;height:44px;border-radius:12px;
+    background:var(--orange);color:var(--ink-solid);display:flex;align-items:center;justify-content:center;
+    box-shadow:0 10px 24px rgba(255,106,43,.35);opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:19px;height:19px;}
+  html[dir="rtl"] .to-top{right:auto;left:18px;}
+
+  body{padding-bottom:66px;}
+  @media (min-width:761px){.fab-bar{display:none;}body{padding-bottom:0;}.to-top{bottom:30px;}}
+
+  /* ═══════════════ RESPONSIVE ═══════════════ */
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-side{order:-1;border-bottom:1px solid var(--on-ink-line-2);padding-top:32px;padding-bottom:32px;}
+    .hero-main{border-right:none;}
+    html[dir="rtl"] .hero-main{border-left:none;}
+    .photo-frame{width:168px;height:212px;}
+    .bento{grid-template-columns:repeat(2,1fr);}
+    .b-span-2,.b-span-3,.b-span-4,.b-span-6{grid-column:span 2;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+    .contact-cell:nth-child(2){border-right:none;}
+    html[dir="rtl"] .contact-cell:nth-child(2){border-left:none;}
+    .contact-cell{border-bottom:1px solid var(--paper-line);}
+    .contact-cell:nth-child(3){border-bottom:none;grid-column:1 / -1;}
+  }
+  @media (max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;width:38px;height:38px;border-radius:9px;border:1px solid var(--on-ink-line-5);background:var(--on-ink-surface-2);align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+    .burger svg{width:18px;height:18px;color:var(--on-ink-text);}
+    .cert-body{flex-direction:column;text-align:center;}
+    .cert-desc{margin-left:auto;margin-right:auto;}
+    .cert-chips{justify-content:center;}
+    .fab span{display:none;}
+  }
+  @media (max-width:420px){
+    .brand-sub{display:none;}
+    .bento{grid-template-columns:1fr;}
+    .b-span-2,.b-span-3,.b-span-4,.b-span-6{grid-column:span 1;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAV ═══════════════ -->
+<nav class="nav">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15 L9 9 L13 13 L20 5"/><circle cx="20" cy="5" r="1.8" fill="currentColor" stroke="none"/></svg>
+      </span>
+      <span class="brand-text"><span data-i18n="brandName">Abdulla Ikywed</span><span class="brand-sub" data-i18n="brandSub">cs_student · marketer</span></span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about" data-nav data-i18n="navAbout">profile</a></li>
+      <li><a href="#skills" data-nav data-i18n="navSkills">stack</a></li>
+      <li><a href="#experience" data-nav data-i18n="navExperience">work</a></li>
+      <li><a href="#education" data-nav data-i18n="navEducation">education</a></li>
+      <li><a href="#certifications" data-nav data-i18n="navCertifications">certs</a></li>
+      <li><a href="#contact" data-nav data-i18n="navContact">contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="icon-btn lang-btn" id="langBtn" data-i18n-aria="ariaLang" aria-label="Switch language">
+        <span id="langBtnText">AR</span>
+      </button>
+      <button class="icon-btn" id="themeBtn" data-i18n-aria="ariaTheme" aria-label="Toggle contrast mode" aria-pressed="false">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="burger" id="burgerBtn" data-i18n-aria="ariaBurger" aria-label="Open menu" aria-expanded="false">
+        <svg id="burgerIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about" data-nav data-i18n="navAbout">profile</a>
+  <a href="#skills" data-nav data-i18n="navSkills">stack</a>
+  <a href="#experience" data-nav data-i18n="navExperience">work</a>
+  <a href="#education" data-nav data-i18n="navEducation">education</a>
+  <a href="#certifications" data-nav data-i18n="navCertifications">certs</a>
+  <a href="#contact" data-nav data-i18n="navContact">contact</a>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<header class="hero" id="home">
+  <div class="hero-window">
+    <div class="win-bar">
+      <span class="win-dot"></span><span class="win-dot"></span><span class="win-dot"></span>
+      <span class="win-path mono">
+        <span class="live-dot"></span>
+        <span data-i18n="winPath">~/abdulla-ikywed/profile.sys</span>
+      </span>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-main">
+        <div class="hero-tag">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <span data-i18n="eyebrow">Digital CV — Bahrain</span>
+        </div>
+        <h1><span data-i18n="heroNameLine1">Abdulla Jaffar</span><br><span class="accent" data-i18n="heroNameLine2">Abdulla Ikywed</span></h1>
+        <div class="hero-role">
+          <span data-i18n="hRole1">CS Undergraduate</span><span class="sep">·</span>
+          <span data-i18n="hRole2">CCST Certified</span><span class="sep">·</span>
+          <span data-i18n="hRole3">Digital Marketer</span>
+        </div>
+        <p class="hero-p" data-i18n="heroBio">Computer Science undergraduate at the University of Technology of Bahrain, pairing a hands-on technical foundation — including a Cisco Certified Support Technician credential — with real-world digital marketing, social media management, and graphic design experience across sales, logistics, and booking operations.</p>
+        <div class="cta-row">
+          <a class="btn btn-orange" href="https://wa.me/97336970423" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+            <span data-i18n="btnWhatsapp">whatsapp</span>
+          </a>
+          <a class="btn btn-line" href="mailto:abdulla.ikowed@gmail.com">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            <span data-i18n="btnEmail">email</span>
+          </a>
+        </div>
+      </div>
+      <div class="hero-side">
+        <div class="photo-stack">
+          <div class="photo-frame">
+            <div class="photo-fallback" data-i18n="photoFallback">AI</div>
+            <img id="heroPhoto" src="a-Photo.jpg" alt="Abdulla Jaffar Abdulla Ikywed" data-i18n-alt="heroName"
+                 onerror="this.style.opacity='0'"
+                 onload="this.style.opacity='1'; var f=this.previousElementSibling; if(f) f.style.display='none';">
+            <div class="photo-scan"></div>
+          </div>
+        </div>
+        <div class="status-line"><span class="live-dot"></span><span data-i18n="statusLine">open to opportunities</span></div>
+        <div class="side-facts">
+          <div class="side-fact"><span class="k mono" data-i18n="factLocationLbl">location</span><span class="v" data-i18n="factLocationVal">Sitra, Bahrain</span></div>
+          <div class="side-fact"><span class="k mono" data-i18n="factCertLbl">certification</span><span class="v" data-i18n="factCertVal">Cisco CCST</span></div>
+          <div class="side-fact"><span class="k mono" data-i18n="factLangsLbl">languages</span><span class="v" data-i18n="factLangsVal">Arabic · English</span></div>
+          <div class="side-fact"><span class="k mono" data-i18n="factExpLbl">working since</span><span class="v" data-i18n="factExpVal">2021</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ═══════════════ ABOUT / SKILLS — bento grid ═══════════════ -->
+<section id="about">
+  <div class="container">
+    <span class="sec-tag" id="skills">01 · profile</span>
+    <div class="sec-head">
+      <h2 data-i18n="sec01">Skills &amp; capability map</h2>
+      <p data-i18n="sec01Sub">A working split between infrastructure fundamentals and brand-facing creative — the same combination that shaped every role below.</p>
+    </div>
+
+    <div class="bento">
+      <div class="b-card b-span-3 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          <span data-i18n="cardItTitle">IT &amp; Technical</span>
+        </div>
+        <div class="tag-wrap">
+          <span class="tag hot" data-i18n="it1">Computer Science Fundamentals</span>
+          <span class="tag hot" data-i18n="it2">Cisco Support &amp; Networking</span>
+          <span class="tag" data-i18n="it3">Web Design &amp; Development</span>
+        </div>
+      </div>
+
+      <div class="b-card b-span-3 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l4-16 4 12 4-12 4 16"/></svg>
+          <span data-i18n="cardMarketingTitle">Marketing &amp; Media</span>
+        </div>
+        <div class="tag-wrap">
+          <span class="tag data" data-i18n="mkt1">Social Media Management</span>
+          <span class="tag data" data-i18n="mkt2">Digital Content Creation</span>
+          <span class="tag" data-i18n="mkt3">Ad Campaign Strategy</span>
+        </div>
+      </div>
+
+      <div class="b-card b-span-2 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18M3 12h18"/></svg>
+          <span data-i18n="cardLangTitle">Languages</span>
+        </div>
+        <div class="lang-meter">
+          <div class="lang-top"><span data-i18n="langArName">Arabic</span><span class="code" data-i18n="langArLvl">native</span></div>
+          <div class="meter"><div class="meter-f" style="width:100%"></div></div>
+        </div>
+        <div class="lang-meter">
+          <div class="lang-top"><span data-i18n="langEnName">English</span><span class="code" data-i18n="langEnLvl">professional</span></div>
+          <div class="meter"><div class="meter-f cyan" style="width:82%"></div></div>
+        </div>
+      </div>
+
+      <div class="b-card b-span-2 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+          <span data-i18n="cardDesignTitle">Design Tools</span>
+        </div>
+        <div class="tag-wrap">
+          <span class="tag" data-i18n="dsg1">Canva / Photoshop</span>
+          <span class="tag" data-i18n="dsg2">UI/UX Basics</span>
+          <span class="tag" data-i18n="dsg3">Visual Branding</span>
+        </div>
+      </div>
+
+      <div class="b-card b-span-2 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4M15 3h4a2 2 0 012 2v4M9 21H5a2 2 0 01-2-2v-4M15 21h4a2 2 0 002-2v-4"/></svg>
+          <span data-i18n="cardOpsTitle">Operations</span>
+        </div>
+        <div class="tag-wrap">
+          <span class="tag" data-i18n="ops1">Booking Systems</span>
+          <span class="tag" data-i18n="ops2">Inventory Management</span>
+          <span class="tag" data-i18n="ops3">Customer Service</span>
+        </div>
+      </div>
+
+      <div class="b-card b-span-6 reveal">
+        <div class="b-label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span data-i18n="cardSkillsTitle">Personal Skills</span>
+        </div>
+        <div class="tag-wrap">
+          <span class="tag" data-i18n="skill1">Team Leadership &amp; Collaboration</span>
+          <span class="tag" data-i18n="skill2">High-Pressure Management</span>
+          <span class="tag" data-i18n="skill3">Strategic Planning</span>
+          <span class="tag" data-i18n="skill4">Creative Problem Solving</span>
+          <span class="tag" data-i18n="skill5">Effective Communication</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EXPERIENCE — terminal logs ═══════════════ -->
+<section id="experience">
+  <div class="container">
+    <span class="sec-tag">02 · work</span>
+    <div class="sec-head">
+      <h2 data-i18n="sec02">Experience log</h2>
+      <p data-i18n="sec02Sub">Two roles, one thread running through both: owning a customer-facing operation end-to-end while driving its digital presence.</p>
+    </div>
+
+    <div class="log-card reveal">
+      <div class="log-head">
+        <div class="log-title-wrap">
+          <div class="log-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+          </div>
+          <div>
+            <div class="log-title" data-i18n="exp1Title">Marketing Manager &amp; Booking Officer</div>
+            <div class="log-org" data-i18n="exp1Org">Al-Habib Hajj &amp; Umrah Campaign</div>
+          </div>
+        </div>
+        <span class="log-date mono" data-i18n="exp1Date">2024 – 2025</span>
+      </div>
+      <div class="log-body">
+        <div class="log-line"><span class="gt">›</span><span data-i18n="exp1B1">Led comprehensive marketing strategies and managed the campaign's digital presence, designing high-impact visual content for advertisements and developing the official website</span></div>
+        <div class="log-line"><span class="gt">›</span><span data-i18n="exp1B2">Orchestrated complex logistics including flight and hotel reservations, while managing social media channels to ensure prompt customer support and successful booking completions</span></div>
+      </div>
+    </div>
+
+    <div class="log-card reveal">
+      <div class="log-head">
+        <div class="log-title-wrap">
+          <div class="log-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg>
+          </div>
+          <div>
+            <div class="log-title" data-i18n="exp2Title">Sales &amp; Social Media Specialist</div>
+            <div class="log-org" data-i18n="exp2Org">Ain Al-Rahaa Dates &amp; Nuts Shop</div>
+          </div>
+        </div>
+        <span class="log-date mono" data-i18n="exp2Date">2021 – 2022</span>
+      </div>
+      <div class="log-body">
+        <div class="log-line"><span class="gt">›</span><span data-i18n="exp2B1">Managed daily retail operations, inventory control, and direct sales, ensuring a high standard of customer service</span></div>
+        <div class="log-line"><span class="gt">›</span><span data-i18n="exp2B2">Spearheaded social media initiatives that increased brand visibility and customer engagement, balancing administrative tasks with floor sales to meet monthly targets</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ EDUCATION ═══════════════ -->
+<section id="education">
+  <div class="container">
+    <span class="sec-tag">03 · education</span>
+    <div class="sec-head">
+      <h2 data-i18n="sec03">Education</h2>
+    </div>
+    <div class="edu-list">
+      <div class="edu-card reveal">
+        <div class="edu-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1.1 2.7 3 6 3s6-1.9 6-3v-5"/></svg>
+        </div>
+        <div class="edu-body">
+          <div class="edu-title" data-i18n="edu1Title">Bachelor of Computer Science</div>
+          <div class="edu-org" data-i18n="edu1Org">University of Technology of Bahrain (UTB)</div>
+        </div>
+        <span class="edu-status" data-i18n="edu1Date">in progress</span>
+      </div>
+      <div class="edu-card reveal">
+        <div class="edu-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        </div>
+        <div class="edu-body">
+          <div class="edu-title" data-i18n="edu2Title">High School Diploma</div>
+          <div class="edu-org" data-i18n="edu2Org">Al Ta'awon Secondary School for Boys</div>
+        </div>
+        <span class="edu-status edu-status-done" data-i18n="edu2Date">completed</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CERTIFICATIONS — flagship ═══════════════ -->
+<section id="certifications">
+  <div class="container">
+    <span class="sec-tag">04 · certification</span>
+    <div class="sec-head">
+      <h2 data-i18n="sec04">Certification</h2>
+      <p data-i18n="sec04Sub">The credential behind the networking column above — verified, hands-on, and the technical anchor of this profile.</p>
+    </div>
+
+    <div class="cert-flagship reveal">
+      <div class="cert-top">
+        <span class="win-dot"></span><span class="win-dot"></span><span class="win-dot"></span>
+        <span class="cert-top-label mono" data-i18n="certWinPath">credential --verify ccst</span>
+      </div>
+      <div class="cert-body">
+        <div class="cert-badge-ring">
+          <div class="cert-badge-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+          </div>
+        </div>
+        <div class="cert-content">
+          <span class="cert-eyebrow" data-i18n="certFeatureTag">Featured Credential</span>
+          <div class="cert-name" data-i18n="certFeatureName">Cisco Certified Support Technician (CCST)</div>
+          <div class="cert-issuer mono" data-i18n="certFeatureMeta">issued by · Cisco Networking Academy</div>
+          <p class="cert-desc" data-i18n="certFeatureDesc">Validates foundational, hands-on skills in networking and IT support — from device connectivity and troubleshooting to core infrastructure concepts — forming the technical backbone behind Abdulla's web and IT work.</p>
+          <div class="cert-chips">
+            <span class="cert-chip" data-i18n="certChip1">networking fundamentals</span>
+            <span class="cert-chip" data-i18n="certChip2">IT support</span>
+            <span class="cert-chip" data-i18n="certChip3">troubleshooting</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CONTACT ═══════════════ -->
+<section id="contact">
+  <div class="container">
+    <span class="sec-tag">05 · contact</span>
+    <div class="sec-head">
+      <h2 data-i18n="sec05">Get in touch</h2>
+    </div>
+    <div class="contact-panel">
+      <div class="contact-grid">
+        <a class="contact-cell reveal" href="tel:+97336970423">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
+          <div class="lbl" data-i18n="contactPhoneLbl">phone</div><div class="val">+973 3697 0423</div>
+        </a>
+        <a class="contact-cell reveal" href="mailto:abdulla.ikowed@gmail.com">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <div class="lbl" data-i18n="contactEmailLbl">email</div><div class="val">abdulla.ikowed@gmail.com</div>
+        </a>
+        <a class="contact-cell reveal" href="https://www.google.com/maps/search/Sitra,+Bahrain" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/></svg>
+          <div class="lbl" data-i18n="contactLocationLbl">location</div><div class="val" data-i18n="contactLocationVal">Sitra, Bahrain</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <strong data-i18n="heroName">Abdulla Jaffar Abdulla Ikywed</strong> — <span data-i18n="footerRole">CS Student · CCST Certified · Digital Marketer · Bahrain</span>
+  </div>
+</footer>
+
+<div class="fab-bar">
+  <div class="container">
+    <a class="fab" href="tel:+97336970423">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
+      <span data-i18n="fabCall">call</span>
+    </a>
+    <a class="fab" href="https://wa.me/97336970423" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
+      <span data-i18n="fabWhatsapp">whatsapp</span>
+    </a>
+    <a class="fab" href="mailto:abdulla.ikowed@gmail.com">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      <span data-i18n="fabEmail">email</span>
+    </a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" data-i18n-aria="ariaToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  const translations = {
+    en: {
+      navAbout:"profile", navSkills:"stack", navExperience:"work", navEducation:"education",
+      navCertifications:"certs", navContact:"contact",
+      brandName:"Abdulla Ikywed", brandSub:"cs_student · marketer",
+      winPath:"~/abdulla-ikywed/profile.sys",
+      eyebrow:"Digital CV — Bahrain",
+      heroNameLine1:"Abdulla Jaffar", heroNameLine2:"Abdulla Ikywed",
+      hRole1:"CS Undergraduate", hRole2:"CCST Certified", hRole3:"Digital Marketer",
+      heroBio:"Computer Science undergraduate at the University of Technology of Bahrain, pairing a hands-on technical foundation — including a Cisco Certified Support Technician credential — with real-world digital marketing, social media management, and graphic design experience across sales, logistics, and booking operations.",
+      btnWhatsapp:"whatsapp", btnEmail:"email",
+      heroName:"Abdulla Jaffar Abdulla Ikywed",
+      photoFallback:"AI",
+      statusLine:"open to opportunities",
+      factLocationLbl:"location", factLocationVal:"Sitra, Bahrain",
+      factCertLbl:"certification", factCertVal:"Cisco CCST",
+      factLangsLbl:"languages", factLangsVal:"Arabic · English",
+      factExpLbl:"working since", factExpVal:"2021",
+      sec01:"Skills & capability map",
+      sec01Sub:"A working split between infrastructure fundamentals and brand-facing creative — the same combination that shaped every role below.",
+      cardItTitle:"IT & Technical",
+      it1:"Computer Science Fundamentals", it2:"Cisco Support & Networking", it3:"Web Design & Development",
+      cardMarketingTitle:"Marketing & Media",
+      mkt1:"Social Media Management", mkt2:"Digital Content Creation", mkt3:"Ad Campaign Strategy",
+      cardLangTitle:"Languages",
+      langArName:"Arabic", langArLvl:"native",
+      langEnName:"English", langEnLvl:"professional",
+      cardDesignTitle:"Design Tools",
+      dsg1:"Canva / Photoshop", dsg2:"UI/UX Basics", dsg3:"Visual Branding",
+      cardOpsTitle:"Operations",
+      ops1:"Booking Systems", ops2:"Inventory Management", ops3:"Customer Service",
+      cardSkillsTitle:"Personal Skills",
+      skill1:"Team Leadership & Collaboration", skill2:"High-Pressure Management", skill3:"Strategic Planning",
+      skill4:"Creative Problem Solving", skill5:"Effective Communication",
+      sec02:"Experience log",
+      sec02Sub:"Two roles, one thread running through both: owning a customer-facing operation end-to-end while driving its digital presence.",
+      exp1Title:"Marketing Manager & Booking Officer", exp1Org:"Al-Habib Hajj & Umrah Campaign", exp1Date:"2024 – 2025",
+      exp1B1:"Led comprehensive marketing strategies and managed the campaign's digital presence, designing high-impact visual content for advertisements and developing the official website",
+      exp1B2:"Orchestrated complex logistics including flight and hotel reservations, while managing social media channels to ensure prompt customer support and successful booking completions",
+      exp2Title:"Sales & Social Media Specialist", exp2Org:"Ain Al-Rahaa Dates & Nuts Shop", exp2Date:"2021 – 2022",
+      exp2B1:"Managed daily retail operations, inventory control, and direct sales, ensuring a high standard of customer service",
+      exp2B2:"Spearheaded social media initiatives that increased brand visibility and customer engagement, balancing administrative tasks with floor sales to meet monthly targets",
+      sec03:"Education",
+      edu1Title:"Bachelor of Computer Science", edu1Org:"University of Technology of Bahrain (UTB)", edu1Date:"in progress",
+      edu2Title:"High School Diploma", edu2Org:"Al Ta'awon Secondary School for Boys", edu2Date:"completed",
+      sec04:"Certification",
+      sec04Sub:"The credential behind the networking column above — verified, hands-on, and the technical anchor of this profile.",
+      certWinPath:"credential --verify ccst",
+      certFeatureTag:"Featured Credential",
+      certFeatureName:"Cisco Certified Support Technician (CCST)",
+      certFeatureMeta:"issued by · Cisco Networking Academy",
+      certFeatureDesc:"Validates foundational, hands-on skills in networking and IT support — from device connectivity and troubleshooting to core infrastructure concepts — forming the technical backbone behind Abdulla's web and IT work.",
+      certChip1:"networking fundamentals", certChip2:"IT support", certChip3:"troubleshooting",
+      sec05:"Get in touch",
+      contactPhoneLbl:"phone", contactEmailLbl:"email",
+      contactLocationLbl:"location", contactLocationVal:"Sitra, Bahrain",
+      footerRole:"CS Student · CCST Certified · Digital Marketer · Bahrain",
+      fabCall:"call", fabWhatsapp:"whatsapp", fabEmail:"email",
+      ariaTheme:"Toggle contrast mode", ariaLang:"Switch language", ariaBurger:"Open menu", ariaToTop:"Back to top",
+      langSwitchTo:"AR",
+      pageTitle:"Abdulla Jaffar Abdulla Ikywed — System Profile"
+    },
+    ar: {
+      navAbout:"الملف", navSkills:"المهارات", navExperience:"العمل", navEducation:"التعليم",
+      navCertifications:"الشهادات", navContact:"التواصل",
+      brandName:"عبدالله إكويد", brandSub:"طالب حاسوب · مسوّق",
+      winPath:"~/عبدالله-إكويد/الملف.sys",
+      eyebrow:"سيرة ذاتية رقمية — البحرين",
+      heroNameLine1:"عبدالله جعفر", heroNameLine2:"عبدالله إكويد",
+      hRole1:"طالب علوم حاسوب", hRole2:"معتمد CCST", hRole3:"مسوّق رقمي",
+      heroBio:"طالب بكالوريوس علوم حاسوب في جامعة التكنولوجيا في البحرين، يجمع بين أساس تقني عملي — يشمل شهادة سيسكو المعتمدة لفني الدعم (CCST) — وخبرة حقيقية في التسويق الرقمي وإدارة وسائل التواصل الاجتماعي والتصميم الجرافيكي عبر أدوار في المبيعات واللوجستيات وإدارة الحجوزات.",
+      btnWhatsapp:"واتساب", btnEmail:"البريد",
+      heroName:"عبدالله جعفر عبدالله إكويد",
+      photoFallback:"ع.ا",
+      statusLine:"متاح لفرص عمل جديدة",
+      factLocationLbl:"الموقع", factLocationVal:"سترة، البحرين",
+      factCertLbl:"الشهادة", factCertVal:"سيسكو CCST",
+      factLangsLbl:"اللغات", factLangsVal:"العربية · الإنجليزية",
+      factExpLbl:"يعمل منذ", factExpVal:"2021",
+      sec01:"المهارات وخريطة القدرات",
+      sec01Sub:"توازن عملي بين أساسيات البنية التقنية والإبداع الموجّه للعلامة التجارية — نفس المزيج الذي شكّل كل دور أدناه.",
+      cardItTitle:"تقنية المعلومات",
+      it1:"أساسيات علوم الحاسوب", it2:"دعم وشبكات سيسكو", it3:"تصميم وتطوير الويب",
+      cardMarketingTitle:"التسويق والإعلام",
+      mkt1:"إدارة وسائل التواصل الاجتماعي", mkt2:"إنشاء المحتوى الرقمي", mkt3:"استراتيجية الحملات الإعلانية",
+      cardLangTitle:"اللغات",
+      langArName:"العربية", langArLvl:"لغة أم",
+      langEnName:"الإنجليزية", langEnLvl:"احترافي",
+      cardDesignTitle:"أدوات التصميم",
+      dsg1:"كانفا / فوتوشوب", dsg2:"أساسيات تجربة المستخدم", dsg3:"الهوية البصرية",
+      cardOpsTitle:"العمليات",
+      ops1:"أنظمة الحجز", ops2:"إدارة المخزون", ops3:"خدمة العملاء",
+      cardSkillsTitle:"المهارات الشخصية",
+      skill1:"القيادة الجماعية والتعاون", skill2:"إدارة العمل تحت الضغط", skill3:"التخطيط الاستراتيجي",
+      skill4:"حل المشكلات الإبداعي", skill5:"التواصل الفعّال",
+      sec02:"سجل الخبرة",
+      sec02Sub:"دوران وخيط واحد يربطهما: إدارة عملية تواجه العملاء من الألف إلى الياء مع قيادة حضورها الرقمي.",
+      exp1Title:"مدير تسويق ومسؤول حجوزات", exp1Org:"حملة الحبيب للحج والعمرة", exp1Date:"2024 – 2025",
+      exp1B1:"قاد استراتيجيات تسويقية شاملة وأدار الحضور الرقمي للحملة، مع تصميم محتوى بصري عالي التأثير للإعلانات وتطوير الموقع الإلكتروني الرسمي",
+      exp1B2:"نسّق لوجستيات معقدة شملت حجوزات الطيران والفنادق، مع إدارة قنوات التواصل الاجتماعي لضمان دعم سريع للعملاء وإتمام الحجوزات بنجاح",
+      exp2Title:"أخصائي مبيعات ووسائل تواصل اجتماعي", exp2Org:"محل عين الرحى للتمور والمكسرات", exp2Date:"2021 – 2022",
+      exp2B1:"أدار العمليات اليومية للبيع بالتجزئة والتحكم بالمخزون والمبيعات المباشرة، مع الحفاظ على معايير عالية لخدمة العملاء",
+      exp2B2:"قاد مبادرات التواصل الاجتماعي التي زادت من ظهور العلامة التجارية وتفاعل العملاء، موازناً بين المهام الإدارية ومبيعات الصالة لتحقيق الأهداف الشهرية",
+      sec03:"التعليم",
+      edu1Title:"بكالوريوس علوم الحاسوب", edu1Org:"جامعة التكنولوجيا في البحرين (UTB)", edu1Date:"قيد الدراسة",
+      edu2Title:"شهادة الثانوية العامة", edu2Org:"مدرسة التعاون الثانوية للبنين", edu2Date:"مكتملة",
+      sec04:"الشهادة",
+      sec04Sub:"الشهادة التي تقف خلف عمود الشبكات أعلاه — موثّقة وعملية، وهي المرتكز التقني لهذا الملف.",
+      certWinPath:"credential --verify ccst",
+      certFeatureTag:"شهادة مميزة",
+      certFeatureName:"شهادة سيسكو المعتمدة لفني الدعم (CCST)",
+      certFeatureMeta:"صادرة عن · أكاديمية سيسكو للشبكات",
+      certFeatureDesc:"تُثبت مهارات عملية أساسية في الشبكات ودعم تقنية المعلومات — من توصيل الأجهزة واستكشاف الأعطال إلى مفاهيم البنية التحتية الأساسية — وتُشكّل الركيزة التقنية خلف أعمال عبدالله في الويب وتقنية المعلومات.",
+      certChip1:"أساسيات الشبكات", certChip2:"دعم تقني", certChip3:"استكشاف الأعطال",
+      sec05:"تواصل معي",
+      contactPhoneLbl:"الهاتف", contactEmailLbl:"البريد الإلكتروني",
+      contactLocationLbl:"الموقع", contactLocationVal:"سترة، البحرين",
+      footerRole:"طالب علوم حاسوب · معتمد CCST · مسوّق رقمي · البحرين",
+      fabCall:"اتصال", fabWhatsapp:"واتساب", fabEmail:"البريد",
+      ariaTheme:"تبديل وضع التباين", ariaLang:"تبديل اللغة", ariaBurger:"فتح القائمة", ariaToTop:"العودة للأعلى",
+      langSwitchTo:"EN",
+      pageTitle:"عبدالله جعفر عبدالله إكويد — الملف التقني"
+    }
+  };
+
+  let currentLang = 'en';
+
+  function applyLanguage(lang){
+    const dict = translations[lang];
+    if(!dict) return;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.title = dict.pageTitle;
+
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      if(dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-alt]').forEach(el=>{
+      const key = el.getAttribute('data-i18n-alt');
+      if(dict[key] !== undefined) el.alt = dict[key];
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach(el=>{
+      const key = el.getAttribute('data-i18n-aria');
+      if(dict[key] !== undefined) el.setAttribute('aria-label', dict[key]);
+    });
+
+    const langBtnText = document.getElementById('langBtnText');
+    if(langBtnText) langBtnText.textContent = dict.langSwitchTo;
+
+    currentLang = lang;
+  }
+
+  document.getElementById('langBtn').addEventListener('click', ()=>{
+    applyLanguage(currentLang === 'en' ? 'ar' : 'en');
+  });
+
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobilePanel = document.getElementById('mobilePanel');
+  burgerBtn.addEventListener('click', () => {
+    const open = mobilePanel.classList.toggle('open');
+    burgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.getElementById('burgerIcon').innerHTML = open
+      ? '<path d="M6 6l12 12M6 18L18 6"/>'
+      : '<path d="M4 6h16M4 12h16M4 18h16"/>';
+  });
+  document.querySelectorAll('#mobilePanel a[data-nav]').forEach(a=>{
+    a.addEventListener('click', ()=>{
+      mobilePanel.classList.remove('open');
+      burgerBtn.setAttribute('aria-expanded','false');
+      document.getElementById('burgerIcon').innerHTML='<path d="M4 6h16M4 12h16M4 18h16"/>';
+    });
+  });
+
+  const themeBtn = document.getElementById('themeBtn');
+  if(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
+    document.documentElement.setAttribute('data-theme','dark2');
+    themeBtn.setAttribute('aria-pressed','true');
+  }
+  themeBtn.addEventListener('click', ()=>{
+    const isDark2 = document.documentElement.getAttribute('data-theme')==='dark2';
+    document.documentElement.setAttribute('data-theme', isDark2 ? '' : 'dark2');
+    themeBtn.setAttribute('aria-pressed', isDark2 ? 'false':'true');
+  });
+
+  const navAnchors = document.querySelectorAll('.nav-links a[data-nav]');
+  const sections = [...document.querySelectorAll('main section[id]')];
+  const spy = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){
+        navAnchors.forEach(a=>a.classList.toggle('active', a.getAttribute('href')==='#'+en.target.id));
+      }
+    });
+  }, {rootMargin:'-45% 0px -50% 0px'});
+  sections.forEach(s=>spy.observe(s));
+
+  const revealItems = document.querySelectorAll('.reveal');
+  const revealObs = new IntersectionObserver((entries)=>{
+    entries.forEach(en=>{
+      if(en.isIntersecting){ en.target.classList.add('in-view'); revealObs.unobserve(en.target); }
+    });
+  }, {threshold:0.12});
+  revealItems.forEach(el=>revealObs.observe(el));
+
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    toTop.classList.toggle('show', window.scrollY > 500);
+  });
+  toTop.addEventListener('click', ()=>{
+    window.scrollTo({top:0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto':'smooth'});
+  });
+
+  applyLanguage('en');
+</script>
+</body>
+</html>
