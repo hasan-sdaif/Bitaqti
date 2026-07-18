@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  بطاقتي — الباقة الأساسية | معاينة (سكرتير / سكرتيرة مكتب)
+  ────────────────────────────────────────────────────────────────────
+  ⚠️  معاينة ONLY — جميع البيانات والأسماء والأرقام والروابط وهمية
+      لأغراض العرض فقط.
+
+  ════════════════════════════════════════════════════════════════════
+  ملاحظة لغوية مهمة (Internal Note):
+  ════════════════════════════════════════════════════════════════════
+  في العادة الباقة الأساسية تُسلَّم باللغة الإنجليزية فقط افتراضياً.
+  هذه المعاينة معروضة باللغة العربية لتوضيح التصميم للعميل العربي،
+  لكن عند تسليم البطاقة الفعلية للعميل في الباقة الأساسية:
+    • إن لم يطلب صراحةً لغة معينة → تُسلَّم بالإنجليزية فقط.
+    • إن طلب العربية → تُسلَّم بالعربية فقط.
+    • دعم اللغتين في نفس الملف (زر تبديل) غير متاح في الأساسية،
+      وهو ما يميّز الباقة القياسية والمميزة عنها.
+  هذه المعاينة العربية هنا تُظهر شكل البطاقة عند طلبها بالعربية.
+
+  ════════════════════════════════════════════════════════════════════
+  ما الذي تتضمنه الباقة الأساسية (مطابقة للمواصفات في الصفحة الرئيسية):
+  ════════════════════════════════════════════════════════════════════
+    ✓ بطاقة رقمية بصفحة واحدة (One-Page).
+    ✓ تصميم متجاوب لكل الأجهزة (Mobile + Tablet + Desktop).
+    ✓ رابط خاص + رمز QR (يُسلَّم مع البطاقة، غير ظاهر هنا).
+    ✓ كل ما ورد في سيرتك الورقية ينتقل حرفياً إلى بطاقتك الرقمية.
+    ✓ زر لعرض السيرة الورقية الأصلية PDF (زر "عرض السيرة الأصلية").
+    ✓ صورة شخصية (مستطيلة عمودية) — هنا أيقونة وجه بلا ملامح بدلاً منها.
+    ✓ لغة واحدة فقط (افتراضياً: الإنجليزية، ما لم يُطلب غيرها).
+
+  لا تتضمنه الباقة الأساسية (فقط في القياسية والمميزة):
+    × دعم اللغتين في نفس الملف (زر تبديل AR/EN).
+    × رفع شهادات PDF فعلية.
+    × صفحات فرعية إضافية.
+    × أولوية في التسليم.
+    × تثبيت كتطبيق (PWA).
+
+  ════════════════════════════════════════════════════════════════════
+  لوحة الألوان (مطابقة للباقة الأساسية في الصفحة الرئيسية):
+  ════════════════════════════════════════════════════════════════════
+    --forest-900  #0B3D2E   (أخضر زمردي عميق — أساسي)
+    --forest-800  #0F5240   (أخضر زمردي)
+    --forest-600  #177A5B   (أخضر متوسط)
+    --forest-500  #1E9670   (أخضر فاتح — CTA)
+    --forest-100  #E7F1EA   (أخضر شفاف — تدرّج)
+    --paper       #FBF9F2   (خلفية ورقية فاتحة)
+    --card        #FFFFFF   (بطاقات بيضاء)
+    --ink         #20281F   (نص أساسي)
+    --ink-mid     #4C594E   (نص متوسط)
+    --ink-soft    #84907F   (نص ناعم)
+    --line        #DEE4D4   (حدود فاتحة)
+  ════════════════════════════════════════════════════════════════════
+-->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>معاينة — الباقة الأساسية | بطاقتي</title>
+<meta name="description" content="معاينة تصميم الباقة الأساسية — سكرتير مكتب. جميع البيانات وهمية." />
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%230B3D2E'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23FBF9F2'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%231E9670'/%3E%3Crect x='44' y='46' width='28' height='5' rx='2.5' fill='%2384907F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  :root{
+    --forest-900:#0B3D2E;
+    --forest-800:#0F5240;
+    --forest-600:#177A5B;
+    --forest-500:#1E9670;
+    --forest-100:#E7F1EA;
+    --paper:#FBF9F2;
+    --card:#FFFFFF;
+    --ink:#20281F;
+    --ink-mid:#4C594E;
+    --ink-soft:#84907F;
+    --line:#DEE4D4;
+    --shadow:0 8px 22px rgba(15,60,44,.09);
+    --radius:12px;
+  }
+  body{
+    font-family:'Tajawal',Arial,sans-serif;
+    background:var(--paper);
+    color:var(--ink);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:'Cairo',Arial,sans-serif;color:var(--forest-900);}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:920px;margin:0 auto;padding:0 20px;}
+
+  /* ═══ DEMO NOTE ═══ */
+  .demo-note{
+    background:linear-gradient(135deg,var(--forest-900),var(--forest-800));
+    color:#fff;padding:16px 0 18px;
+  }
+  .demo-note .container{
+    border:1.5px dashed rgba(231,241,234,.45);
+    border-radius:12px;padding:14px 16px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:9px;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;color:#fff;
+  }
+  .dn-head svg{width:18px;height:18px;color:var(--forest-500);}
+  .dn-head .tier-chip{
+    margin-right:auto;
+    font-family:'Cairo';font-size:10px;font-weight:800;
+    color:var(--forest-900);background:var(--forest-500);
+    padding:4px 9px;border-radius:14px;letter-spacing:.4px;
+  }
+  .dn-body{font-size:12.5px;color:rgba(255,255,255,.78);line-height:1.7;}
+  .dn-body strong{color:var(--forest-100);}
+  .dn-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-top:4px;}
+  .dn-list li{
+    font-size:12.5px;color:rgba(255,255,255,.92);
+    display:flex;gap:7px;align-items:flex-start;
+  }
+  .dn-list li svg{width:13px;height:13px;color:var(--forest-500);flex-shrink:0;margin-top:3px;}
+  .dn-note{
+    font-size:11.5px;color:rgba(231,241,234,.85);
+    background:rgba(0,0,0,.18);border-right:3px solid var(--forest-500);
+    padding:8px 12px;border-radius:6px;line-height:1.6;
+  }
+  .dn-note strong{color:#fff;}
+  @media(max-width:600px){.dn-list{grid-template-columns:1fr;}}
+
+  /* ═══ NAV ═══ */
+  nav.top{
+    position:sticky;top:0;z-index:50;
+    background:rgba(251,249,242,.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav.top .container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:58px;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:14.5px;color:var(--forest-900);}
+  .brand .tag{
+    width:32px;height:32px;border-radius:8px;
+    background:linear-gradient(135deg,var(--forest-600),var(--forest-900));
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;flex-shrink:0;
+  }
+  .brand .tag svg{width:18px;height:18px;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.2;}
+  .brand-name{font-family:'Cairo';font-weight:800;}
+  .brand-sub{font-size:10px;color:var(--ink-soft);font-weight:500;}
+  .nav-links{display:flex;gap:20px;}
+  .nav-links a{
+    color:var(--ink-mid);font-size:13px;font-weight:600;
+    position:relative;padding:6px 0;transition:color .2s ease;
+  }
+  .nav-links a:hover{color:var(--forest-600);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:0;right:0;
+    width:0;height:2px;background:var(--forest-500);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+  .burger{
+    display:none;width:36px;height:36px;border-radius:8px;
+    background:var(--forest-100);border:1px solid var(--line);
+    color:var(--forest-900);align-items:center;justify-content:center;cursor:pointer;
+  }
+  .burger svg{width:18px;height:18px;}
+  .mobile-panel{
+    display:none;position:fixed;inset:58px 0 0 0;
+    background:var(--paper);z-index:49;padding:18px 20px;
+  }
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:block;padding:14px 4px;
+    border-bottom:1px solid var(--line);
+    font-weight:600;font-size:15px;color:var(--forest-900);
+  }
+
+  /* ═══ HERO ═══ */
+  .hero{
+    background:linear-gradient(180deg,var(--forest-100),var(--paper) 90%);
+    padding:46px 0 42px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero .container{
+    display:flex;gap:32px;align-items:center;flex-wrap:wrap;
+  }
+  .photo-wrap{flex-shrink:0;position:relative;}
+  .photo-frame{
+    width:148px;height:184px;
+    background:linear-gradient(160deg,var(--forest-600),var(--forest-900));
+    display:flex;align-items:center;justify-content:center;
+    border:4px solid #fff;
+    border-radius:8px;
+    box-shadow:0 14px 32px rgba(15,60,44,.25);
+    overflow:hidden;
+  }
+  .photo-frame svg{width:74px;height:74px;color:rgba(255,255,255,.85);}
+  .photo-corner{
+    position:absolute;width:22px;height:22px;
+    border:2.5px solid var(--forest-500);
+  }
+  .photo-corner.tl{top:-6px;right:-6px;border-left:none;border-bottom:none;}
+  .photo-corner.br{bottom:-6px;left:-6px;border-right:none;border-top:none;}
+  .hero-text{flex:1;min-width:240px;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:#fff;border:1px solid var(--forest-500);
+    color:var(--forest-600);font-size:11px;font-weight:800;
+    padding:5px 12px;border-radius:20px;margin-bottom:12px;
+  }
+  .badge svg{width:11px;height:11px;}
+  .placeholder-name{
+    font-family:'Cairo';font-weight:800;
+    font-size:clamp(22px,4vw,30px);color:var(--forest-900);
+    letter-spacing:.3px;
+  }
+  .placeholder-name .ph{color:var(--ink-soft);font-weight:600;}
+  .role{
+    font-size:14.5px;font-weight:700;color:var(--forest-600);
+    margin-top:5px;display:flex;align-items:center;gap:7px;
+  }
+  .role::before{
+    content:'';width:18px;height:2px;background:var(--forest-500);border-radius:1px;
+  }
+  .bio{
+    font-size:13.5px;color:var(--ink-mid);
+    margin-top:12px;max-width:540px;
+  }
+  .cta-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px;}
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:13px;font-weight:700;font-family:'Tajawal';
+    padding:10px 16px;border-radius:8px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn svg{width:15px;height:15px;}
+  .btn-solid{background:var(--forest-500);color:#08251b;}
+  .btn-solid:hover{background:#25a97e;transform:translateY(-2px);box-shadow:0 8px 18px rgba(30,150,112,.35);}
+  .btn-line{background:#fff;color:var(--forest-900);border:1px solid var(--line);}
+  .btn-line:hover{border-color:var(--forest-500);color:var(--forest-600);}
+
+  /* ═══ FACTS ═══ */
+  .facts{background:#fff;border-bottom:1px solid var(--line);}
+  .facts .container{display:grid;grid-template-columns:repeat(4,1fr);}
+  .fact{
+    padding:16px 10px;text-align:center;
+    border-left:1px solid var(--line);
+  }
+  .fact:last-child{border-left:none;}
+  .fact b{
+    display:block;font-family:'Cairo';font-size:18px;
+    color:var(--forest-800);font-weight:800;
+  }
+  .fact span{font-size:10.5px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.5px;}
+
+  /* ═══ SECTIONS ═══ */
+  section{padding:46px 0;}
+  section:nth-of-type(even){background:#fff;}
+  .sec-head{
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .sec-head .sec-tag{
+    width:5px;height:22px;background:var(--forest-500);border-radius:3px;
+  }
+  .sec-head h2{font-size:19px;font-weight:800;color:var(--forest-900);}
+  .sec-head .sec-sub{font-size:11px;color:var(--ink-soft);font-weight:500;margin-right:auto;}
+
+  /* about */
+  .about-card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:22px;
+    box-shadow:var(--shadow);
+    border-right:3px solid var(--forest-500);
+  }
+  .about-card p{font-size:13.5px;color:var(--ink-mid);margin-bottom:11px;line-height:1.8;}
+  .about-card p:last-child{margin-bottom:0;}
+
+  /* skills */
+  .grid-2{display:grid;grid-template-columns:1.3fr .7fr;gap:16px;}
+  .card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+  }
+  section:nth-of-type(even) .card{background:var(--paper);}
+  .card h3{
+    font-size:12px;font-weight:800;text-transform:uppercase;
+    letter-spacing:.6px;color:var(--forest-800);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .card h3 svg{width:14px;height:14px;}
+  .pill-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+  .pill{
+    font-size:12px;font-weight:600;color:var(--forest-800);
+    background:var(--forest-100);border:1px solid #cfe2d5;
+    border-radius:7px;padding:6px 12px;
+  }
+  section:nth-of-type(even) .pill{background:#fff;}
+
+  .lang-row{margin-bottom:11px;}
+  .lang-row:last-child{margin-bottom:0;}
+  .lang-top{
+    display:flex;justify-content:space-between;
+    font-size:12.5px;font-weight:700;margin-bottom:5px;
+  }
+  .lang-top span:last-child{font-weight:500;color:var(--ink-soft);font-size:11px;}
+  .bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .bar-f{height:100%;background:linear-gradient(90deg,var(--forest-600),var(--forest-500));border-radius:3px;}
+
+  /* timeline */
+  .timeline{position:relative;padding-right:26px;}
+  .timeline::before{
+    content:'';position:absolute;right:6px;top:6px;bottom:6px;
+    width:2px;background:var(--line);
+  }
+  .t-item{position:relative;padding-bottom:24px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;right:-26px;top:4px;
+    width:12px;height:12px;border-radius:50%;
+    background:#fff;border:2.5px solid var(--forest-500);
+  }
+  .t-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;}
+  .t-title{font-weight:700;font-size:14.5px;color:var(--forest-900);font-family:'Cairo';}
+  .t-date{
+    font-size:11px;font-weight:700;color:var(--forest-600);
+    background:var(--forest-100);padding:3px 10px;border-radius:20px;
+  }
+  .t-org{font-size:12.5px;font-weight:600;color:var(--forest-800);margin-top:3px;}
+  .t-note{font-size:12.5px;color:var(--ink-mid);margin-top:4px;line-height:1.65;}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .contact-card{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px 14px;
+    text-align:center;transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .contact-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .contact-card .ic{
+    width:38px;height:38px;border-radius:50%;
+    background:var(--forest-100);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 10px;color:var(--forest-600);
+  }
+  .contact-card .ic svg{width:18px;height:18px;}
+  .contact-card .lbl{
+    font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--ink-soft);margin-bottom:4px;
+  }
+  .contact-card .val{font-size:13px;font-weight:700;color:var(--forest-900);word-break:break-word;}
+
+  /* footer */
+  footer{
+    background:var(--forest-900);color:rgba(255,255,255,.7);
+    padding:24px 0 90px;text-align:center;font-size:12px;
+  }
+  footer strong{color:#fff;}
+  footer .brand-foot{color:var(--forest-500);font-weight:800;}
+
+  /* floating action bar */
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:rgba(11,61,46,.95);backdrop-filter:blur(10px);
+    border-top:1px solid rgba(30,150,112,.25);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:8px 12px;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:7px 4px;border-radius:9px;color:rgba(255,255,255,.85);
+    transition:background .2s ease;
+  }
+  .fab:hover{background:rgba(30,150,112,.15);}
+  .fab svg{width:19px;height:19px;color:var(--forest-500);}
+  .fab span{font-size:9.5px;font-weight:600;}
+
+  body{padding-bottom:64px;}
+
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .hero .container{flex-direction:column;text-align:center;}
+    .role{justify-content:center;}
+    .bio{margin-left:auto;margin-right:auto;}
+    .cta-row{justify-content:center;}
+    .facts .container{grid-template-columns:repeat(2,1fr);}
+    .fact:nth-child(2){border-left:none;}
+    .fact{border-bottom:1px solid var(--line);}
+    .fact:nth-child(3),.fact:nth-child(4){border-bottom:none;}
+    .grid-2{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:1fr;}
+    .fab span{display:none;}
+  }
+  @media(min-width:761px){
+    .fab-bar{display:none;}
+    body{padding-bottom:0;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ DEMO NOTE ═══ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      <span>معاينة الباقة الأساسية — سكرتير مكتب</span>
+      <span class="tier-chip">BASIC</span>
+    </div>
+    <div class="dn-body">
+      هذه معاينة توضيحية فقط، جميع البيانات والأسماء والأرقام وهمية لأغراض العرض.
+      <strong>ما تتضمنه الباقة الأساسية:</strong>
+    </div>
+    <ul class="dn-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>بطاقة رقمية بصفحة واحدة</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>تصميم متجاوب لكل الأجهزة</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>رابط خاص + رمز QR (يُسلَّم معها)</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>صورة شخصية مستطيلة عمودية</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>زر لعرض السيرة الأصلية PDF</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>لغة واحدة فقط (افتراضياً: الإنجليزية)</li>
+    </ul>
+    <div class="dn-note">
+      <strong>ملاحظة:</strong> هذه المعاينة معروضة بالعربية لتوضيح التصميم، لكن الباقة الأساسية تُسلَّم
+      افتراضياً باللغة الإنجليزية فقط ما لم يطلب العميل صراحةً لغة أخرى. دعم اللغتين في نفس الملف
+      (زر تبديل AR/EN) متاح في الباقة القياسية والمميزة فقط.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="top">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3zM3 7l2-3h14l2 3M9 12h6"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name">بطاقة السكرتير</span>
+        <span class="brand-sub">الباقة الأساسية</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">نبذة</a></li>
+      <li><a href="#skills">المهارات</a></li>
+      <li><a href="#experience">الخبرات</a></li>
+      <li><a href="#education">التعليم</a></li>
+      <li><a href="#contact">تواصل</a></li>
+    </ul>
+    <button class="burger" id="burgerBtn" aria-label="القائمة">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+  </div>
+</nav>
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about">نبذة</a>
+  <a href="#skills">المهارات</a>
+  <a href="#experience">الخبرات</a>
+  <a href="#education">التعليم</a>
+  <a href="#contact">تواصل</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="photo-wrap">
+      <div class="photo-frame">
+        <!-- أيقونة وجه بلا ملامح — صورة مستطيلة عمودية مثل الباقين -->
+        <svg viewBox="0 0 64 80" fill="currentColor" aria-hidden="true">
+          <rect x="0" y="0" width="64" height="80" fill="none"/>
+          <circle cx="32" cy="28" r="13"/>
+          <path d="M6 80c0-15 12-24 26-24s26 9 26 24z"/>
+        </svg>
+      </div>
+      <div class="photo-corner tl"></div>
+      <div class="photo-corner br"></div>
+    </div>
+    <div class="hero-text">
+      <span class="badge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 4 1 5.5L12 15l-5 2.3 1-5.5-4-4 5.5-.8z"/></svg>
+        الباقة الأساسية
+      </span>
+      <h1 class="placeholder-name">[ <span class="ph">الاسم الكامل</span> ]</h1>
+      <div class="role">سكرتير مكتب تنفيذي</div>
+      <p class="bio">
+        سكرتير مكتب محترف بخبرة في إدارة الجداول، تنظيم الاجتماعات،
+        ومراسلات العمل اليومية. أُتقن برامج المكتب الأساسية وأدير الملفات
+        والأرشيف بكفاءة، مع الالتزام بمواعيد العمل وحسن التعامل مع الزوار.
+      </p>
+      <div class="cta-row">
+        <a href="https://wa.me/00000000000" class="btn btn-solid" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+          واتساب
+        </a>
+        <a href="#" class="btn btn-line" title="زر لعرض السيرة الأصلية PDF — متضمن في الباقة">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          عرض السيرة الأصلية PDF
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ FACTS ═══ -->
+<div class="facts">
+  <div class="container">
+    <div class="fact"><b>+5</b><span>سنوات خبرة</span></div>
+    <div class="fact"><b>3</b><span>جهات عمل</span></div>
+    <div class="fact"><b>2</b><span>لغات</span></div>
+    <div class="fact"><b>+200</b><span>اجتماع منظم</span></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag"></span>
+      <h2>نبذة تعريفية</h2>
+      <span class="sec-sub">من أنا</span>
+    </div>
+    <div class="about-card">
+      <p>
+        سكرتير مكتب يتمتع بخبرة عملية تتجاوز خمس سنوات في بيئات العمل الإدارية
+        المتنوعة، يشمل ذلك مكاتب المحاماة، الشركات التجارية، والعيادات الخاصة.
+        أمتلك مهارة في تنظيم الجداول اليومية والأسبوعية، إعداد المراسلات الرسمية،
+        واستقبال الزوار بمهنية عالية. أُولي اهتمامًا خاصًا بالتفاصيل الدقيقة
+        وأضمن أن المستندات والأرشيف يبقى منظّمًا ويسهل الوصول إليه وقت الحاجة.
+      </p>
+      <p>
+        أؤمن أن السكرتير الناجح هو من يجعل يوم العمل سلسًا لكل أفراد الفريق،
+        ولذلك أحرص دائمًا على التنبؤ بالاحتياجات قبل طلبها، والتنسيق المبكر
+        بين الأقسام، ومتابعة المهام حتى إتمامها. أسعى للتطوير المستمر لمهاراتي
+        في البرامج المكتبية الحديثة وأدوات إدارة المهام.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS ═══ -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag"></span>
+      <h2>المهارات واللغات</h2>
+      <span class="sec-sub">ما أتقنه</span>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v12H3zM3 7l2-3h14l2 3M9 12h6"/></svg>
+          مهارات مكتبية
+        </h3>
+        <div class="pill-wrap">
+          <span class="pill">Microsoft Word</span>
+          <span class="pill">Excel</span>
+          <span class="pill">PowerPoint</span>
+          <span class="pill">Outlook</span>
+          <span class="pill">إدارة الجداول</span>
+          <span class="pill">المراسلات الرسمية</span>
+          <span class="pill">الأرشفة الإلكترونية</span>
+          <span class="pill">استقبال الزوار</span>
+          <span class="pill">إدارة الاجتماعات</span>
+          <span class="pill">طباعة وتحرير</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 010 18M12 3a13 13 0 000 18"/></svg>
+          اللغات
+        </h3>
+        <div class="lang-row">
+          <div class="lang-top"><span>العربية</span><span>اللغة الأم</span></div>
+          <div class="bar"><div class="bar-f" style="width:100%"></div></div>
+        </div>
+        <div class="lang-row">
+          <div class="lang-top"><span>English</span><span>متقدم</span></div>
+          <div class="bar"><div class="bar-f" style="width:80%"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag"></span>
+      <h2>الخبرات العملية</h2>
+      <span class="sec-sub">مسيرتي المهنية</span>
+    </div>
+    <div class="card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">سكرتير تنفيذي</span>
+            <span class="t-date">2022 — الآن</span>
+          </div>
+          <div class="t-org">مكتب محاماة تجاري — المنامة</div>
+          <p class="t-note">
+            إدارة جدول الموعد للمحامين، تنظيم ملفات القضايا، إعداد المراسلات
+            الرسمية بين المحكمة والعملاء، ومتابعة استلام المستندات.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">سكرتير استقبال</span>
+            <span class="t-date">2019 — 2022</span>
+          </div>
+          <div class="t-org">شركة تجزئة كبرى — المحرق</div>
+          <p class="t-note">
+            استقبال الزوار والموردين، تحويل المكالمات، إدارة صندوق البريد
+            الإلكتروني العام، وإعداد تقارير الحضور والانصراف الشهرية.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">مساعد إداري</span>
+            <span class="t-date">2017 — 2019</span>
+          </div>
+          <div class="t-org">عيادة طبية خاصة — الرفاع</div>
+          <p class="t-note">
+            حجز المواعيد للمرضى، إدارة الملفات الطبية الإلكترونية،
+            ومتابعة الفواتير والتأمين الصحي.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION ═══ -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag"></span>
+      <h2>المؤهل العلمي</h2>
+      <span class="sec-sub">دراستي وتدريبي</span>
+    </div>
+    <div class="card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">دبلوم إدارة المكاتب</span>
+            <span class="t-date">2014 — 2016</span>
+          </div>
+          <div class="t-org">معهد [الاسم] للتدريب الإداري — المنامة</div>
+          <p class="t-note">
+            دبلوم مهني مدّته سنتان، يغطّي برامج المكتب، إدارة الملفات،
+            المراسلات الرسمية، ومهارات التواصل المؤسسي. تخرّجت بدرجة الامتياز.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">دورة السكرتارية التنفيذية المتقدّمة</span>
+            <span class="t-date">2017</span>
+          </div>
+          <div class="t-org">مركز [الاسم] للتطوير المهني — المحرق</div>
+          <p class="t-note">
+            120 ساعة تدريبية مكثّفة في إدارة اجتماعات المجالس، صياغة المحاضر،
+            التعامل مع الشخصيات التنفيذية، وإدارة الوقت تحت الضغط.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title">الثانوية العامة — القسم الأدبي</span>
+            <span class="t-date">2013</span>
+          </div>
+          <div class="t-org">مدرسة [الاسم] الثانوية — الرفاع</div>
+          <p class="t-note">
+            أنهيت الثانوية العامة بمعدّل 92%، مع مشاركة نشطة في اللجنة
+            الطلابية للأنشطة الثقافية وتنظيم الفعاليات المدرسية.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-tag"></span>
+      <h2>تواصل معي</h2>
+      <span class="sec-sub">للحجز والاستفسار</span>
+    </div>
+    <div class="contact-grid">
+      <a href="tel:+97300000000" class="contact-card">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+        </div>
+        <div class="lbl">هاتف</div>
+        <div class="val">+973 0000 0000</div>
+      </a>
+      <a href="mailto:example@example.com" class="contact-card">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+        </div>
+        <div class="lbl">بريد إلكتروني</div>
+        <div class="val">example@example.com</div>
+      </a>
+      <div class="contact-card">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="lbl">الموقع</div>
+        <div class="val">المنامة، البحرين</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <p>صُنع بواسطة <span class="brand-foot">بطاقتي</span> — الباقة الأساسية</p>
+    <p style="margin-top:6px;opacity:.6;font-size:11px;">جميع البيانات في هذه المعاينة وهمية لأغراض العرض فقط.</p>
+  </div>
+</footer>
+
+<!-- Floating action bar -->
+<div class="fab-bar">
+  <div class="container">
+    <a href="tel:+97300000000" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+      <span>اتصال</span>
+    </a>
+    <a href="https://wa.me/00000000000" class="fab" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+      <span>واتساب</span>
+    </a>
+    <a href="mailto:example@example.com" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      <span>بريد</span>
+    </a>
+  </div>
+</div>
+
+<script>
+  // Burger toggle
+  const burger = document.getElementById('burgerBtn');
+  const panel = document.getElementById('mobilePanel');
+  if(burger){
+    burger.addEventListener('click', ()=>panel.classList.toggle('open'));
+    panel.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>panel.classList.remove('open')));
+  }
+</script>
+
+</body>
+</html>
