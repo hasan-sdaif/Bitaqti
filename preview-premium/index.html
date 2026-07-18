@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  بطاقتي — الباقة المميزة | معاينة (مبرمج / مهندس برمجيات)
+  ────────────────────────────────────────────────────────────────────
+  ⚠️  معاينة ONLY — جميع البيانات والأسماء والأرقام والروابط والمستودعات
+      وهمية لأغراض العرض فقط.
+
+  ما الذي تتضمنه الباقة المميزة:
+    ✓ كل ما في الباقة القياسية (دعم لغتين، شهادات PDF، صورة، إلخ).
+    ✓ صفحات فرعية إضافية (إنجازات، معرض أعمال).
+    ✓ أولوية في التسليم.
+    ✓ تثبيت كتطبيق هاتف (PWA).
+    ✓ صورة شخصية مستطيلة عمودية.
+    ✓ دعم اللغتين (عربي/إنجليزي) بزر تبديل.
+    ✓ وضع فاتح/داكن (Theme Toggle) بجانب زر اللغة.
+    ✓ قسم التعليم.
+
+  لوحة الألوان:
+    الوضع الداكن الافتراضي: void (#0A0E1A) + نيلي (#5B5FEF)
+    الوضع الفاتح: رمادي فاتح (#F4F6FA) + نيلي عميق (#3F43C7) + نص أسود مزرق (#0F172A)
+  ════════════════════════════════════════════════════════════════════
+-->
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>معاينة — الباقة المميزة | بطاقتي</title>
+<meta name="description" content="معاينة تصميم الباقة المميزة — مهندس برمجيات. جميع البيانات وهمية." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0A0E1A" />
+<link rel="manifest" href='data:application/manifest+json,{"name":"بطاقتي - المميزة","short_name":"بطاقتي","start_url":".","display":"standalone","background_color":"#0A0E1A","theme_color":"#5B5FEF","icons":[]}' />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='80' height='80' rx='14' fill='%230A0E1A'/%3E%3Cpath d='M38 38l-12 12 12 12M62 38l12 12-12 12M56 32l-12 36' stroke='%235B5FEF' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='10' width='80' height='80' rx='14' fill='%230A0E1A'/%3E%3Cpath d='M38 38l-12 12 12 12M62 38l12 12-12 12M56 32l-12 36' stroke='%235B5FEF' stroke-width='5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  /* ═══ متغيّرات الوضع الداكن (الافتراضي) ═══ */
+  :root{
+    --void:#0A0E1A;
+    --void2:#111729;
+    --panel:#1A2138;
+    --panel2:#232C47;
+    --indigo:#5B5FEF;
+    --indigo-lt:#8B8FFF;
+    --violet:#A78BFA;
+    --gold-warn:#FFD98E;
+    --mint:#22C55E;
+    --text:#E6EDF3;
+    --mid:#A6B2C9;
+    --soft:#6B7A99;
+    --line:rgba(255,255,255,.08);
+    --line2:rgba(91,95,239,.18);
+    --shadow:0 16px 40px rgba(0,0,0,.5);
+    /* متغيّرات مرنة تتغيّر مع الوضع */
+    --bg-page:var(--void);
+    --bg-alt:var(--void2);
+    --bg-card:var(--panel);
+    --bg-card-alt:var(--panel2);
+    --nav-bg:rgba(10,14,26,.85);
+    --hero-text-color:var(--text);
+    --hero-name-color:rgba(230,237,243,.85);
+    --hero-name-strong:#fff;
+    --hero-bio-color:var(--mid);
+    --placeholder-text:rgba(230,237,243,.5);
+    --prompt-color:var(--indigo);
+    --sec-h2-color:#fff;
+    --card-h3-color:var(--indigo);
+    --card-p-color:var(--mid);
+    --proj-name-color:var(--indigo-lt);
+    --t-title-color:#fff;
+    --t-org-color:var(--violet);
+    --t-note-color:var(--mid);
+    --info-lbl-color:var(--soft);
+    --info-val-color:var(--indigo-lt);
+    --stack-card-bg:var(--panel);
+    --stack-h3-color:#fff;
+    --stat-b-color:var(--indigo-lt);
+    --stat-span-color:var(--soft);
+    --footer-bg:var(--void2);
+    --footer-text:var(--soft);
+    --fab-bg:rgba(10,14,26,.95);
+    --fab-color:var(--mid);
+    --fab-hover-bg:rgba(91,95,239,.08);
+    --contact-card-bg:var(--panel);
+    --contact-val-color:#fff;
+    --skillbar-bg:var(--void);
+    --demo-bg:linear-gradient(135deg,var(--void2),var(--panel));
+    --demo-text-color:var(--text);
+    --demo-body-color:var(--mid);
+    --demo-head-color:var(--indigo-lt);
+    --demo-note-bg:rgba(91,95,239,.08);
+    --frame-inner-bg:linear-gradient(160deg,var(--panel),var(--void2));
+    --frame-svg-color:rgba(230,237,243,.5);
+    --btn-line-bg:rgba(255,255,255,.04);
+    --btn-line-border:var(--line);
+    --btn-line-color:var(--text);
+  }
+
+  /* ═══ متغيّرات الوضع الفاتح ═══ */
+  html[data-theme="light"]{
+    --void:#0F172A;
+    --void2:#E8ECF4;
+    --panel:#FFFFFF;
+    --panel2:#F4F6FA;
+    --indigo:#3F43C7;
+    --indigo-lt:#4F54DC;
+    --violet:#7C5BE0;
+    --gold-warn:#B88410;
+    --mint:#0E9F6E;
+    --text:#0F172A;
+    --mid:#475569;
+    --soft:#94A3B8;
+    --line:rgba(15,23,42,.08);
+    --line2:rgba(63,67,199,.18);
+    --shadow:0 14px 32px rgba(15,23,42,.08);
+
+    --bg-page:#F4F6FA;
+    --bg-alt:#FFFFFF;
+    --bg-card:#FFFFFF;
+    --bg-card-alt:#F4F6FA;
+    --nav-bg:rgba(255,255,255,.85);
+    --hero-text-color:var(--text);
+    --hero-name-color:#0F172A;
+    --hero-name-strong:#0F172A;
+    --hero-bio-color:var(--mid);
+    --placeholder-text:rgba(15,23,42,.5);
+    --prompt-color:var(--indigo);
+    --sec-h2-color:#0F172A;
+    --card-h3-color:var(--indigo);
+    --card-p-color:var(--mid);
+    --proj-name-color:var(--indigo-lt);
+    --t-title-color:#0F172A;
+    --t-org-color:var(--violet);
+    --t-note-color:var(--mid);
+    --info-lbl-color:var(--soft);
+    --info-val-color:var(--indigo-lt);
+    --stack-card-bg:#FFFFFF;
+    --stack-h3-color:#0F172A;
+    --stat-b-color:var(--indigo);
+    --stat-span-color:var(--soft);
+    --footer-bg:#0F172A;
+    --footer-text:rgba(255,255,255,.7);
+    --fab-bg:rgba(255,255,255,.95);
+    --fab-color:var(--mid);
+    --fab-hover-bg:rgba(63,67,199,.08);
+    --contact-card-bg:#FFFFFF;
+    --contact-val-color:#0F172A;
+    --skillbar-bg:#E2E8F0;
+    --demo-bg:linear-gradient(135deg,#0F172A,#1E2542);
+    --demo-text-color:#E6EDF3;
+    --demo-body-color:#A6B2C9;
+    --demo-head-color:var(--indigo-lt);
+    --demo-note-bg:rgba(91,95,239,.15);
+    --frame-inner-bg:linear-gradient(160deg,#E8ECF4,#D4DCEF);
+    --frame-svg-color:rgba(63,67,199,.5);
+    --btn-line-bg:#FFFFFF;
+    --btn-line-border:var(--line);
+    --btn-line-color:#0F172A;
+  }
+
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--bg-page);
+    color:var(--text);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    transition:background .3s ease,color .3s ease;
+  }
+  h1,h2,h3{font-family:'Cairo',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1080px;margin:0 auto;padding:0 22px;}
+
+  /* ═══ DEMO NOTE ═══ */
+  .demo-note{
+    background:var(--demo-bg);
+    padding:16px 0 18px;
+    border-bottom:1px solid var(--line2);
+    position:relative;
+  }
+  .demo-note::before{
+    content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(91,95,239,.06) 1px,transparent 1px);
+    background-size:18px 18px;
+    pointer-events:none;
+  }
+  .demo-note .container{
+    position:relative;
+    border:1.5px dashed rgba(139,143,255,.35);
+    border-radius:12px;padding:14px 18px;
+    display:flex;flex-direction:column;gap:10px;
+    background:rgba(91,95,239,.02);
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:9px;
+    font-family:'Cairo',sans-serif;font-weight:800;font-size:14px;color:var(--demo-head-color);
+  }
+  .dn-head svg{width:18px;height:18px;color:var(--indigo);}
+  .dn-head .tier-chip{
+    margin-right:auto;
+    font-family:'IBM Plex Mono';font-size:10px;font-weight:700;
+    color:#000;background:linear-gradient(135deg,var(--indigo),var(--violet));
+    padding:4px 9px;border-radius:14px;letter-spacing:.4px;
+  }
+  .dn-body{font-size:12.5px;color:var(--demo-body-color);line-height:1.7;}
+  .dn-body strong{color:var(--demo-head-color);}
+  .dn-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 18px;margin-top:4px;}
+  .dn-list li{
+    font-size:12.5px;color:var(--demo-text-color);
+    display:flex;gap:7px;align-items:flex-start;
+    font-family:'IBM Plex Mono';
+  }
+  .dn-list li svg{width:13px;height:13px;color:var(--mint);flex-shrink:0;margin-top:3px;}
+  .dn-note{
+    font-size:11.5px;color:var(--demo-text-color);
+    background:var(--demo-note-bg);border-right:3px solid var(--indigo);
+    padding:8px 12px;border-radius:6px;line-height:1.6;
+  }
+  html[dir="ltr"] .dn-note{border-right:none;border-left:3px solid var(--indigo);}
+  .dn-note strong{color:var(--demo-head-color);}
+  @media(max-width:600px){.dn-list{grid-template-columns:1fr;}}
+
+  /* ═══ NAV — ثابت لا يتأثر بتبديل اللغة ═══ */
+  nav.top{
+    position:sticky;top:0;z-index:60;
+    background:var(--nav-bg);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    transition:background .3s ease;
+  }
+  nav.top .container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:14.5px;flex-shrink:0;}
+  .brand .tag{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    display:flex;align-items:center;justify-content:center;
+    color:#000;flex-shrink:0;
+    box-shadow:0 0 16px rgba(91,95,239,.4);
+  }
+  .brand .tag svg{width:18px;height:18px;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.2;}
+  .brand-name{font-family:'IBM Plex Mono';font-size:14px;color:var(--text);font-weight:600;}
+  .brand-sub{font-size:10px;color:var(--indigo-lt);font-family:'IBM Plex Mono';letter-spacing:.5px;}
+
+  /* nav-links ترتيب ثابت */
+  .nav-links{
+    display:flex;gap:22px;align-items:center;
+    flex-direction:row; /* ثابت */
+  }
+  .nav-links a{
+    color:var(--mid);font-size:12.5px;font-weight:600;font-family:'IBM Plex Mono';
+    transition:color .2s ease;position:relative;
+  }
+  .nav-links a:hover{color:var(--indigo-lt);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:-4px;right:0;
+    width:0;height:1.5px;background:var(--indigo);
+    transition:width .25s ease;
+  }
+  .nav-links a:hover::after{width:100%;}
+
+  /* nav-right: ترتيب ثابت (prio + lang + theme + burger) */
+  .nav-right{
+    display:flex;align-items:center;gap:8px;
+    flex-direction:row; /* ثابت */
+    flex-shrink:0;
+  }
+  .prio-chip{
+    display:inline-flex;align-items:center;gap:5px;
+    font-size:10.5px;font-weight:700;color:var(--gold-warn);
+    background:rgba(255,217,142,.1);border:1px solid rgba(255,217,142,.3);
+    padding:5px 11px;border-radius:14px;font-family:'IBM Plex Mono';
+    flex-shrink:0;
+  }
+  html[data-theme="light"] .prio-chip{
+    color:#92600A;background:rgba(184,132,16,.1);border-color:rgba(184,132,16,.3);
+  }
+  .prio-chip svg{width:11px;height:11px;}
+
+  /* lang-toggle */
+  .lang-toggle{
+    display:flex;align-items:center;
+    background:rgba(255,255,255,.05);border:1px solid var(--line2);
+    border-radius:20px;padding:2px;flex-shrink:0;
+    flex-direction:row;
+  }
+  html[data-theme="light"] .lang-toggle{
+    background:rgba(63,67,199,.06);border-color:rgba(63,67,199,.2);
+  }
+  .lang-toggle button{
+    background:transparent;border:0;color:var(--mid);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:16px;
+    cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;
+  }
+  .lang-toggle button.active{background:var(--indigo);color:#fff;}
+  .lang-toggle button:not(.active):hover{color:var(--indigo-lt);}
+
+  /* theme-toggle button */
+  .theme-btn{
+    width:34px;height:34px;border-radius:9px;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);
+    color:var(--indigo-lt);cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  html[data-theme="light"] .theme-btn{
+    background:rgba(63,67,199,.06);border-color:var(--line);
+    color:var(--indigo);
+  }
+  .theme-btn:hover{background:rgba(91,95,239,.12);}
+  .theme-btn svg{width:16px;height:16px;}
+  .theme-btn .moon{display:none;}
+  html[data-theme="light"] .theme-btn .sun{display:none;}
+  html[data-theme="light"] .theme-btn .moon{display:block;}
+
+  @media(max-width:760px){.prio-chip{display:none;}}
+  .burger{
+    display:none;width:38px;height:38px;border-radius:9px;
+    background:rgba(255,255,255,.05);border:1px solid var(--line);
+    color:var(--text);align-items:center;justify-content:center;cursor:pointer;
+    flex-shrink:0;
+  }
+  html[data-theme="light"] .burger{background:rgba(63,67,199,.06);color:var(--text);}
+  .burger svg{width:18px;height:18px;}
+  .mobile-panel{
+    display:none;position:fixed;inset:62px 0 0 0;
+    background:var(--bg-page);z-index:59;padding:22px;
+    border-top:1px solid var(--line);
+  }
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:block;color:var(--text);padding:15px 4px;
+    border-bottom:1px solid var(--line);
+    font-weight:600;font-size:16px;font-family:'IBM Plex Mono';
+  }
+  .mobile-panel a:hover{color:var(--indigo-lt);}
+
+  /* ═══ HERO ═══ */
+  .hero{position:relative;overflow:hidden;padding:58px 0 42px;}
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 1px);
+    background-size:22px 22px;
+    mask-image:linear-gradient(180deg,#000,transparent 85%);
+  }
+  html[data-theme="light"] .hero::before{
+    background-image:radial-gradient(rgba(15,23,42,.06) 1px,transparent 1px);
+  }
+  .glow1,.glow2{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+  .glow1{
+    width:480px;height:480px;
+    background:radial-gradient(circle,rgba(91,95,239,.35),transparent 70%);
+    top:-220px;right:-140px;
+  }
+  html[data-theme="light"] .glow1{
+    background:radial-gradient(circle,rgba(63,67,199,.18),transparent 70%);
+  }
+  .glow2{
+    width:420px;height:420px;
+    background:radial-gradient(circle,rgba(167,139,250,.3),transparent 70%);
+    bottom:-220px;left:-140px;
+  }
+  html[data-theme="light"] .glow2{
+    background:radial-gradient(circle,rgba(124,91,224,.15),transparent 70%);
+  }
+  .hero .container{
+    position:relative;display:flex;gap:38px;align-items:center;flex-wrap:wrap;
+    flex-direction:row; /* ثابت */
+  }
+  .term-eyebrow{
+    font-family:'IBM Plex Mono';font-size:12px;color:var(--indigo-lt);
+    margin-bottom:12px;display:flex;align-items:center;gap:8px;
+  }
+  .term-eyebrow::before{
+    content:'';width:8px;height:8px;border-radius:50%;
+    background:var(--mint);box-shadow:0 0 10px var(--mint);
+    animation:pulse 1.8s ease infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:.5;}
+  }
+  .frame{position:relative;width:150px;height:186px;flex-shrink:0;}
+  .frame-inner{
+    position:absolute;inset:0;border-radius:8px;
+    background:var(--frame-inner-bg);
+    border:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 0 1px rgba(91,95,239,.2),0 20px 40px rgba(0,0,0,.5);
+  }
+  html[data-theme="light"] .frame-inner{box-shadow:0 0 0 1px rgba(63,67,199,.15),0 14px 30px rgba(15,23,42,.08);}
+  .frame-inner::before{
+    content:'';position:absolute;inset:-1px;border-radius:8px;padding:1px;
+    background:linear-gradient(135deg,var(--indigo),transparent 40%,var(--violet));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;
+  }
+  .frame-inner svg{width:74px;height:74px;color:var(--frame-svg-color);position:relative;}
+  .frame-corner{
+    position:absolute;width:22px;height:22px;
+    border:2px solid var(--indigo);
+  }
+  .frame-corner.tl{top:-6px;right:-6px;border-left:none;border-bottom:none;}
+  .frame-corner.br{bottom:-6px;left:-6px;border-right:none;border-top:none;}
+  .hero-text{flex:1;min-width:260px;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;flex-direction:row;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:14px;
+    font-family:'IBM Plex Mono';
+  }
+  .badge-tier{
+    background:rgba(91,95,239,.15);border:1px solid rgba(91,95,239,.4);color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .badge-tier{
+    background:rgba(63,67,199,.1);border-color:rgba(63,67,199,.4);color:var(--indigo);
+  }
+  .badge-pwa{
+    background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.35);color:var(--violet);
+  }
+  .badge-open{
+    background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);color:var(--mint);
+  }
+  .badge svg{width:11px;height:11px;}
+  /* ✅ placeholder-name لون واضح في الوضعين */
+  .placeholder-name{
+    font-family:'Cairo';font-weight:900;
+    font-size:clamp(24px,4.4vw,34px);
+    color:var(--hero-name-color);
+    letter-spacing:.5px;
+    line-height:1.15;
+  }
+  .role{
+    font-size:16px;font-weight:700;color:var(--indigo-lt);
+    margin-top:8px;font-family:'IBM Plex Mono';
+  }
+  .role .at{color:var(--violet);}
+  .bio{
+    font-size:13.5px;color:var(--hero-bio-color);
+    margin-top:13px;max-width:580px;line-height:1.8;
+  }
+  .tech-mini{
+    display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;
+    flex-direction:row;
+  }
+  .tech-mini span{
+    font-family:'IBM Plex Mono';font-size:11px;font-weight:600;
+    background:var(--bg-card);border:1px solid var(--line);
+    color:var(--indigo-lt);padding:4px 9px;border-radius:6px;
+  }
+  .cta-row{
+    display:flex;gap:9px;flex-wrap:wrap;margin-top:22px;
+    flex-direction:row; /* ثابت */
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono';
+    padding:10px 16px;border-radius:8px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn svg{width:15px;height:15px;}
+  .btn-grad{
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    color:#fff;
+  }
+  html[data-theme="light"] .btn-grad{color:#fff;}
+  .btn-grad:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(91,95,239,.35);}
+  .btn-line{
+    background:var(--btn-line-bg);color:var(--btn-line-color);
+    border:1px solid var(--btn-line-border);
+  }
+  .btn-line:hover{border-color:var(--indigo);color:var(--indigo-lt);background:rgba(91,95,239,.06);}
+
+  /* ═══ STATS ═══ */
+  .stats{
+    background:var(--bg-alt);
+    border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  }
+  .stats .container{display:grid;grid-template-columns:repeat(4,1fr);}
+  .stat{
+    padding:22px 14px;text-align:center;
+    border-left:1px solid var(--line);position:relative;
+  }
+  .stat:last-child{border-left:none;}
+  .stat b{
+    display:block;font-family:'IBM Plex Mono';font-size:24px;
+    color:var(--stat-b-color);font-weight:700;
+  }
+  .stat span{font-size:11px;color:var(--stat-span-color);font-family:'IBM Plex Mono';text-transform:uppercase;letter-spacing:.5px;}
+
+  /* ═══ SECTIONS ═══ */
+  section{padding:54px 0;scroll-margin-top:74px;}
+  section:nth-of-type(odd){background:var(--bg-page);}
+  section:nth-of-type(even){background:var(--bg-alt);}
+  .sec-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:26px;
+    padding-bottom:12px;border-bottom:1px solid var(--line);
+  }
+  .sec-head .prompt{
+    font-family:'IBM Plex Mono';font-size:13px;
+    color:var(--prompt-color);font-weight:600;
+  }
+  .sec-head .prompt::before{content:'$ ';}
+  .sec-head h2{font-size:22px;color:var(--sec-h2-color);font-weight:800;}
+  .sec-head .cursor-blink{
+    width:8px;height:18px;background:var(--indigo);
+    margin-right:auto;
+    animation:blink 1.1s steps(2) infinite;
+  }
+  @keyframes blink{50%{opacity:0;}}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1.4fr .6fr;gap:16px;}
+  .card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;padding:22px;box-shadow:var(--shadow);
+    position:relative;
+  }
+  .card h3{
+    font-size:12px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.7px;color:var(--card-h3-color);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono';
+  }
+  .card h3 svg{width:14px;height:14px;}
+  .about-card p{font-size:13.5px;color:var(--card-p-color);margin-bottom:11px;line-height:1.85;}
+  .about-card p:last-child{margin-bottom:0;}
+  .about-card p .hl{color:var(--indigo-lt);font-family:'IBM Plex Mono';font-weight:600;}
+
+  .info-list li{
+    font-size:13px;color:var(--mid);
+    padding:9px 0;border-bottom:1px dashed var(--line);
+    display:flex;justify-content:space-between;gap:14px;
+    font-family:'IBM Plex Mono';
+  }
+  .info-list li:last-child{border-bottom:none;}
+  .info-list .lbl{color:var(--info-lbl-color);font-size:11px;}
+  .info-list .val{font-weight:700;color:var(--info-val-color);}
+
+  /* tech stack */
+  .stack-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  .stack-card{
+    background:var(--stack-card-bg);border:1px solid var(--line);
+    border-radius:10px;padding:16px;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .stack-card:hover{transform:translateY(-3px);border-color:var(--indigo);}
+  .stack-card .ic{
+    width:34px;height:34px;border-radius:8px;
+    background:rgba(91,95,239,.08);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:10px;
+    font-family:'IBM Plex Mono';font-weight:700;font-size:14px;color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .stack-card .ic{background:rgba(63,67,199,.08);color:var(--indigo);}
+  .stack-card h3{font-size:13px;color:var(--stack-h3-color);margin-bottom:4px;font-family:'Cairo';}
+  .stack-card .meta{font-size:11px;color:var(--soft);font-family:'IBM Plex Mono';}
+
+  /* projects */
+  .proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .proj-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;
+    transition:transform .2s ease,border-color .2s ease;
+    position:relative;
+  }
+  .proj-card:hover{transform:translateY(-3px);border-color:var(--indigo);}
+  .proj-head{
+    display:flex;justify-content:space-between;align-items:flex-start;
+    margin-bottom:10px;gap:10px;
+  }
+  .proj-head .name{
+    font-family:'IBM Plex Mono';font-size:15px;font-weight:700;color:var(--proj-name-color);
+    display:flex;align-items:center;gap:6px;
+  }
+  .proj-head .name::before{content:'</>';color:var(--violet);font-size:11px;}
+  .proj-head .meta{
+    font-family:'IBM Plex Mono';font-size:11px;color:var(--soft);
+    display:flex;gap:10px;flex-shrink:0;
+  }
+  .proj-head .meta span{display:flex;align-items:center;gap:3px;}
+  .proj-head .meta svg{width:11px;height:11px;}
+  .proj-card p{font-size:12.5px;color:var(--mid);line-height:1.7;margin-bottom:12px;}
+  .proj-tags{display:flex;gap:5px;flex-wrap:wrap;}
+  .proj-tag{
+    font-family:'IBM Plex Mono';font-size:10.5px;font-weight:600;
+    background:rgba(91,95,239,.08);border:1px solid rgba(91,95,239,.2);
+    color:var(--indigo-lt);padding:3px 8px;border-radius:5px;
+  }
+  html[data-theme="light"] .proj-tag{
+    background:rgba(63,67,199,.08);border-color:rgba(63,67,199,.2);color:var(--indigo);
+  }
+  .proj-card .star{color:var(--gold-warn);}
+  .proj-card .fork{color:var(--soft);}
+  .proj-link{
+    display:inline-flex;align-items:center;gap:5px;
+    margin-top:12px;font-size:11px;font-weight:700;
+    color:var(--violet);font-family:'IBM Plex Mono';
+    transition:transform .2s ease;
+  }
+  .proj-link:hover{transform:translateX(-4px);}
+  html[dir="ltr"] .proj-link:hover{transform:translateX(4px);}
+  .proj-link svg{width:11px;height:11px;}
+
+  /* experience + education timeline */
+  .timeline{position:relative;padding-right:28px;}
+  html[dir="ltr"] .timeline{padding-right:0;padding-left:28px;}
+  .timeline::before{
+    content:'';position:absolute;right:5px;top:6px;bottom:6px;
+    width:2px;background:linear-gradient(180deg,var(--indigo),var(--violet),transparent);
+  }
+  html[dir="ltr"] .timeline::before{right:auto;left:5px;}
+  .t-item{position:relative;padding-bottom:26px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;right:-28px;top:5px;
+    width:12px;height:12px;border-radius:50%;
+    background:var(--bg-card);border:2.5px solid var(--indigo);
+    box-shadow:0 0 10px rgba(91,95,239,.6);
+  }
+  html[dir="ltr"] .t-dot{right:auto;left:-28px;}
+  .t-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
+  .t-title{font-weight:700;font-size:15px;color:var(--t-title-color);font-family:'Cairo';}
+  .t-date{
+    font-family:'IBM Plex Mono';font-size:11px;font-weight:700;color:var(--indigo-lt);
+    background:rgba(91,95,239,.1);border:1px solid rgba(91,95,239,.25);
+    padding:3px 10px;border-radius:14px;
+  }
+  html[data-theme="light"] .t-date{
+    color:var(--indigo);background:rgba(63,67,199,.1);border-color:rgba(63,67,199,.25);
+  }
+  .t-org{font-size:13px;font-weight:600;color:var(--t-org-color);margin-top:3px;font-family:'IBM Plex Mono';}
+  .t-note{font-size:12.5px;color:var(--t-note-color);margin-top:5px;line-height:1.7;}
+  .t-ul{margin-top:8px;}
+  .t-ul li{
+    font-size:12.5px;color:var(--mid);
+    padding-right:15px;position:relative;margin-bottom:5px;line-height:1.65;
+    font-family:'IBM Plex Mono';
+  }
+  html[dir="ltr"] .t-ul li{padding-right:0;padding-left:15px;}
+  .t-ul li::before{
+    content:'▸';position:absolute;right:0;top:1px;color:var(--indigo);
+  }
+  html[dir="ltr"] .t-ul li::before{right:auto;left:0;content:'▸';}
+
+  /* education + bar (grid) */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .info-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:12px;padding:20px;box-shadow:var(--shadow);
+  }
+  .info-card h3{
+    font-size:13px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.7px;color:var(--indigo);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+    font-family:'IBM Plex Mono';
+  }
+  .info-card h3 svg{width:15px;height:15px;}
+  .info-card .item{padding:11px 0;border-bottom:1px dashed var(--line);}
+  .info-card .item:last-child{border-bottom:none;padding-bottom:0;}
+  .info-card .item:first-child{padding-top:0;}
+  .info-card .item .title{font-size:14px;font-weight:700;color:var(--t-title-color);font-family:'Cairo';}
+  .info-card .item .meta{font-size:12px;color:var(--soft);margin-top:3px;font-family:'IBM Plex Mono';}
+  .info-card .item .desc{font-size:12.5px;color:var(--mid);margin-top:4px;line-height:1.65;}
+
+  /* skills matrix */
+  .skill-row{margin-bottom:14px;}
+  .skill-row:last-child{margin-bottom:0;}
+  .skill-top{
+    display:flex;justify-content:space-between;
+    font-family:'IBM Plex Mono';font-size:13px;font-weight:600;
+    margin-bottom:6px;
+  }
+  .skill-top span:first-child{color:var(--text);}
+  .skill-top span:last-child{color:var(--indigo-lt);}
+  html[data-theme="light"] .skill-top span:last-child{color:var(--indigo);}
+  .skill-bar{height:6px;background:var(--skillbar-bg);border-radius:3px;overflow:hidden;border:1px solid var(--line);}
+  .skill-bar-f{
+    height:100%;
+    background:linear-gradient(90deg,var(--indigo),var(--violet));
+    border-radius:3px;
+    box-shadow:0 0 10px rgba(91,95,239,.4);
+  }
+
+  /* certifications with PDF support */
+  .cert-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .cert-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:10px;padding:16px;
+    display:flex;gap:11px;align-items:flex-start;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .cert-card:hover{transform:translateY(-2px);border-color:var(--indigo);}
+  .cert-card .ic{
+    width:34px;height:34px;border-radius:8px;
+    background:linear-gradient(135deg,rgba(91,95,239,.15),rgba(167,139,250,.15));
+    border:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--indigo-lt);flex-shrink:0;
+  }
+  html[data-theme="light"] .cert-card .ic{color:var(--indigo);}
+  .cert-card .ic svg{width:16px;height:16px;}
+  .cert-card .name{font-weight:700;font-size:13px;color:var(--t-title-color);font-family:'Cairo';margin-bottom:3px;}
+  .cert-card .meta{font-family:'IBM Plex Mono';font-size:11px;color:var(--soft);}
+  .cert-card .pdf-link{
+    display:inline-flex;align-items:center;gap:5px;
+    margin-top:7px;font-size:10.5px;font-weight:700;
+    color:var(--violet);font-family:'IBM Plex Mono';
+  }
+  .cert-card .pdf-link svg{width:11px;height:11px;}
+  /* ✅ زر PDF صغير أنيق داخل قسم الشهادات المهنية (info-card) */
+  .info-card .pdf-btn{
+    display:inline-flex;align-items:center;gap:6px;
+    margin-top:8px;font-size:11px;font-weight:700;
+    color:var(--indigo-lt);font-family:'IBM Plex Mono';
+    background:rgba(91,95,239,.08);
+    border:1px solid rgba(91,95,239,.25);
+    padding:5px 10px;border-radius:14px;
+    text-decoration:none;transition:all .2s ease;
+  }
+  html[data-theme="light"] .info-card .pdf-btn{
+    color:var(--indigo);background:rgba(63,67,199,.06);border-color:rgba(63,67,199,.25);
+  }
+  .info-card .pdf-btn:hover{
+    background:rgba(91,95,239,.15);transform:translateY(-1px);
+  }
+  html[data-theme="light"] .info-card .pdf-btn:hover{background:rgba(63,67,199,.12);}
+  .info-card .pdf-btn svg{width:12px;height:12px;}
+
+  /* writing */
+  .write-list .item{
+    padding:13px 0;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:14px;
+  }
+  .write-list .item:last-child{border-bottom:none;}
+  .write-list .item:first-child{padding-top:0;}
+  .write-list .ttl{font-size:14px;font-weight:700;color:var(--indigo-lt);font-family:'Cairo';}
+  html[data-theme="light"] .write-list .ttl{color:var(--indigo);}
+  .write-list .desc{font-size:12px;color:var(--soft);margin-top:3px;font-family:'IBM Plex Mono';}
+  .write-list .arrow{
+    color:var(--indigo);font-family:'IBM Plex Mono';font-size:14px;
+    transition:transform .2s ease;flex-shrink:0;
+  }
+  .write-list .item:hover .arrow{transform:translateX(-4px);}
+  html[dir="ltr"] .write-list .item:hover .arrow{transform:translateX(4px);}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .contact-card{
+    background:var(--contact-card-bg);border:1px solid var(--line);
+    border-radius:12px;padding:22px 14px;text-align:center;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .contact-card:hover{transform:translateY(-4px);border-color:var(--indigo);}
+  .contact-card .ic{
+    width:46px;height:46px;border-radius:50%;
+    background:linear-gradient(135deg,rgba(91,95,239,.15),rgba(167,139,250,.15));
+    border:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 12px;color:var(--indigo-lt);
+  }
+  html[data-theme="light"] .contact-card .ic{color:var(--indigo);}
+  .contact-card .ic svg{width:21px;height:21px;}
+  .contact-card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--soft);margin-bottom:5px;font-family:'IBM Plex Mono';}
+  .contact-card .val{font-size:13px;font-weight:700;color:var(--contact-val-color);word-break:break-word;font-family:'IBM Plex Mono';}
+
+  /* footer */
+  footer{
+    background:var(--footer-bg);color:var(--footer-text);
+    padding:34px 0 110px;text-align:center;font-size:12.5px;
+    border-top:1px solid var(--line);
+  }
+  footer .brand-foot{
+    font-family:'IBM Plex Mono';font-weight:700;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  footer .ascii{
+    font-family:'IBM Plex Mono';font-size:11px;color:var(--footer-text);
+    margin-top:10px;line-height:1.3;
+  }
+
+  /* floating action bar */
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:var(--fab-bg);backdrop-filter:blur(14px);
+    border-top:1px solid var(--line2);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:8px 14px;flex-direction:row;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 4px;border-radius:8px;color:var(--fab-color);
+    transition:background .2s ease,color .2s ease;
+  }
+  .fab:hover{background:var(--fab-hover-bg);color:var(--indigo-lt);}
+  .fab svg{width:20px;height:20px;color:var(--indigo-lt);}
+  html[data-theme="light"] .fab svg{color:var(--indigo);}
+  .fab span{font-size:10px;font-weight:600;font-family:'IBM Plex Mono';}
+
+  .to-top{
+    position:fixed;bottom:74px;z-index:91;
+    width:42px;height:42px;border-radius:10px;
+    background:linear-gradient(135deg,var(--indigo),var(--violet));
+    color:#fff;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 22px rgba(91,95,239,.35);
+    opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;
+    border:none;cursor:pointer;
+  }
+  html[dir="rtl"] .to-top{left:18px;}
+  html[dir="ltr"] .to-top{right:18px;}
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+  body{padding-bottom:64px;}
+
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:900px){
+    .stack-grid{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr;}
+    .cert-grid{grid-template-columns:repeat(2,1fr);}
+    .grid-2{grid-template-columns:1fr;}
+  }
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .hero .container{flex-direction:column;text-align:center;}
+    .term-eyebrow{justify-content:center;}
+    .tech-mini{justify-content:center;}
+    .cta-row{justify-content:center;}
+    .stats .container{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-left:none;}
+    .stat{border-bottom:1px solid var(--line);}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:none;}
+    .proj-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+    .fab span{display:none;}
+  }
+  @media(min-width:761px){
+    .fab-bar{display:none;}
+    body{padding-bottom:0;}
+    .to-top{bottom:24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ DEMO NOTE ═══ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg>
+      <span data-i18n="demo.title">معاينة الباقة المميزة — مهندس برمجيات</span>
+      <span class="tier-chip">PREMIUM</span>
+    </div>
+    <div class="dn-body">
+      <span data-i18n="demo.body">هذه معاينة توضيحية فقط، جميع البيانات والمستودعات والروابط وهمية.</span>
+      <strong data-i18n="demo.body2">ما تتضمنه الباقة المميزة:</strong>
+    </div>
+    <ul class="dn-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f1">كل ما في الباقة القياسية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f2">دعم لغتين (عربي/إنجليزي) بزر تبديل</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f3">صورة شخصية مستطيلة عمودية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f4">صفحات فرعية إضافية (إنجازات، معرض أعمال)</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f5">حتى 3 شهادات PDF فعلية بزر يفتحها</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f6">أولوية في التسليم</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f7">تثبيت كتطبيق هاتف (PWA)</span></li>
+    </ul>
+    <div class="dn-note">
+      <strong data-i18n="demo.noteL">ملاحظة:</strong>
+      <span data-i18n="demo.noteB">جرّب زر اللغة وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="top">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6M14 4l-4 16"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name" data-i18n="nav.brand">dev.profile</span>
+        <span class="brand-sub" data-i18n="nav.tier">PREMIUM</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav.about">about</a></li>
+      <li><a href="#stack" data-i18n="nav.stack">stack</a></li>
+      <li><a href="#projects" data-i18n="nav.projects">projects</a></li>
+      <li><a href="#experience" data-i18n="nav.experience">experience</a></li>
+      <li><a href="#education" data-i18n="nav.education">education</a></li>
+      <li><a href="#skills" data-i18n="nav.skills">skills</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">contact</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="prio-chip">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+        <span data-i18n="nav.prio">Priority</span>
+      </span>
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="تبديل الوضع" type="button">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="burger" id="burgerBtn" aria-label="القائمة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about" data-i18n="nav.about">about</a>
+  <a href="#stack" data-i18n="nav.stack">stack</a>
+  <a href="#projects" data-i18n="nav.projects">projects</a>
+  <a href="#experience" data-i18n="nav.experience">experience</a>
+  <a href="#education" data-i18n="nav.education">education</a>
+  <a href="#skills" data-i18n="nav.skills">skills</a>
+  <a href="#contact" data-i18n="nav.contact">contact</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero" id="home">
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="container">
+    <div class="frame">
+      <div class="frame-inner">
+        <svg viewBox="0 0 64 80" fill="currentColor" aria-hidden="true">
+          <rect x="0" y="0" width="64" height="80" fill="none"/>
+          <circle cx="32" cy="28" r="13"/>
+          <path d="M6 80c0-15 12-24 26-24s26 9 26 24z"/>
+        </svg>
+      </div>
+      <div class="frame-corner tl"></div>
+      <div class="frame-corner br"></div>
+    </div>
+    <div class="hero-text">
+      <div class="term-eyebrow" data-i18n="hero.eyebrow">$ whoami — ملف المبرمج الشخصي</div>
+      <div class="badge-row">
+        <span class="badge badge-tier">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+          <span data-i18n="hero.tier">الباقة المميزة</span>
+        </span>
+        <span class="badge badge-pwa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+          <span data-i18n="hero.pwa">قابل للتثبيت كتطبيق</span>
+        </span>
+        <span class="badge badge-open">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9 12l2 2 4-4"/></svg>
+          <span data-i18n="hero.open">مفتوح للمشاريع</span>
+        </span>
+      </div>
+      <h1 class="placeholder-name" data-i18n="hero.name">[ dev_name ]</h1>
+      <div class="role" data-i18n="hero.role">مهندس برمجيات أول <span class="at">@</span> [ شركة ]</div>
+      <p class="bio" data-i18n="hero.bio">
+        مهندس برمجيات يمتلك خبرة في بناء تطبيقات الويب القابلة للتوسّع،
+        يستمتع بتحويل المشكلات المعقّدة إلى حلول برمجية أنيقة. أُؤمن
+        بأن الكود الجيد هو الذي يقرأه الإنسان قبل أن تنفّذه الآلة.
+      </p>
+      <div class="tech-mini">
+        <span>TypeScript</span>
+        <span>React</span>
+        <span>Node.js</span>
+        <span>PostgreSQL</span>
+        <span>AWS</span>
+      </div>
+      <div class="cta-row">
+        <a href="#" class="btn btn-grad" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+          <span data-i18n="hero.btnGh">GitHub</span>
+        </a>
+        <a href="#" class="btn btn-line">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg>
+          <span data-i18n="hero.btnLi">LinkedIn</span>
+        </a>
+        <a href="mailto:example@example.com" class="btn btn-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span data-i18n="hero.btnMail">Email</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats">
+  <div class="container">
+    <div class="stat"><b data-i18n="stat.exp">+8</b><span data-i18n="stat.expL">سنوات خبرة</span></div>
+    <div class="stat"><b data-i18n="stat.proj">+50</b><span data-i18n="stat.projL">مشروع</span></div>
+    <div class="stat"><b data-i18n="stat.stars">+1.2k</b><span data-i18n="stat.starsL">نجمة GitHub</span></div>
+    <div class="stat"><b data-i18n="stat.repos">+30</b><span data-i18n="stat.reposL">مستودع</span></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.aboutCmd">cat about.md</span>
+      <h2 data-i18n="sec.about">نبذة</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="about-grid">
+      <div class="card about-card">
+        <p data-i18n="about.p1">
+          مهندس برمجيات متمرّس بخبرة تتجاوز ثماني سنوات في تصميم وبناء
+          تطبيقات الويب من الصفر حتى الإنتاج. عملت على منصات تخدم
+          <span class="hl">ملايين الطلبات اليومية</span> باستخدام بنى
+          الخدمات المصغّرة (Microservices) والأنظمة الموزّعة.
+        </p>
+        <p data-i18n="about.p2">
+          شغوف بالكود النظيف، اختبارات الأتمتة، وتحسين الأداء. أسهمت
+          في عدة مشاريع مفتوحة المصدر على GitHub، وأكتب مقالات تقنية
+          بشكل دوري لمشاركة المعرفة مع المجتمع. أُؤمن أن التعلم
+          المستمر هو جوهر هذه المهنة.
+        </p>
+      </div>
+      <div class="card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <span data-i18n="about.info">quick_info.json</span>
+        </h3>
+        <ul class="info-list">
+          <li><span class="lbl" data-i18n="info.role">role</span><span class="val" data-i18n="info.roleV">مهندس أول</span></li>
+          <li><span class="lbl" data-i18n="info.exp">exp</span><span class="val" data-i18n="info.expV">+8 سنوات</span></li>
+          <li><span class="lbl" data-i18n="info.loc">location</span><span class="val" data-i18n="info.locV">البحرين</span></li>
+          <li><span class="lbl" data-i18n="info.remote">remote</span><span class="val" data-i18n="info.remoteV">نعم</span></li>
+          <li><span class="lbl" data-i18n="info.tz">timezone</span><span class="val" data-i18n="info.tzV">UTC+3</span></li>
+          <li><span class="lbl" data-i18n="info.status">status</span><span class="val" data-i18n="info.statusV">متاح</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TECH STACK ═══ -->
+<section id="stack">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.stackCmd">ls ./tech-stack</span>
+      <h2 data-i18n="sec.stack">التقنيات</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="stack-grid">
+      <div class="stack-card"><div class="ic">TS</div><h3>TypeScript</h3><div class="meta">primary · 5y</div></div>
+      <div class="stack-card"><div class="ic">JS</div><h3>JavaScript</h3><div class="meta">expert · 8y</div></div>
+      <div class="stack-card"><div class="ic">RE</div><h3>React / Next</h3><div class="meta">expert · 6y</div></div>
+      <div class="stack-card"><div class="ic">NO</div><h3>Node.js</h3><div class="meta">expert · 7y</div></div>
+      <div class="stack-card"><div class="ic">PY</div><h3>Python</h3><div class="meta">advanced · 4y</div></div>
+      <div class="stack-card"><div class="ic">PG</div><h3>PostgreSQL</h3><div class="meta">advanced · 5y</div></div>
+      <div class="stack-card"><div class="ic">DO</div><h3>Docker / K8s</h3><div class="meta">advanced · 4y</div></div>
+      <div class="stack-card"><div class="ic">AW</div><h3>AWS</h3><div class="meta">intermediate · 3y</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROJECTS ═══ -->
+<section id="projects">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.projCmd">git log --oneline</span>
+      <h2 data-i18n="sec.proj">المشاريع البارزة</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card">
+        <div class="proj-head">
+          <span class="name">project-alpha</span>
+          <span class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>1.4k</span>
+            <span class="fork"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a3 3 0 100 6 3 3 0 000-6zm12 0a3 3 0 100 6 3 3 0 000-6zM6 15a3 3 0 100 6 3 3 0 000-6zm6-9l-6 6m6 0l6-6"/></svg>180</span>
+          </span>
+        </div>
+        <p data-i18n="proj.1p">منصّة تعاون مفتوحة المصدر تربط المساهمين بالمشاريع، مبنية بـ Next.js و PostgreSQL مع نظام مصادقة كامل ولوحة تحكم تفاعلية.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Next.js</span>
+          <span class="proj-tag">tRPC</span>
+          <span class="proj-tag">Prisma</span>
+          <span class="proj-tag">Redis</span>
+        </div>
+        <a href="portfolio.html" class="proj-link">
+          <span data-i18n="proj.more">اقرأ التفاصيل في صفحة الأعمال</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-head">
+          <span class="name">cloud-sync-cli</span>
+          <span class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>820</span>
+            <span class="fork"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a3 3 0 100 6 3 3 0 000-6zm12 0a3 3 0 100 6 3 3 0 000-6zM6 15a3 3 0 100 6 3 3 0 000-6zm6-9l-6 6m6 0l6-6"/></svg>94</span>
+          </span>
+        </div>
+        <p data-i18n="proj.2p">أداة سطر أوامر لمزامنة الملفات عبر مزوّدات التخزين السحابي المتعدّدة بضغط ذكي ومزامنة تزايديّة. مكتوبة بـ TypeScript.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">TypeScript</span>
+          <span class="proj-tag">CLI</span>
+          <span class="proj-tag">S3</span>
+          <span class="proj-tag">GDrive</span>
+        </div>
+        <a href="portfolio.html" class="proj-link">
+          <span data-i18n="proj.more">اقرأ التفاصيل في صفحة الأعمال</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-head">
+          <span class="name">ml-vision-api</span>
+          <span class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>560</span>
+            <span class="fork"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a3 3 0 100 6 3 3 0 000-6zm12 0a3 3 0 100 6 3 3 0 000-6zM6 15a3 3 0 100 6 3 3 0 000-6zm6-9l-6 6m6 0l6-6"/></svg>72</span>
+          </span>
+        </div>
+        <p data-i18n="proj.3p">واجهة REST API لتصنيف الصور باستخدام نماذج تعلّم عميق مُدرّبة مسبقاً. تستقبل الطلبات وتعيد التصنيفات بزمن استجابة أقل من 100ms.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">Python</span>
+          <span class="proj-tag">FastAPI</span>
+          <span class="proj-tag">PyTorch</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+        <a href="portfolio.html" class="proj-link">
+          <span data-i18n="proj.more">اقرأ التفاصيل في صفحة الأعمال</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+      <div class="proj-card">
+        <div class="proj-head">
+          <span class="name">realtime-dashboard</span>
+          <span class="meta">
+            <span class="star"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>410</span>
+            <span class="fork"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 3a3 3 0 100 6 3 3 0 000-6zm12 0a3 3 0 100 6 3 3 0 000-6zM6 15a3 3 0 100 6 3 3 0 000-6zm6-9l-6 6m6 0l6-6"/></svg>56</span>
+          </span>
+        </div>
+        <p data-i18n="proj.4p">لوحة تحكم تتبّع المقاييس الحيّة في الوقت الفعلي عبر WebSocket، مع رسوم بيانية تفاعلية وتنبيهات قابلة للتخصيص.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">React</span>
+          <span class="proj-tag">WebSocket</span>
+          <span class="proj-tag">D3.js</span>
+          <span class="proj-tag">Grafana</span>
+        </div>
+        <a href="portfolio.html" class="proj-link">
+          <span data-i18n="proj.more">اقرأ التفاصيل في صفحة الأعمال</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.expCmd">cat work-history.log</span>
+      <h2 data-i18n="sec.exp">الخبرات</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.1t">مهندس برمجيات أول</span>
+            <span class="t-date" data-i18n="exp.1d">2021 — الآن</span>
+          </div>
+          <div class="t-org" data-i18n="exp.1o">@ tech-corp — عن بُعد</div>
+          <p class="t-note" data-i18n="exp.1n">
+            قيادة فريق من 5 مهندسين لبناء منصّة SaaS بـ TypeScript و Next.js،
+            مع التركيز على قابلية التوسّع والأداء.
+          </p>
+          <ul class="t-ul">
+            <li data-i18n="exp.1l1">تحسين زمن الاستجابة بنسبة 60% عبر إعادة هيكلة الاستعلامات.</li>
+            <li data-i18n="exp.1l2">تطبيق CI/CD شامل قلّل من حوادث الإنتاج بنسبة 80%.</li>
+            <li data-i18n="exp.1l3">إرشاد المهندسين الجدد ومراجعة الكود يومياً.</li>
+          </ul>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.2t">مطوّر Full-Stack</span>
+            <span class="t-date" data-i18n="exp.2d">2018 — 2021</span>
+          </div>
+          <div class="t-org" data-i18n="exp.2o">@ startup-x — دبي</div>
+          <p class="t-note" data-i18n="exp.2n">
+            بناء المنتج من الصفر مع فريق صغير، تحمّلت مسؤولية الواجهة
+            الأمامية والخلفية وقاعدة البيانات.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.3t">مطوّر مبتدئ</span>
+            <span class="t-date" data-i18n="exp.3d">2016 — 2018</span>
+          </div>
+          <div class="t-org" data-i18n="exp.3o">@ dev-agency — المنامة</div>
+          <p class="t-note" data-i18n="exp.3n">
+            تطوير مواقع عميلة باستخدام React و Node.js، مع التركيز على
+            تجربة المستخدم والأداء عبر الأجهزة.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION ═══ -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.eduCmd">cat education.json</span>
+      <h2 data-i18n="sec.edu">التعليم والشهادات</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="grid-2">
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg>
+          <span data-i18n="edu.title">المؤهلات العلمية</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="edu.1t">ماجستير علوم الحاسب (M.Sc)</div>
+          <div class="meta" data-i18n="edu.1m">جامعة [الاسم] — 2016</div>
+          <div class="desc" data-i18n="edu.1d">رسالة في تحسين أداء قواعد البيانات الموزّعة.</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="edu.2t">بكالوريوس هندسة برمجيات (B.Sc)</div>
+          <div class="meta" data-i18n="edu.2m">جامعة [الاسم] — 2014</div>
+          <div class="desc" data-i18n="edu.2d">تخرّج بمرتبة الشرف الأولى، مشروع التخرّج عن تطبيقات الويب.</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="bar.title">الشهادات المهنية</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="bar.1t">AWS Solutions Architect</div>
+          <div class="meta" data-i18n="bar.1m">Amazon · 2023</div>
+          <a href="#" class="pdf-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="bar.pdf">عرض PDF</span>
+          </a>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.2t">CKA — Kubernetes Admin</div>
+          <div class="meta" data-i18n="bar.2m">CNCF · 2022</div>
+          <a href="#" class="pdf-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="bar.pdf">عرض PDF</span>
+          </a>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.3t">Professional Scrum Master</div>
+          <div class="meta" data-i18n="bar.3m">Scrum.org · 2021</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS MATRIX ═══ -->
+<section id="skills">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.skillsCmd">run --skills-assessment</span>
+      <h2 data-i18n="sec.skills">مصفوفة المهارات</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="card">
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.1n">الواجهة الأمامية (React, Next, Vue)</span><span>95%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:95%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.2n">الواجهة الخلفية (Node, Python, Go)</span><span>90%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:90%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.3n">قواعد البيانات (SQL, NoSQL)</span><span>85%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:85%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.4n">DevOps (Docker, K8s, CI/CD)</span><span>80%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:80%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.5n">السحابة (AWS, GCP)</span><span>75%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:75%"></div></div>
+      </div>
+      <div class="skill-row">
+        <div class="skill-top"><span data-i18n="skill.6n">تصميم الأنظمة</span><span>88%</span></div>
+        <div class="skill-bar"><div class="skill-bar-f" style="width:88%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <span class="prompt" data-i18n="sec.contactCmd">curl POST /contact</span>
+      <h2 data-i18n="sec.contact">تواصل</h2>
+      <span class="cursor-blink"></span>
+    </div>
+    <div class="contact-grid">
+      <a href="#" class="contact-card" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg></div>
+        <div class="lbl">GitHub</div>
+        <div class="val">@dev_username</div>
+      </a>
+      <a href="#" class="contact-card" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg></div>
+        <div class="lbl">LinkedIn</div>
+        <div class="val">/in/example</div>
+      </a>
+      <a href="mailto:example@example.com" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+        <div class="lbl">Email</div>
+        <div class="val">example@example.com</div>
+      </a>
+      <a href="#" class="contact-card" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+        <div class="lbl">X / Twitter</div>
+        <div class="val">@dev_handle</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <p><span class="brand-foot" data-i18n="foot.brand">بطاقتي</span> — <span data-i18n="foot.tier">الباقة المميزة</span></p>
+    <div class="ascii" data-i18n="foot.ascii">&lt;/&gt; · صُنع بشغف · جميع البيانات وهمية للعرض فقط</div>
+  </div>
+</footer>
+
+<!-- Floating action bar -->
+<div class="fab-bar">
+  <div class="container">
+    <a href="#" class="fab" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.09.66-.22.66-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.16.58.67.48A10 10 0 0022 12c0-5.52-4.48-10-10-10z"/></svg>
+      <span>github</span>
+    </a>
+    <a href="https://wa.me/97300000000" class="fab" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+      <span>wa</span>
+    </a>
+    <a href="mailto:example@example.com" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      <span>email</span>
+    </a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="للأعلى">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  // ═══ i18n: نظام تبديل اللغة ═══
+  const I18N = {
+    ar: {
+      "demo.title":"معاينة الباقة المميزة — مهندس برمجيات",
+      "demo.body":"هذه معاينة توضيحية فقط، جميع البيانات والمستودعات والروابط وهمية.",
+      "demo.body2":"ما تتضمنه الباقة المميزة:",
+      "demo.f1":"كل ما في الباقة القياسية",
+      "demo.f2":"دعم لغتين (عربي/إنجليزي) بزر تبديل",
+      "demo.f3":"صورة شخصية مستطيلة عمودية",
+      "demo.f4":"صفحات فرعية إضافية (إنجازات، معرض أعمال)",
+      "demo.f5":"حتى 3 شهادات PDF فعلية بزر يفتحها",
+      "demo.f6":"أولوية في التسليم",
+      "demo.f7":"تثبيت كتطبيق هاتف (PWA)",
+      "demo.noteL":"ملاحظة:",
+      "demo.noteB":"جرّب زر اللغة وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل.",
+      "nav.brand":"dev.profile","nav.tier":"PREMIUM","nav.prio":"أولوية",
+      "nav.about":"about","nav.stack":"stack","nav.projects":"projects","nav.experience":"experience","nav.education":"education","nav.skills":"skills","nav.contact":"contact",
+      "hero.eyebrow":"$ whoami — ملف المبرمج الشخصي",
+      "hero.tier":"الباقة المميزة","hero.pwa":"قابل للتثبيت كتطبيق","hero.open":"مفتوح للمشاريع",
+      "hero.name":"[ dev_name ]","hero.role":"مهندس برمجيات أول @ [ شركة ]",
+      "hero.bio":"مهندس برمجيات يمتلك خبرة في بناء تطبيقات الويب القابلة للتوسّع، يستمتع بتحويل المشكلات المعقّدة إلى حلول برمجية أنيقة. أُؤمن بأن الكود الجيد هو الذي يقرأه الإنسان قبل أن تنفّذه الآلة.",
+      "hero.btnGh":"GitHub","hero.btnLi":"LinkedIn","hero.btnMail":"بريد",
+      "stat.exp":"+8","stat.expL":"سنوات خبرة","stat.proj":"+50","stat.projL":"مشروع","stat.stars":"+1.2k","stat.starsL":"نجمة GitHub","stat.repos":"+30","stat.reposL":"مستودع",
+      "sec.aboutCmd":"cat about.md","sec.about":"نبذة",
+      "about.p1":"مهندس برمجيات متمرّس بخبرة تتجاوز ثماني سنوات في تصميم وبناء تطبيقات الويب من الصفر حتى الإنتاج. عملت على منصات تخدم <span class=\"hl\">ملايين الطلبات اليومية</span> باستخدام بنى الخدمات المصغّرة (Microservices) والأنظمة الموزّعة.",
+      "about.p2":"شغوف بالكود النظيف، اختبارات الأتمتة، وتحسين الأداء. أسهمت في عدة مشاريع مفتوحة المصدر على GitHub، وأكتب مقالات تقنية بشكل دوري لمشاركة المعرفة مع المجتمع. أُؤمن أن التعلم المستمر هو جوهر هذه المهنة.",
+      "about.info":"quick_info.json",
+      "info.role":"role","info.roleV":"مهندس أول","info.exp":"exp","info.expV":"+8 سنوات","info.loc":"location","info.locV":"البحرين","info.remote":"remote","info.remoteV":"نعم","info.tz":"timezone","info.tzV":"UTC+3","info.status":"status","info.statusV":"متاح",
+      "sec.stackCmd":"ls ./tech-stack","sec.stack":"التقنيات",
+      "sec.projCmd":"git log --oneline","sec.proj":"المشاريع البارزة",
+      "proj.1p":"منصّة تعاون مفتوحة المصدر تربط المساهمين بالمشاريع، مبنية بـ Next.js و PostgreSQL مع نظام مصادقة كامل ولوحة تحكم تفاعلية.",
+      "proj.2p":"أداة سطر أوامر لمزامنة الملفات عبر مزوّدات التخزين السحابي المتعدّدة بضغط ذكي ومزامنة تزايديّة. مكتوبة بـ TypeScript.",
+      "proj.3p":"واجهة REST API لتصنيف الصور باستخدام نماذج تعلّم عميق مُدرّبة مسبقاً. تستقبل الطلبات وتعيد التصنيفات بزمن استجابة أقل من 100ms.",
+      "proj.4p":"لوحة تحكم تتبّع المقاييس الحيّة في الوقت الفعلي عبر WebSocket، مع رسوم بيانية تفاعلية وتنبيهات قابلة للتخصيص.",
+      "proj.more":"اقرأ التفاصيل في صفحة الأعمال",
+      "sec.expCmd":"cat work-history.log","sec.exp":"الخبرات",
+      "exp.1t":"مهندس برمجيات أول","exp.1d":"2021 — الآن","exp.1o":"@ tech-corp — عن بُعد","exp.1n":"قيادة فريق من 5 مهندسين لبناء منصّة SaaS بـ TypeScript و Next.js، مع التركيز على قابلية التوسّع والأداء.",
+      "exp.1l1":"تحسين زمن الاستجابة بنسبة 60% عبر إعادة هيكلة الاستعلامات.","exp.1l2":"تطبيق CI/CD شامل قلّل من حوادث الإنتاج بنسبة 80%.","exp.1l3":"إرشاد المهندسين الجدد ومراجعة الكود يومياً.",
+      "exp.2t":"مطوّر Full-Stack","exp.2d":"2018 — 2021","exp.2o":"@ startup-x — دبي","exp.2n":"بناء المنتج من الصفر مع فريق صغير، تحمّلت مسؤولية الواجهة الأمامية والخلفية وقاعدة البيانات.",
+      "exp.3t":"مطوّر مبتدئ","exp.3d":"2016 — 2018","exp.3o":"@ dev-agency — المنامة","exp.3n":"تطوير مواقع عميلة باستخدام React و Node.js، مع التركيز على تجربة المستخدم والأداء عبر الأجهزة.",
+      "sec.eduCmd":"cat education.json","sec.edu":"التعليم والشهادات",
+      "edu.title":"المؤهلات العلمية","edu.1t":"ماجستير علوم الحاسب (M.Sc)","edu.1m":"جامعة [الاسم] — 2016","edu.1d":"رسالة في تحسين أداء قواعد البيانات الموزّعة.","edu.2t":"بكالوريوس هندسة برمجيات (B.Sc)","edu.2m":"جامعة [الاسم] — 2014","edu.2d":"تخرّج بمرتبة الشرف الأولى، مشروع التخرّج عن تطبيقات الويب.",
+      "bar.title":"الشهادات المهنية","bar.1t":"AWS Solutions Architect","bar.1m":"Amazon · 2023","bar.pdf":"عرض PDF","bar.2t":"CKA — Kubernetes Admin","bar.2m":"CNCF · 2022","bar.3t":"Professional Scrum Master","bar.3m":"Scrum.org · 2021",
+      "sec.skillsCmd":"run --skills-assessment","sec.skills":"مصفوفة المهارات",
+      "skill.1n":"الواجهة الأمامية (React, Next, Vue)","skill.2n":"الواجهة الخلفية (Node, Python, Go)","skill.3n":"قواعد البيانات (SQL, NoSQL)","skill.4n":"DevOps (Docker, K8s, CI/CD)","skill.5n":"السحابة (AWS, GCP)","skill.6n":"تصميم الأنظمة",
+      "sec.contactCmd":"curl POST /contact","sec.contact":"تواصل",
+      "foot.brand":"بطاقتي","foot.tier":"الباقة المميزة","foot.ascii":"&lt;/&gt; · صُنع بشغف · جميع البيانات وهمية للعرض فقط"
+    },
+    en: {
+      "demo.title":"Premium Package Preview — Software Engineer",
+      "demo.body":"This is a demonstration preview only; all data, repos, and links are fictional.",
+      "demo.body2":"What the Premium package includes:",
+      "demo.f1":"Everything in the Standard package",
+      "demo.f2":"Two-language support (Arabic/English) with a toggle",
+      "demo.f3":"Portrait rectangular personal photo",
+      "demo.f4":"Extra sub-pages (achievements, portfolio)",
+      "demo.f5":"Up to 3 real PDF certificates with open buttons",
+      "demo.f6":"Priority delivery",
+      "demo.f7":"Installable as a phone app (PWA)",
+      "demo.noteL":"Note:",
+      "demo.noteB":"Try the language toggle and the light/dark mode button at the top — both work fully.",
+      "nav.brand":"dev.profile","nav.tier":"PREMIUM","nav.prio":"Priority",
+      "nav.about":"about","nav.stack":"stack","nav.projects":"projects","nav.experience":"experience","nav.education":"education","nav.skills":"skills","nav.contact":"contact",
+      "hero.eyebrow":"$ whoami — developer profile",
+      "hero.tier":"Premium Package","hero.pwa":"Installable as App","hero.open":"Open for Projects",
+      "hero.name":"[ dev_name ]","hero.role":"Senior Software Engineer @ [ company ]",
+      "hero.bio":"A software engineer with experience building scalable web applications, who enjoys turning complex problems into elegant software solutions. I believe good code is code that humans can read before machines execute it.",
+      "hero.btnGh":"GitHub","hero.btnLi":"LinkedIn","hero.btnMail":"Email",
+      "stat.exp":"+8","stat.expL":"years","stat.proj":"+50","stat.projL":"projects","stat.stars":"+1.2k","stat.starsL":"github stars","stat.repos":"+30","stat.reposL":"repos",
+      "sec.aboutCmd":"cat about.md","sec.about":"About",
+      "about.p1":"A seasoned software engineer with over eight years of experience designing and building web applications from scratch to production. I've worked on platforms serving <span class=\"hl\">millions of daily requests</span> using microservices architectures and distributed systems.",
+      "about.p2":"Passionate about clean code, automation testing, and performance optimization. I've contributed to several open-source projects on GitHub and write technical articles periodically to share knowledge with the community. I believe continuous learning is the essence of this profession.",
+      "about.info":"quick_info.json",
+      "info.role":"role","info.roleV":"Senior SWE","info.exp":"exp","info.expV":"8+ years","info.loc":"location","info.locV":"Bahrain","info.remote":"remote","info.remoteV":"yes","info.tz":"timezone","info.tzV":"UTC+3","info.status":"status","info.statusV":"open",
+      "sec.stackCmd":"ls ./tech-stack","sec.stack":"Tech Stack",
+      "sec.projCmd":"git log --oneline","sec.proj":"Featured Projects",
+      "proj.1p":"An open-source collaboration platform connecting contributors to projects, built with Next.js and PostgreSQL with full authentication and an interactive dashboard.",
+      "proj.2p":"A command-line tool for syncing files across multiple cloud storage providers with smart compression and incremental sync. Written in TypeScript.",
+      "proj.3p":"A REST API for image classification using pre-trained deep learning models. Receives requests and returns classifications with response time under 100ms.",
+      "proj.4p":"A dashboard tracking real-time metrics via WebSocket, with interactive charts and customizable alerts.",
+      "proj.more":"Read details in portfolio page",
+      "sec.expCmd":"cat work-history.log","sec.exp":"Experience",
+      "exp.1t":"Senior Software Engineer","exp.1d":"2021 — Present","exp.1o":"@ tech-corp — Remote","exp.1n":"Leading a team of 5 engineers to build a SaaS platform with TypeScript and Next.js, focusing on scalability and performance.",
+      "exp.1l1":"Improved response time by 60% through query refactoring.","exp.1l2":"Implemented comprehensive CI/CD reducing production incidents by 80%.","exp.1l3":"Mentored junior engineers and reviewed code daily.",
+      "exp.2t":"Full-Stack Developer","exp.2d":"2018 — 2021","exp.2o":"@ startup-x — Dubai","exp.2n":"Built the product from scratch with a small team, taking responsibility for frontend, backend, and database.",
+      "exp.3t":"Junior Developer","exp.3d":"2016 — 2018","exp.3o":"@ dev-agency — Manama","exp.3n":"Developed client websites using React and Node.js, focusing on UX and cross-device performance.",
+      "sec.eduCmd":"cat education.json","sec.edu":"Education & Certifications",
+      "edu.title":"Academic Qualifications","edu.1t":"Master of Computer Science (M.Sc)","edu.1m":"[Name] University — 2016","edu.1d":"Thesis on performance optimization of distributed databases.","edu.2t":"Bachelor of Software Engineering (B.Sc)","edu.2m":"[Name] University — 2014","edu.2d":"Graduated with first-class honors, capstone on web applications.",
+      "bar.title":"Professional Certifications","bar.1t":"AWS Solutions Architect","bar.1m":"Amazon · 2023","bar.pdf":"View PDF","bar.2t":"CKA — Kubernetes Admin","bar.2m":"CNCF · 2022","bar.3t":"Professional Scrum Master","bar.3m":"Scrum.org · 2021",
+      "sec.skillsCmd":"run --skills-assessment","sec.skills":"Skills Matrix",
+      "skill.1n":"Frontend (React, Next, Vue)","skill.2n":"Backend (Node, Python, Go)","skill.3n":"Databases (SQL, NoSQL)","skill.4n":"DevOps (Docker, K8s, CI/CD)","skill.5n":"Cloud (AWS, GCP)","skill.6n":"System Design",
+      "sec.contactCmd":"curl POST /contact","sec.contact":"Contact",
+      "foot.brand":"Bitaqti","foot.tier":"Premium Package","foot.ascii":"&lt;/&gt; · built with passion · all data is fictional for demo"
+    }
+  };
+
+  // ✅ applyLanguage: لا تُبدّل ترتيب أي عنصر، فقط تغيّر المحتوى والاتجاه
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+
+  // ✅ Theme toggle: الوضع الفاتح/الداكن
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    try{ localStorage.setItem('bitaqti_theme', theme); }catch(e){}
+  }
+  const themeBtn = document.getElementById('themeBtn');
+  if(themeBtn){
+    themeBtn.addEventListener('click', ()=>{
+      const current = document.documentElement.getAttribute('data-theme') || 'dark';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  // ✅ التهيئة الأولية للّغة والوضع
+  (function init(){
+    let savedLang = 'ar', savedTheme = 'dark';
+    try{ savedLang = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    try{ savedTheme = localStorage.getItem('bitaqti_theme') || 'dark'; }catch(e){}
+    applyLanguage(savedLang);
+    applyTheme(savedTheme);
+  })();
+
+  // Burger + to-top
+  const burger = document.getElementById('burgerBtn');
+  const panel = document.getElementById('mobilePanel');
+  if(burger){
+    burger.addEventListener('click', ()=>panel.classList.toggle('open'));
+    panel.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>panel.classList.remove('open')));
+  }
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 300) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
