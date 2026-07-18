@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8" />
@@ -190,6 +191,88 @@
     color:var(--red-deep);
   }
   .size-opt b{display:block;font-size:14px;color:inherit;margin-bottom:2px;}
+
+  /* ═══ COLOR INPUTS ═══ */
+  .color-row{
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .color-pick{
+    display:flex;align-items:center;gap:8px;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:6px 8px;
+  }
+  .color-pick input[type="color"]{
+    width:38px;height:38px;border:none;border-radius:8px;
+    cursor:pointer;background:transparent;
+    flex-shrink:0;padding:0;overflow:hidden;
+  }
+  .color-pick input[type="color"]::-webkit-color-swatch-wrapper{padding:0;border-radius:8px;}
+  .color-pick input[type="color"]::-webkit-color-swatch{border:1px solid var(--line);border-radius:8px;}
+  .color-pick input[type="color"]::-moz-color-swatch{border:1px solid var(--line);border-radius:8px;}
+  .color-pick input[type="color"]:disabled{cursor:not-allowed;opacity:.5;}
+
+  .color-pick input[type="text"]{
+    flex:1;font-family:'IBM Plex Mono',monospace;font-size:13px;
+    padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    background:var(--surface);color:var(--ink);direction:ltr;text-align:left;
+    text-transform:uppercase;font-weight:600;min-width:0;
+    transition:border-color .2s ease;
+  }
+  html[dir="rtl"] .color-pick input[type="text"]{padding-left:10px;padding-right:10px;}
+  .color-pick input[type="text"]:focus{
+    outline:none;border-color:var(--red);
+  }
+  .color-pick input[type="text"]:disabled{
+    background:var(--paper);color:var(--ink-faint);cursor:not-allowed;
+  }
+  .color-pick input[type="text"].invalid{
+    border-color:var(--red);background:var(--red-tint);
+  }
+
+  /* Transparent toggle */
+  .transparent-toggle{
+    display:inline-flex;align-items:center;gap:6px;
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    font-size:12px;font-weight:700;color:var(--ink-soft);
+    cursor:pointer;user-select:none;flex-shrink:0;
+    padding:6px 10px;border-radius:8px;
+    border:1px solid var(--line);background:var(--surface);
+    transition:all .15s ease;
+  }
+  .transparent-toggle:hover{border-color:var(--ink-faint);}
+  .transparent-toggle input[type="checkbox"]{
+    width:14px;height:14px;accent-color:var(--red);
+    cursor:pointer;margin:0;
+  }
+  .transparent-toggle:has(input:checked){
+    background:var(--red-tint);border-color:var(--red);color:var(--red-deep);
+  }
+
+  /* Preset colors */
+  .preset-row{
+    display:flex;gap:6px;flex-wrap:wrap;
+  }
+  .preset{
+    width:30px;height:30px;border-radius:50%;
+    border:2px solid var(--line);cursor:pointer;
+    padding:0;transition:transform .15s ease,border-color .15s ease;
+    position:relative;
+  }
+  .preset:hover{transform:scale(1.1);border-color:var(--ink);}
+  .preset.active{
+    border-color:var(--red);
+    box-shadow:0 0 0 2px var(--red-tint);
+  }
+  .preset:disabled{cursor:not-allowed;opacity:.4;}
+  .preset:disabled:hover{transform:none;}
+
+  @media(max-width:600px){
+    .color-pick{flex-wrap:wrap;}
+    .color-pick input[type="text"]{flex:1 1 100%;}
+    .transparent-toggle{flex:1;justify-content:center;}
+  }
 
   /* ═══ BUTTONS ═══ */
   .btn{
@@ -408,6 +491,48 @@
           <p class="hint">الحجم الافتراضي 1024×1024 بكسل مناسب للطباعة والعرض الرقمي.</p>
         </div>
 
+        <div class="form-group">
+          <label>لون الـ QR</label>
+          <div class="color-row">
+            <div class="color-pick">
+              <input type="color" id="qrColor" value="#000000" />
+              <input type="text" id="qrColorHex" value="#000000" maxlength="7" dir="ltr" spellcheck="false" />
+            </div>
+            <div class="preset-row">
+              <button type="button" class="preset" data-target="qrColor" data-color="#000000" style="background:#000000" title="أسود"></button>
+              <button type="button" class="preset" data-target="qrColor" data-color="#17181C" style="background:#17181C" title="حبري"></button>
+              <button type="button" class="preset" data-target="qrColor" data-color="#9C0E1E" style="background:#9C0E1E" title="أحمر داكن"></button>
+              <button type="button" class="preset" data-target="qrColor" data-color="#9C7A3C" style="background:#9C7A3C" title="ذهبي"></button>
+              <button type="button" class="preset" data-target="qrColor" data-color="#0C7A4F" style="background:#0C7A4F" title="زمردي"></button>
+              <button type="button" class="preset" data-target="qrColor" data-color="#3730A3" style="background:#3730A3" title="نيلي"></button>
+            </div>
+          </div>
+          <p class="hint">اللون الافتراضي: أسود. اختر أي لون آخر ليناسب هويتك البصرية.</p>
+        </div>
+
+        <div class="form-group">
+          <label>لون الخلفية</label>
+          <div class="color-row">
+            <div class="color-pick">
+              <input type="color" id="bgColor" value="#FFFFFF" disabled />
+              <input type="text" id="bgColorHex" value="#FFFFFF" maxlength="7" dir="ltr" spellcheck="false" disabled />
+              <label class="transparent-toggle">
+                <input type="checkbox" id="transparentBg" checked />
+                <span>شفّافة</span>
+              </label>
+            </div>
+            <div class="preset-row">
+              <button type="button" class="preset" data-target="bgColor" data-color="#FFFFFF" style="background:#FFFFFF;border-color:var(--line)" title="أبيض"></button>
+              <button type="button" class="preset" data-target="bgColor" data-color="#F4F3EF" style="background:#F4F3EF;border-color:var(--line)" title="ورقي"></button>
+              <button type="button" class="preset" data-target="bgColor" data-color="#F3ECDD" style="background:#F3ECDD;border-color:var(--line)" title="ذهبي فاتح"></button>
+              <button type="button" class="preset" data-target="bgColor" data-color="#E7F1EA" style="background:#E7F1EA;border-color:var(--line)" title="زمردي فاتح"></button>
+              <button type="button" class="preset" data-target="bgColor" data-color="#17181C" style="background:#17181C" title="حبري"></button>
+              <button type="button" class="preset" data-target="bgColor" data-color="#0F172A" style="background:#0F172A" title="كحلي"></button>
+            </div>
+          </div>
+          <p class="hint">الخلفية شفّافة افتراضياً. ألغِ تفعيل "شفّافة" لاختيار لون خلفية.</p>
+        </div>
+
         <button class="btn btn-primary" id="generateBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
           <span>إنشاء QR Code</span>
@@ -447,7 +572,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
             ملاحظات تقنية
           </strong>
-          QR Code شفاف الخلفية بمستوى تصحيح خطأ <span class="mono" style="background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:4px;">M (15%)</span> — QR كامل بلا أيقونة مركزية، قابلية قراءة أعلى وملف أصغر.
+          QR Code بمستوى تصحيح خطأ <span class="mono" style="background:var(--surface);border:1px solid var(--line);padding:1px 5px;border-radius:4px;">M (15%)</span> — خلفية شفّافة افتراضياً، ويمكنك اختيار لون مخصّص للـ QR وللخلفية. تأكّد من تباين كافٍ بين اللونين لضمان قابلية القراءة.
         </div>
       </div>
 
@@ -500,6 +625,149 @@
     });
   });
 
+  // ═══ عناصر الألوان ═══
+  const qrColor = document.getElementById('qrColor');
+  const qrColorHex = document.getElementById('qrColorHex');
+  const bgColor = document.getElementById('bgColor');
+  const bgColorHex = document.getElementById('bgColorHex');
+  const transparentBg = document.getElementById('transparentBg');
+
+  // ═══ دوال مساعدة للألوان ═══
+  // التحقق من صحة كود hex
+  function isValidHex(s){
+    return /^#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(s);
+  }
+  // تطبيع قيمة hex إلى صيغة #RRGGBB
+  function normalizeHex(s){
+    if(!isValidHex(s)) return null;
+    let h = s.toUpperCase();
+    if(h.length === 4){ // #RGB → #RRGGBB
+      h = '#' + h[1] + h[1] + h[2] + h[2] + h[3] + h[3];
+    }
+    return h;
+  }
+  // الحصول على لون QR (مع التحقق)
+  function getQrColor(){
+    const v = normalizeHex(qrColorHex.value);
+    return v || '#000000';
+  }
+  // الحصول على لون الخلفية — null = شفّافة
+  function getBgColor(){
+    if(transparentBg.checked) return null;
+    const v = normalizeHex(bgColorHex.value);
+    return v || '#FFFFFF';
+  }
+  // تحديث الحالة البصرية لحقل hex (صحيح/غير صحيح)
+  function updateHexValidation(input, colorInput){
+    if(isValidHex(input.value)){
+      input.classList.remove('invalid');
+      const norm = normalizeHex(input.value);
+      // مزامنة منتقي الألوان (color picker) إن كان مفعّلاً
+      if(!colorInput.disabled){
+        colorInput.value = norm;
+      }
+    }else{
+      input.classList.add('invalid');
+    }
+  }
+
+  // ═══ ربط أحداث لون الـ QR ═══
+  // عند تغيير اللون عبر color picker → تحديث حقل الـ hex
+  qrColor.addEventListener('input', ()=>{
+    qrColorHex.value = qrColor.value.toUpperCase();
+    qrColorHex.classList.remove('invalid');
+    syncPresetActive('qrColor', qrColor.value.toUpperCase());
+    if(lastCanvas){ generateQR(); }
+  });
+  // عند كتابة كود hex يدوياً → تحديث color picker
+  qrColorHex.addEventListener('input', ()=>{
+    updateHexValidation(qrColorHex, qrColor);
+    syncPresetActive('qrColor', qrColorHex.value.toUpperCase());
+    if(lastCanvas && isValidHex(qrColorHex.value)){ generateQR(); }
+  });
+  qrColorHex.addEventListener('blur', ()=>{
+    // عند مغادرة الحقل — استعادة آخر قيمة صحيحة إن كان النص غير صالح
+    if(!isValidHex(qrColorHex.value)){
+      qrColorHex.value = qrColor.value.toUpperCase();
+      qrColorHex.classList.remove('invalid');
+    }
+  });
+
+  // ═══ ربط أحداث لون الخلفية ═══
+  bgColor.addEventListener('input', ()=>{
+    bgColorHex.value = bgColor.value.toUpperCase();
+    bgColorHex.classList.remove('invalid');
+    syncPresetActive('bgColor', bgColor.value.toUpperCase());
+    if(lastCanvas){ generateQR(); }
+  });
+  bgColorHex.addEventListener('input', ()=>{
+    if(!bgColor.disabled){
+      updateHexValidation(bgColorHex, bgColor);
+      syncPresetActive('bgColor', bgColorHex.value.toUpperCase());
+      if(lastCanvas && isValidHex(bgColorHex.value)){ generateQR(); }
+    }
+  });
+  bgColorHex.addEventListener('blur', ()=>{
+    if(!bgColor.disabled && !isValidHex(bgColorHex.value)){
+      bgColorHex.value = bgColor.value.toUpperCase();
+      bgColorHex.classList.remove('invalid');
+    }
+  });
+
+  // ═══ تبديل شفافية الخلفية ═══
+  transparentBg.addEventListener('change', ()=>{
+    const isTransparent = transparentBg.checked;
+    bgColor.disabled = isTransparent;
+    bgColorHex.disabled = isTransparent;
+    // تعطيل presets الخلفية أيضاً
+    document.querySelectorAll('.preset[data-target="bgColor"]').forEach(p=>{
+      p.disabled = isTransparent;
+    });
+    if(isTransparent){
+      // عند التفعيل — إزالة التنشيط عن presets الخلفية
+      document.querySelectorAll('.preset[data-target="bgColor"]').forEach(p=>{
+        p.classList.remove('active');
+      });
+    }
+    if(lastCanvas){ generateQR(); }
+  });
+
+  // ═══ أزرار الألوان المُسبقة (presets) ═══
+  function syncPresetActive(target, color){
+    const norm = normalizeHex(color);
+    document.querySelectorAll('.preset[data-target="' + target + '"]').forEach(p=>{
+      const pNorm = normalizeHex(p.getAttribute('data-color'));
+      p.classList.toggle('active', pNorm === norm && !p.disabled);
+    });
+  }
+  document.querySelectorAll('.preset').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(btn.disabled) return;
+      const target = btn.getAttribute('data-target');
+      const color = btn.getAttribute('data-color');
+      if(target === 'qrColor'){
+        qrColor.value = color;
+        qrColorHex.value = color.toUpperCase();
+        qrColorHex.classList.remove('invalid');
+      }else if(target === 'bgColor'){
+        // إلغاء الشفافية تلقائياً عند اختيار لون خلفية
+        if(transparentBg.checked){
+          transparentBg.checked = false;
+          transparentBg.dispatchEvent(new Event('change'));
+        }
+        if(!bgColor.disabled){
+          bgColor.value = color;
+          bgColorHex.value = color.toUpperCase();
+          bgColorHex.classList.remove('invalid');
+        }
+      }
+      syncPresetActive(target, color);
+      if(lastCanvas){ generateQR(); }
+    });
+  });
+  // تنشيط preset الأسود افتراضياً
+  syncPresetActive('qrColor', '#000000');
+
   // ═══ تحديد نوع الإدخال وبناء الرابط النهائي ═══
   function buildFinalUrl(input){
     const trimmed = (input || '').trim();
@@ -551,8 +819,16 @@
     const finalCtx = finalCanvas.getContext('2d');
     finalCtx.clearRect(0, 0, actualSize, actualSize);
 
-    // رسم وحدات QR باللون الأسود على خلفية شفافة (كل الـ QR يلتف دون عوائق)
-    finalCtx.fillStyle = '#000000';
+    // رسم الخلفية إن لم تكن شفّافة
+    const bgFill = getBgColor();
+    if(bgFill !== null){
+      finalCtx.fillStyle = bgFill;
+      finalCtx.fillRect(0, 0, actualSize, actualSize);
+    }
+
+    // رسم وحدات QR باللون المختار (افتراضياً أسود)
+    const qrFill = getQrColor();
+    finalCtx.fillStyle = qrFill;
     for(let r = 0; r < moduleCount; r++){
       for(let c = 0; c < moduleCount; c++){
         if(qr.isDark(r, c)){
