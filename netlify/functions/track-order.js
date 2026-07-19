@@ -22,7 +22,21 @@ const SAFE_FIELDS = [
   'vat_amount', 'discount_amount', 'total_with_vat',
   'delivery_date', 'assigned_designer', 'design_link', 'qr_code_path',
   'invoice_notes', 'last_updated', 'invoice_status',
+  // ── حقول نظام الإحالة ──
+  'referral_code', 'referral_points', 'referred_by',
 ];
+
+// ─────────────────────────────────────────────────────────────
+//  نظام الإحالة — نقاط تكافؤ الإحالات
+// ─────────────────────────────────────────────────────────────
+const REFERRAL_POINTS_PER_SUCCESS = 100;  // نقطة لكل إحالة ناجحة
+const REFERRAL_DISCOUNT_PERCENT = 20;      // خصم 20% للمُحال
+const POINTS_REWARDS = {
+  'edit_section':    { cost: 50,  label: 'تعديل قسم في البطاقة' },
+  'change_design':   { cost: 100, label: 'تغيير التصميم بالكامل' },
+  'free_standard':   { cost: 300, label: 'بطاقة مجانية (الباقة القياسية)' },
+  'free_premium':    { cost: 500, label: 'بطاقة مجانية (الباقة المميزة)' },
+};
 
 const STATUS_PROGRESS = {
   'قيد التنفيذ': 25, 'بانتظار الدفع': 15, 'تم التصميم': 60,
@@ -52,6 +66,15 @@ exports.handler = async (event) => {
   // ═══════════════════════════════════════════════════════════════
   if (body.admin_password !== undefined) {
     return await handleAdminSync(body);
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  //  الوضع 3: التحقق من كود إحالة (عام — بدون كلمة سر)
+  //  POST { referral_code: "HS1234" }
+  //  → يرجع: { ok, valid, discount_percent, referrer_name }
+  // ═══════════════════════════════════════════════════════════════
+  if (body.referral_code !== undefined && body.referral_code !== '') {
+    return await handleReferralValidate(body);
   }
 
   // ═══════════════════════════════════════════════════════════════
@@ -171,6 +194,71 @@ async function handleAdminSync(body){
   } catch (err) {
     console.error('[track-order/admin] internal error', err);
     return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم.' }, corsHeaders());
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+//  الوضع 3: التحقق من كود إحالة (عام)
+//  POST { referral_code: "HS1234" }
+//  → { ok, valid, discount_percent, referrer_name }
+// ─────────────────────────────────────────────────────────────
+async function handleReferralValidate(body){
+  const referralCode = String(body.referral_code || '').trim().toUpperCase();
+
+  if(!referralCode){
+    return jsonResponse(400, { ok: false, valid: false, message: 'يرجى إدخال كود الإحالة.' }, corsHeaders());
+  }
+
+  const SHEET_ID = process.env.ORDERS_SHEET_ID;
+  if (!SHEET_ID) {
+    return jsonResponse(500, { ok: false, error: 'server_not_configured' }, corsHeaders());
+  }
+
+  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+  const csvUrl = SHEET_GID && SHEET_GID !== '0'
+    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+  try {
+    const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
+    if (!sheetRes.ok) {
+      return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى الخادم.' }, corsHeaders());
+    }
+    const csvText = await sheetRes.text();
+    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+      return jsonResponse(502, { ok: false, valid: false, message: 'الشيت غير منشور.' }, corsHeaders());
+    }
+    const rows = parseCSV(csvText);
+    const dataRows = rows.filter(r => {
+      const p = String(r.phone || '').trim();
+      return p && /^[\d.+]+$/.test(p);
+    }).map(r => normalizeRow(r));
+
+    // البحث عن العميل صاحب كود الإحالة
+    const referrer = dataRows.find(r => {
+      const rc = String(r.referral_code || '').trim().toUpperCase();
+      return rc === referralCode;
+    });
+
+    if(!referrer){
+      return jsonResponse(200, {
+        ok: true,
+        valid: false,
+        message: 'كود الإحالة غير صحيح أو غير موجود.',
+      }, corsHeaders());
+    }
+
+    return jsonResponse(200, {
+      ok: true,
+      valid: true,
+      discount_percent: REFERRAL_DISCOUNT_PERCENT,
+      referrer_name: referrer.customer_name || '',
+      referral_code: referralCode,
+    }, corsHeaders());
+
+  } catch(err){
+    console.error('[track-order/referral] error', err);
+    return jsonResponse(500, { ok: false, valid: false, message: 'خطأ داخلي.' }, corsHeaders());
   }
 }
 
@@ -297,6 +385,13 @@ async function handleCustomerTrack(body){
     }).length;
     safeOrder.total_orders_for_phone = orderCount;
 
+    // ═══ إضافة معلومات نظام الإحالة للعميل ═══
+    safeOrder.referral_config = {
+      points_per_referral: REFERRAL_POINTS_PER_SUCCESS,
+      discount_percent: REFERRAL_DISCOUNT_PERCENT,
+      rewards: POINTS_REWARDS,
+    };
+
     return jsonResponse(200, {
       ok: true,
       mode: 'customer_track',
@@ -315,7 +410,7 @@ async function handleCustomerTrack(body){
 // ─────────────────────────────────────────────────────────────
 
 const DATE_FIELDS = ['order_date', 'payment_date', 'delivery_date', 'last_updated'];
-const NUM_FIELDS  = ['price', 'vat_amount', 'discount_amount', 'total_with_vat', 'order_count'];
+const NUM_FIELDS  = ['price', 'vat_amount', 'discount_amount', 'total_with_vat', 'order_count', 'referral_points'];
 
 function normalizeRow(r){
   const out = { ...r };
@@ -330,7 +425,35 @@ function normalizeRow(r){
       if (!isNaN(n)) out[f] = n;
     }
   });
+  // ═══ توليد كود إحالة تلقائي إن لم يوجد ═══
+  if(!out.referral_code){
+    out.referral_code = generateReferralCode(out.customer_name || out.phone || '');
+  }
+  // ضمان أن referral_points رقم
+  if(out.referral_points === undefined || out.referral_points === ''){
+    out.referral_points = 0;
+  }
   return out;
+}
+
+/** يولّد كود إحالة من حرفين + 4 أرقام (مثل: HS1234) */
+function generateReferralCode(name){
+  // استخراج أول حرفين من الاسم (تجاهل المسافات والرموز)
+  const cleanName = String(name || '').replace(/[^\u0600-\u06FFa-zA-Z]/g, '');
+  let letters = '';
+  // إن كان الاسم عربياً، نحوّل أول حرفين لصيغة لاتينية مبسّطة
+  if(/[\u0600-\u06FF]/.test(cleanName)){
+    // خذ أول حرفين من transliteration بسيط
+    const map = {'ا':'A','ب':'B','ت':'T','ث':'S','ج':'J','ح':'H','خ':'K','د':'D','ذ':'Z','ر':'R','ز':'Z','س':'S','ش':'X','ص':'C','ض':'D','ط':'T','ظ':'Z','ع':'A','غ':'G','ف':'F','ق':'Q','ك':'K','ل':'L','م':'M','ن':'N','ه':'H','و':'W','ي':'Y','ى':'Y','ء':'A','أ':'A','إ':'I','آ':'A','ؤ':'W','ئ':'Y','ة':'T'};
+    const chars = cleanName.split('').filter(c => map[c]);
+    letters = (map[chars[0]] || 'X') + (map[chars[1]] || 'X');
+  } else {
+    // إن كان لاتينياً، خذ أول حرفين
+    letters = cleanName.substring(0, 2).toUpperCase().padEnd(2, 'X');
+  }
+  // 4 أرقام عشوائية
+  const digits = String(Math.floor(1000 + Math.random() * 9000));
+  return letters.toUpperCase() + digits;
 }
 
 function cleanPhoneInput(phone){
@@ -453,6 +576,7 @@ function timingSafeStringEqual(a, b){
 
 function computeStats(rows){
   let totalRevenue = 0, pendingAmount = 0, paidCount = 0, unpaidCount = 0, cancelledCount = 0;
+  let totalReferralPoints = 0, totalReferrals = 0;
   const byPackage = {}, byStatus = {}, byMonth = {};
   rows.forEach(r => {
     const total = Number(String(r.total_with_vat || r.price || 0).toString().replace(/[^0-9.\-]/g, '')) || 0;
@@ -471,6 +595,10 @@ function computeStats(rows){
       const monthKey = `${m[3]}-${m[2].padStart(2, '0')}`;
       byMonth[monthKey] = (byMonth[monthKey] || 0) + total;
     }
+    // ═══ إحصائيات الإحالة ═══
+    const points = Number(r.referral_points || 0);
+    if(!isNaN(points)) totalReferralPoints += points;
+    if(r.referred_by) totalReferrals++;
   });
   return {
     total_customers: rows.length,
@@ -482,6 +610,14 @@ function computeStats(rows){
     by_package: byPackage,
     by_status: byStatus,
     by_month: byMonth,
+    // إحصائيات الإحالة
+    total_referral_points: totalReferralPoints,
+    total_referrals: totalReferrals,
+    referral_config: {
+      points_per_referral: REFERRAL_POINTS_PER_SUCCESS,
+      discount_percent: REFERRAL_DISCOUNT_PERCENT,
+      rewards: POINTS_REWARDS,
+    },
   };
 }
 
