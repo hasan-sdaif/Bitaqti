@@ -733,22 +733,23 @@ async function checkConnection(){
     const res = await fetch(UPDATE_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: adminPassword, action: 'invalid_action_for_test' }),
+      body: JSON.stringify({ password: adminPassword, action: 'test' }),
     });
-    if(res.status === 500){
-      const data = await res.json();
+    const data = await res.json().catch(() => ({}));
+    if(res.status === 200 && data.ok){
+      setDot('dotWebhook', 'ok', 'Webhook يعمل — الكتابة مفعّلة ✓');
+    } else if(res.status === 500){
       if(data.error === 'server_not_configured'){
-        setDot('dotWebhook', 'warn', '<strong>SHEETS_WEBHOOK_URL غير مضبوط</strong> — اتبع التعليمات بالأسفل لتفعيل الكتابة.');
+        setDot('dotWebhook', 'warn', '<strong>SHEETS_WEBHOOK_URL غير مضبوط في Netlify</strong> — أضف متغير البيئة ثم أعد النشر.');
       } else {
         setDot('dotWebhook', 'err', `خطأ: ${data.message || data.error}`);
       }
-    } else if(res.status === 400){
-      // 400 = action غير صالح، لكن السيرفر يعمل والرمز صحيح
-      setDot('dotWebhook', 'ok', 'Webhook مُعدّ بشكل صحيح — الكتابة مفعّلة ✓');
+    } else if(res.status === 502){
+      setDot('dotWebhook', 'warn', 'تعذّر الوصول إلى Apps Script — تأكد من نشر الـ Web App (Deploy → New deployment).');
     } else if(res.status === 401){
-      setDot('dotWebhook', 'err', 'رمز الأمان في Apps Script لا يطابق INVOICE_PASSWORD.');
+      setDot('dotWebhook', 'err', 'الرمز غير صحيح.');
     } else {
-      setDot('dotWebhook', 'warn', `حالة غير متوقعة: HTTP ${res.status}`);
+      setDot('dotWebhook', 'warn', `حالة غير متوقعة: HTTP ${res.status} — ${data.message || ''}`);
     }
   } catch(e) {
     setDot('dotWebhook', 'err', 'تعذّر الاتصال بخدمة الكتابة.');
