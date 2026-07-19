@@ -546,6 +546,45 @@
     .brand small{display:none;}
     .stamp{width:150px;height:150px;}
   }
+
+  /* ═══ باقة المؤسسات ═══ */
+  .corp-card{
+    background:linear-gradient(135deg,var(--ink) 0%,#2a2b30 100%);
+    color:#fff;border-radius:20px;padding:28px 24px;
+    position:relative;overflow:hidden;margin-top:20px;
+    border:2px solid var(--gold);
+  }
+  .corp-card::before{
+    content:'';position:absolute;top:-40px;left:-40px;width:120px;height:120px;
+    background:radial-gradient(circle,var(--gold-tint) 0%,transparent 70%);opacity:.3;
+  }
+  .corp-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--gold);color:#fff;font-size:10.5px;font-weight:700;
+    padding:4px 12px;border-radius:20px;margin-bottom:14px;
+  }
+  .corp-title{font-family:'El Messiri',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+  .corp-desc{font-size:12.5px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.6;}
+  .corp-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  @media(max-width:480px){.corp-features{grid-template-columns:1fr;}}
+  .corp-feature{
+    background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;
+    display:flex;align-items:center;gap:8px;font-size:12px;
+  }
+  .corp-feature svg{width:16px;height:16px;color:var(--gold);flex-shrink:0;}
+  .corp-feature b{color:#fff;font-weight:700;}
+  .corp-feature span{color:rgba(255,255,255,.6);}
+  .corp-pricing{display:flex;gap:14px;flex-wrap:wrap;}
+  .corp-price-card{
+    flex:1;min-width:160px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:16px;text-align:center;
+  }
+  .corp-price-card .cpc-label{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:6px;}
+  .corp-price-card .cpc-price{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:var(--gold);}
+  .corp-price-card .cpc-old{font-size:13px;color:rgba(255,255,255,.4);text-decoration:line-through;}
+  .corp-price-card .cpc-per{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;}
+  .corp-price-card .cpc-save{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:6px;}
+
 </style>
 </head>
 <body>
@@ -875,6 +914,54 @@
       <div class="ex-card locked reveal">
         <div class="ex-preview"><div class="mini-card"></div></div>
         <div class="ex-body"><h4 data-i18n="examples.soon">نموذج قادم</h4><p data-i18n="examples.soondesc">سيُضاف هنا نموذج عميل بعد الحصول على إذنه</p><span class="ex-link" data-i18n="examples.soonlabel">قريباً</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════ CORPORATE PACKAGE ═══════════════ -->
+<section id="corporate" class="on-surface">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="sec-eyebrow">للمؤسسات والشركات</div>
+      <h2>باقة المؤسسات — بطاقات لكل فريقك</h2>
+      <p>10 بطاقات رقمية لموظفيك بتصميم موحّد، بسعر مخفّض خاص للشركات</p>
+    </div>
+    <div class="corp-card reveal">
+      <div class="corp-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+        باقة المؤسسات
+      </div>
+      <div class="corp-title">بطاقات موحّدة لكل موظفيك</div>
+      <div class="corp-desc">امنح كل موظف بطاقة رقمية احترافية بنفس التصميم المؤسسي — تشمل شعار الشركة، ألوان موحّدة، ومعلومات كل موظف. مثالية للفرق عن بُعد والمبيعات والدعم.</div>
+      <div class="corp-features">
+        <div class="corp-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><div><b>10 بطاقات رقمية</b><br><span>لموظفيك بتصميم موحّد</span></div></div>
+        <div class="corp-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><div><b>شعار الشركة وألوانها</b><br><span>هوية بصرية موحّدة</span></div></div>
+        <div class="corp-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><div><b>تسليم خلال أسبوع كحد أقصى</b><br><span>أولوية في التنفيذ</span></div></div>
+        <div class="corp-feature"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg><div><b>تعديلات مجانية</b><br><span>حتى 3 تعديلات لكل بطاقة</span></div></div>
+      </div>
+      <div class="corp-pricing">
+        <div class="corp-price-card">
+          <div class="cpc-label">الباقة القياسية للمؤسسات</div>
+          <div class="cpc-old">100.000 د.ب</div>
+          <div class="cpc-price">70.000 د.ب</div>
+          <div class="cpc-per">لكل 10 بطاقات (7 د.ب/بطاقة)</div>
+          <div class="cpc-save">وفّر 30 د.ب</div>
+        </div>
+        <div class="corp-price-card">
+          <div class="cpc-label">الباقة المميزة للمؤسسات</div>
+          <div class="cpc-old">150.000 د.ب</div>
+          <div class="cpc-price">100.000 د.ب</div>
+          <div class="cpc-per">لكل 10 بطاقات (10 د.ب/بطاقة)</div>
+          <div class="cpc-save">وفّر 50 د.ب</div>
+        </div>
+      </div>
+      <div style="margin-top:18px;text-align:center;">
+        <a class="btn btn-red" href="https://wa.me/97366302585?text=مرحباً، أرغب بطلب باقة المؤسسات (10 بطاقات)" target="_blank" rel="noopener" style="background:var(--gold);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+          اطلب باقة المؤسسات الآن
+        </a>
       </div>
     </div>
   </div>
@@ -2001,6 +2088,45 @@
   *{-webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;}
   a[href]:after{content:"" !important;}
   tr,td,th{page-break-inside:avoid;}
+
+  /* ═══ باقة المؤسسات ═══ */
+  .corp-card{
+    background:linear-gradient(135deg,var(--ink) 0%,#2a2b30 100%);
+    color:#fff;border-radius:20px;padding:28px 24px;
+    position:relative;overflow:hidden;margin-top:20px;
+    border:2px solid var(--gold);
+  }
+  .corp-card::before{
+    content:'';position:absolute;top:-40px;left:-40px;width:120px;height:120px;
+    background:radial-gradient(circle,var(--gold-tint) 0%,transparent 70%);opacity:.3;
+  }
+  .corp-badge{
+    display:inline-flex;align-items:center;gap:5px;
+    background:var(--gold);color:#fff;font-size:10.5px;font-weight:700;
+    padding:4px 12px;border-radius:20px;margin-bottom:14px;
+  }
+  .corp-title{font-family:'El Messiri',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+  .corp-desc{font-size:12.5px;color:rgba(255,255,255,.7);margin-bottom:18px;line-height:1.6;}
+  .corp-features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px;}
+  @media(max-width:480px){.corp-features{grid-template-columns:1fr;}}
+  .corp-feature{
+    background:rgba(255,255,255,.08);border-radius:10px;padding:12px 14px;
+    display:flex;align-items:center;gap:8px;font-size:12px;
+  }
+  .corp-feature svg{width:16px;height:16px;color:var(--gold);flex-shrink:0;}
+  .corp-feature b{color:#fff;font-weight:700;}
+  .corp-feature span{color:rgba(255,255,255,.6);}
+  .corp-pricing{display:flex;gap:14px;flex-wrap:wrap;}
+  .corp-price-card{
+    flex:1;min-width:160px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;padding:16px;text-align:center;
+  }
+  .corp-price-card .cpc-label{font-size:11px;color:rgba(255,255,255,.6);margin-bottom:6px;}
+  .corp-price-card .cpc-price{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:700;color:var(--gold);}
+  .corp-price-card .cpc-old{font-size:13px;color:rgba(255,255,255,.4);text-decoration:line-through;}
+  .corp-price-card .cpc-per{font-size:11px;color:rgba(255,255,255,.5);margin-top:4px;}
+  .corp-price-card .cpc-save{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:6px;}
+
 </style>
 </head>
 <body>${invoiceHtml}</body>
