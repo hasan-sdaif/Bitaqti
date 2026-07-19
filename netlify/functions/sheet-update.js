@@ -97,71 +97,53 @@ exports.handler = async (event) => {
     console.log(`[sheet-update] forwarding ${action} to Apps Script`);
     const bodyStr = JSON.stringify(payload);
 
-    // ═══ Google Apps Script يُعيد redirect 302 من script.google.com
-    //    إلى script.googleusercontent.com. عند متابعة الـ redirect،
-    //    يتحوّل POST إلى GET وتضيع البيانات!
-    //    الحل: نستخدم redirect:'manual' ثم نُعيد POST يدوياً للرابط الجديد. ═══
-    let finalRes = await fetch(webhookUrl, {
+    // ═══ Google Apps Script Web Apps تعمل بـ POST ثم GET ═══
+    // 1) POST إلى /exec يعالج البيانات ويُعيد 302 redirect
+    // 2) GET على رابط الـ redirect يُرجع نتيجة المعالجة (JSON)
+    const postRes = await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: bodyStr,
       redirect: 'manual',
       signal: AbortSignal.timeout(30000),
     });
 
-    // إن كان redirect (301/302/303/307/308)، نتبع Location يدوياً مع POST
-    if([301, 302, 303, 307, 308].includes(finalRes.status)){
-      const location = finalRes.headers.get('location');
-      console.log(`[sheet-update] redirect ${finalRes.status} → ${location}`);
+    // استخراج رابط الـ redirect
+    let finalText = '';
+    if([301, 302, 303, 307, 308].includes(postRes.status)){
+      const location = postRes.headers.get('location');
+      console.log(`[sheet-update] redirect ${postRes.status} → ${location ? location.substring(0, 80) + '...' : 'null'}`);
       if(location){
-        finalRes = await fetch(location, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: bodyStr,
-          redirect: 'manual',
-          signal: AbortSignal.timeout(30000),
-        });
-      }
-    }
-
-    // إن كان redirect مرة أخرى، نتبعه (قد يحصل مرتين)
-    if([301, 302, 303, 307, 308].includes(finalRes.status)){
-      const location2 = finalRes.headers.get('location');
-      if(location2){
-        finalRes = await fetch(location2, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: bodyStr,
+        // GET على رابط الـ redirect لاستلام النتيجة
+        const getRes = await fetch(location, {
+          method: 'GET',
           redirect: 'follow',
           signal: AbortSignal.timeout(30000),
         });
+        finalText = await getRes.text();
+      } else {
+        // لا يوجد Location — نقرأ من الاستجابة الأصلية
+        finalText = await postRes.text();
       }
+    } else {
+      // لم يكن redirect — نقرأ الاستجابة مباشرة
+      finalText = await postRes.text();
     }
 
-    const webhookText = await finalRes.text();
-
-    // Apps Script قد يُرجع JSON أو نص عادي
+    // تحليل النتيجة
     let webhookData;
     try {
-      webhookData = JSON.parse(webhookText);
+      webhookData = JSON.parse(finalText);
     } catch(_) {
-      webhookData = { ok: false, raw: webhookText.slice(0, 500) };
-    }
-
-    if (!finalRes.ok) {
-      console.error('[sheet-update] webhook failed', finalRes.status, webhookText.slice(0, 300));
-      return jsonResponse(502, {
-        error: 'webhook_failed',
-        message: `فشل الاتصال بـ Google Apps Script (HTTP ${finalRes.status}). ${webhookData.raw || webhookData.error || ''}`,
-        details: webhookData,
-      }, corsHeaders());
+      webhookData = { ok: false, raw: finalText.slice(0, 500) };
     }
 
     if (webhookData.ok === false) {
       const errMsg = webhookData.error || 'خطأ غير معروف من Apps Script';
       const userMsg = errMsg === 'unauthorized'
-        ? 'كلمة السر في Apps Script لا تطابق INVOICE_PASSWORD. تحقق من Script properties.'
+        ? 'الرمز في Apps Script لا يطابق INVOICE_PASSWORD. تحقق من Script properties → ADMIN_PASSWORD.'
         : `خطأ من Apps Script: ${errMsg}`;
+      console.error('[sheet-update] script error:', errMsg);
       return jsonResponse(400, {
         error: 'script_error',
         message: userMsg,
