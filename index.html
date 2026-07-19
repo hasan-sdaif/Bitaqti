@@ -959,7 +959,43 @@
               <a class="btn btn-line" href="https://wa.me/97366302585" target="_blank" rel="noopener" data-i18n="track.r.contact">واتساب</a>
             </div>
 
-            <!-- سجل الطلبات السابقة لنفس الرقم -->
+            
+          <!-- ═══ قسم الإحالة والنقاط ═══ -->
+          <div id="referralSection" style="display:none;margin-top:16px;padding:16px;background:var(--paper);border-radius:12px;border:1px solid var(--line);">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:11px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px;">كود الإحالة الخاص بك</div>
+                <div id="userReferralCode" style="font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--red);letter-spacing:2px;">—</div>
+              </div>
+              <button class="btn btn-red btn-sm" id="btnCopyReferral" style="white-space:nowrap;">نسخ الكود</button>
+            </div>
+            <div style="display:flex;gap:14px;margin-top:12px;flex-wrap:wrap;">
+              <div style="text-align:center;flex:1;min-width:80px;">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--green);" id="userPoints">0</div>
+                <div style="font-size:10px;color:var(--ink-faint);">نقطة</div>
+              </div>
+              <div style="text-align:center;flex:1;min-width:80px;">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--gold);" id="userReferralCount">0</div>
+                <div style="font-size:10px;color:var(--ink-faint);">إحالات ناجحة</div>
+              </div>
+              <div style="text-align:center;flex:1;min-width:80px;">
+                <div style="font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:700;color:var(--blue);">20%</div>
+                <div style="font-size:10px;color:var(--ink-faint);">خصم لكل مُحال</div>
+              </div>
+            </div>
+            <details style="margin-top:12px;">
+              <summary style="cursor:pointer;font-size:11.5px;font-weight:700;color:var(--ink-soft);">🎁 كيف تستبدل نقاطك؟</summary>
+              <div style="font-size:11.5px;color:var(--ink-soft);line-height:1.8;margin-top:8px;padding:10px 12px;background:#fff;border-radius:8px;">
+                • <strong>50 نقطة</strong> = تعديل قسم في بطاقتك<br>
+                • <strong>100 نقطة</strong> = تغيير التصميم بالكامل<br>
+                • <strong>300 نقطة</strong> = بطاقة مجانية (الباقة القياسية)<br>
+                • <strong>500 نقطة</strong> = بطاقة مجانية (الباقة المميزة)<br>
+                <span style="font-size:10.5px;color:var(--ink-faint);">شارك كود الإحالة مع أصدقائك — عند طلبهم بطاقة باستخدام كودك، يحصلون على خصم 20% وتكسب 100 نقطة.</span>
+              </div>
+            </details>
+          </div>
+
+          <!-- سجل الطلبات السابقة لنفس الرقم -->
             <div class="tr-history" id="trHistoryWrap" style="display:none;">
               <div class="tr-history-title" data-i18n="track.r.history">طلبات سابقة بنفس الرقم</div>
               <div id="trHistoryList"></div>
@@ -1671,6 +1707,7 @@
     }
 
     trackResult.classList.add('show');
+    renderReferralInfo(order);
   }
 
   /** يفتح نافذة الفاتورة (تأخذ كائن order + phone) */
@@ -2014,6 +2051,37 @@
       setTimeout(doPrint, 500);
     }
   }
+
+  
+  // ═══ عرض كود الإحالة والنقاط ═══
+  function renderReferralInfo(order){
+    const section = document.getElementById('referralSection');
+    if(!section || !order) return;
+    const code = order.referral_code;
+    if(code){
+      section.style.display = 'block';
+      document.getElementById('userReferralCode').textContent = code;
+      document.getElementById('userPoints').textContent = order.referral_points || 0;
+      document.getElementById('userReferralCount').textContent = order.total_orders_for_phone > 1 ? order.total_orders_for_phone - 1 : 0;
+    } else {
+      section.style.display = 'none';
+    }
+  }
+
+  document.getElementById('btnCopyReferral')?.addEventListener('click', () => {
+    const code = document.getElementById('userReferralCode')?.textContent;
+    if(code && code !== '—'){
+      navigator.clipboard.writeText(code).then(() => {
+        // toast بسيط
+        const el = document.createElement('div');
+        el.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#0C9A63;color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:700;z-index:999;';
+        el.textContent = 'تم نسخ الكود: ' + code;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2000);
+      });
+    }
+  });
+
 
   // زر "عرض الفاتورة" داخل بطاقة نتيجة التتبع
   document.getElementById('trViewInvoice').addEventListener('click', ()=>{
