@@ -59,11 +59,47 @@ exports.handler = async (event) => {
     console.error('[sheet-update] SHEETS_WEBHOOK_URL env var not set');
     return jsonResponse(500, {
       error: 'server_not_configured',
-      message: 'SHEETS_WEBHOOK_URL غير مضبوط. اتبع تعليمات الإعداد في ملف sheet-update.js.',
+      message: 'SHEETS_WEBHOOK_URL غير مضبوط.',
     }, corsHeaders());
   }
 
   const action = String(body.action || '').trim();
+
+  // ═══ وضع اختبار: يتخطى فحص الـ action ويختبر الاتصال بالـ Webhook فقط ═══
+  if(action === 'test'){
+    try {
+      const testRes = await fetch(webhookUrl, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: AbortSignal.timeout(10000),
+      });
+      const testText = await testRes.text();
+      let testData;
+      try { testData = JSON.parse(testText); }
+      catch(_) { testData = { raw: testText.slice(0, 200) }; }
+      
+      if(testData.ok === true || testData.message){
+        return jsonResponse(200, {
+          ok: true,
+          action: 'test',
+          message: 'Webhook يعمل بشكل صحيح',
+          webhook_response: testData,
+        }, corsHeaders());
+      }
+      return jsonResponse(200, {
+        ok: true,
+        action: 'test',
+        message: 'Webhook متصل',
+        webhook_response: testData,
+      }, corsHeaders());
+    } catch(e) {
+      return jsonResponse(502, {
+        error: 'webhook_unreachable',
+        message: 'تعذّر الوصول إلى Apps Script Webhook. تحقق من الرابط.',
+      }, corsHeaders());
+    }
+  }
+
   const validActions = ['add', 'update', 'delete', 'bulk_replace'];
   if (!validActions.includes(action)) {
     return jsonResponse(400, {
