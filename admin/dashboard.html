@@ -2093,7 +2093,7 @@ async function checkConnection(){
 // ════════════════════════════════════════════════════════════════
 function displayAppsScriptCode(){
   const code = `const SHEET_NAME = 'العملاء';
-const HEADER_ROW = 2;  // الصف 1 = مفاتيح إنجليزية، الصف 2 = عناوين عربية
+const HEADER_ROW = 2;
 
 function doPost(e) {
   try {
@@ -2102,25 +2102,28 @@ function doPost(e) {
     const action = data.action;
     const record = data.record;
 
-    // تحقق من الرمز
     const correctPassword = PropertiesService
       .getScriptProperties().getProperty('ADMIN_PASSWORD') || 'CHANGE_ME';
     if (password !== correctPassword) {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'unauthorized'
-      })).setMimeType(ContentService.MimeType.JSON);
+      return jsonOut({ok: false, error: 'unauthorized'});
     }
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet()
-      .getSheetByName(SHEET_NAME);
-    if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'sheet_not_found: ' + SHEET_NAME
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
+    if (!sheet) { sheet = ss.getSheets()[0]; }
+    if (!sheet) { return jsonOut({ok: false, error: 'no_sheet_found'}); }
 
     const lastCol = sheet.getLastColumn();
-    const headers = sheet.getRange(HEADER_ROW - 1, 1, 1, lastCol).getValues()[0];
+    if (lastCol < 1) { return jsonOut({ok: false, error: 'no_headers'}); }
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+    const neededCols = ['referral_code', 'referral_points', 'referred_by'];
+    neededCols.forEach(col => {
+      if (headers.indexOf(col) === -1) {
+        sheet.getRange(1, headers.length + 1).setValue(col);
+        headers.push(col);
+      }
+    });
 
     if (action === 'add') {
       const row = headers.map(h => record[h] !== undefined ? record[h] : '');
@@ -2131,7 +2134,6 @@ function doPost(e) {
         const row = headers.map(h => record[h] !== undefined ? record[h] : '');
         sheet.getRange(rowIndex, 1, 1, headers.length).setValues([row]);
       } else {
-        // إن لم يوجد، نضيفه
         const row = headers.map(h => record[h] !== undefined ? record[h] : '');
         sheet.appendRow(row);
       }
@@ -2139,31 +2141,21 @@ function doPost(e) {
       const rowIndex = findRow(sheet, headers, record);
       if (rowIndex > 0) sheet.deleteRow(rowIndex);
     } else if (action === 'bulk_replace') {
-      // حذف كل الصفوف ما عدا الرأسين
       const lastRow = sheet.getLastRow();
       if (lastRow > HEADER_ROW) {
         sheet.deleteRows(HEADER_ROW + 1, lastRow - HEADER_ROW);
       }
-      // إضافة كل السجلات
       const records = data.records || [];
       records.forEach(rec => {
         const row = headers.map(h => rec[h] !== undefined ? rec[h] : '');
         sheet.appendRow(row);
       });
     } else {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'invalid_action: ' + action
-      })).setMimeType(ContentService.MimeType.JSON);
+      return jsonOut({ok: false, error: 'invalid_action: ' + action});
     }
-
-    return ContentService.createTextOutput(JSON.stringify({
-      ok: true, action: action
-    })).setMimeType(ContentService.MimeType.JSON);
-
+    return jsonOut({ok: true, action: action});
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({
-      ok: false, error: String(err)
-    })).setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ok: false, error: String(err)});
   }
 }
 
@@ -2171,20 +2163,28 @@ function findRow(sheet, headers, record) {
   const data = sheet.getDataRange().getValues();
   for (let i = HEADER_ROW; i < data.length; i++) {
     const row = data[i];
-    const phone = String(row[0] || '').replace(/\\.0$/, '').trim();
-    const code  = String(row[1] || '').replace(/\\.0$/, '').trim();
-    const rPhone = String(record.phone || '').replace(/\\.0$/, '').trim();
-    const rCode  = String(record.code  || '').replace(/\\.0$/, '').trim();
+    const phone = String(row[0] || '').replace(/\.0$/, '').trim();
+    const code = String(row[1] || '').replace(/\.0$/, '').trim();
+    const rPhone = String(record.phone || '').replace(/\.0$/, '').trim();
+    const rCode = String(record.code || '').replace(/\.0$/, '').trim();
     if (phone === rPhone && code === rCode) return i + 1;
+    const orderCodeIdx = headers.indexOf('order_code');
+    if (orderCodeIdx >= 0) {
+      const rowOC = String(row[orderCodeIdx] || '').trim();
+      const recOC = String(record.order_code || '').trim();
+      if (rowOC && recOC && rowOC === recOC) return i + 1;
+    }
   }
   return -1;
 }
 
-// دالة doGet لاختبار التشغيل
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet() {
-  return ContentService.createTextOutput(JSON.stringify({
-    ok: true, message: 'Bitaqti Sheets Webhook is running'
-  })).setMimeType(ContentService.MimeType.JSON);
+  return jsonOut({ok: true, message: 'Bitaqti Sheets Webhook is running'});
 }`;
 
   const codeEl = $('appsScriptCode');
@@ -2390,6 +2390,8 @@ function renderReferrals(){
       <td class="col-code">${escapeHtml(referredBy)}</td>
       <td class="col-actions">
         <button class="row-action" data-phone="${escapeAttr(c.phone)}" data-act="copy-code" title="نسخ الكود"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
+        <button class="row-action paid" data-phone="${escapeAttr(c.phone)}" data-act="share-ref" title="مشاركة عبر واتساب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></button>
+        <button class="row-action" data-phone="${escapeAttr(c.phone)}" data-act="spend-points" title="صرف النقاط"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 01-2-2c0-1.1.9-2 2-2h12v4M4 6v12c0 1.1.9 2 2 2h14v-4M18 12a2 2 0 000 4h4v-4z"/></svg></button>
         <button class="row-action" data-phone="${escapeAttr(c.phone)}" data-act="edit-points" title="تعديل النقاط"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg></button>
       </td>`;
     body.appendChild(tr);
@@ -2406,6 +2408,18 @@ function renderReferrals(){
     btn.addEventListener('click', () => {
       const c = customers.find(x => String(x.phone) === btn.dataset.phone);
       if(c) editPoints(c);
+    });
+  });
+  body.querySelectorAll('[data-act="spend-points"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const c = customers.find(x => String(x.phone) === btn.dataset.phone);
+      if(c) spendPoints(c);
+    });
+  });
+  body.querySelectorAll('[data-act="share-ref"]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const c = customers.find(x => String(x.phone) === btn.dataset.phone);
+      if(c) shareReferralCode(c);
     });
   });
   if($('statTotalReferrals')) $('statTotalReferrals').textContent = totalReferrals;
@@ -2445,6 +2459,87 @@ function editPoints(c){
   });
 }
 
+
+// ═══ تطوير نظام الإحالة ═══
+
+/** يعرض نافذة صرف النقاط */
+function spendPoints(c){
+  const rewards = [
+    {key:'edit_section', cost:50, label:'تعديل قسم في البطاقة'},
+    {key:'change_design', cost:100, label:'تغيير التصميم بالكامل'},
+    {key:'free_standard', cost:300, label:'بطاقة مجانية (القياسية)'},
+    {key:'free_premium', cost:500, label:'بطاقة مجانية (المميزة)'},
+  ];
+  const currentPoints = Number(c.referral_points || 0);
+  const rewardsHtml = rewards.map(r => {
+    const canAfford = currentPoints >= r.cost;
+    return `
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:${canAfford ? 'var(--green-tint)' : 'var(--paper)'};border-radius:8px;margin-bottom:8px;${canAfford ? '' : 'opacity:.5;'}">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ink);">${r.label}</div>
+          <div style="font-size:11px;color:var(--ink-faint);">${r.cost} نقطة</div>
+        </div>
+        <button class="btn btn-sm ${canAfford ? 'btn-red' : 'btn-outline'}" data-reward="${r.key}" data-cost="${r.cost}" ${canAfford ? '' : 'disabled'} style="white-space:nowrap;">
+          ${canAfford ? 'صرف' : 'نقاط غير كافية'}
+        </button>
+      </div>
+    `;
+  }).join('');
+  showModal({
+    type: 'info',
+    title: `صرف نقاط: ${c.customer_name || c.phone}`,
+    bodyHtml: `
+      <div style="text-align:center;margin-bottom:16px;padding:14px;background:var(--paper);border-radius:10px;">
+        <div style="font-size:11px;color:var(--ink-faint);">الرصيد الحالي</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:28px;font-weight:700;color:var(--green);">${currentPoints} <span style="font-size:14px;color:var(--ink-faint);">نقطة</span></div>
+      </div>
+      <div style="font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:8px;">الخدمات المتاحة:</div>
+      ${rewardsHtml}
+      <div style="font-size:11px;color:var(--ink-faint);margin-top:10px;text-align:center;">⚠ النقاط تُخصم عند الصرف وليست تراكمية</div>
+    `,
+    confirmText: 'إغلاق',
+    hideCancel: true,
+    onConfirm: () => closeModal(),
+  });
+  // ربط أزرار الصرف
+  setTimeout(() => {
+    document.querySelectorAll('[data-reward]').forEach(btn => {
+      if(!btn.disabled){
+        btn.addEventListener('click', async () => {
+          const rewardKey = btn.dataset.reward;
+          const cost = Number(btn.dataset.cost);
+          c.referral_points = currentPoints - cost;
+          closeModal();
+          toast('جارٍ خصم النقاط...', 'info');
+          if(adminPassword){
+            await writeToSheet('update', c);
+          }
+          renderReferrals();
+          toast(`تم صرف ${cost} نقطة بنجاح!`, 'success');
+        });
+      }
+    });
+  }, 100);
+}
+
+/** يولّد رابط إحالة للعميل */
+function generateReferralLink(c){
+  const code = c.referral_code;
+  if(!code) return '';
+  return `https://bitaqti.com/?ref=${code}`;
+}
+
+/** يشارك كود الإحالة عبر واتساب */
+function shareReferralCode(c){
+  const code = c.referral_code;
+  const link = generateReferralLink(c);
+  const msg = `🎉 مرحباً! استخدم كود الإحالة ${code} للحصول على خصم 20% على بطاقتك الرقمية من بطاقتي (Bitaqti)!
+
+رابط الطلب: ${link}`;
+  const url = `https://wa.me/?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank', 'noopener');
+}
+
 // ════════════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════════════
@@ -2459,7 +2554,10 @@ function switchTab(name){
 }
 
 function initApp(){
-  if(initApp._done) return;
+  if(initApp._done){
+    // الصفحة عادت من bfcache — فقط تأكد من ظهور التطبيق
+    if($('app') && $('app').classList.contains('unlocked')) return;
+  }
   initApp._done = true;
 
   displayAppsScriptCode();
@@ -2517,6 +2615,23 @@ function initApp(){
 
   toast('مرحباً بك في لوحة التحكم الإدارية', 'info');
 }
+  // ═══ إصلاح bfcache: عند العودة للصفحة عبر زر الرجوع ═══
+  window.addEventListener('pageshow', (event) => {
+    if(event.persisted){
+      // الصفحة عادت من bfcache — تأكد من أن كل شيء يعمل
+      const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+      const session = getSavedSession();
+      if(savedPwd && session){
+        adminPassword = savedPwd;
+        $('lockScreen').style.display = 'none';
+        $('app').classList.add('unlocked');
+      } else {
+        lockApp();
+      }
+    }
+  });
+
+
 </script>
 </body>
 </html>
