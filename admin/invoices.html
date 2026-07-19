@@ -362,18 +362,18 @@
   .inv-qr canvas{width:80px;height:80px;border:1px solid var(--line);border-radius:6px;padding:3px;}
   .inv-qr span{font-size:9px;color:var(--ink-faint);}
 
-  .inv-items-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+  .inv-items-table{width:100%;max-width:100%;table-layout:fixed;border-collapse:collapse;margin-bottom:16px;overflow:hidden;}
   .inv-items-table th{
-    background:var(--ink);color:#fff;font-size:11px;font-weight:700;
-    padding:9px 10px;text-align:right;
+    background:var(--ink);color:#fff;font-size:10px;font-weight:700;
+    padding:8px 3px;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .inv-items-table th:first-child{border-radius:6px 0 0 6px;}
   .inv-items-table th:last-child{border-radius:0 6px 6px 0;text-align:center;}
-  .inv-items-table th.col-num{text-align:center;width:40px;}
-  .inv-items-table th.col-qty{text-align:center;width:60px;}
-  .inv-items-table th.col-price{text-align:center;width:90px;}
-  .inv-items-table th.col-total{text-align:center;width:100px;}
-  .inv-items-table td{padding:9px 10px;border-bottom:1px solid var(--line);font-size:12.5px;}
+  .inv-items-table th.col-num{text-align:center;width:9mm;}
+  .inv-items-table th.col-qty{text-align:center;width:14mm;}
+  .inv-items-table th.col-price{text-align:center;width:23mm;}
+  .inv-items-table th.col-total{text-align:center;width:23mm;}
+  .inv-items-table td{padding:8px 3px;border-bottom:1px solid var(--line);font-size:12px;overflow:hidden;overflow-wrap:break-word;word-break:break-word;}
   .inv-items-table td.col-num{text-align:center;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-qty{text-align:center;font-family:'IBM Plex Mono',monospace;}
   .inv-items-table td.col-price{text-align:center;font-family:'IBM Plex Mono',monospace;direction:ltr;}
@@ -609,104 +609,116 @@
   .autocomplete-item .ai-name{font-weight:600;}
   .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
-  /* ═══ PRINT — v2.2 محسّن: حلّ مشكلة اختفاء المعاينة عند الطباعة ═══ */
-  /* القاعدة الذهبية: عند الطباعة، نُخفي كل شيء ثم نُظهر فقط المعاينة */
+  /* ═══ PRINT — v3.0: طباعة مباشرة لنفس المستند (بدون iframe)، بنفس فلسفة النظام
+     القديم الناجحة: نُخفي كل شيء بـ display:none (وليس visibility) حتى لا يترك أي
+     عنصر مخفي أثراً على ارتفاع/عرض الصفحة المطبوعة، ثم نُظهر ورقة A4 فقط بحجمها
+     الحقيقي بعد إلغاء أي transform:scale() كان مستخدَماً للمعاينة على الجوال. ═══ */
   @media print{
     @page{size:A4;margin:0;}
+
     html,body{
       background:#fff !important;
       margin:0 !important;
       padding:0 !important;
-      width:100% !important;
+      width:auto !important;
       height:auto !important;
       overflow:visible !important;
     }
 
-    /* ═══ 1) إخفاء كل شيء افتراضياً ═══ */
-    body *{visibility:hidden !important;}
+    /* ═══ 1) نُخفي كل بنية التطبيق بـ display:none — هذا (وليس visibility)
+       يضمن أن العناصر المخفية لا تحجز أي مساحة تؤثر على حجم صفحة الطباعة ═══ */
+    body > *{display:none !important;}
 
-    /* ═══ 2) إظهار عناصر المعاينة فقط ═══ */
-    /* نُظهر: المعاينة، ورقة A4، وجميع أبنائها */
-    #previewWrap,
-    #previewWrap *,
-    #sheet,
-    #sheet *{visibility:visible !important;}
+    /* ═══ 2) نُعيد إظهار مسار الاحتواء فقط، وصولاً لورقة الفاتورة ═══ */
+    .app{display:block !important;}
+    .main{display:block !important;}
+    #tab-new{display:block !important;}
+    .inv-layout{display:block !important;}
+    #previewWrap{display:block !important;}
+    #sheet{display:block !important;}
 
-    /* ═══ 3) ضبط موضع وحجم المعاينة ═══ */
-    /* إخفاء كل الحاويات الأب لإزالة أي تأثير عليها */
-    .lock-screen,
+    /* نُخفي صراحة الشريط العلوي الإداري (.topbar) وأي عنصر آخر يحمل no-print، لأن
+       إعادة إظهار .app أعلاه تُعيد إظهار كل أبنائها المباشرين ما لم نستثنِهم هنا */
     .topbar,
-    .toast-container,
-    .modal-overlay,
-    .order-bar,
-    .to-top,
-    .preview-label,
-    .tabs,
-    .topbar-actions,
-    .panel-header,
-    .history-toolbar,
-    .bulk-bar,
-    #tab-new .inv-layout > .panel,
-    .tab-panel:not(#tab-new){display:none !important;}
+    .no-print{display:none !important;}
 
-    /* ضبط الحاويات الأب لتصبح شفافة وغير محدودة */
-    .app,
-    .main,
-    #app,
-    #tab-new,
-    #tab-new.active,
-    .inv-layout,
-    #tab-new .inv-layout{
-      display:block !important;
+    /* داخل ورقة الفاتورة: نُحدّد صراحة كل عنصر يحتاج display:flex (بدل الاعتماد على
+       revert الذي كسر عنصر الـ watermark)؛ باقي العناصر تبقى على block الافتراضي وهذا سليم */
+    #sheet .inv-header{display:flex !important;}
+    #sheet .inv-brand{display:flex !important;}
+    #sheet .inv-customer{display:flex !important;}
+    #sheet .inv-qr{display:flex !important;}
+    #sheet .inv-payment-info{display:flex !important;}
+    #sheet .inv-footer .contact-info{display:flex !important;}
+    /* الـ watermark: نضمن انحصارها صراحة داخل حدود الورقة (inset:0 بشكل صريح) بدل الاعتماد
+       على وراثة القيمة، لأن هذا العنصر هو سبب فيضان الصفحة لصفحة ثانية فارغة إن لم يُضبط */
+    #sheet .watermark{
+      display:flex !important;
+      position:absolute !important;
+      inset:0 !important;
+      top:0 !important;right:0 !important;bottom:0 !important;left:0 !important;
+      height:auto !important;width:auto !important;
+    }
+    #sheet table{display:table !important;}
+    #sheet thead{display:table-header-group !important;}
+    #sheet tbody{display:table-row-group !important;}
+    #sheet tr{display:table-row !important;}
+    #sheet td,#sheet th{display:table-cell !important;}
+
+    /* نُخفي تحديداً لوحة النموذج (العمود الأول) داخل inv-layout، ونُخفي تسمية المعاينة */
+    #tab-new .inv-layout > .panel,
+    .preview-label{display:none !important;}
+
+    /* ═══ 3) تصفير كل الحاويات الوسيطة بين body وورقة A4 من أي أبعاد/حشوة/ظل
+       قد تُبقي مساحة إضافية أو تُخل بموضع الورقة ═══ */
+    .app,.main,#tab-new,.inv-layout,#previewWrap,.preview-wrap{
       position:static !important;
       width:100% !important;
       max-width:none !important;
-      margin:0 !important;
-      padding:0 !important;
-      background:#fff !important;
-      overflow:visible !important;
-      box-shadow:none !important;
-      border:none !important;
-    }
-
-    /* المعاينة نفسها: نُحوّلها لصفحة A4 حقيقية */
-    #previewWrap,
-    .preview-wrap{
-      position:static !important;
-      display:block !important;
-      background:#fff !important;
-      border:none !important;
-      padding:0 !important;
-      margin:0 !important;
-      box-shadow:none !important;
+      min-height:0 !important;
       max-height:none !important;
+      margin:0 !important;
+      padding:0 !important;
+      background:#fff !important;
+      border:none !important;
+      box-shadow:none !important;
       overflow:visible !important;
-      width:100% !important;
+      grid-template-columns:none !important;
     }
 
-    /* ورقة A4: نُلغي كل تأثيرات التحويل ونضبط الحجم */
+    /* ═══ 4) ورقة A4 نفسها: تُلغى كل تأثيرات المعاينة على الجوال (transform:scale)
+       ويُعاد ضبطها لأبعادها الحقيقية 210mm×297mm مع حشوة الطباعة ═══ */
     #sheet,
     .a4-sheet{
+      box-sizing:border-box !important;
       box-shadow:none !important;
+      position:relative !important;
       margin:0 !important;
       transform:none !important;
-      width:100% !important;
-      min-height:auto !important;
+      transform-origin:top right !important;
+      width:210mm !important;
+      min-height:297mm !important; /* صفحة كاملة كحدّ أدنى؛ الصندوق نفسه يتمدّد طبيعياً لو كان المحتوى أطول */
       max-width:none !important;
       padding:14mm 12mm !important;
-      page-break-after:always;
-      page-break-inside:avoid;
       background:#fff !important;
       border:none !important;
+      page-break-after:avoid;
     }
-    .a4-sheet:last-child{page-break-after:auto;}
+    /* الحماية من الفيضان الأفقي تُطبَّق على المحتوى الداخلي مباشرة (وليس على #sheet نفسها)
+       حتى لا تُخفي overflow-y أي امتداد رأسي طبيعي للصندوق عند طول المحتوى */
+    #sheet,.a4-sheet,
+    #sheet *,.a4-sheet *{overflow-x:hidden !important;}
 
-    /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) */
+    /* ضمان طباعة الألوان (خلفيات، نصوص ملونة) + ضبط صندوق القياس لكل شيء داخل الورقة */
     *{
       -webkit-print-color-adjust:exact !important;
       print-color-adjust:exact !important;
       color-adjust:exact !important;
     }
+    #sheet *,.a4-sheet *{box-sizing:border-box !important;}
+    #sheet table,#sheet img,#sheet canvas,.a4-sheet table,.a4-sheet img,.a4-sheet canvas{max-width:100% !important;}
+    /* قفل نهائي: لا شيء داخل الورقة يمكن أن يكون أعرض منها، مهما كان السبب */
+    #sheet > *,.a4-sheet > *{max-width:100% !important;}
 
     /* الروابط لا تُظهر URL */
     a[href]:after,
@@ -716,11 +728,10 @@
     tr,td,th{page-break-inside:avoid;}
 
     /* أحجام الخطوط للطباعة */
-    body{font-size:11pt;line-height:1.5;}
-    h1{font-size:20pt;}
-    h2{font-size:16pt;}
-    h3{font-size:13pt;}
-    .a4-sheet{font-size:11pt !important;}
+    #sheet,.a4-sheet{font-size:11pt !important;line-height:1.5;}
+    #sheet h1,.a4-sheet h1{font-size:20pt;}
+    #sheet h2,.a4-sheet h2{font-size:16pt;}
+    #sheet h3,.a4-sheet h3{font-size:13pt;}
     .inv-meta h1{font-size:20pt !important;}
   }
   .print-only{display:none;}
@@ -740,6 +751,102 @@
     .panel-body{padding:16px;}
     .a4-sheet{padding:14mm 10mm;}
   }
+
+  /* ═══ تجاوب شامل للجوال والتابلت (بدون قطع للنوافذ) ═══ */
+  @media(max-width:1024px){
+    .inv-layout{grid-template-columns:1fr !important;}
+    .preview-wrap{position:static !important;max-height:none !important;}
+  }
+  @media(max-width:768px){
+    .topbar-inner{padding:0 12px;gap:8px;}
+    .brand{font-size:13px;}
+    .brand .mark{width:28px;height:20px;}
+    .tabs{padding:2px;gap:1px;overflow-x:auto;}
+    .tab{padding:6px 10px;font-size:11px;flex-shrink:0;}
+    .tab svg{width:13px;height:13px;}
+    .icon-btn{width:32px;height:32px;}
+    .icon-btn svg{width:15px;height:15px;}
+    .main{padding:12px;padding-bottom:80px;}
+    .panel{margin-bottom:14px;}
+    .panel-header{padding:14px 16px;flex-direction:column;align-items:flex-start;gap:10px;}
+    .panel-header h2{font-size:15px;}
+    .panel-body{padding:14px;}
+    .form-row{grid-template-columns:1fr !important;}
+    .form-row.cols-3{grid-template-columns:1fr !important;}
+    .form-control{font-size:14px;padding:10px 12px;}
+    .items-table th,.items-table td{padding:6px 8px;font-size:11px;}
+    .data-table{font-size:11px;}
+    .data-table th,.data-table td{padding:8px 10px;}
+    .row-action{width:26px;height:26px;}
+    .row-action svg{width:11px;height:11px;}
+    .toolbar{gap:8px;flex-wrap:wrap;}
+    .search-box{min-width:140px;}
+    .search-box input{padding:8px 10px 8px 34px;font-size:12px;}
+    .filter-select{padding:8px 10px;font-size:12px;}
+    .btn{padding:8px 12px;font-size:12px;}
+    .btn-sm{padding:6px 10px;font-size:11px;}
+    .btn svg{width:13px;height:13px;}
+    .stats-grid{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;}
+    .stat-card{padding:12px 14px !important;}
+    .stat-card .stat-value{font-size:18px !important;}
+    .stat-card .stat-icon{width:28px !important;height:28px !important;top:10px !important;left:10px !important;}
+    .stat-card .stat-label{font-size:9px !important;padding-left:36px !important;}
+    .modal{max-width:95vw !important;}
+    .modal-body{padding:0 16px 16px;font-size:12.5px !important;}
+    .modal-actions{padding:12px 16px 16px;flex-wrap:wrap;}
+    .toast-container{left:12px;right:12px;bottom:12px;max-width:none;}
+    .toast{padding:10px 16px;font-size:12px;}
+    .lock-card{padding:24px 20px;}
+    .lock-card h1{font-size:18px;}
+    .lock-input{padding:12px 40px 12px 12px;font-size:14px;}
+    .lock-btn{padding:12px;font-size:13px;}
+  }
+  @media(max-width:480px){
+    .topbar-inner{padding:0 10px;}
+    .brand{font-size:12px;}
+    .brand .mark{width:26px;height:18px;}
+    .tabs{width:100%;overflow-x:auto;flex-wrap:nowrap;}
+    .tab{flex-shrink:0;padding:6px 8px;}
+    .tab span:not(.badge){font-size:10px;}
+    .main{padding:10px;padding-bottom:70px;}
+    .panel-header{padding:12px 14px;}
+    .panel-body{padding:12px;}
+    .stats-grid{grid-template-columns:1fr !important;gap:8px !important;}
+    .stat-card{padding:10px 12px !important;}
+    .stat-card .stat-value{font-size:16px !important;}
+    .data-table{font-size:10px;}
+    .data-table th,.data-table td{padding:6px 8px;}
+    .row-action{width:24px;height:24px;margin-right:1px;}
+    .row-action svg{width:10px;height:10px;}
+    .toolbar{flex-direction:column;align-items:stretch;}
+    .search-box{min-width:0;}
+    .filter-select{width:100%;}
+    .btn{padding:7px 10px;font-size:11px;}
+    .modal{max-width:98vw !important;border-radius:14px !important;}
+    .modal-body{font-size:12px !important;padding:0 14px 14px !important;}
+    .modal-actions{flex-direction:column;}
+    .modal-actions .btn{width:100%;}
+    .lock-card{padding:20px 16px;}
+    .lock-card h1{font-size:16px;}
+    .lock-card p{font-size:11px;}
+    .lock-input{padding:10px 36px 10px 10px;font-size:13px;}
+    .lock-btn{padding:10px;font-size:12px;}
+    .lock-hint{font-size:10px;padding:8px 10px;}
+  }
+  @media(max-width:360px){
+    .brand{font-size:11px;}
+    .brand .mark{width:24px;height:16px;}
+    .tab{padding:5px 6px;}
+    .tab span:not(.badge){font-size:9px;}
+    .stat-card .stat-value{font-size:14px !important;}
+  }
+  /* منع قطع النوافذ المنبثقة */
+  .modal-overlay{padding:8px;}
+  @media(max-width:480px){
+    .modal-overlay{padding:4px;}
+    .modal{max-height:96vh !important;}
+    .modal-body{max-height:60vh;overflow-y:auto;}
+  }
 </style>
 </head>
 <body>
@@ -750,24 +857,21 @@
     <div class="lock-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
     </div>
-    <h1>بطاقتي — نظام الفواتير</h1>
-    <p>هذه المنطقة محمية. أدخل الرمز للمتابعة.</p>
+    <h1>صفحة داخلية محمية</h1>
+    <p>أدخل كلمة السر للوصول لنظام فواتير بطاقتي</p>
     <form id="lockForm">
       <div class="lock-input-wrap">
         <input type="password" class="lock-input mono" id="lockPassword" placeholder="••••••••" autocomplete="current-password" required>
-        <button type="button" class="lock-toggle" id="lockToggle" aria-label="إظهار">
+        <button type="button" class="lock-toggle" id="lockToggle" aria-label="إظهار كلمة السر">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
       <button type="submit" class="lock-btn" id="lockSubmitBtn">
         <span class="spinner"></span>
-        <span class="lock-btn-text">متابعة</span>
+        <span class="lock-btn-text">دخول</span>
       </button>
     </form>
     <div class="lock-error" id="lockError"></div>
-    <div class="lock-hint">
-      🔒 هذه المنطقة مخصصة لصاحب المشروع فقط.
-    </div>
   </div>
 </div>
 
@@ -806,8 +910,11 @@
         </button>
       </div>
       <div class="topbar-actions">
-        <a href="dashboard.html" class="icon-btn" title="لوحة التحكم الإدارية">
+        <a href="dashboard.html" class="icon-btn" title="لوحة التحكم">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </a>
+        <a href="settings.html" class="icon-btn" title="الإعدادات">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         </a>
         <button class="icon-btn" id="lockOutBtn" title="خروج">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
@@ -1004,7 +1111,7 @@
                   <th class="col-num">#</th>
                   <th>البيان / الوصف</th>
                   <th class="col-qty">كمية</th>
-                  <th class="col-price">سعر الوحدة</th>
+                  <th class="col-price">السعر</th>
                   <th class="col-total">الإجمالي</th>
                 </tr>
               </thead>
@@ -1023,8 +1130,8 @@
               <p><strong>شكراً لثقتكم بخدمات بطاقتي (Bitaqti)</strong></p>
               <p id="pCountry">مملكة البحرين</p>
               <div class="contact-info" id="pContact">
-                <span id="pContactPhone">📞 wa.me/97336166806</span>
-                <span id="pContactEmail">✉️ Hasan.sdaif16@gmail.com</span>
+                <span id="pContactPhone">📞 wa.me/97366302585</span>
+                <span id="pContactEmail">✉️ bitaqti.bh@gmail.com</span>
               </div>
             </div>
           </div>
@@ -1272,11 +1379,11 @@
           <div class="setting-row">
             <div class="form-group">
               <label>الهاتف</label>
-              <input type="text" class="form-control mono" id="setBizPhone" dir="ltr" value="+973 36166806">
+              <input type="text" class="form-control mono" id="setBizPhone" dir="ltr" value="+973 66302585">
             </div>
             <div class="form-group">
               <label>البريد</label>
-              <input type="text" class="form-control mono" id="setBizEmail" dir="ltr" value="Hasan.sdaif16@gmail.com">
+              <input type="text" class="form-control mono" id="setBizEmail" dir="ltr" value="bitaqti.bh@gmail.com">
             </div>
           </div>
           <div class="form-group">
@@ -1346,13 +1453,11 @@ const formatMoney = (n, currency) => {
 };
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — التحقق من الرمز عبر Netlify Function
+//  AUTH — التحقق من الرمز عبر Netlify Function (track-order بوضع admin)
 // ════════════════════════════════════════════════════════════════
-const TRACK_ENDPOINT = '/.netlify/functions/track-order';
+const AUTH_ENDPOINT = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
-
-let adminPassword = '';
 
 function getSavedSession(){
   try{
@@ -1369,6 +1474,21 @@ function getSavedSession(){
   }catch(e){ return null; }
 }
 
+function saveSession(password){
+  try {
+    sessionStorage.setItem(PWD_KEY, password);
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 12 * 60 * 60 * 1000,
+    }));
+  } catch(e) {}
+}
+
+function clearSession(){
+  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
+  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
+}
+
 function unlockApp(){
   $('lockScreen').style.display='none';
   $('app').classList.add('unlocked');
@@ -1376,27 +1496,22 @@ function unlockApp(){
 }
 
 function lockApp(){
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
-  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
-  adminPassword = '';
+  clearSession();
   $('lockScreen').style.display='flex';
   $('app').classList.remove('unlocked');
   $('lockPassword').value='';
   $('lockError').classList.remove('show');
 }
 
-// التحقق التلقائي عند فتح الصفحة
 (function checkExistingSession(){
   const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   const session = getSavedSession();
   if(savedPwd && session){
-    adminPassword = savedPwd;
     unlockApp();
-    return;
+  } else {
+    $('lockScreen').style.display='flex';
+    $('app').classList.remove('unlocked');
   }
-  // لا توجد جلسة فعّالة — تأكد أن شاشة القفل ظاهرة
-  $('lockScreen').style.display='flex';
-  $('app').classList.remove('unlocked');
 })();
 
 $('lockToggle').addEventListener('click', () => {
@@ -1412,7 +1527,8 @@ $('lockForm').addEventListener('submit', async (e) => {
   btn.disabled = true; btn.classList.add('loading');
   $('lockError').classList.remove('show');
   try{
-    const res = await fetch(TRACK_ENDPOINT, {
+    // التحقق عبر track-order.js بوضع admin (أكثر استقراراً من invoice-auth)
+    const res = await fetch(AUTH_ENDPOINT, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ admin_password: password, mode: 'sync' }),
@@ -1421,15 +1537,8 @@ $('lockForm').addEventListener('submit', async (e) => {
     if(res.status === 500){ showError('الخدمة غير مُعدّة على الخادم.'); return; }
     if(res.status === 401){ showError('الرمز غير صحيح.'); $('lockPassword').value=''; $('lockPassword').focus(); return; }
     if(!res.ok){ showError(`خطأ (${res.status}). حاول لاحقاً.`); return; }
-    // نجح التحقق
-    adminPassword = password;
-    try {
-      sessionStorage.setItem(PWD_KEY, password);
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 12 * 60 * 60 * 1000,
-      }));
-    } catch(e) {}
+    // نجح التحقق — حفظ الجلسة
+    saveSession(password);
     unlockApp();
   }catch(err){
     showError('تعذّر الاتصال بالسيرفر. تحقق من الإنترنت.');
@@ -1463,8 +1572,8 @@ const DEFAULT_SETTINGS = {
   business: {
     name: 'بطاقتي',
     sub: 'Bitaqti · بطاقات رقمية تعريفية',
-    phone: '+973 36166806',
-    email: 'Hasan.sdaif16@gmail.com',
+    phone: '+973 66302585',
+    email: 'bitaqti.bh@gmail.com',
     country: 'مملكة البحرين'
   }
 };
@@ -2374,144 +2483,6 @@ function updateCustStatsBar(list){
   if($('custStatAvg'))      $('custStatAvg').textContent      = avg.toFixed(3);
 }
 
-/**
- * يطبع المحتوى عبر iframe مخفي — الحل الأكثر موثوقية ضد حاجزي النوافذ المنبثقة.
- * يأخذ HTML كاملاً للفاتورة ويكتبه في iframe مؤقت مع نسخ كل CSS من الصفحة الأم.
- */
-function printViaIframe(htmlContent){
-  // إن لم يُمرر HTML، نستخرجه من المعاينة الحالية
-  if(!htmlContent){
-    const sheet = document.getElementById('sheet');
-    if(!sheet){ toast('لا توجد معاينة للطباعة', 'error'); return; }
-    // نأخذ HTML ورقة A4 فقط
-    htmlContent = sheet.outerHTML;
-  }
-
-  // ═══ نسخ كل CSS من الصفحة الأم (مهم جداً للحفاظ على التنسيق) ═══
-  // نأخذ كل عناصر <style> و <link rel="stylesheet"> من <head>
-  let cssHtml = '';
-  document.querySelectorAll('style, link[rel="stylesheet"]').forEach(el => {
-    if(el.tagName === 'STYLE'){
-      // ننسخ محتوى الـ <style> tag كاملاً
-      cssHtml += '<style>' + el.innerHTML + '</style>\n';
-    } else if(el.tagName === 'LINK'){
-      // ننسخ الـ <link> tag كاملاً (للخطوط والـ stylesheets الخارجية)
-      cssHtml += el.outerHTML + '\n';
-    }
-  });
-
-  // نبني صفحة HTML كاملة مع نسخ كل CSS من الصفحة الأم
-  const fullHtml = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>طباعة فاتورة</title>
-<!-- نسخ كل CSS من الصفحة الأم للحفاظ على التنسيق -->
-${cssHtml}
-<style>
-  /* قواعد طباعة إضافية */
-  @page{size:A4;margin:10mm;}
-  html,body{
-    background:#fff !important;
-    margin:0 !important;
-    padding:0 !important;
-    width:100% !important;
-    overflow:visible !important;
-  }
-  body{font-size:11pt;line-height:1.6;}
-
-  /* ضبط ورقة A4 للطباعة: نُلغي كل تأثيرات العرض */
-  .preview-wrap,
-  #previewWrap,
-  #sheet,
-  .a4-sheet{
-    position:static !important;
-    display:block !important;
-    background:#fff !important;
-    border:none !important;
-    padding:0 !important;
-    margin:0 !important;
-    box-shadow:none !important;
-    transform:none !important;
-    max-height:none !important;
-    overflow:visible !important;
-    width:100% !important;
-    min-height:auto !important;
-    max-width:none !important;
-  }
-
-  /* ضمان طباعة الألوان كما هي (خلفيات، نصوص ملونة، إطارات) */
-  *{
-    -webkit-print-color-adjust:exact !important;
-    print-color-adjust:exact !important;
-    color-adjust:exact !important;
-  }
-
-  /* الروابط لا تُظهر URL في الطباعة */
-  a[href]:after,
-  a[href^="#"]:after{content:"" !important;}
-
-  /* الجداول: لا تنكسر الصفوف عبر الصفحات */
-  tr,td,th{page-break-inside:avoid;}
-
-  /* إخفاء العناصر غير المطلوبة للطباعة */
-  .preview-label,
-  .no-print{display:none !important;}
-</style>
-</head>
-<body>${htmlContent}</body>
-</html>`;
-
-  // إنشاء iframe مخفي
-  let iframe = document.getElementById('printFrame');
-  if(!iframe){
-    iframe = document.createElement('iframe');
-    iframe.id = 'printFrame';
-    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:none;background:#fff;';
-    document.body.appendChild(iframe);
-  }
-
-  // التحقق من توفر contentWindow
-  if(!iframe.contentWindow){
-    console.error('[printViaIframe] iframe.contentWindow is null, falling back to window.print()');
-    window.print();
-    return;
-  }
-
-  // كتابة المحتوى في الـ iframe
-  const doc = iframe.contentWindow.document;
-  doc.open();
-  doc.write(fullHtml);
-  doc.close();
-
-  // ننتظر تحميل الإطار ثم نطبع
-  const doPrint = () => {
-    try{
-      if(!iframe.contentWindow){
-        window.print();
-        return;
-      }
-      iframe.contentWindow.focus();
-      iframe.contentWindow.print();
-    }catch(e){
-      console.error('[printViaIframe] print failed:', e);
-      // fallback: نطبع الصفحة الأم
-      window.print();
-    }
-  };
-
-  // ننتظر تحميل الخطوط إن أمكن (مهم جداً للخطوط العربية)
-  try {
-    if(iframe.contentWindow.document.fonts && iframe.contentWindow.document.fonts.ready){
-      iframe.contentWindow.document.fonts.ready.then(() => setTimeout(doPrint, 300));
-    } else {
-      setTimeout(doPrint, 600);
-    }
-  } catch(e) {
-    setTimeout(doPrint, 600);
-  }
-}
-
 /** يطبع فاتورة العميل عبر فتح نافذة جديدة محتواها الفاتورة فقط */
 function printCustomerInvoice(c){
   const win = window.open('', '_blank', 'width=820,height=900');
@@ -2909,55 +2880,23 @@ function exportCustomersXlsx(){
 
 // ════════════════════════════════════════════════════════════════
 //  SYNC FROM GOOGLE SHEETS — مزامنة عبر track-order.js (وضع admin)
-//  يستخدم نفس رمز الأمان الخاص بلوحة الفواتير
+//  يستخدم الرمز المحفوظ في sessionStorage بعد تسجيل الدخول
 // ════════════════════════════════════════════════════════════════
 const SYNC_ENDPOINT = '/.netlify/functions/track-order';
 
 /** يجلب قائمة العملاء من Google Sheets عبر track-order.js بوضع admin */
 async function syncFromSheet(){
-  // نحاول أولاً جلب الرمز من الجلسة (إن كان محفوظاً)
+  // الرمز محفوظ بالفعل في الجلسة بعد تسجيل الدخول — لا حاجة لطلبه مجدداً
   let adminPassword = '';
   try {
-    adminPassword = sessionStorage.getItem('bitaqti_admin_password') || '';
+    adminPassword = sessionStorage.getItem(PWD_KEY) || '';
   } catch(e) {
-    // sessionStorage قد لا يكون متاحاً في بعض البيئات
     adminPassword = '';
   }
 
-  // إن لم تكن محفوظة، نطلبها من المستخدم
   if(!adminPassword){
-    showModal({
-      title: 'مزامنة من Google Sheets',
-      bodyHtml: `
-        <div style="text-align:right;margin-bottom:10px;font-size:12.5px;color:var(--ink-soft);line-height:1.7;">
-          لإجراء المزامنة، أدخل رمز الأمان الخاص بصاحب المشروع (نفس كلمة سر لوحة الفواتير).
-        </div>
-        <div style="margin-bottom:8px;">
-          <label style="display:block;font-size:11px;color:var(--ink-faint);margin-bottom:4px;">رمز الأمان</label>
-          <input type="password" id="syncAdminPwd" autocomplete="off" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:14px;direction:ltr;text-align:left;" placeholder="••••••••">
-        </div>
-        <label style="display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--ink-soft);margin-top:8px;cursor:pointer;">
-          <input type="checkbox" id="syncRememberPwd" style="margin:0;">
-          تذكّر الرمز في هذه الجلسة
-        </label>
-      `,
-      confirmText: 'مزامنة',
-      cancelText: 'إلغاء',
-      autoClose: false,
-      onConfirm: async () => {
-        const pwd = document.getElementById('syncAdminPwd')?.value || '';
-        const remember = document.getElementById('syncRememberPwd')?.checked;
-        if(!pwd){
-          toast('يرجى إدخال رمز الأمان', 'error');
-          return;
-        }
-        if(remember){
-          try { sessionStorage.setItem('bitaqti_admin_password', pwd); } catch(e) {}
-        }
-        closeModal();
-        await doSync(pwd);
-      },
-    });
+    toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+    lockApp();
     return;
   }
 
@@ -2969,7 +2908,6 @@ async function doSync(adminPassword){
   if(btn){
     btn.disabled = true;
     btn.classList.add('loading');
-    const original = btn.innerHTML;
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 11-3-6.7L21 8"/></svg> جارٍ المزامنة...`;
   }
 
@@ -2984,9 +2922,10 @@ async function doSync(adminPassword){
     });
 
     if(res.status === 401){
-      // رمز خاطئ — نحذف الرمز المحفوظ ونعود لشاشة الدخول
-      try { sessionStorage.removeItem('bitaqti_admin_password'); } catch(e) {}
-      toast('رمز الأمان غير صحيح.', 'error');
+      // الجلسة منتهية — نعود لشاشة الدخول
+      clearSession();
+      toast('انتهت صلاحية الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+      lockApp();
       return;
     }
     if(res.status === 429){
@@ -3127,97 +3066,35 @@ function closeModal(){
   modalAutoClose = true;
 }
 
-// ════════════════════════════════════════════════════════════════
-//  INCOMING CUSTOMER (من لوحة التحكم الإدارية dashboard.html)
-//  نقرأ بيانات العميل من localStorage ونملأ النموذج تلقائياً
-// ════════════════════════════════════════════════════════════════
-function checkIncomingCustomer(){
+
+// ═══ كود الإحالة — التحقق وتطبيق الخصم ═══
+const TRACK_ENDPOINT_REF = '/.netlify/functions/track-order';
+
+$('btnValidateReferral')?.addEventListener('click', async () => {
+  const code = $('fReferralCode')?.value.trim();
+  const msgEl = $('referralMsg');
+  if(!code){ if(msgEl) msgEl.innerHTML = '<span style="color:var(--ink-faint);">أدخل كود الإحالة أولاً.</span>'; return; }
+  if(msgEl) msgEl.innerHTML = '<span style="color:var(--ink-faint);">جارٍ التحقق...</span>';
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const fromAdmin = urlParams.get('from') === 'customer';
-    if(!fromAdmin) return;
-
-    const raw = localStorage.getItem('bitaqti_invoice_customer');
-    if(!raw) return;
-
-    const c = JSON.parse(raw);
-    // تنظيف الـ storage (لا نحتاجه مرة أخرى)
-    localStorage.removeItem('bitaqti_invoice_customer');
-    // تنظيف URL
-    window.history.replaceState({}, document.title, window.location.pathname);
-
-    // ملء النموذج ببيانات العميل
-    if(c.customer_name) $('fName').value = c.customer_name;
-    if(c.phone)         $('fPhone').value = c.phone;
-    if(c.cv_link){
-      // استخراج اسم المستخدم من الرابط الكامل إن وُجد
-      let link = c.cv_link;
-      const m = link.match(/\/([^\/]+)\/?$/);
-      if(m) link = m[1];
-      $('fCvLink').value = link;
+    const res = await fetch(TRACK_ENDPOINT_REF, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ referral_code: code }),
+    });
+    const data = await res.json();
+    if(data.valid){
+      if(msgEl) msgEl.innerHTML = '<span style="color:#0C9A63;font-weight:700;">✓ كود صحيح! خصم ' + data.discount_percent + '% — بواسطة: ' + (data.referrer_name || 'غير معروف') + '</span>';
+      // تطبيق خصم 20% تلقائياً
+      if($('fDiscountType')) $('fDiscountType').value = 'percent';
+      if($('fDiscountValue')) { $('fDiscountValue').value = data.discount_percent; $('fDiscountValue').disabled = false; }
+      updatePreview();
+      toast('تم تطبيق خصم ' + data.discount_percent + '% بنجاح', 'success');
+    } else {
+      if(msgEl) msgEl.innerHTML = '<span style="color:var(--red);font-weight:700;">✗ ' + (data.message || 'كود غير صحيح') + '</span>';
     }
-
-    // إضافة بند افتراضي بالباقة والسعر
-    if(items.length === 1 && !items[0].description){
-      items[0] = {
-        description: c.package ? `بطاقة رقمية - ${c.package}` : 'بطاقة رقمية',
-        qty: 1,
-        unitPrice: Number(c.price) || 0,
-      };
-    }
-
-    // ملاحظات إن وُجدت
-    if(c.invoice_notes) $('fNotes').value = c.invoice_notes;
-
-    // الحالة
-    const statusMap = {
-      'قيد التنفيذ': 'draft',
-      'بانتظار الدفع': 'sent',
-      'تم التصميم': 'sent',
-      'تم التسليم': 'paid',
-      'ملغي': 'cancelled',
-    };
-    if(c.status && statusMap[c.status]) $('fStatus').value = statusMap[c.status];
-
-    // طريقة الدفع
-    const payMap = {
-      'تحويل بنكي': 'bank',
-      'كاش': 'cash',
-      'بطاقة ائتمان': 'card',
-      'Apple Pay': 'online',
-      'PayPal': 'online',
-    };
-    if(c.payment_method && payMap[c.payment_method]) $('fPayment').value = payMap[c.payment_method];
-
-    // VAT
-    if(c.vat_amount != null){
-      const subtotal = Number(c.price) || 0;
-      if(subtotal > 0){
-        const vatRate = (Number(c.vat_amount) / subtotal * 100);
-        $('fVatRate').value = vatRate.toFixed(1);
-      }
-    }
-
-    // الخصم
-    if(c.discount_amount && Number(c.discount_amount) > 0){
-      $('fDiscountType').value = 'fixed';
-      $('fDiscountValue').value = c.discount_amount;
-      $('fDiscountValue').disabled = false;
-    }
-
-    // تحديث المعاينة
-    renderItemsTable();
-    updatePreview();
-
-    // إشعار
-    setTimeout(() => {
-      toast(`تم تحميل بيانات العميل: ${c.customer_name || c.phone}`, 'success');
-    }, 300);
-
   } catch(e) {
-    console.error('[checkIncomingCustomer]', e);
+    if(msgEl) msgEl.innerHTML = '<span style="color:var(--red);">تعذّر التحقق — تحقق من الإنترنت.</span>';
   }
-}
+});
 
 // ════════════════════════════════════════════════════════════════
 //  INIT
@@ -3232,10 +3109,6 @@ function initApp(){
   $('fVatRate').value = settings.defaultVat;
   updatePreview();
   updateHistoryBadge();
-
-  // ═══ تحقق إن كان المستخدم قادماً من لوحة التحكم لإنشاء فاتورة لعميل ═══
-  // نقرأ بيانات العميل من localStorage ونملأ النموذج تلقائياً
-  checkIncomingCustomer();
 
   // Tabs
   document.querySelectorAll('.tab').forEach(t => {
@@ -3266,8 +3139,9 @@ function initApp(){
     }
     // نُحدّث المعاينة مرة أخيرة قبل الطباعة
     if(typeof updatePreview === 'function') updatePreview();
-    // ننتظر قليلاً ليكتمل إعادة الرسم ثم نطبع عبر iframe مخفي
-    setTimeout(() => printViaIframe(), 150);
+    // نطبع نفس المستند مباشرة (بنفس طريقة النظام القديم التي كانت تعمل بشكل ممتاز)
+    // قواعد @media print في <head> تتكفّل بإخفاء كل شيء عدا ورقة A4 وإلغاء أي تصغير (transform)
+    setTimeout(() => window.print(), 150);
   });
   $('btnNew').addEventListener('click', () => {
     if(editingId || items.some(i => i.description) || $('fName').value){
