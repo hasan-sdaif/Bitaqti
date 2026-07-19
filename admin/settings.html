@@ -229,6 +229,76 @@
     margin-top:18px;padding:10px 14px;background:var(--blue-tint);
     color:#1E3A8A;border-radius:8px;font-size:11.5px;line-height:1.6;text-align:right;
   }
+
+  /* ═══ تجاوب شامل للجوال والتابلت ═══ */
+  @media(max-width:768px){
+    .topbar-inner{padding:0 12px;gap:8px;}
+    .brand{font-size:13px;}
+    .brand .mark{width:28px;height:20px;}
+    .icon-btn{width:32px;height:32px;}
+    .icon-btn svg{width:15px;height:15px;}
+    .main{padding:16px 12px 80px;}
+    .panel{margin-bottom:14px;}
+    .panel-header{padding:14px 16px;}
+    .panel-header h2{font-size:15px;}
+    .panel-header .sub{font-size:11px;}
+    .panel-body{padding:14px;}
+    .form-row{grid-template-columns:1fr !important;}
+    .form-control{font-size:14px;padding:10px 12px;}
+    .btn{padding:8px 12px;font-size:12px;}
+    .btn-sm{padding:6px 10px;font-size:11px;}
+    .btn svg{width:13px;height:13px;}
+    .code-block{font-size:10px;padding:12px;}
+    .status-row{padding:10px 12px;font-size:12px;}
+    .status-text{font-size:12px;}
+    .modal{max-width:95vw !important;}
+    .modal-body{font-size:12.5px !important;padding:0 16px 16px !important;}
+    .modal-actions{padding:12px 16px 16px;flex-wrap:wrap;}
+    .toast-container{left:12px;right:12px;bottom:12px;max-width:none;}
+    .toast{padding:10px 16px;font-size:12px;}
+    .lock-card{padding:24px 20px;}
+    .lock-card h1{font-size:18px;}
+    .lock-input{padding:12px 40px 12px 12px;font-size:14px;}
+    .lock-btn{padding:12px;font-size:13px;}
+    .danger-zone{padding:12px;}
+    .danger-zone h4{font-size:12px;}
+    .danger-zone p{font-size:11px;}
+  }
+  @media(max-width:480px){
+    .topbar-inner{padding:0 10px;}
+    .brand{font-size:12px;}
+    .brand .mark{width:26px;height:18px;}
+    .main{padding:12px 10px 70px;}
+    .panel-header{padding:12px 14px;}
+    .panel-body{padding:12px;}
+    .btn{padding:7px 10px;font-size:11px;}
+    .code-block{font-size:9px;padding:10px;max-height:300px;}
+    .status-row{padding:8px 10px;flex-wrap:wrap;}
+    .status-dot{width:10px;height:10px;}
+    .modal{max-width:98vw !important;border-radius:14px !important;}
+    .modal-body{font-size:12px !important;padding:0 14px 14px !important;}
+    .modal-actions{flex-direction:column;}
+    .modal-actions .btn{width:100%;}
+    .lock-card{padding:20px 16px;}
+    .lock-card h1{font-size:16px;}
+    .lock-card p{font-size:11px;}
+    .lock-input{padding:10px 36px 10px 10px;font-size:13px;}
+    .lock-btn{padding:10px;font-size:12px;}
+    .lock-hint{font-size:10px;padding:8px 10px;}
+    .alert{padding:10px 12px;font-size:12px;}
+    .alert svg{width:16px;height:16px;}
+  }
+  @media(max-width:360px){
+    .brand{font-size:11px;}
+    .brand .mark{width:24px;height:16px;}
+    .code-block{font-size:8px;}
+  }
+  .modal-overlay{padding:8px;}
+  @media(max-width:480px){
+    .modal-overlay{padding:4px;}
+    .modal{max-height:96vh !important;}
+    .modal-body{max-height:60vh;overflow-y:auto;}
+  }
 </style>
 </head>
 <body class="locked">
@@ -698,7 +768,7 @@ function setDot(dotId, status, text){
 
 // ═══ كود Apps Script ═══
 const APPS_SCRIPT_CODE = `const SHEET_NAME = 'العملاء';
-const HEADER_ROW = 2;  // الصف 1 = مفاتيح إنجليزية، الصف 2 = عناوين عربية
+const HEADER_ROW = 2;
 
 function doPost(e) {
   try {
@@ -707,25 +777,37 @@ function doPost(e) {
     const action = data.action;
     const record = data.record;
 
-    // تحقق من الرمز
     const correctPassword = PropertiesService
       .getScriptProperties().getProperty('ADMIN_PASSWORD') || 'CHANGE_ME';
     if (password !== correctPassword) {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'unauthorized'
-      })).setMimeType(ContentService.MimeType.JSON);
+      return jsonOut({ok: false, error: 'unauthorized'});
     }
 
-    const sheet = SpreadsheetApp.getActiveSpreadsheet()
-      .getSheetByName(SHEET_NAME);
+    // محاولة العثور على الشيت بالاسم، وإلا نستخدم الأول
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'sheet_not_found: ' + SHEET_NAME
-      })).setMimeType(ContentService.MimeType.JSON);
+      sheet = ss.getSheets()[0];
+    }
+    if (!sheet) {
+      return jsonOut({ok: false, error: 'no_sheet_found'});
     }
 
+    // قراءة المفاتيح من الصف 1
     const lastCol = sheet.getLastColumn();
-    const headers = sheet.getRange(HEADER_ROW - 1, 1, 1, lastCol).getValues()[0];
+    if (lastCol < 1) {
+      return jsonOut({ok: false, error: 'no_headers'});
+    }
+    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
+
+    // دعم الأعمدة الجديدة (إحالة) إن لم توجد
+    const neededCols = ['referral_code', 'referral_points', 'referred_by'];
+    neededCols.forEach(col => {
+      if (headers.indexOf(col) === -1) {
+        sheet.getRange(1, headers.length + 1).setValue(col);
+        headers.push(col);
+      }
+    });
 
     if (action === 'add') {
       const row = headers.map(h => record[h] !== undefined ? record[h] : '');
@@ -753,19 +835,12 @@ function doPost(e) {
         sheet.appendRow(row);
       });
     } else {
-      return ContentService.createTextOutput(JSON.stringify({
-        ok: false, error: 'invalid_action: ' + action
-      })).setMimeType(ContentService.MimeType.JSON);
+      return jsonOut({ok: false, error: 'invalid_action: ' + action});
     }
 
-    return ContentService.createTextOutput(JSON.stringify({
-      ok: true, action: action
-    })).setMimeType(ContentService.MimeType.JSON);
-
+    return jsonOut({ok: true, action: action});
   } catch(err) {
-    return ContentService.createTextOutput(JSON.stringify({
-      ok: false, error: String(err)
-    })).setMimeType(ContentService.MimeType.JSON);
+    return jsonOut({ok: false, error: String(err)});
   }
 }
 
@@ -773,19 +848,30 @@ function findRow(sheet, headers, record) {
   const data = sheet.getDataRange().getValues();
   for (let i = HEADER_ROW; i < data.length; i++) {
     const row = data[i];
-    const phone = String(row[0] || '').replace(/\\.0$/, '').trim();
-    const code  = String(row[1] || '').replace(/\\.0$/, '').trim();
-    const rPhone = String(record.phone || '').replace(/\\.0$/, '').trim();
-    const rCode  = String(record.code  || '').replace(/\\.0$/, '').trim();
+    const phone = String(row[0] || '').replace(/\.0$/, '').trim();
+    const code = String(row[1] || '').replace(/\.0$/, '').trim();
+    const rPhone = String(record.phone || '').replace(/\.0$/, '').trim();
+    const rCode = String(record.code || '').replace(/\.0$/, '').trim();
+    // تطابق على phone + code، أو على order_code فقط
     if (phone === rPhone && code === rCode) return i + 1;
+    // محاولة match على order_code
+    const orderCodeIdx = headers.indexOf('order_code');
+    if (orderCodeIdx >= 0) {
+      const rowOrderCode = String(row[orderCodeIdx] || '').trim();
+      const recOrderCode = String(record.order_code || '').trim();
+      if (rowOrderCode && recOrderCode && rowOrderCode === recOrderCode) return i + 1;
+    }
   }
   return -1;
 }
 
+function jsonOut(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet() {
-  return ContentService.createTextOutput(JSON.stringify({
-    ok: true, message: 'Bitaqti Sheets Webhook is running'
-  })).setMimeType(ContentService.MimeType.JSON);
+  return jsonOut({ok: true, message: 'Bitaqti Sheets Webhook is running'});
 }`;
 
 function displayAppsScriptCode(){
