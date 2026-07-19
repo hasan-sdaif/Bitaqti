@@ -1,0 +1,17 @@
+# منع فهرسة مجلد admin من محركات البحث
+/admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# منع فهرسة صفحة الفواتير القديمة (إن بقت في الجذر)
+/inv-x7k2.html
+  X-Robots-Tag: noindex, nofollow
+
+# headers عامة لكل الصفحات
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
