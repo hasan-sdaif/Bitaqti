@@ -3100,7 +3100,9 @@ $('btnValidateReferral')?.addEventListener('click', async () => {
 //  INIT
 // ════════════════════════════════════════════════════════════════
 function initApp(){
-  if(initApp._done) return;
+  if(initApp._done){
+    if($('app') && $('app').classList.contains('unlocked')) return;
+  }
   initApp._done = true;
   loadData();
   loadCustomers();          // ← جديد: تحميل قاعدة العملاء
@@ -3290,6 +3292,21 @@ function initApp(){
 
   toast('مرحباً بك في نظام الفواتير المحسّن', 'info');
 }
+
+  // ═══ إصلاح bfcache: عند العودة للصفحة ═══
+  window.addEventListener('pageshow', (event) => {
+    if(event.persisted){
+      const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+      const session = getSavedSession();
+      if(savedPwd && session){
+        $('lockScreen').style.display = 'none';
+        $('app').classList.add('unlocked');
+      } else {
+        lockApp();
+      }
+    }
+  });
+
 </script>
 </body>
 </html>
