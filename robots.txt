@@ -1,16 +1,25 @@
 # bitaqti.com — robots.txt
-# آخر تحديث: 18 يوليو 2026
+# آخر تحديث: 19 يوليو 2026
 
 User-agent: *
 
-# صفحات الخدمة نفسها — مسموح بفهرستها
+# صفحات الخدمة العامة — مسموح بفهرستها
 Allow: /$
 Allow: /index.html
 Allow: /before-order.html
 Allow: /privacy.html
+Allow: /preview-basic/
+Allow: /preview-standard/
+Allow: /preview-premium/
 
-# لوحة الفواتير الداخلية — ممنوعة من الفهرسة دائماً، بغض النظر عن أي عميل
+# المنطقة الإدارية — ممنوعة من الفهرسة دائماً
+Disallow: /admin/
 Disallow: /inv-x7k2.html
+Disallow: /admin.html
+Disallow: /dashboard.html
+
+# Netlify Functions — غير قابلة للفهرسة
+Disallow: /.netlify/
 
 # ─────────────────────────────────────────────────────────
 
