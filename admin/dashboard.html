@@ -2068,18 +2068,26 @@ async function checkConnection(){
       const testRes = await fetch(UPDATE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: adminPassword, action: 'invalid_action_for_test' }),
+        body: JSON.stringify({ password: adminPassword, action: 'test' }),
       });
-      if(testRes.status === 500){
-        const data = await testRes.json();
-        if(data.error === 'server_not_configured'){
-          text.textContent = `قراءة فقط — لم يتم إعداد SHEETS_WEBHOOK_URL (راجع الإعدادات)`;
-          dot.style.background = 'var(--amber)';
-        }
-      } else if(testRes.status === 400){
-        // الكتابة متاحة (400 = action غير صالح، لكن السيرفر يعمل)
+      const testData = await testRes.json().catch(() => ({}));
+      if(testRes.status === 200 && testData.ok){
         text.textContent = `قراءة + كتابة — ${customers.length} عميل`;
         dot.style.background = 'var(--green)';
+      } else if(testRes.status === 500){
+        if(testData.error === 'server_not_configured'){
+          text.textContent = `قراءة فقط — SHEETS_WEBHOOK_URL غير مضبوط في Netlify`;
+          dot.style.background = 'var(--amber)';
+        } else {
+          text.textContent = `قراءة فقط — ${testData.message || 'خطأ في الخادم'}`;
+          dot.style.background = 'var(--amber)';
+        }
+      } else if(testRes.status === 502){
+        text.textContent = `قراءة فقط — تعذّر الوصول إلى Apps Script (تأكد من النشر)`;
+        dot.style.background = 'var(--amber)';
+      } else {
+        text.textContent = `قراءة فقط — تحقق من الإعدادات (HTTP ${testRes.status})`;
+        dot.style.background = 'var(--amber)';
       }
     } catch(e) {}
   } else {
