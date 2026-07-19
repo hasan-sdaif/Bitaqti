@@ -95,15 +95,50 @@ exports.handler = async (event) => {
 
   try {
     console.log(`[sheet-update] forwarding ${action} to Apps Script`);
+    const bodyStr = JSON.stringify(payload);
 
-    const webhookRes = await fetch(webhookUrl, {
+    // ═══ Google Apps Script يُعيد redirect 302 من script.google.com
+    //    إلى script.googleusercontent.com. عند متابعة الـ redirect،
+    //    يتحوّل POST إلى GET وتضيع البيانات!
+    //    الحل: نستخدم redirect:'manual' ثم نُعيد POST يدوياً للرابط الجديد. ═══
+    let finalRes = await fetch(webhookUrl, {
       method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload),
+      headers: { 'Content-Type': 'application/json' },
+      body: bodyStr,
+      redirect: 'manual',
       signal: AbortSignal.timeout(30000),
     });
 
-    const webhookText = await webhookRes.text();
+    // إن كان redirect (301/302/303/307/308)، نتبع Location يدوياً مع POST
+    if([301, 302, 303, 307, 308].includes(finalRes.status)){
+      const location = finalRes.headers.get('location');
+      console.log(`[sheet-update] redirect ${finalRes.status} → ${location}`);
+      if(location){
+        finalRes = await fetch(location, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: bodyStr,
+          redirect: 'manual',
+          signal: AbortSignal.timeout(30000),
+        });
+      }
+    }
+
+    // إن كان redirect مرة أخرى، نتبعه (قد يحصل مرتين)
+    if([301, 302, 303, 307, 308].includes(finalRes.status)){
+      const location2 = finalRes.headers.get('location');
+      if(location2){
+        finalRes = await fetch(location2, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: bodyStr,
+          redirect: 'follow',
+          signal: AbortSignal.timeout(30000),
+        });
+      }
+    }
+
+    const webhookText = await finalRes.text();
 
     // Apps Script قد يُرجع JSON أو نص عادي
     let webhookData;
@@ -113,11 +148,11 @@ exports.handler = async (event) => {
       webhookData = { ok: false, raw: webhookText.slice(0, 500) };
     }
 
-    if (!webhookRes.ok) {
-      console.error('[sheet-update] webhook failed', webhookRes.status, webhookText.slice(0, 200));
+    if (!finalRes.ok) {
+      console.error('[sheet-update] webhook failed', finalRes.status, webhookText.slice(0, 300));
       return jsonResponse(502, {
         error: 'webhook_failed',
-        message: `فشل الاتصال بـ Google Apps Script (HTTP ${webhookRes.status}).`,
+        message: `فشل الاتصال بـ Google Apps Script (HTTP ${finalRes.status}). ${webhookData.raw || webhookData.error || ''}`,
         details: webhookData,
       }, corsHeaders());
     }
