@@ -411,7 +411,7 @@
     background:var(--paper2); border:1px solid var(--paper-line); border-radius:20px;
     overflow:hidden;
   }
-  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);}
+  .contact-grid{display:grid;grid-template-columns:repeat(2,1fr);}
   .contact-cell{
     padding:26px 20px; text-align:center; border-right:1px solid var(--paper-line);
     transition:background .2s ease;
@@ -466,11 +466,6 @@
     .photo-frame{width:168px;height:212px;}
     .bento{grid-template-columns:repeat(2,1fr);}
     .b-span-2,.b-span-3,.b-span-4,.b-span-6{grid-column:span 2;}
-    .contact-grid{grid-template-columns:repeat(2,1fr);}
-    .contact-cell:nth-child(2){border-right:none;}
-    html[dir="rtl"] .contact-cell:nth-child(2){border-left:none;}
-    .contact-cell{border-bottom:1px solid var(--paper-line);}
-    .contact-cell:nth-child(3){border-bottom:none;grid-column:1 / -1;}
   }
   @media (max-width:760px){
     .nav-links{display:none;}
@@ -555,10 +550,6 @@
         </div>
         <p class="hero-p" data-i18n="heroBio">Computer Science undergraduate at the University of Technology of Bahrain, pairing a hands-on technical foundation — including a Cisco Certified Support Technician credential — with real-world digital marketing, social media management, and graphic design experience across sales, logistics, and booking operations.</p>
         <div class="cta-row">
-          <a class="btn btn-orange" href="https://wa.me/97336970423" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
-            <span data-i18n="btnWhatsapp">whatsapp</span>
-          </a>
           <a class="btn btn-line" href="mailto:abdulla.ikowed@gmail.com">
             <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
             <span data-i18n="btnEmail">email</span>
@@ -805,10 +796,6 @@
     </div>
     <div class="contact-panel">
       <div class="contact-grid">
-        <a class="contact-cell reveal" href="tel:+97336970423">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
-          <div class="lbl" data-i18n="contactPhoneLbl">phone</div><div class="val">+973 3697 0423</div>
-        </a>
         <a class="contact-cell reveal" href="mailto:abdulla.ikowed@gmail.com">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
           <div class="lbl" data-i18n="contactEmailLbl">email</div><div class="val">abdulla.ikowed@gmail.com</div>
@@ -832,14 +819,6 @@
 
 <div class="fab-bar">
   <div class="container">
-    <a class="fab" href="tel:+97336970423">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
-      <span data-i18n="fabCall">call</span>
-    </a>
-    <a class="fab" href="https://wa.me/97336970423" target="_blank" rel="noopener">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2zm0 18.06a8.2 8.2 0 01-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.15 8.15 0 01-1.25-4.35c0-4.52 3.68-8.2 8.26-8.2 4.58 0 8.26 3.68 8.26 8.2 0 4.53-3.68 8.27-8.26 8.27z"/></svg>
-      <span data-i18n="fabWhatsapp">whatsapp</span>
-    </a>
     <a class="fab" href="mailto:abdulla.ikowed@gmail.com">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       <span data-i18n="fabEmail">email</span>
