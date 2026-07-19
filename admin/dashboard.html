@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>بطاقتي — لوحة التحكم الإدارية</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='44' y='46' width='28' height='5' rx='2.5' fill='%238A8D93'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9;
+    --red:#CE1126; --red-deep:#9C0E1E; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --green:#0C9A63; --green-tint:#E7F6EE;
+    --blue:#2563EB; --blue-tint:#DBEAFE;
+    --amber:#D97706; --amber-tint:#FEF3C7;
+    --shadow:0 16px 38px rgba(23,24,28,.10);
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    background:var(--paper);color:var(--ink);
+    line-height:1.6;-webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4,.disp{font-family:'El Messiri',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  [dir="ltr"]{unicode-bidi:isolate;}
+  button,input,select,textarea{font-family:inherit;font-size:16px;}
+  a{color:var(--red);text-decoration:none;font-weight:700;}
+  a:hover{text-decoration:underline;}
+
+  /* ═══ LOCK SCREEN ═══ */
+  .lock-screen{
+    position:fixed;inset:0;z-index:9999;
+    background:linear-gradient(135deg,var(--ink) 0%,#0a0a0f 100%);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .lock-card{
+    background:var(--surface);border-radius:20px;padding:36px 32px;
+    max-width:400px;width:100%;text-align:center;
+    box-shadow:0 24px 60px rgba(0,0,0,.4);
+  }
+  .lock-icon{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--red-tint);color:var(--red);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 18px;
+  }
+  .lock-icon svg{width:30px;height:30px;}
+  .lock-card h1{font-size:22px;font-weight:700;margin-bottom:6px;}
+  .lock-card p{font-size:13px;color:var(--ink-soft);margin-bottom:22px;}
+  .lock-input-wrap{position:relative;margin-bottom:14px;}
+  .lock-input{
+    width:100%;padding:14px 48px 14px 16px;border:1.5px solid var(--line);
+    border-radius:10px;background:var(--paper);font-size:16px;
+    text-align:center;letter-spacing:2px;direction:ltr;
+  }
+  .lock-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .lock-toggle{
+    position:absolute;left:8px;top:50%;transform:translateY(-50%);
+    background:none;border:none;color:var(--ink-faint);cursor:pointer;padding:8px;border-radius:8px;
+  }
+  .lock-toggle:hover{color:var(--ink);}
+  .lock-toggle svg{width:18px;height:18px;}
+  .lock-btn{
+    width:100%;padding:14px;border:none;border-radius:10px;
+    background:var(--ink);color:#fff;font-size:14px;font-weight:700;
+    cursor:pointer;transition:background .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .lock-btn:hover{background:#000;}
+  .lock-btn:disabled{opacity:.6;cursor:not-allowed;}
+  .lock-btn .spinner{
+    width:16px;height:16px;border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none;
+  }
+  .lock-btn.loading .spinner{display:block;}
+  .lock-btn.loading .lock-btn-text{display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .lock-error{
+    margin-top:14px;padding:10px 14px;background:var(--red-tint);
+    color:var(--red-deep);border-radius:8px;font-size:12.5px;font-weight:600;display:none;
+  }
+  .lock-error.show{display:block;}
+  .lock-hint{
+    margin-top:18px;padding:10px 14px;background:var(--blue-tint);
+    color:#1E3A8A;border-radius:8px;font-size:11.5px;line-height:1.6;text-align:right;
+  }
+
+  /* ═══ APP ═══ */
+  .app{display:none;}
+  .app.unlocked{display:block;}
+
+  .topbar{
+    position:sticky;top:0;z-index:100;
+    background:rgba(244,243,239,.92);backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:calc(8px + var(--safe-top)) 0 8px;
+  }
+  .topbar-inner{
+    max-width:1400px;margin:0 auto;padding:0 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;
+  }
+  .brand:hover{text-decoration:none;}
+  .brand .mark{
+    width:34px;height:24px;border-radius:5px;background:var(--ink);
+    position:relative;flex-shrink:0;
+  }
+  .brand .mark::before{content:'';position:absolute;right:5px;top:6px;width:9px;height:9px;border-radius:2px;background:var(--paper);}
+  .brand .mark::after{content:'';position:absolute;left:5px;top:8px;width:13px;height:3px;border-radius:2px;background:var(--red);box-shadow:0 5px 0 var(--ink-faint);}
+  .brand small{display:block;font-weight:400;font-size:10px;color:var(--ink-faint);margin-top:1px;}
+
+  .tabs{display:flex;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;overflow-x:auto;}
+  .tab{
+    padding:8px 14px;border:none;background:transparent;color:var(--ink-soft);
+    font-size:12.5px;font-weight:700;cursor:pointer;border-radius:7px;
+    transition:all .15s;display:flex;align-items:center;gap:6px;white-space:nowrap;
+  }
+  .tab svg{width:15px;height:15px;}
+  .tab:hover{color:var(--ink);}
+  .tab.active{background:var(--ink);color:#fff;}
+  .tab .badge{
+    background:var(--red);color:#fff;font-size:10px;font-weight:700;
+    padding:1px 6px;border-radius:10px;min-width:18px;text-align:center;
+  }
+  .tab.active .badge{background:#fff;color:var(--ink);}
+
+  .topbar-actions{display:flex;align-items:center;gap:8px;}
+  .icon-btn{
+    width:36px;height:36px;border-radius:9px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;transition:all .15s;
+  }
+  .icon-btn:hover{color:var(--red);border-color:var(--red);}
+  .icon-btn svg{width:17px;height:17px;}
+
+  .main{
+    max-width:1400px;margin:0 auto;padding:20px;
+    padding-bottom:calc(60px + var(--safe-bottom));
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  /* ═══ PANELS ═══ */
+  .panel{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);box-shadow:var(--shadow-sm);
+    margin-bottom:20px;
+  }
+  .panel-header{
+    padding:18px 22px;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+    background:linear-gradient(180deg,var(--surface),var(--paper));
+    border-radius:var(--radius) var(--radius) 0 0;
+  }
+  .panel-header h2{font-size:18px;font-weight:700;display:flex;align-items:center;gap:8px;}
+  .panel-header h2 svg{width:20px;height:20px;color:var(--red);}
+  .panel-header .sub{font-size:12px;color:var(--ink-faint);margin-top:2px;}
+  .panel-body{padding:22px;}
+
+  /* ═══ STATS ═══ */
+  .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+  @media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}}
+  @media(max-width:500px){.stats-grid{grid-template-columns:1fr;}}
+  .stat-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;
+  }
+  .stat-card .stat-icon{
+    position:absolute;top:14px;left:14px;width:32px;height:32px;border-radius:8px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .stat-card .stat-icon svg{width:18px;height:18px;}
+  .stat-card .stat-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink-faint);margin-bottom:6px;padding-left:42px;}
+  .stat-card .stat-value{font-family:'IBM Plex Mono',monospace;font-size:24px;font-weight:700;color:var(--ink);direction:ltr;text-align:right;}
+  .stat-card.revenue .stat-icon{background:var(--green-tint);color:var(--green);}
+  .stat-card.revenue .stat-value{color:var(--green);}
+  .stat-card.pending .stat-icon{background:var(--red-tint);color:var(--red);}
+  .stat-card.pending .stat-value{color:var(--red);}
+  .stat-card.customers .stat-icon{background:var(--blue-tint);color:var(--blue);}
+  .stat-card.paid .stat-icon{background:var(--green-tint);color:var(--green);}
+  .stat-card.avg .stat-icon{background:var(--gold-tint);color:var(--gold);}
+  .stat-card.avg .stat-value{color:var(--gold);}
+
+  /* ═══ BUTTONS ═══ */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;
+    padding:10px 16px;border:none;border-radius:9px;
+    font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;
+    transition:all .15s;text-decoration:none;
+  }
+  .btn:hover{text-decoration:none;}
+  .btn svg{width:15px;height:15px;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{background:var(--red-deep);}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-green:hover{background:#0a8553;}
+  .btn-ink{background:var(--ink);color:#fff;}
+  .btn-ink:hover{background:#000;}
+  .btn-blue{background:var(--blue);color:#fff;}
+  .btn-blue:hover{background:#1e40af;}
+  .btn-outline{background:transparent;color:var(--ink);border:1.5px solid var(--line);}
+  .btn-outline:hover{border-color:var(--ink);background:var(--paper);}
+  .btn-ghost{background:transparent;color:var(--ink-soft);}
+  .btn-ghost:hover{background:var(--paper);color:var(--ink);}
+  .btn-sm{padding:7px 12px;font-size:12px;}
+
+  /* ═══ TABLE ═══ */
+  .table-wrap{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    overflow:hidden;box-shadow:var(--shadow-sm);
+  }
+  .data-table{width:100%;border-collapse:collapse;}
+  .data-table th{
+    font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+    color:var(--ink-faint);padding:12px 14px;text-align:right;
+    border-bottom:1.5px solid var(--line);background:var(--paper);
+    white-space:nowrap;
+  }
+  .data-table td{padding:11px 14px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:middle;}
+  .data-table tr:last-child td{border-bottom:none;}
+  .data-table tr:hover{background:var(--paper);}
+  .data-table .col-code{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);direction:ltr;}
+  .data-table .col-amount{font-family:'IBM Plex Mono',monospace;font-weight:700;direction:ltr;text-align:left;}
+  .data-table .col-actions{white-space:nowrap;text-align:left;}
+  .data-table .row-action{
+    width:30px;height:30px;border-radius:7px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;
+    transition:all .15s;margin-right:3px;
+  }
+  .data-table .row-action:hover{color:var(--red);border-color:var(--red);}
+  .data-table .row-action.view:hover{color:var(--blue);border-color:var(--blue);}
+  .data-table .row-action.duplicate:hover{color:var(--gold);border-color:var(--gold);}
+  .data-table .row-action.paid:hover{color:var(--green);border-color:var(--green);}
+  .data-table .row-action svg{width:13px;height:13px;}
+
+  .pill{display:inline-block;padding:3px 10px;border-radius:12px;color:#fff;font-size:10.5px;font-weight:700;}
+
+  .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px;}
+  .search-box{flex:1;min-width:200px;position:relative;}
+  .search-box input{
+    width:100%;padding:10px 14px 10px 40px;border:1.5px solid var(--line);
+    border-radius:9px;background:var(--surface);font-size:13px;
+  }
+  .search-box input:focus{outline:none;border-color:var(--red);}
+  .search-box svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:var(--ink-faint);}
+  .filter-select{
+    padding:10px 14px;border:1.5px solid var(--line);border-radius:9px;
+    background:var(--surface);font-size:13px;cursor:pointer;
+  }
+
+  .empty-state{text-align:center;padding:60px 20px;color:var(--ink-faint);}
+  .empty-state svg{width:48px;height:48px;margin:0 auto 14px;opacity:.4;}
+  .empty-state h3{font-size:16px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .empty-state p{font-size:13px;}
+
+  /* ═══ FORM ═══ */
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+  .form-row.cols-3{grid-template-columns:repeat(3,1fr);}
+  @media(max-width:700px){.form-row.cols-3{grid-template-columns:1fr;}}
+  .form-group{margin-bottom:14px;}
+  .form-group label{display:block;font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;}
+  .form-group label .hint{font-weight:400;color:var(--ink-faint);font-size:11px;}
+  .form-control{
+    width:100%;padding:11px 14px;border:1.5px solid var(--line);
+    border-radius:9px;background:var(--paper);color:var(--ink);font-size:14px;
+  }
+  .form-control:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .form-control.mono{font-family:'IBM Plex Mono',monospace;direction:ltr;text-align:left;}
+  textarea.form-control{min-height:80px;resize:vertical;font-family:inherit;}
+
+  .form-section-title{
+    font-size:13px;font-weight:700;color:var(--ink-soft);
+    margin:18px 0 10px;padding-bottom:6px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;
+  }
+  .form-section-title svg{width:13px;height:13px;color:var(--gold);}
+
+  .actions-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px;padding-top:16px;border-top:1px solid var(--line);}
+
+  /* ═══ MODAL ═══ */
+  .modal-overlay{
+    position:fixed;inset:0;z-index:200;background:rgba(23,24,28,.55);backdrop-filter:blur(4px);
+    display:flex;align-items:center;justify-content:center;padding:18px;
+    opacity:0;pointer-events:none;transition:opacity .22s;
+  }
+  .modal-overlay.show{opacity:1;pointer-events:auto;}
+  .modal{
+    background:var(--surface);border-radius:var(--radius);
+    max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+    box-shadow:0 30px 60px rgba(0,0,0,.35);
+    transform:translateY(18px);opacity:0;transition:transform .25s,opacity .25s;
+  }
+  .modal-overlay.show .modal{transform:translateY(0);opacity:1;}
+  .modal-icon{
+    width:56px;height:56px;border-radius:50%;background:var(--blue-tint);color:var(--blue);
+    display:flex;align-items:center;justify-content:center;margin:24px auto 14px;
+  }
+  .modal-icon.danger{background:var(--red-tint);color:var(--red);}
+  .modal-icon.warning{background:var(--amber-tint);color:var(--amber);}
+  .modal-icon svg{width:28px;height:28px;}
+  .modal h3{font-size:18px;font-weight:700;text-align:center;margin-bottom:10px;padding:0 24px;}
+  .modal-body{padding:0 24px 20px;font-size:13.5px;color:var(--ink-soft);line-height:1.7;text-align:center;white-space:pre-wrap;}
+  .modal-actions{padding:16px 24px 24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .modal-actions .btn{min-width:120px;}
+
+  /* ═══ TOAST ═══ */
+  .toast-container{
+    position:fixed;bottom:24px;right:24px;z-index:300;
+    display:flex;flex-direction:column;gap:8px;max-width:360px;
+  }
+  @media(max-width:600px){.toast-container{left:16px;right:16px;bottom:16px;max-width:none;}}
+  .toast{
+    background:var(--ink);color:#fff;padding:12px 22px;border-radius:10px;
+    font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;
+    box-shadow:0 12px 28px rgba(0,0,0,.25);
+    transform:translateY(20px);opacity:0;transition:all .25s;
+  }
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+  .toast.warning{background:var(--amber);}
+  .toast svg{width:16px;height:16px;flex-shrink:0;}
+
+  /* ═══ CODE BLOCK ═══ */
+  .code-block{
+    background:var(--ink);color:#E3E1D9;padding:16px;border-radius:10px;
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;line-height:1.6;
+    overflow-x:auto;direction:ltr;text-align:left;max-height:400px;overflow-y:auto;
+    white-space:pre;
+  }
+  .code-block .comment{color:#8A8D93;}
+  .code-block .keyword{color:#CE1126;}
+  .code-block .string{color:#9C7A3C;}
+
+  /* ═══ ALERTS ═══ */
+  .alert{
+    padding:14px 16px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:16px;
+    display:flex;gap:10px;align-items:flex-start;
+  }
+  .alert svg{width:18px;height:18px;flex-shrink:0;margin-top:1px;}
+  .alert-info{background:var(--blue-tint);color:#1E3A8A;}
+  .alert-warning{background:var(--amber-tint);color:#92400E;}
+  .alert-success{background:var(--green-tint);color:#065F46;}
+  .alert-danger{background:var(--red-tint);color:var(--red-deep);}
+
+  /* ═══ CHARTS (CSS-based) ═══ */
+  .charts-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px;}
+  @media(max-width:900px){.charts-grid{grid-template-columns:1fr;}}
+  .chart-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 22px;box-shadow:var(--shadow-sm);
+  }
+  .chart-card h3{font-size:14px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+  .chart-card h3 svg{width:17px;height:17px;color:var(--red);}
+  .chart-card .chart-sub{font-size:11px;color:var(--ink-faint);margin-bottom:14px;}
+
+  /* Bar chart (إيرادات شهرية) */
+  .bar-chart{display:flex;align-items:flex-end;gap:8px;height:180px;padding:10px 0;border-bottom:1.5px solid var(--line);overflow-x:auto;}
+  .bar-col{flex:1;min-width:32px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .bar-col .bar{
+    width:100%;max-width:36px;background:linear-gradient(180deg,var(--red),var(--red-deep));
+    border-radius:6px 6px 0 0;min-height:4px;transition:height .4s ease;
+    position:relative;
+  }
+  .bar-col .bar:hover{filter:brightness(1.1);}
+  .bar-col .bar-val{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;color:var(--ink);white-space:nowrap;}
+  .bar-col .bar-lbl{font-size:10px;color:var(--ink-faint);font-weight:600;white-space:nowrap;}
+  .bar-col.current .bar{background:linear-gradient(180deg,var(--gold),#7A6028);}
+
+  /* Donut chart (توزيع الباقات) */
+  .donut-wrap{display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+  .donut{
+    width:140px;height:140px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:conic-gradient(var(--red) 0% 40%, var(--gold) 40% 70%, var(--blue) 70% 90%, var(--ink-faint) 90% 100%);
+    position:relative;flex-shrink:0;
+  }
+  .donut::after{
+    content:'';width:90px;height:90px;border-radius:50%;background:var(--surface);
+    position:absolute;
+  }
+  .donut .donut-center{
+    position:relative;z-index:1;text-align:center;
+  }
+  .donut .donut-center .num{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--ink);}
+  .donut .donut-center .lbl{font-size:9px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;}
+  .donut-legend{flex:1;min-width:140px;}
+  .donut-legend-item{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:8px;}
+  .donut-legend-item .dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;}
+  .donut-legend-item .name{flex:1;color:var(--ink-soft);}
+  .donut-legend-item .val{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
+
+  /* Status breakdown */
+  .status-breakdown{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  .status-card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px;}
+  .status-card .sc-count{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;}
+  .status-card .sc-label{font-size:11px;color:var(--ink-soft);margin-top:3px;font-weight:600;}
+  .status-card.draft .sc-count{color:var(--ink-faint);}
+  .status-card.pending .sc-count{color:var(--amber);}
+  .status-card.design .sc-count{color:var(--blue);}
+  .status-card.delivered .sc-count{color:var(--green);}
+  .status-card.cancelled .sc-count{color:var(--red);}
+
+  /* ═══ ACTIVITY LOG ═══ */
+  .activity-list{max-height:340px;overflow-y:auto;}
+  .activity-item{
+    display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);
+    font-size:12.5px;
+  }
+  .activity-item:last-child{border-bottom:none;}
+  .activity-icon{
+    width:32px;height:32px;border-radius:8px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .activity-icon svg{width:16px;height:16px;}
+  .activity-icon.add{background:var(--green-tint);color:var(--green);}
+  .activity-icon.update{background:var(--blue-tint);color:var(--blue);}
+  .activity-icon.delete{background:var(--red-tint);color:var(--red);}
+  .activity-icon.sync{background:var(--gold-tint);color:var(--gold);}
+  .activity-icon.login{background:var(--ink);color:#fff;}
+  .activity-content{flex:1;min-width:0;}
+  .activity-title{font-weight:700;color:var(--ink);margin-bottom:2px;}
+  .activity-meta{font-size:11px;color:var(--ink-faint);}
+  .activity-clear{
+    background:none;border:none;color:var(--ink-faint);font-size:11px;cursor:pointer;
+    padding:4px 8px;border-radius:6px;
+  }
+  .activity-clear:hover{background:var(--paper);color:var(--red);}
+
+  /* ═══ QUICK ACTIONS ═══ */
+  .quick-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+  @media(max-width:700px){.quick-actions{grid-template-columns:repeat(2,1fr);}}
+  .quick-action{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px;text-align:center;cursor:pointer;transition:all .15s;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .quick-action:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+  .quick-action .qa-icon{
+    width:44px;height:44px;border-radius:10px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--red-tint);color:var(--red);
+  }
+  .quick-action .qa-icon svg{width:22px;height:22px;}
+  .quick-action .qa-label{font-size:12.5px;font-weight:700;color:var(--ink);}
+  .quick-action .qa-sub{font-size:10.5px;color:var(--ink-faint);}
+
+  /* ═══ ALERTS / NOTIFICATIONS ═══ */
+  .alerts-list{display:flex;flex-direction:column;gap:8px;}
+  .alert-item{
+    padding:12px 14px;border-radius:10px;font-size:12.5px;
+    display:flex;align-items:center;gap:10px;line-height:1.5;
+  }
+  .alert-item svg{width:18px;height:18px;flex-shrink:0;}
+  .alert-item.unpaid{background:var(--red-tint);color:var(--red-deep);}
+  .alert-item.pending{background:var(--amber-tint);color:#92400E;}
+  .alert-item.success{background:var(--green-tint);color:#065F46;}
+
+  /* ═══ PROGRESS BAR ═══ */
+  .progress-bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-top:6px;}
+  .progress-bar .fill{height:100%;background:var(--green);border-radius:4px;transition:width .4s ease;}
+
+  /* ═══ TABS (التبويبات الجديدة) ═══ */
+  @media(max-width:768px){
+    .tabs{flex-wrap:wrap;}
+    .tab span:not(.badge){font-size:11px;}
+    .topbar-inner{flex-wrap:wrap;}
+    .brand small{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ LOCK SCREEN ═══ -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    </div>
+    <h1>بطاقتي — لوحة التحكم</h1>
+    <p>هذه المنطقة محمية. أدخل الرمز للمتابعة.</p>
+    <form id="lockForm">
+      <div class="lock-input-wrap">
+        <input type="password" class="lock-input mono" id="lockPassword" placeholder="••••••••" autocomplete="current-password" required>
+        <button type="button" class="lock-toggle" id="lockToggle" aria-label="إظهار">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <button type="submit" class="lock-btn" id="lockSubmitBtn">
+        <span class="spinner"></span>
+        <span class="lock-btn-text">متابعة</span>
+      </button>
+    </form>
+    <div class="lock-error" id="lockError"></div>
+    <div class="lock-hint">
+      🔒 هذه المنطقة مخصصة لصاحب المشروع فقط.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="app" id="app">
+  <nav class="topbar">
+    <div class="topbar-inner">
+      <a href="../index.html" class="brand">
+        <span class="mark"></span>
+        <span>بطاقتي <small>لوحة التحكم الإدارية</small></span>
+      </a>
+      <div class="tabs" id="tabs">
+        <button class="tab active" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span>الرئيسية</span>
+        </button>
+        <button class="tab" data-tab="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          <span>العملاء</span>
+          <span class="badge" id="customersBadge" style="display:none">0</span>
+        </button>
+        <button class="tab" data-tab="invoices">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+          <span>الفواتير</span>
+        </button>
+        <button class="tab" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          <span>الإعدادات</span>
+        </button>
+      </div>
+      <div class="topbar-actions">
+        <a href="invoices.html" class="icon-btn" title="نظام الفواتير">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        </a>
+        <button class="icon-btn" id="lockOutBtn" title="خروج">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <!-- ══════ TAB: DASHBOARD ══════ -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>لوحة المعلومات</h2>
+            <div class="sub">نظرة عامة على نشاط بطاقتي</div>
+          </div>
+          <button class="btn btn-outline btn-sm" id="btnRefresh">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+            تحديث
+          </button>
+        </div>
+        <div class="panel-body">
+          <div class="stats-grid" id="statsGrid">
+            <div class="stat-card customers">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+              <div class="stat-label">إجمالي العملاء</div>
+              <div class="stat-value" id="statCustomers">0</div>
+            </div>
+            <div class="stat-card revenue">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+              <div class="stat-label">الإيرادات</div>
+              <div class="stat-value" id="statRevenue">0.000</div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+              <div class="stat-label">المستحقات</div>
+              <div class="stat-value" id="statPending">0.000</div>
+            </div>
+            <div class="stat-card paid">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg></div>
+              <div class="stat-label">مدفوعة</div>
+              <div class="stat-value" id="statPaid">0</div>
+            </div>
+            <div class="stat-card avg">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
+              <div class="stat-label">متوسط القيمة</div>
+              <div class="stat-value" id="statAvg">0.000</div>
+            </div>
+          </div>
+
+          <!-- ═══ إجراءات سريعة ═══ -->
+          <h3 style="font-size:14px;font-weight:700;margin:8px 0 12px;">إجراءات سريعة</h3>
+          <div class="quick-actions">
+            <div class="quick-action" id="qaAddCustomer">
+              <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></div>
+              <div class="qa-label">عميل جديد</div>
+              <div class="qa-sub">إضافة للشيت مباشرة</div>
+            </div>
+            <div class="quick-action" id="qaSync">
+              <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
+              <div class="qa-label">مزامنة</div>
+              <div class="qa-sub">جلب من Google Sheets</div>
+            </div>
+            <div class="quick-action" id="qaInvoices">
+              <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></div>
+              <div class="qa-label">نظام الفواتير</div>
+              <div class="qa-sub">معاينة A4 + طباعة</div>
+            </div>
+            <div class="quick-action" id="qaSettings">
+              <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+              <div class="qa-label">الإعدادات</div>
+              <div class="qa-sub">ربط + تطبيق Scripts</div>
+            </div>
+          </div>
+
+          <!-- ═══ تنبيهات ذكية ═══ -->
+          <div id="alertsSection" style="display:none;">
+            <h3 style="font-size:14px;font-weight:700;margin:20px 0 12px;">تنبيهات</h3>
+            <div class="alerts-list" id="alertsList"></div>
+          </div>
+
+          <!-- ═══ رسوم بيانية ═══ -->
+          <h3 style="font-size:14px;font-weight:700;margin:20px 0 12px;">تحليلات</h3>
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>الإيرادات الشهرية (آخر 6 أشهر)</h3>
+              <div class="chart-sub">قيم الإيرادات المحصّلة لكل شهر</div>
+              <div class="bar-chart" id="monthlyChart"></div>
+            </div>
+            <div class="chart-card">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>توزيع الباقات</h3>
+              <div class="chart-sub">نسبة كل باقة من إجمالي العملاء</div>
+              <div class="donut-wrap">
+                <div class="donut" id="packageDonut">
+                  <div class="donut-center">
+                    <div class="num" id="donutTotal">0</div>
+                    <div class="lbl">عميل</div>
+                  </div>
+                </div>
+                <div class="donut-legend" id="donutLegend"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ═══ توزيع الحالات + سجل النشاط ═══ -->
+          <div class="charts-grid">
+            <div class="chart-card">
+              <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>توزيع حالات الطلبات</h3>
+              <div class="chart-sub">عدد الطلبات في كل مرحلة</div>
+              <div class="status-breakdown" id="statusBreakdown"></div>
+              <div style="margin-top:14px;">
+                <div style="font-size:12px;color:var(--ink-soft);margin-bottom:4px;">نسبة الإنجاز الكلية</div>
+                <div class="progress-bar"><div class="fill" id="completionFill" style="width:0%;"></div></div>
+                <div style="font-size:11px;color:var(--ink-faint);margin-top:4px;" id="completionText">0% مكتمل</div>
+              </div>
+            </div>
+            <div class="chart-card">
+              <h3 style="justify-content:space-between;display:flex;">
+                <span style="display:flex;align-items:center;gap:7px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  سجل النشاط
+                </span>
+                <button class="activity-clear" id="btnClearActivity">مسح السجل</button>
+              </h3>
+              <div class="chart-sub">آخر العمليات في لوحة التحكم</div>
+              <div class="activity-list" id="activityList">
+                <div style="text-align:center;padding:30px 0;color:var(--ink-faint);font-size:12.5px;">
+                  لا يوجد نشاط بعد — ابدأ بإضافة عميل أو مزامنة البيانات.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info" style="margin-top:20px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div>
+              <strong>مرحباً بك في لوحة التحكم الإدارية</strong><br>
+              من هنا يمكنك إدارة كل عملائك وفواتيرك مباشرة في Google Sheets، وإنشاء فواتير جديدة، وتعديل البيانات، وطباعتها — كل ذلك بدون فتح Google Sheets يدوياً.
+            </div>
+          </div>
+
+          <h3 style="font-size:14px;font-weight:700;margin:20px 0 12px;">آخر العملاء</h3>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>رمز الطلب</th>
+                  <th>العميل</th>
+                  <th>الباقة</th>
+                  <th>الإجمالي</th>
+                  <th>الحالة</th>
+                </tr>
+              </thead>
+              <tbody id="recentCustomersBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="recentEmpty" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h3>لا يوجد عملاء بعد</h3>
+            <p>اضغط زر «تحديث» أو اذهب لتبويب العملاء للمزامنة من Google Sheets</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ TAB: CUSTOMERS ══════ -->
+    <div class="tab-panel" id="tab-customers">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>قاعدة بيانات العملاء</h2>
+            <div class="sub" id="customersCount">0 عميل</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" id="btnSync">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              مزامنة من Google Sheets
+            </button>
+            <button class="btn btn-blue btn-sm" id="btnAdd">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              إضافة عميل جديد
+            </button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-success" id="syncAlert" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+            <div id="syncAlertMsg"></div>
+          </div>
+
+          <div class="toolbar">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" id="searchInput" placeholder="بحث بالاسم، الهاتف، رمز الطلب، الباقة...">
+            </div>
+            <select class="filter-select" id="filterStatus">
+              <option value="">كل الحالات</option>
+              <option value="قيد التنفيذ">قيد التنفيذ</option>
+              <option value="بانتظار الدفع">بانتظار الدفع</option>
+              <option value="تم التصميم">تم التصميم</option>
+              <option value="تم التسليم">تم التسليم</option>
+              <option value="ملغي">ملغي</option>
+            </select>
+            <select class="filter-select" id="filterPayment">
+              <option value="">كل حالات الدفع</option>
+              <option value="مدفوع">مدفوع</option>
+              <option value="غير مدفوع">غير مدفوع</option>
+              <option value="مدفوع جزئياً">مدفوع جزئياً</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>رمز الطلب</th>
+                  <th>العميل</th>
+                  <th>الهاتف</th>
+                  <th>الباقة</th>
+                  <th>الإجمالي</th>
+                  <th>الدفع</th>
+                  <th>الحالة</th>
+                  <th class="col-actions">إجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="customersBody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="customersEmpty" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h3>لا يوجد عملاء بعد</h3>
+            <p>اضغط «مزامنة من Google Sheets» لجلب بياناتك، أو «إضافة عميل جديد» للبدء.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ TAB: INVOICES ══════ -->
+    <div class="tab-panel" id="tab-invoices">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>الفواتير</h2>
+            <div class="sub">إنشاء فاتورة لأي عميل + قائمة الفواتير المحفوظة محلياً</div>
+          </div>
+          <a class="btn btn-red btn-sm" href="invoices.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+            فتح نظام الفواتير الكامل
+          </a>
+        </div>
+        <div class="panel-body">
+          <div class="alert alert-info">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <div>
+              لإنشاء فاتورة لعميل: اذهب لتبويب «العملاء»، اضغط أيقونة <strong>«إنشاء فاتورة»</strong> (المستند) بجانب العميل.
+              سيتم تحويلك تلقائياً إلى نظام الفواتير وملء بياناته.
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:var(--ink-soft);text-align:center;padding:20px;">
+            نظام الفواتير الكامل متاح في <a href="invoices.html">invoices.html</a> — يشمل معاينة A4 مباشرة، طباعة/PDF، إدارة البنود، VAT، QR Code، وإحصائيات. كما يمكنك <a href="settings.html">ضبط الإعدادات</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════ TAB: SETTINGS ══════ -->
+    <div class="tab-panel" id="tab-settings">
+      <div class="panel">
+        <div class="panel-header">
+          <div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>الإعدادات والربط مع Google Sheets</svg></h2>
+            <div class="sub">إعداد الربط بين لوحة التحكم و Google Sheets</div>
+          </div>
+        </div>
+        <div class="panel-body">
+
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            حالة الربط
+          </div>
+          <div id="connectionStatus" style="font-size:13px;line-height:1.8;">
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+              <span id="statusDot" style="width:10px;height:10px;border-radius:50%;background:var(--ink-faint);"></span>
+              <span id="statusText">جارٍ التحقق...</span>
+            </div>
+          </div>
+
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            إعداد Google Apps Script Webhook (للكتابة في Google Sheets)
+          </div>
+          <div class="alert alert-warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            <div>
+              <strong>مطلوب إعداد لمرة واحدة فقط</strong> — للسماح بتعديل Google Sheets مباشرة من لوحة التحكم (إضافة/تعديل/حذف عملاء):
+              <ol style="margin:8px 0 0 22px;line-height:1.9;">
+                <li>افتح Google Sheet الخاص بك</li>
+                <li>القائمة: <strong>Extensions → Apps Script</strong></li>
+                <li>الصق الكود من الصندوق بالأسفل (استبدل كل ما فيه)</li>
+                <li>احفظ (Ctrl+S) ثم: <strong>Project Settings → Script properties</strong></li>
+                <li>أضف خاصية: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">ADMIN_PASSWORD</code> = <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">&lt;نفس INVOICE_PASSWORD&gt;</code></li>
+                <li><strong>Deploy → New deployment → Web app</strong> → Execute as: <em>Me</em> → Who has access: <em>Anyone</em></li>
+                <li>انسخ الـ URL (ينتهي بـ <code>/exec</code>)</li>
+                <li>في Netlify: أضف متغير <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SHEETS_WEBHOOK_URL</code> = ذلك الـ URL</li>
+              </ol>
+            </div>
+          </div>
+          <details style="margin-top:14px;">
+            <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);padding:8px 0;">📋 اضغط لعرض كود Apps Script الكامل (انسخه كاملاً)</summary>
+            <div class="code-block" id="appsScriptCode" style="margin-top:12px;"></div>
+          </details>
+
+          <div class="form-section-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            تصدير / استيراد محلي
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" id="btnExportCsv">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              تصدير CSV
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnExportXlsx">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+              تصدير Excel
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnPushToSheet">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              رفع كل العملاء للشيت
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ MODAL ═══ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+    </div>
+    <h3 id="modalTitle">تأكيد</h3>
+    <div class="modal-body" id="modalBody">هل أنت متأكد؟</div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" id="modalCancel">إلغاء</button>
+      <button class="btn btn-red" id="modalConfirm">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════════
+//  بطاقتي — لوحة التحكم الإدارية v1.0
+// ════════════════════════════════════════════════════════════════
+
+const $ = id => document.getElementById(id);
+const CURRENCY = 'د.ب';
+
+// ════════════════════════════════════════════════════════════════
+//  AUTH — التحقق من الرمز عبر Netlify Function
+// ════════════════════════════════════════════════════════════════
+const TRACK_ENDPOINT = '/.netlify/functions/track-order';
+const UPDATE_ENDPOINT = '/.netlify/functions/sheet-update';
+const SESSION_KEY = 'bitaqti_admin_session';
+const PWD_KEY = 'bitaqti_admin_password';
+
+let adminPassword = '';
+
+function getSavedSession(){
+  try {
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(!p.expiresAt) return null;
+    if(Date.now() > p.expiresAt){ sessionStorage.removeItem(SESSION_KEY); sessionStorage.removeItem(PWD_KEY); return null; }
+    return p;
+  } catch(e){ return null; }
+}
+
+function unlockApp(){
+  $('lockScreen').style.display='none';
+  $('app').classList.add('unlocked');
+  initApp();
+  setTimeout(() => logActivity('login', 'تسجيل دخول إلى لوحة التحكم', new Date().toLocaleString('ar')), 100);
+}
+
+function lockApp(){
+  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
+  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
+  adminPassword = '';
+  $('lockScreen').style.display='flex';
+  $('app').classList.remove('unlocked');
+  $('lockPassword').value='';
+  $('lockError').classList.remove('show');
+}
+
+// محاولة تسجيل الدخول عبر track-order بوضع admin
+async function tryLogin(password){
+  const res = await fetch(TRACK_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ admin_password: password, mode: 'sync' }),
+  });
+  if(res.status === 200){
+    adminPassword = password;
+    try {
+      sessionStorage.setItem(PWD_KEY, password);
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        createdAt: Date.now(),
+        expiresAt: Date.now() + 12 * 60 * 60 * 1000,
+      }));
+    } catch(e) {}
+    return { ok: true };
+  }
+  if(res.status === 401){
+    return { ok: false, message: 'الرمز غير صحيح.' };
+  }
+  if(res.status === 429){
+    return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
+  }
+  return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
+}
+
+// التحقق التلقائي عند فتح الصفحة
+(function checkExistingSession(){
+  const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+  const session = getSavedSession();
+  if(savedPwd && session){
+    adminPassword = savedPwd;
+    unlockApp();
+    return;
+  }
+  // لا توجد جلسة فعّالة — تأكد أن شاشة القفل ظاهرة
+  $('lockScreen').style.display='flex';
+  $('app').classList.remove('unlocked');
+})();
+
+// ═══ معالجات شاشة القفل ═══
+$('lockToggle').addEventListener('click', () => {
+  const inp = $('lockPassword');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+});
+
+$('lockForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const password = $('lockPassword').value;
+  if(!password) return;
+  const btn = $('lockSubmitBtn');
+  btn.disabled = true; btn.classList.add('loading');
+  $('lockError').classList.remove('show');
+  try{
+    const result = await tryLogin(password);
+    if(result.ok){
+      unlockApp();
+    } else {
+      $('lockError').textContent = result.message;
+      $('lockError').classList.add('show');
+      $('lockPassword').value=''; $('lockPassword').focus();
+    }
+  } catch(err){
+    $('lockError').textContent = 'تعذّر الاتصال بالخادم. تحقق من الإنترنت.';
+    $('lockError').classList.add('show');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+});
+
+$('lockOutBtn').addEventListener('click', () => {
+  showModal({
+    type: 'warning',
+    title: 'تسجيل الخروج',
+    body: 'هل تريد تسجيل الخروج من لوحة التحكم؟ ستحتاج إدخال الرمز مجدداً.',
+    confirmText: 'تسجيل الخروج',
+    onConfirm: () => { closeModal(); lockApp(); },
+  });
+});
+
+// ════════════════════════════════════════════════════════════════
+//  DATA LAYER
+// ════════════════════════════════════════════════════════════════
+const CUSTOMER_FIELDS = [
+  'phone','code','package','price','order_date','status','order_count',
+  'cv_link','actions_log','subpage_content','order_code',
+  'customer_name','customer_email','customer_country','customer_language',
+  'payment_method','payment_status','payment_date',
+  'vat_amount','discount_amount','total_with_vat',
+  'delivery_date','assigned_designer','design_link','qr_code_path',
+  'invoice_notes','last_updated','invoice_status',
+];
+
+let customers = [];
+let stats = {};
+
+const STATUS_COLORS = {
+  'قيد التنفيذ':'#B8924A','بانتظار الدفع':'#CE1126','تم التصميم':'#3730A3',
+  'تم التسليم':'#0C9A63','ملغي':'#53565C',
+};
+const PAYMENT_COLORS = {
+  'مدفوع':'#0C9A63','غير مدفوع':'#CE1126','مدفوع جزئياً':'#D97706','مسترجع':'#53565C',
+};
+
+// ════════════════════════════════════════════════════════════════
+//  SYNC FROM GOOGLE SHEETS — عبر track-order.js بوضع admin
+// ════════════════════════════════════════════════════════════════
+async function syncFromSheet(silent = false){
+  if(!adminPassword){
+    toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+    lockApp();
+    return { ok: false };
+  }
+
+  const btn = $('btnSync');
+  if(btn && !silent){
+    btn.disabled = true;
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;"><path d="M21 12a9 9 0 11-3-6.7L21 8"/></svg> جارٍ المزامنة...`;
+  }
+
+  try{
+    const res = await fetch(TRACK_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ admin_password: adminPassword, mode: 'sync' }),
+    });
+
+    if(res.status === 401){
+      toast('رمز الأمان غير صحيح. أعد تسجيل الدخول.', 'error');
+      lockApp();
+      return { ok: false };
+    }
+    if(!res.ok){
+      const err = await res.json().catch(() => ({}));
+      toast(err.message || `خطأ في المزامنة (${res.status})`, 'error');
+      return { ok: false };
+    }
+
+    const data = await res.json();
+    customers = Array.isArray(data.customers) ? data.customers : [];
+    stats = data.stats || {};
+
+    renderCustomers();
+    renderStats();
+    renderRecentCustomers();
+
+    if(!silent){
+      toast(`تمت مزامنة ${customers.length} عميل بنجاح`, 'success');
+      logActivity('sync', `مزامنة من Google Sheets`, `${customers.length} عميل`);
+    }
+    return { ok: true, data };
+  } catch(err){
+    console.error('[syncFromSheet]', err);
+    toast('تعذّر الاتصال بالخادم. تحقق من الإنترنت.', 'error');
+    return { ok: false };
+  } finally {
+    if(btn && !silent){
+      btn.disabled = false;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> مزامنة من Google Sheets`;
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  WRITE TO GOOGLE SHEETS — عبر sheet-update.js
+// ════════════════════════════════════════════════════════════════
+async function writeToSheet(action, record){
+  if(!adminPassword){
+    toast('انتهت الجلسة. أعد تسجيل الدخول.', 'error');
+    lockApp();
+    return { ok: false };
+  }
+
+  try{
+    const res = await fetch(UPDATE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password: adminPassword,
+        action: action,
+        record: record,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if(res.status === 401){
+      toast('رمز الأمان غير صحيح.', 'error');
+      return { ok: false, error: data.message };
+    }
+    if(res.status === 500 && data.error === 'server_not_configured'){
+      toast('SHEETS_WEBHOOK_URL غير مضبوط. راجع تبويب الإعدادات.', 'error');
+      return { ok: false, error: data.message };
+    }
+    if(!res.ok){
+      toast(data.message || `خطأ (${res.status})`, 'error');
+      return { ok: false, error: data.message };
+    }
+
+    return { ok: true, data };
+  } catch(err){
+    console.error('[writeToSheet]', err);
+    toast('تعذّر الاتصال بالخادم.', 'error');
+    return { ok: false, error: 'network_error' };
+  }
+}
+
+async function bulkReplaceOnSheet(records){
+  if(!adminPassword){
+    toast('انتهت الجلسة. أعد تسجيل الدخول.', 'error');
+    lockApp();
+    return { ok: false };
+  }
+  try{
+    const res = await fetch(UPDATE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        password: adminPassword,
+        action: 'bulk_replace',
+        records: records,
+      }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok){
+      toast(data.message || `خطأ (${res.status})`, 'error');
+      return { ok: false };
+    }
+    return { ok: true };
+  } catch(err){
+    toast('تعذّر الاتصال بالخادم.', 'error');
+    return { ok: false };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  RENDER
+// ════════════════════════════════════════════════════════════════
+function renderStats(){
+  if($('statCustomers')) $('statCustomers').textContent = stats.total_customers || 0;
+  if($('statRevenue'))   $('statRevenue').textContent   = (stats.total_revenue || 0).toFixed(3);
+  if($('statPending'))   $('statPending').textContent   = (stats.pending_amount || 0).toFixed(3);
+  if($('statPaid'))      $('statPaid').textContent      = stats.paid_count || 0;
+  const total = stats.total_customers || 0;
+  const revenue = stats.total_revenue || 0;
+  const pending = stats.pending_amount || 0;
+  const avg = total > 0 ? (revenue + pending) / total : 0;
+  if($('statAvg')) $('statAvg').textContent = avg.toFixed(3);
+
+  // ═══ رسم الرسوم البيانية الجديدة ═══
+  renderMonthlyChart();
+  renderPackageDonut();
+  renderStatusBreakdown();
+  renderAlerts();
+}
+
+/** يرسم رسم الأعمدة للإيرادات الشهرية */
+function renderMonthlyChart(){
+  const chart = $('monthlyChart');
+  if(!chart) return;
+  chart.innerHTML = '';
+  const byMonth = stats.by_month || {};
+  // آخر 6 أشهر
+  const months = [];
+  const now = new Date();
+  for(let i = 5; i >= 0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    const monthName = d.toLocaleDateString('ar', { month: 'short' });
+    months.push({ key, label: monthName, value: byMonth[key] || 0 });
+  }
+  const maxVal = Math.max(...months.map(m => m.value), 1);
+  months.forEach((m, idx) => {
+    const col = document.createElement('div');
+    col.className = 'bar-col' + (idx === months.length - 1 ? ' current' : '');
+    const heightPct = (m.value / maxVal) * 100;
+    col.innerHTML = `
+      <div class="bar-val">${m.value.toFixed(0)}</div>
+      <div class="bar" style="height:${Math.max(heightPct, 2)}%;"></div>
+      <div class="bar-lbl">${m.label}</div>
+    `;
+    chart.appendChild(col);
+  });
+}
+
+/** يرسم الرسم الدائري لتوزيع الباقات */
+function renderPackageDonut(){
+  const donut = $('packageDonut');
+  const legend = $('donutLegend');
+  if(!donut || !legend) return;
+  const byPkg = stats.by_package || {};
+  const colors = ['#CE1126', '#9C7A3C', '#2563EB', '#0C9A63', '#8A8D93', '#D97706'];
+  const entries = Object.entries(byPkg);
+  const total = entries.reduce((s, [, v]) => s + v, 0);
+  if($('donutTotal')) $('donutTotal').textContent = total;
+  // بناء تدرّج conic-gradient
+  let gradient = '';
+  let cumPct = 0;
+  entries.forEach(([name, count], i) => {
+    const pct = total > 0 ? (count / total) * 100 : 0;
+    const color = colors[i % colors.length];
+    gradient += `${color} ${cumPct}% ${cumPct + pct}%, `;
+    cumPct += pct;
+  });
+  gradient = gradient.slice(0, -2) || 'var(--line) 0% 100%';
+  donut.style.background = `conic-gradient(${gradient})`;
+  // بناء الـ legend
+  legend.innerHTML = '';
+  entries.forEach(([name, count], i) => {
+    const color = colors[i % colors.length];
+    const pct = total > 0 ? ((count / total) * 100).toFixed(0) : 0;
+    const item = document.createElement('div');
+    item.className = 'donut-legend-item';
+    item.innerHTML = `
+      <div class="dot" style="background:${color};"></div>
+      <div class="name">${escapeHtml(name)}</div>
+      <div class="val">${count} (${pct}%)</div>
+    `;
+    legend.appendChild(item);
+  });
+  if(!entries.length){
+    legend.innerHTML = '<div style="color:var(--ink-faint);font-size:12px;">لا توجد بيانات بعد</div>';
+  }
+}
+
+/** يرسم بطاقات توزيع الحالات */
+function renderStatusBreakdown(){
+  const wrap = $('statusBreakdown');
+  if(!wrap) return;
+  const byStatus = stats.by_status || {};
+  const cards = [
+    { key: 'قيد التنفيذ',   class: 'pending',   icon: '⏳' },
+    { key: 'بانتظار الدفع', class: 'pending',   icon: '💳' },
+    { key: 'تم التصميم',    class: 'design',    icon: '🎨' },
+    { key: 'تم التسليم',    class: 'delivered', icon: '✅' },
+    { key: 'ملغي',          class: 'cancelled', icon: '❌' },
+  ];
+  wrap.innerHTML = '';
+  cards.forEach(c => {
+    const count = byStatus[c.key] || 0;
+    const card = document.createElement('div');
+    card.className = `status-card ${c.class}`;
+    card.innerHTML = `
+      <div class="sc-count">${count}</div>
+      <div class="sc-label">${c.icon} ${c.key}</div>
+    `;
+    wrap.appendChild(card);
+  });
+  // نسبة الإنجاز = (تم التسليم) / (الإجمالي - ملغي)
+  const total = stats.total_customers || 0;
+  const cancelled = byStatus['ملغي'] || 0;
+  const delivered = byStatus['تم التسليم'] || 0;
+  const effective = total - cancelled;
+  const completionPct = effective > 0 ? Math.round((delivered / effective) * 100) : 0;
+  if($('completionFill')) $('completionFill').style.width = completionPct + '%';
+  if($('completionText')) $('completionText').textContent = completionPct + '% مكتمل (' + delivered + ' من ' + effective + ')';
+}
+
+/** يعرض التنبيهات الذكية */
+function renderAlerts(){
+  const section = $('alertsSection');
+  const list = $('alertsList');
+  if(!section || !list) return;
+  const alerts = [];
+  // فواتير غير مدفوعة
+  const unpaid = stats.unpaid_count || 0;
+  const pendingAmount = stats.pending_amount || 0;
+  if(unpaid > 0){
+    alerts.push({
+      type: 'unpaid',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
+      text: `<strong>${unpaid} طلب غير مدفوع</strong> بقيمة إجمالية ${pendingAmount.toFixed(3)} ${CURRENCY}. <a href="#" onclick="switchTab('customers');return false;">عرض القائمة</a>`,
+    });
+  }
+  // طلبات قيد التنفيذ
+  const byStatus = stats.by_status || {};
+  const pendingOrders = (byStatus['قيد التنفيذ'] || 0) + (byStatus['بانتظار الدفع'] || 0) + (byStatus['تم التصميم'] || 0);
+  if(pendingOrders > 0){
+    alerts.push({
+      type: 'pending',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
+      text: `<strong>${pendingOrders} طلب قيد المعالجة</strong> يحتاج متابعة.`,
+    });
+  }
+  // لا تنبيهات
+  if(alerts.length === 0){
+    section.style.display = 'none';
+    return;
+  }
+  section.style.display = 'block';
+  list.innerHTML = '';
+  alerts.forEach(a => {
+    const el = document.createElement('div');
+    el.className = `alert-item ${a.type}`;
+    el.innerHTML = a.icon + '<div>' + a.text + '</div>';
+    list.appendChild(el);
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ACTIVITY LOG — سجل النشاط المحفوظ في localStorage
+// ════════════════════════════════════════════════════════════════
+const ACTIVITY_KEY = 'bitaqti_activity_log';
+const MAX_ACTIVITIES = 50;
+
+function loadActivity(){
+  try {
+    const raw = localStorage.getItem(ACTIVITY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveActivity(list){
+  try {
+    localStorage.setItem(ACTIVITY_KEY, JSON.stringify(list.slice(0, MAX_ACTIVITIES)));
+  } catch(e) {}
+}
+
+function logActivity(type, title, meta = ''){
+  const list = loadActivity();
+  list.unshift({
+    type,         // add | update | delete | sync | login
+    title,
+    meta,
+    timestamp: new Date().toISOString(),
+  });
+  saveActivity(list);
+  renderActivity();
+}
+
+function renderActivity(){
+  const wrap = $('activityList');
+  if(!wrap) return;
+  const list = loadActivity();
+  if(!list.length){
+    wrap.innerHTML = `<div style="text-align:center;padding:30px 0;color:var(--ink-faint);font-size:12.5px;">لا يوجد نشاط بعد — ابدأ بإضافة عميل أو مزامنة البيانات.</div>`;
+    return;
+  }
+  const icons = {
+    add:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>',
+    update: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg>',
+    delete: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>',
+    sync:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>',
+    login:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>',
+  };
+  wrap.innerHTML = '';
+  list.slice(0, 15).forEach(a => {
+    const item = document.createElement('div');
+    item.className = 'activity-item';
+    const time = new Date(a.timestamp);
+    const timeStr = time.toLocaleString('ar', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    item.innerHTML = `
+      <div class="activity-icon ${a.type}">${icons[a.type] || icons.sync}</div>
+      <div class="activity-content">
+        <div class="activity-title">${escapeHtml(a.title)}</div>
+        <div class="activity-meta">${escapeHtml(a.meta || '')} · ${timeStr}</div>
+      </div>
+    `;
+    wrap.appendChild(item);
+  });
+}
+
+function clearActivity(){
+  showModal({
+    type: 'warning',
+    title: 'مسح سجل النشاط',
+    body: 'سيتم حذف كل سجل النشاط من هذا المتصفح. لا يمكن التراجع.',
+    confirmText: 'مسح الكل',
+    onConfirm: () => {
+      try { localStorage.removeItem(ACTIVITY_KEY); } catch(e) {}
+      renderActivity();
+      closeModal();
+      toast('تم مسح سجل النشاط', 'success');
+    },
+  });
+}
+
+function renderRecentCustomers(){
+  const body = $('recentCustomersBody');
+  const empty = $('recentEmpty');
+  body.innerHTML = '';
+  const list = [...customers].slice(0, 5);
+  if(!list.length){
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+  list.forEach(c => {
+    const tr = document.createElement('tr');
+    const total = Number(c.total_with_vat) || Number(c.price) || 0;
+    const statusColor = STATUS_COLORS[c.status] || '#53565C';
+    tr.innerHTML = `
+      <td class="col-code">${escapeHtml(c.order_code || '—')}</td>
+      <td>${escapeHtml(c.customer_name || '—')}</td>
+      <td>${escapeHtml(c.package || '—')}</td>
+      <td class="col-amount">${total.toFixed(3)}</td>
+      <td><span class="pill" style="background:${statusColor};">${escapeHtml(c.status || '—')}</span></td>
+    `;
+    body.appendChild(tr);
+  });
+}
+
+function renderCustomers(){
+  const body = $('customersBody');
+  const search = ($('searchInput')?.value || '').toLowerCase().trim();
+  const statusFilter = $('filterStatus')?.value || '';
+  const paymentFilter = $('filterPayment')?.value || '';
+
+  let list = [...customers];
+  if(search){
+    list = list.filter(c =>
+      String(c.customer_name || '').toLowerCase().includes(search) ||
+      String(c.phone || '').toLowerCase().includes(search) ||
+      String(c.order_code || '').toLowerCase().includes(search) ||
+      String(c.package || '').toLowerCase().includes(search) ||
+      String(c.customer_email || '').toLowerCase().includes(search)
+    );
+  }
+  if(statusFilter)  list = list.filter(c => c.status === statusFilter);
+  if(paymentFilter) list = list.filter(c => c.payment_status === paymentFilter);
+
+  list.sort((a, b) => String(b.order_date || '').localeCompare(String(a.order_date || '')));
+
+  $('customersCount').textContent = customers.length + ' عميل' + (list.length !== customers.length ? ` (${list.length} معروض)` : '');
+  const badge = $('customersBadge');
+  if(customers.length){ badge.style.display = ''; badge.textContent = customers.length; }
+  else { badge.style.display = 'none'; }
+
+  body.innerHTML = '';
+  if(!list.length){
+    $('customersEmpty').style.display = 'block';
+    return;
+  }
+  $('customersEmpty').style.display = 'none';
+
+  list.forEach(c => {
+    const tr = document.createElement('tr');
+    const statusColor = STATUS_COLORS[c.status] || '#53565C';
+    const payColor = PAYMENT_COLORS[c.payment_status] || '#53565C';
+    const total = Number(c.total_with_vat) || Number(c.price) || 0;
+    tr.innerHTML = `
+      <td class="col-code">${escapeHtml(c.order_code || '—')}</td>
+      <td><strong>${escapeHtml(c.customer_name || '—')}</strong></td>
+      <td class="col-code" dir="ltr">${escapeHtml(c.phone || '—')}</td>
+      <td>${escapeHtml(c.package || '—')}</td>
+      <td class="col-amount">${total.toFixed(3)}</td>
+      <td><span class="pill" style="background:${payColor};">${escapeHtml(c.payment_status || '—')}</span></td>
+      <td><span class="pill" style="background:${statusColor};">${escapeHtml(c.status || '—')}</span></td>
+      <td class="col-actions">
+        <button class="row-action view" data-act="view" data-phone="${escapeAttr(c.phone)}" title="عرض"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="row-action" data-act="edit" data-phone="${escapeAttr(c.phone)}" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg></button>
+        <button class="row-action duplicate" data-act="invoice" data-phone="${escapeAttr(c.phone)}" title="إنشاء فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></button>
+        <button class="row-action paid" data-act="whatsapp" data-phone="${escapeAttr(c.phone)}" title="واتساب"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></button>
+        <button class="row-action" data-act="delete" data-phone="${escapeAttr(c.phone)}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+
+  body.querySelectorAll('.row-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.dataset.act;
+      const phone = btn.dataset.phone;
+      const cust = customers.find(c => String(c.phone) === String(phone));
+      if(!cust) return;
+      if(act === 'view')      viewCustomer(cust);
+      else if(act === 'edit')     openEditModal(cust);
+      else if(act === 'invoice')  openInvoiceForCustomer(cust);
+      else if(act === 'whatsapp') shareViaWhatsapp(cust);
+      else if(act === 'delete')   deleteCustomer(cust);
+    });
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  ADD / EDIT / DELETE
+// ════════════════════════════════════════════════════════════════
+function genOrderCode(){
+  const year = new Date().getFullYear();
+  const existing = customers.filter(c => c.order_code && c.order_code.startsWith(`BH-CV-${year}`));
+  const seq = String(existing.length + 1).padStart(4, '0');
+  return `BH-CV-${year}-${seq}`;
+}
+
+function genVerificationCode(){
+  return String(Math.floor(1000 + Math.random() * 9000));
+}
+
+function openAddModal(){
+  const today = new Date().toLocaleDateString('en-GB').split('/').join('/');
+  const newC = {
+    phone: '', code: genVerificationCode(),
+    package: 'الأساسية', price: 5.000, order_date: today, status: 'قيد التنفيذ',
+    order_count: 1, cv_link: '', actions_log: `${today} - استلام الطلب`,
+    subpage_content: 'بطاقتك قيد التصميم، سيصلك رابط المعاينة قريباً.',
+    order_code: genOrderCode(),
+    customer_name: '', customer_email: '', customer_country: 'مملكة البحرين', customer_language: 'العربية',
+    payment_method: 'تحويل بنكي', payment_status: 'غير مدفوع', payment_date: '',
+    vat_amount: 0.500, discount_amount: 0, total_with_vat: 5.500,
+    delivery_date: '', assigned_designer: 'حسن سديف',
+    design_link: '', qr_code_path: '',
+    invoice_notes: '', last_updated: today, invoice_status: 'مسودة',
+  };
+  openEditModal(newC, true);
+}
+
+function openEditModal(c, isNew = false){
+  const fields = [
+    ['customer_name','اسم العميل'],['phone','الهاتف'],['code','رمز التحقق'],
+    ['customer_email','البريد الإلكتروني'],['customer_country','الدولة'],
+    ['package','الباقة'],['price','السعر (د.ب)'],['discount_amount','الخصم (د.ب)'],
+    ['vat_amount','VAT (د.ب)'],['total_with_vat','الإجمالي شامل VAT (د.ب)'],
+    ['order_date','تاريخ الطلب'],['delivery_date','تاريخ التسليم'],
+    ['status','الحالة'],['payment_method','طريقة الدفع'],['payment_status','حالة الدفع'],
+    ['payment_date','تاريخ الدفع'],['order_code','رمز الطلب'],['order_count','عدد الطلبات'],
+    ['cv_link','رابط البطاقة'],['assigned_designer','المصمم المسؤول'],
+    ['design_link','رابط المعاينة'],['qr_code_path','رمز QR (نص/رابط)'],
+    ['invoice_status','حالة الفاتورة'],['customer_language','لغة العميل'],
+    ['actions_log','سجل الإجراءات (افصل بـ |)'],['subpage_content','ملاحظة تظهر للعميل'],
+    ['invoice_notes','ملاحظات داخلية'],
+  ];
+  const numFields = ['price','discount_amount','vat_amount','total_with_vat','order_count'];
+  const ltrFields = ['phone','code','customer_email','price','discount_amount','vat_amount','total_with_vat','cv_link','order_date','delivery_date','payment_date','design_link','qr_code_path','order_code'];
+
+  const html = fields.map(([k, label]) => `
+    <div class="form-group">
+      <label>${label}</label>
+      <input type="text" class="form-control ${ltrFields.includes(k) ? 'mono' : ''}" id="ef_${k}" value="${escapeAttr(c[k] ?? '')}" placeholder="${label}">
+    </div>
+  `).join('');
+
+  showModal({
+    type: 'info',
+    title: isNew ? 'إضافة عميل جديد' : 'تعديل بيانات العميل',
+    bodyHtml: `
+      <div style="text-align:right;max-height:60vh;overflow-y:auto;padding:0 8px;">${html}</div>
+      <div class="alert alert-info" style="margin-top:14px;text-align:right;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div>سيتم ${isNew ? 'إضافة' : 'تحديث'} البيانات مباشرة في Google Sheets عند الحفظ.</div>
+      </div>
+    `,
+    confirmText: isNew ? 'إضافة العميل' : 'حفظ التعديلات',
+    cancelText: 'إلغاء',
+    autoClose: false,
+    onConfirm: async () => {
+      // جمع القيم
+      const updated = { ...c };
+      fields.forEach(([k]) => {
+        const el = $('ef_' + k);
+        if(el){
+          let v = el.value.trim();
+          if(numFields.includes(k)){
+            const n = Number(v.replace(/[^0-9.\-]/g, ''));
+            updated[k] = isNaN(n) ? 0 : n;
+          } else {
+            updated[k] = v;
+          }
+        }
+      });
+      updated.last_updated = new Date().toLocaleDateString('en-GB').split('/').join('/');
+
+      // إغلاق النافذة فوراً وإظهار toast تحميل
+      closeModal();
+      toast('جارٍ الحفظ في Google Sheets...', 'info');
+
+      // الكتابة للشيت
+      const action = isNew ? 'add' : 'update';
+      const result = await writeToSheet(action, updated);
+      if(result.ok){
+        // تحديث القائمة المحلية
+        if(isNew){
+          customers.unshift(updated);
+        } else {
+          const idx = customers.findIndex(x => String(x.phone) === String(c.phone) && String(x.order_code) === String(c.order_code));
+          if(idx > -1) customers[idx] = updated;
+        }
+        renderCustomers();
+        renderRecentCustomers();
+        toast(isNew ? 'تمت إضافة العميل بنجاح' : 'تم تحديث بيانات العميل', 'success');
+        logActivity(
+          isNew ? 'add' : 'update',
+          isNew ? `إضافة عميل: ${updated.customer_name || updated.phone}` : `تعديل عميل: ${updated.customer_name || updated.phone}`,
+          updated.order_code || ''
+        );
+        // مزامنة تلقائية لإعادة الإحصائيات
+        setTimeout(() => syncFromSheet(true), 800);
+      }
+    },
+  });
+}
+
+function deleteCustomer(c){
+  showModal({
+    type: 'danger',
+    title: 'حذف العميل',
+    body: `هل أنت متأكد من حذف العميل "${c.customer_name || c.phone}"؟\n\nسيتم حذفه نهائياً من Google Sheets.`,
+    confirmText: 'حذف نهائي',
+    cancelText: 'إلغاء',
+    onConfirm: async () => {
+      closeModal();
+      toast('جارٍ الحذف من Google Sheets...', 'info');
+      const result = await writeToSheet('delete', c);
+      if(result.ok){
+        customers = customers.filter(x => !(String(x.phone) === String(c.phone) && String(x.order_code) === String(c.order_code)));
+        renderCustomers();
+        renderRecentCustomers();
+        toast('تم حذف العميل بنجاح', 'success');
+        logActivity('delete', `حذف عميل: ${c.customer_name || c.phone}`, c.order_code || '');
+        setTimeout(() => syncFromSheet(true), 800);
+      }
+    },
+  });
+}
+
+function viewCustomer(c){
+  const lines = [
+    `الاسم: ${c.customer_name || '—'}`,
+    `الهاتف: ${c.phone || '—'}`,
+    `البريد: ${c.customer_email || '—'}`,
+    `الدولة: ${c.customer_country || '—'}`,
+    `الباقة: ${c.package || '—'}`,
+    `رمز الطلب: ${c.order_code || '—'}`,
+    `تاريخ الطلب: ${c.order_date || '—'}`,
+    `تاريخ التسليم: ${c.delivery_date || '—'}`,
+    `الحالة: ${c.status || '—'}`,
+    `حالة الدفع: ${c.payment_status || '—'}`,
+    `طريقة الدفع: ${c.payment_method || '—'}`,
+    `المجموع: ${(Number(c.total_with_vat) || 0).toFixed(3)} ${CURRENCY}`,
+    `رابط البطاقة: ${c.cv_link || '—'}`,
+    `المصمم: ${c.assigned_designer || '—'}`,
+    ``,
+    `سجل الإجراءات:`,
+    ...(c.actions_log || '—').split('|').map(s => '  • ' + s.trim()).filter(Boolean),
+  ];
+  showModal({
+    type: 'info',
+    title: `بطاقة العميل: ${c.customer_name || c.phone}`,
+    body: lines.join('\n'),
+    confirmText: 'إغلاق',
+    hideCancel: true,
+  });
+}
+
+function openInvoiceForCustomer(c){
+  // حفظ بيانات العميل في localStorage ثم تحويل لـ inv-x7k2.html
+  try {
+    localStorage.setItem('bitaqti_invoice_customer', JSON.stringify(c));
+  } catch(e) {}
+  // إضافة علم في URL
+  window.location.href = 'invoices.html?from=customer';
+}
+
+function shareViaWhatsapp(c){
+  const total = Number(c.total_with_vat) || Number(c.price) || 0;
+  const lines = [
+    `*فاتورة من بطاقتي (Bitaqti)*`,
+    ``,
+    `*رمز الطلب:* ${c.order_code || '—'}`,
+    `*التاريخ:* ${c.order_date || '—'}`,
+    `*العميل:* ${c.customer_name || '—'}`,
+    `*الباقة:* ${c.package || '—'}`,
+    `*الإجمالي:* ${total.toFixed(3)} ${CURRENCY}`,
+    `*الحالة:* ${c.status || '—'}`,
+    `*حالة الدفع:* ${c.payment_status || '—'}`,
+  ];
+  if(c.cv_link) lines.push(``, `*رابط بطاقتك:* ${c.cv_link}`);
+  if(c.subpage_content) lines.push(``, c.subpage_content);
+  lines.push(``, `_بطاقتي (Bitaqti) — بطاقات رقمية تعريفية · البحرين_`);
+
+  let phone = String(c.phone || '').replace(/[^\d]/g, '');
+  if(phone.length === 8 && !phone.startsWith('973')) phone = '973' + phone;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(lines.join('\n'))}`;
+  window.open(url, '_blank', 'noopener');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  EXPORT
+// ════════════════════════════════════════════════════════════════
+function exportCsv(){
+  if(!customers.length){ toast('لا يوجد عملاء للتصدير', 'error'); return; }
+  const headers = CUSTOMER_FIELDS;
+  const lines = [headers.join(',')];
+  customers.forEach(c => {
+    const row = headers.map(h => {
+      const v = String(c[h] ?? '');
+      if(v.includes(',') || v.includes('"') || v.includes('\n')){
+        return '"' + v.replace(/"/g, '""') + '"';
+      }
+      return v;
+    });
+    lines.push(row.join(','));
+  });
+  const csv = '\uFEFF' + lines.join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bitaqti_customers_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('تم تصدير CSV بنجاح', 'success');
+}
+
+function exportXlsx(){
+  if(!customers.length){ toast('لا يوجد عملاء للتصدير', 'error'); return; }
+  if(typeof XLSX === 'undefined'){ toast('مكتبة XLSX غير محمّلة', 'error'); return; }
+  const ws = XLSX.utils.json_to_sheet(customers.map(c => {
+    const o = {};
+    CUSTOMER_FIELDS.forEach(k => o[k] = c[k] ?? '');
+    return o;
+  }), { header: CUSTOMER_FIELDS });
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'العملاء');
+  XLSX.writeFile(wb, `bitaqti_customers_${new Date().toISOString().slice(0,10)}.xlsx`);
+  toast('تم تصدير Excel بنجاح', 'success');
+}
+
+async function pushAllToSheet(){
+  if(!customers.length){ toast('لا يوجد عملاء لرفعهم', 'error'); return; }
+  showModal({
+    type: 'warning',
+    title: 'رفع كل العملاء للشيت',
+    body: `سيتم استبدال كل البيانات في Google Sheets بـ ${customers.length} عميل من القائمة المحلية.\n\nهذا الإجراء لا يمكن التراجع عنه.`,
+    confirmText: 'استبدال الكل',
+    cancelText: 'إلغاء',
+    onConfirm: async () => {
+      closeModal();
+      toast('جارٍ رفع البيانات...', 'info');
+      const result = await bulkReplaceOnSheet(customers);
+      if(result.ok){
+        toast('تم رفع كل العملاء للشيت بنجاح', 'success');
+      }
+    },
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  CONNECTION STATUS
+// ════════════════════════════════════════════════════════════════
+async function checkConnection(){
+  const dot = $('statusDot');
+  const text = $('statusText');
+  if(!adminPassword){
+    dot.style.background = 'var(--red)';
+    text.textContent = 'غير مسجّل الدخول';
+    return;
+  }
+  dot.style.background = 'var(--amber)';
+  text.textContent = 'جارٍ التحقق من الاتصال...';
+  const result = await syncFromSheet(true);
+  if(result.ok){
+    dot.style.background = 'var(--green)';
+    text.textContent = `متصل بـ Google Sheets — ${customers.length} عميل`;
+    // تحقق من إمكانية الكتابة
+    try {
+      const testRes = await fetch(UPDATE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword, action: 'invalid_action_for_test' }),
+      });
+      if(testRes.status === 500){
+        const data = await testRes.json();
+        if(data.error === 'server_not_configured'){
+          text.textContent = `قراءة فقط — لم يتم إعداد SHEETS_WEBHOOK_URL (راجع الإعدادات)`;
+          dot.style.background = 'var(--amber)';
+        }
+      } else if(testRes.status === 400){
+        // الكتابة متاحة (400 = action غير صالح، لكن السيرفر يعمل)
+        text.textContent = `قراءة + كتابة — ${customers.length} عميل`;
+        dot.style.background = 'var(--green)';
+      }
+    } catch(e) {}
+  } else {
+    dot.style.background = 'var(--red)';
+    text.textContent = 'فشل الاتصال — تحقق من ORDERS_SHEET_ID';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  APPS SCRIPT CODE DISPLAY
+// ════════════════════════════════════════════════════════════════
+function displayAppsScriptCode(){
+  const code = `const SHEET_NAME = 'العملاء';
+const HEADER_ROW = 2;  // الصف 1 = مفاتيح إنجليزية، الصف 2 = عناوين عربية
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const password = data.password;
+    const action = data.action;
+    const record = data.record;
+
+    // تحقق من الرمز
+    const correctPassword = PropertiesService
+      .getScriptProperties().getProperty('ADMIN_PASSWORD') || 'CHANGE_ME';
+    if (password !== correctPassword) {
+      return ContentService.createTextOutput(JSON.stringify({
+        ok: false, error: 'unauthorized'
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const sheet = SpreadsheetApp.getActiveSpreadsheet()
+      .getSheetByName(SHEET_NAME);
+    if (!sheet) {
+      return ContentService.createTextOutput(JSON.stringify({
+        ok: false, error: 'sheet_not_found: ' + SHEET_NAME
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    const lastCol = sheet.getLastColumn();
+    const headers = sheet.getRange(HEADER_ROW - 1, 1, 1, lastCol).getValues()[0];
+
+    if (action === 'add') {
+      const row = headers.map(h => record[h] !== undefined ? record[h] : '');
+      sheet.appendRow(row);
+    } else if (action === 'update') {
+      const rowIndex = findRow(sheet, headers, record);
+      if (rowIndex > 0) {
+        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
+        sheet.getRange(rowIndex, 1, 1, headers.length).setValues([row]);
+      } else {
+        // إن لم يوجد، نضيفه
+        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
+        sheet.appendRow(row);
+      }
+    } else if (action === 'delete') {
+      const rowIndex = findRow(sheet, headers, record);
+      if (rowIndex > 0) sheet.deleteRow(rowIndex);
+    } else if (action === 'bulk_replace') {
+      // حذف كل الصفوف ما عدا الرأسين
+      const lastRow = sheet.getLastRow();
+      if (lastRow > HEADER_ROW) {
+        sheet.deleteRows(HEADER_ROW + 1, lastRow - HEADER_ROW);
+      }
+      // إضافة كل السجلات
+      const records = data.records || [];
+      records.forEach(rec => {
+        const row = headers.map(h => rec[h] !== undefined ? rec[h] : '');
+        sheet.appendRow(row);
+      });
+    } else {
+      return ContentService.createTextOutput(JSON.stringify({
+        ok: false, error: 'invalid_action: ' + action
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    return ContentService.createTextOutput(JSON.stringify({
+      ok: true, action: action
+    })).setMimeType(ContentService.MimeType.JSON);
+
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({
+      ok: false, error: String(err)
+    })).setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function findRow(sheet, headers, record) {
+  const data = sheet.getDataRange().getValues();
+  for (let i = HEADER_ROW; i < data.length; i++) {
+    const row = data[i];
+    const phone = String(row[0] || '').replace(/\\.0$/, '').trim();
+    const code  = String(row[1] || '').replace(/\\.0$/, '').trim();
+    const rPhone = String(record.phone || '').replace(/\\.0$/, '').trim();
+    const rCode  = String(record.code  || '').replace(/\\.0$/, '').trim();
+    if (phone === rPhone && code === rCode) return i + 1;
+  }
+  return -1;
+}
+
+// دالة doGet لاختبار التشغيل
+function doGet() {
+  return ContentService.createTextOutput(JSON.stringify({
+    ok: true, message: 'Bitaqti Sheets Webhook is running'
+  })).setMimeType(ContentService.MimeType.JSON);
+}`;
+
+  const codeEl = $('appsScriptCode');
+  if(codeEl){
+    // syntax highlighting بسيط
+    let highlighted = code
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
+      .replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>')
+      .replace(/\b(function|const|let|var|if|else|return|try|catch|for|while|new|typeof)\b/g, '<span class="keyword">$1</span>');
+    codeEl.innerHTML = highlighted;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════════════════════
+let modalCallback = null;
+let modalOnCancel = null;
+let modalAutoClose = true;
+
+function showModal(opts){
+  if(typeof opts === 'string'){
+    // legacy: showModal(type, title, body, callback)
+    opts = { type: arguments[0], title: arguments[1], body: arguments[2], onConfirm: arguments[3] };
+  }
+  const type = opts.type || 'info';
+  const iconClass = type === 'danger' ? 'danger' : (type === 'warning' ? 'warning' : '');
+  $('modalIcon').className = 'modal-icon ' + iconClass;
+  $('modalTitle').textContent = opts.title || 'تأكيد';
+
+  const bodyEl = $('modalBody');
+  if(opts.bodyHtml !== undefined){
+    bodyEl.innerHTML = opts.bodyHtml;
+    bodyEl.style.whiteSpace = 'normal';
+  } else {
+    bodyEl.textContent = opts.body || '';
+    bodyEl.style.whiteSpace = 'pre-wrap';
+  }
+
+  $('modalConfirm').textContent = opts.confirmText || 'تأكيد';
+  $('modalCancel').textContent  = opts.cancelText  || 'إلغاء';
+  $('modalCancel').style.display = opts.hideCancel ? 'none' : '';
+
+  modalCallback = opts.onConfirm || null;
+  modalOnCancel = opts.onCancel || null;
+  modalAutoClose = opts.autoClose !== false;
+  $('modalOverlay').classList.add('show');
+}
+
+function closeModal(){
+  $('modalOverlay').classList.remove('show');
+  modalCallback = null;
+  modalOnCancel = null;
+  modalAutoClose = true;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════════════════════
+let toastTimer = null;
+function toast(msg, type='info'){
+  const container = $('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  const icons = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>',
+    error:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 9v4M12 17h.01"/></svg>',
+    info:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  };
+  el.innerHTML = (icons[type] || icons.info) + '<span>' + escapeHtml(msg) + '</span>';
+  container.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, 3500);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════════════
+function escapeHtml(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function escapeAttr(s){ return escapeHtml(s); }
+
+// ════════════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════════════
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab-' + name));
+  if(name === 'customers')  renderCustomers();
+  if(name === 'dashboard')  renderRecentCustomers();
+  if(name === 'settings')   checkConnection();
+}
+
+function initApp(){
+  if(initApp._done) return;
+  initApp._done = true;
+
+  displayAppsScriptCode();
+
+  // Tabs
+  document.querySelectorAll('.tab').forEach(t => {
+    t.addEventListener('click', () => switchTab(t.dataset.tab));
+  });
+
+  // Buttons
+  $('btnSync').addEventListener('click', () => syncFromSheet(false));
+  $('btnRefresh').addEventListener('click', () => syncFromSheet(false));
+  $('btnAdd').addEventListener('click', openAddModal);
+  $('btnExportCsv').addEventListener('click', exportCsv);
+  $('btnExportXlsx').addEventListener('click', exportXlsx);
+  $('btnPushToSheet').addEventListener('click', pushAllToSheet);
+  $('searchInput').addEventListener('input', renderCustomers);
+  $('filterStatus').addEventListener('change', renderCustomers);
+  $('filterPayment').addEventListener('change', renderCustomers);
+
+  // Quick actions (الإجراءات السريعة)
+  $('qaAddCustomer').addEventListener('click', openAddModal);
+  $('qaSync').addEventListener('click', () => syncFromSheet(false));
+  $('qaInvoices').addEventListener('click', () => window.location.href = 'invoices.html');
+  $('qaSettings').addEventListener('click', () => switchTab('settings'));
+
+  // Activity log
+  $('btnClearActivity').addEventListener('click', clearActivity);
+  renderActivity();
+
+  // Modal
+  $('modalCancel').addEventListener('click', () => {
+    if(modalOnCancel) modalOnCancel();
+    else closeModal();
+    if($('modalOverlay').classList.contains('show')) closeModal();
+  });
+  $('modalConfirm').addEventListener('click', () => {
+    if(modalCallback) modalCallback();
+    if(modalAutoClose && $('modalOverlay').classList.contains('show')) closeModal();
+  });
+  $('modalOverlay').addEventListener('click', (e) => {
+    if(e.target === $('modalOverlay')) closeModal();
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && $('modalOverlay').classList.contains('show')) closeModal();
+  });
+
+  // مزامنة أولية تلقائية
+  syncFromSheet(true).then(() => {
+    renderStats();
+    renderRecentCustomers();
+  });
+
+  toast('مرحباً بك في لوحة التحكم الإدارية', 'info');
+}
+</script>
+</body>
+</html>
