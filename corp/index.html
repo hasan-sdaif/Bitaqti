@@ -52,9 +52,10 @@
   nav.nav .container{display:flex;align-items:center;justify-content:space-between;padding-block:14px;gap:18px;}
   .brand{display:flex;align-items:center;gap:12px;}
   .brand .logo-wrap{
-    width:42px;height:42px;border-radius:10px;background:var(--ink);
+    width:42px;height:42px;border-radius:10px;
+    background:transparent; /* ✅ لا خلفية سوداء — الشعار يظهر كاملاً بنفسه */
     display:flex;align-items:center;justify-content:center;overflow:hidden;
-    flex-shrink:0;padding:5px;
+    flex-shrink:0;padding:0;
     aspect-ratio:1/1; /* منع CLS أثناء تحميل الصورة */
   }
   .icon-bi{
@@ -65,20 +66,6 @@
     image-rendering:crisp-edges;
   }
   .icon-bi:not([src]),.icon-bi[src=""],.icon-bi[src*="placeholder"]{display:none;}
-  /* فئة لمنع الـ flicker أثناء تحميل الصورة */
-  .logo-wrap.loading{position:relative;}
-  .logo-wrap.loading::after{
-    content:'';position:absolute;inset:0;border-radius:inherit;
-    background:rgba(244,243,239,.06);animation:logo-pulse 1.2s ease-in-out infinite;
-  }
-  @keyframes logo-pulse{0%,100%{opacity:.3;}50%{opacity:.7;}}
-  .brand .logo-fallback{
-    width:100%;height:100%;display:flex;align-items:center;justify-content:center;
-    color:var(--paper);font-family:'El Messiri',serif;font-weight:700;font-size:18px;
-  }
-  .brand .logo-wrap:has(.icon-bi:not([src])) .logo-fallback,
-  .brand .logo-wrap:has(.icon-bi[src=""]) .logo-fallback{display:flex;}
-  .brand .logo-wrap:has(.icon-bi[src]:not([src=""])) .logo-fallback{display:none;}
   .brand-name{display:flex;flex-direction:column;line-height:1.2;}
   .brand-name b{font-family:'El Messiri',serif;font-size:18px;color:var(--ink);}
   .brand-name small{font-size:10.5px;color:var(--ink-faint);letter-spacing:.02em;}
@@ -146,12 +133,12 @@
     background:var(--red);border-radius:6px;
   }
   .hero-card-logo{
-    width:96px;height:96px;border-radius:18px;background:var(--ink);
+    width:120px;height:120px;border-radius:18px;
+    background:transparent; /* ✅ لا خلفية سوداء — الشعار يظهر كاملاً */
     display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
-    padding:14px;box-shadow:0 12px 28px rgba(23,24,28,.18);
+    padding:0;box-shadow:none;
   }
-  .hero-card-logo .icon-bi{filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
-  .hero-card-logo .logo-fallback{color:var(--paper);font-family:'El Messiri',serif;font-weight:700;font-size:36px;}
+  .hero-card-logo .icon-bi{filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));}
   .hero-card h3{font-size:20px;text-align:center;margin-bottom:6px;}
   .hero-card .role{text-align:center;font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
   .hero-card .meta-list{display:flex;flex-direction:column;gap:10px;}
@@ -383,9 +370,8 @@
   <div class="container">
     <a href="#home" class="brand">
       <span class="logo-wrap">
-        <!-- ═══ مكان شعار الشركة — الاسم المرجعي: icon-bi ═══ -->
+        <!-- ═══ مكان شعار الشركة — استبدل ملف icon-bi.png بشعارك الحقيقي (موصى به: 1254×1254 PNG شفاف) ═══ -->
         <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="42" height="42" decoding="async" fetchpriority="high" />
-        <span class="logo-fallback">ب</span>
       </span>
       <span class="brand-name">
         <b>بطاقتي</b>
@@ -466,9 +452,8 @@
       </div>
       <div class="hero-card">
         <div class="hero-card-logo">
-          <!-- ═══ مكان شعار الشركة — الاسم المرجعي: icon-bi ═══ -->
-          <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="96" height="96" loading="lazy" decoding="async" />
-          <span class="logo-fallback">ب</span>
+          <!-- ═══ مكان شعار الشركة — استبدل ملف icon-bi.png بشعارك الحقيقي (موصى به: 1254×1254 PNG شفاف) ═══ -->
+          <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="120" height="120" loading="lazy" decoding="async" />
         </div>
         <h3>بطاقتي</h3>
         <div class="role">Bitaqti — Digital Identity Cards</div>
@@ -717,9 +702,9 @@
 <footer>
   <div class="container">
     <a href="#home" class="brand" style="justify-content:center;">
-      <span class="logo-wrap" style="background:rgba(255,255,255,.08);">
+      <span class="logo-wrap" style="background:transparent;">
+        <!-- ═══ مكان شعار الشركة — استبدل ملف icon-bi.png بشعارك الحقيقي (موصى به: 1254×1254 PNG شفاف) ═══ -->
         <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="42" height="42" loading="lazy" decoding="async" />
-        <span class="logo-fallback">ب</span>
       </span>
       <span class="brand-name">
         <b>بطاقتي</b>
