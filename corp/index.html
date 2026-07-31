@@ -322,6 +322,46 @@
   .to-top svg{width:20px;height:20px;}
 
   @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}}
+
+  /* ═══════════════ DEMO NOTE (ملاحظة المعاينة) ═══════════════ */
+  .demo-note{
+    background:linear-gradient(135deg,var(--ink),#26282E);
+    color:var(--paper);padding:16px 0 18px;
+  }
+  .demo-note .container{
+    border:1.5px dashed rgba(217,185,104,.45);
+    border-radius:12px;padding:16px 20px;
+    display:flex;flex-direction:column;gap:12px;
+    background:rgba(0,0,0,.06);
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    font-weight:700;font-size:16px;color:var(--gold-soft);
+    font-family:'El Messiri',serif;
+  }
+  .dn-head svg{width:20px;height:20px;color:var(--gold-soft);flex-shrink:0;}
+  .dn-head .tier-chip{
+    margin-inline-start:auto;
+    font-size:10.5px;font-weight:700;color:#fff;
+    background:linear-gradient(135deg,var(--red),var(--gold));
+    padding:5px 11px;border-radius:14px;letter-spacing:.4px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .dn-body{font-size:13.5px;color:rgba(244,243,239,.85);line-height:1.8;}
+  .dn-body strong{color:var(--gold-soft);font-weight:700;}
+  .dn-list{display:grid;grid-template-columns:1fr 1fr;gap:6px 20px;margin-top:6px;}
+  .dn-list li{
+    font-size:12.5px;color:rgba(244,243,239,.88);
+    display:flex;gap:8px;align-items:flex-start;line-height:1.7;
+  }
+  .dn-list li svg{width:14px;height:14px;color:var(--gold-soft);flex-shrink:0;margin-top:3px;}
+  .dn-note{
+    font-size:12.5px;color:rgba(244,243,239,.92);
+    background:rgba(0,0,0,.18);border-inline-start:3px solid var(--red);
+    padding:10px 14px;border-radius:8px;line-height:1.75;
+  }
+  .dn-note strong{color:#fff;}
+  @media(max-width:680px){.dn-list{grid-template-columns:1fr;}}
 </style>
 </head>
 <body>
@@ -359,6 +399,33 @@
     </div>
   </div>
 </nav>
+
+<!-- ═══════════════ DEMO NOTE (ملاحظة المعاينة) ═══════════════ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span>صفحة معاينة — باقة المؤسسات (Landing Page)</span>
+      <span class="tier-chip">CORP · DEMO</span>
+    </div>
+    <div class="dn-body">
+      هذه الصفحة <strong>مُصمَّمة لأغراض المعاينة فقط</strong>، وتستخدم مشروع «بطاقتي» نفسه كشركة مثال توضيحي — جميع البيانات والأسماء والأرقام والروابط والصور المعروضة وهمية لأغراض العرض. التصميم النهائي لصفحة هبوط شركتك سيُبنى من الصفر بهويتك أنت، لا بهوية بطاقتي.
+      <ul class="dn-list">
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">الشعار والأيقونة:</strong> شعار شركتك بدلاً من شعار بطاقتي في الترويسة والبطاقة والفوتر.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">ألوان الهوية:</strong> اللون الأحمر والذهبي والحبري — كلها قابلة للاستبدال بألوان علامتك التجارية.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">اسم الشركة والنبذة:</strong> النصوص في قسم «عن الشركة» و«البطل» تُكتَب من جديد حسب نشاطك.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">قسم الخدمات:</strong> قائمة الخدمات الست وأيقوناتها وأوصافها تُعدَّل لتعكس خدمات شركتك الفعلية.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">فريق العمل:</strong> بطاقات الموظفين (الاسم، المسمى، الصورة، الروابط) تُستبدل بموظفيك أنت.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">معلومات التواصل:</strong> رقم الواتساب، البريد، إنستقرام، الموقع — كلها تُحدَّث لقنوات شركتك.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">الإحصائيات:</strong> أرقام «+150 بطاقة»، «+10 شركة»... إلخ، تُستبدل بأرقامك الحقيقية أو تُحذف.</span></li>
+        <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span><strong style="color:var(--gold-soft);">روابط المعاينة:</strong> البطاقات القياسية/المميزة المرتبطة ستُبنى لكل موظف بشركتك على حدة.</span></li>
+      </ul>
+    </div>
+    <div class="dn-note">
+      <strong>ملاحظة:</strong> هذه الصفحة تحمل وسم <span class="mono" style="background:rgba(0,0,0,.3);color:var(--gold-soft);padding:1px 6px;border-radius:4px;">noindex</span> افتراضياً ولا تظهر في نتائج البحث. صفحة هبوط شركتك النهائية قد تُفهرس (إن رغبت بذلك) بعد إزالة الوسم صراحةً. جميع البيانات المعروضة هنا — الأسماء، الأرقام، الروابط، الصور — وهمية ولا تمثل عميلاً حقيقياً.
+    </div>
+  </div>
+</div>
 
 <!-- ═══════════════ HERO ═══════════════ -->
 <header class="hero" id="home">
@@ -572,7 +639,7 @@
 
       <div class="preview-cta-grid">
 
-        <a class="preview-cta-card" href="../preview-corp-standard/" target="_blank" rel="noopener">
+        <a class="preview-cta-card" href="preview-corp-standard/" target="_blank" rel="noopener">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 14h2m-2 4h6"/></svg></div>
           <div class="label">المعاينة ١</div>
           <div class="title">الباقة القياسية للشركة</div>
@@ -580,7 +647,7 @@
           <span class="cta">فتح المعاينة <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></span>
         </a>
 
-        <a class="preview-cta-card" href="../preview-corp-premium/" target="_blank" rel="noopener">
+        <a class="preview-cta-card" href="preview-corp-premium/" target="_blank" rel="noopener">
           <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.39 7.36H22l-6.19 4.5L18.2 21 12 16.5 5.8 21l2.39-7.14L2 9.36h7.61z"/></svg></div>
           <div class="label">المعاينة ٢</div>
           <div class="title">الباقة المميزة للشركة</div>
