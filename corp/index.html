@@ -8,6 +8,8 @@
 <meta name="description" content="صفحة هبوط الشركة — معاينة باقة المؤسسات من بطاقتي. تستخدم مشروع بطاقتي نفسه كمثال توضيحي." />
 <meta name="robots" content="noindex, nofollow" />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='25' width='80' height='50' rx='8' fill='%2317181C'/%3E%3Crect x='20' y='35' width='22' height='22' rx='3' fill='%23F4F3EF'/%3E%3Crect x='50' y='40' width='30' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='50' y='52' width='22' height='4' rx='2' fill='%238A8D93'/%3E%3C/svg%3E">
+<!-- ═══ Preload للشعار (يظهر في NAV فوق الطية — تحميل مبكر لتسريع LCP) ═══ -->
+<link rel="preload" as="image" href="icon-bi.png" fetchpriority="high" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
@@ -53,20 +55,30 @@
     width:42px;height:42px;border-radius:10px;background:var(--ink);
     display:flex;align-items:center;justify-content:center;overflow:hidden;
     flex-shrink:0;padding:5px;
+    aspect-ratio:1/1; /* منع CLS أثناء تحميل الصورة */
   }
-  #icon-bi{
-    width:100%;height:100%;object-fit:contain;
-    /* 占位样式: إن لم تُرفع الصورة بعد، يظهر الشعار النصي */
+  .icon-bi{
+    width:100%;height:100%;object-fit:contain;object-position:center;
     background:transparent;
+    /* ضغط تلقائي للصور الكبيرة عبر المتصفح */
+    image-rendering:auto;
+    image-rendering:crisp-edges;
   }
-  #icon-bi:not([src]),#icon-bi[src=""]{display:none;}
+  .icon-bi:not([src]),.icon-bi[src=""],.icon-bi[src*="placeholder"]{display:none;}
+  /* فئة لمنع الـ flicker أثناء تحميل الصورة */
+  .logo-wrap.loading{position:relative;}
+  .logo-wrap.loading::after{
+    content:'';position:absolute;inset:0;border-radius:inherit;
+    background:rgba(244,243,239,.06);animation:logo-pulse 1.2s ease-in-out infinite;
+  }
+  @keyframes logo-pulse{0%,100%{opacity:.3;}50%{opacity:.7;}}
   .brand .logo-fallback{
     width:100%;height:100%;display:flex;align-items:center;justify-content:center;
     color:var(--paper);font-family:'El Messiri',serif;font-weight:700;font-size:18px;
   }
-  .brand .logo-wrap:has(#icon-bi:not([src])) .logo-fallback,
-  .brand .logo-wrap:has(#icon-bi[src=""]) .logo-fallback{display:flex;}
-  .brand .logo-wrap:has(#icon-bi[src]:not([src=""])) .logo-fallback{display:none;}
+  .brand .logo-wrap:has(.icon-bi:not([src])) .logo-fallback,
+  .brand .logo-wrap:has(.icon-bi[src=""]) .logo-fallback{display:flex;}
+  .brand .logo-wrap:has(.icon-bi[src]:not([src=""])) .logo-fallback{display:none;}
   .brand-name{display:flex;flex-direction:column;line-height:1.2;}
   .brand-name b{font-family:'El Messiri',serif;font-size:18px;color:var(--ink);}
   .brand-name small{font-size:10.5px;color:var(--ink-faint);letter-spacing:.02em;}
@@ -138,7 +150,7 @@
     display:flex;align-items:center;justify-content:center;margin:0 auto 18px;
     padding:14px;box-shadow:0 12px 28px rgba(23,24,28,.18);
   }
-  .hero-card-logo #icon-bi{filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
+  .hero-card-logo .icon-bi{filter:drop-shadow(0 2px 4px rgba(0,0,0,.2));}
   .hero-card-logo .logo-fallback{color:var(--paper);font-family:'El Messiri',serif;font-weight:700;font-size:36px;}
   .hero-card h3{font-size:20px;text-align:center;margin-bottom:6px;}
   .hero-card .role{text-align:center;font-size:13px;color:var(--ink-soft);margin-bottom:18px;}
@@ -372,7 +384,7 @@
     <a href="#home" class="brand">
       <span class="logo-wrap">
         <!-- ═══ مكان شعار الشركة — الاسم المرجعي: icon-bi ═══ -->
-        <img id="icon-bi" src="" alt="شعار بطاقتي" />
+        <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="42" height="42" decoding="async" fetchpriority="high" />
         <span class="logo-fallback">ب</span>
       </span>
       <span class="brand-name">
@@ -455,7 +467,7 @@
       <div class="hero-card">
         <div class="hero-card-logo">
           <!-- ═══ مكان شعار الشركة — الاسم المرجعي: icon-bi ═══ -->
-          <img id="icon-bi" src="" alt="شعار بطاقتي" />
+          <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="96" height="96" loading="lazy" decoding="async" />
           <span class="logo-fallback">ب</span>
         </div>
         <h3>بطاقتي</h3>
@@ -706,7 +718,7 @@
   <div class="container">
     <a href="#home" class="brand" style="justify-content:center;">
       <span class="logo-wrap" style="background:rgba(255,255,255,.08);">
-        <img id="icon-bi" src="" alt="شعار بطاقتي" />
+        <img class="icon-bi" src="icon-bi.png" alt="شعار بطاقتي" width="42" height="42" loading="lazy" decoding="async" />
         <span class="logo-fallback">ب</span>
       </span>
       <span class="brand-name">
