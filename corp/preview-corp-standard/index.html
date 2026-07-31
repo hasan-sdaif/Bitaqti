@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>معاينة — الباقة القياسية للشركات | بطاقتي</title>
+<meta name="description" content="معاينة تصميم الباقة القياسية للشركات — موظف خدمة عملاء. جميع البيانات وهمية." />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#F4F3EF" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='25' width='80' height='50' rx='8' fill='%2317181C'/%3E%3Crect x='20' y='35' width='22' height='22' rx='3' fill='%23F4F3EF'/%3E%3Crect x='50' y='40' width='30' height='5' rx='2.5' fill='%23CE1126'/%3E%3Crect x='50' y='52' width='22' height='4' rx='2' fill='%239C7A3C'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2317181C'/%3E%3Crect x='20' y='30' width='25' height='25' rx='4' fill='%23F4F3EF'/%3E%3Crect x='55' y='35' width='30' height='6' rx='3' fill='%23CE1126'/%3E%3Crect x='55' y='50' width='22' height='5' rx='2.5' fill='%239C7A3C'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  /* ═══ متغيّرات الوضع الفاتح (الافتراضي — ألوان بطاقتي) ═══ */
+  :root{
+    --paper:#F4F3EF;
+    --paper-2:#FFFFFF;
+    --paper-3:#ECEAE3;
+    --ink:#17181C;
+    --ink-2:#26282E;
+    --ink-3:#3A3D45;
+    --red:#CE1126;
+    --red-lt:#E53447;
+    --gold:#9C7A3C;
+    --gold-lt:#B8954C;
+    --gold-soft:#D9B968;
+    --text:#17181C;
+    --mid:#5A5D66;
+    --soft:#8E919B;
+    --line:#E2E0DA;
+    --line-red:rgba(206,17,38,.18);
+    --shadow:0 14px 34px rgba(23,24,28,.10);
+    --radius:10px;
+
+    /* متغيّرات مرنة تتغيّر مع الوضع */
+    --bg-page:var(--paper);
+    --bg-card:#FFFFFF;
+    --bg-alt:#FFFFFF;
+    --nav-bg:rgba(23,24,28,.96);
+    --hero-bg:linear-gradient(165deg,#FFFFFF,var(--paper-3) 70%);
+    --hero-text:var(--ink);
+    --hero-name:var(--ink);
+    --hero-name-strong:var(--ink);
+    --hero-role:var(--red);
+    --hero-bio:var(--mid);
+    --hero-lic-bg:rgba(23,24,28,.04);
+    --hero-lic-border:rgba(23,24,28,.18);
+    --hero-lic-color:var(--ink);
+    --hero-btn-line-bg:#FFFFFF;
+    --hero-btn-line-border:var(--line);
+    --hero-btn-line-color:var(--ink);
+    --stats-bg:#FFFFFF;
+    --stats-b-color:var(--ink);
+    --demo-bg:linear-gradient(135deg,var(--ink),var(--ink-2));
+    --demo-body-color:rgba(244,243,239,.78);
+    --demo-text-color:rgba(244,243,239,.92);
+    --demo-head-color:var(--gold-soft);
+    --demo-note-bg:rgba(0,0,0,.18);
+    --footer-bg:var(--ink);
+    --footer-text:rgba(244,243,239,.65);
+    --fab-bg:rgba(23,24,28,.95);
+  }
+
+  /* ═══ متغيّرات الوضع الداكن ═══ */
+  html[data-theme="dark"]{
+    --paper:#0E0F12;
+    --paper-2:#17181C;
+    --paper-3:#26282E;
+    --ink:#F4F3EF;
+    --ink-2:#E5E4DF;
+    --ink-3:#A6A8AF;
+    --red:#E53447;
+    --red-lt:#FF5C6E;
+    --gold:#B8954C;
+    --gold-lt:#D4AC6A;
+    --gold-soft:#D4AC6A;
+    --text:#F4F3EF;
+    --mid:#A6A8AF;
+    --soft:#9CA0AB;
+    --line:#2A2C32;
+    --line-red:rgba(229,52,71,.22);
+    --shadow:0 16px 40px rgba(0,0,0,.5);
+    --radius:10px;
+
+    --bg-page:var(--paper);
+    --bg-card:var(--paper-2);
+    --bg-alt:var(--paper-2);
+    --nav-bg:rgba(14,15,18,.96);
+    --hero-bg:linear-gradient(165deg,var(--paper-2),var(--paper-3) 70%);
+    --hero-text:var(--ink);
+    --hero-name:rgba(244,243,239,.92);
+    --hero-name-strong:#fff;
+    --hero-role:var(--red-lt);
+    --hero-bio:rgba(244,243,239,.78);
+    --hero-lic-bg:rgba(255,255,255,.06);
+    --hero-lic-border:rgba(255,255,255,.2);
+    --hero-lic-color:rgba(244,243,239,.8);
+    --hero-btn-line-bg:rgba(255,255,255,.05);
+    --hero-btn-line-border:rgba(184,149,76,.35);
+    --hero-btn-line-color:var(--ink);
+    --stats-bg:var(--paper-2);
+    --stats-b-color:var(--ink);
+    --demo-bg:linear-gradient(135deg,var(--paper-2),var(--paper-3));
+    --demo-body-color:rgba(244,243,239,.78);
+    --demo-text-color:rgba(244,243,239,.92);
+    --demo-head-color:var(--gold-lt);
+    --demo-note-bg:rgba(0,0,0,.18);
+    --footer-bg:var(--paper-2);
+    --footer-text:rgba(244,243,239,.65);
+    --fab-bg:rgba(14,15,18,.95);
+  }
+
+  body{
+    font-family:'IBM Plex Sans Arabic',Arial,sans-serif;
+    background:var(--bg-page);
+    color:var(--text);
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+    transition:background .3s ease,color .3s ease;
+  }
+  h1,h2,h3{font-family:'Cairo',sans-serif;color:var(--ink);font-weight:700;}
+  .serif{font-family:'Cairo',sans-serif;color:var(--ink);font-weight:700;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  html[data-theme="dark"] h1,
+  html[data-theme="dark"] h2,
+  html[data-theme="dark"] h3,
+  html[data-theme="dark"] .serif{color:var(--ink);}
+  img,svg{display:block;}
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  .container{max-width:1000px;margin:0 auto;padding:0 22px;}
+
+  /* ═══ DEMO NOTE ═══ */
+  .demo-note{
+    background:var(--demo-bg);
+    color:var(--paper);padding:16px 0 18px;
+  }
+  .demo-note .container{
+    border:1.5px dashed rgba(217,185,104,.45);
+    border-radius:10px;padding:14px 18px;
+    display:flex;flex-direction:column;gap:10px;
+    background:rgba(0,0,0,.06);
+  }
+  .dn-head{
+    display:flex;align-items:center;gap:9px;
+    font-weight:800;font-size:15px;color:var(--demo-head-color);
+  }
+  .dn-head{font-family:'Cairo',sans-serif;}
+  .dn-head svg{width:18px;height:18px;color:var(--gold-soft);}
+  html[data-theme="dark"] .dn-head svg{color:var(--gold-lt);}
+  .dn-head .tier-chip{
+    margin-right:auto;
+    font-size:10px;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--red),var(--gold));
+    padding:4px 9px;border-radius:14px;letter-spacing:.4px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .dn-body{font-size:12.5px;color:var(--demo-body-color);line-height:1.7;}
+  .dn-body strong{color:var(--gold-soft);}
+  html[data-theme="dark"] .dn-body strong{color:var(--gold-lt);}
+  .dn-list{display:grid;grid-template-columns:1fr 1fr;gap:5px 18px;margin-top:4px;}
+  .dn-list li{
+    font-size:12.5px;color:var(--demo-text-color);
+    display:flex;gap:7px;align-items:flex-start;
+  }
+  .dn-list li svg{width:13px;height:13px;color:var(--gold-soft);flex-shrink:0;margin-top:3px;}
+  html[data-theme="dark"] .dn-list li svg{color:var(--gold-lt);}
+  .dn-note{
+    font-size:11.5px;color:rgba(244,243,239,.85);
+    background:var(--demo-note-bg);border-right:3px solid var(--red);
+    padding:8px 12px;border-radius:6px;line-height:1.6;
+  }
+  html[data-theme="dark"] .dn-note{border-right-color:var(--red-lt);}
+  html[dir="ltr"] .dn-note{border-right:none;border-left:3px solid var(--red);}
+  html[dir="ltr"][data-theme="dark"] .dn-note{border-left-color:var(--red-lt);}
+  .dn-note strong{color:#fff;}
+  @media(max-width:600px){.dn-list{grid-template-columns:1fr;}}
+
+  /* ═══ NAV — ثابت لا يتأثر بتبديل اللغة ═══ */
+  nav.top{
+    position:sticky;top:0;z-index:60;
+    background:var(--nav-bg);
+    backdrop-filter:blur(8px);
+    border-bottom:2px solid var(--gold);
+    transition:background .3s ease;
+  }
+  nav.top .container{
+    display:flex;align-items:center;justify-content:space-between;
+    height:62px;gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;color:#fff;flex-shrink:0;}
+  .brand .crest{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--ink-2);border:1.5px solid var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  html[data-theme="dark"] .brand .crest{background:var(--paper-3);border-color:var(--gold-lt);}
+  .brand .crest svg{width:18px;height:18px;color:var(--gold-soft);}
+  html[data-theme="dark"] .brand .crest svg{color:var(--gold-lt);}
+  .brand-text{display:flex;flex-direction:column;line-height:1.2;}
+  .brand-name{font-family:'Cairo',sans-serif;font-weight:700;font-size:15.5px;color:#fff;}
+  .brand-sub{font-size:10px;color:var(--gold-soft);font-weight:500;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px;}
+  html[data-theme="dark"] .brand-sub{color:var(--gold-lt);}
+
+  /* nav-links ترتيب ثابت */
+  .nav-links{
+    display:flex;gap:22px;
+    flex-direction:row;
+  }
+  .nav-links a{
+    color:rgba(244,243,239,.7);font-size:12.5px;font-weight:600;
+    position:relative;padding:6px 0;transition:color .2s ease;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .nav-links a:hover{color:var(--gold-soft);}
+  html[data-theme="dark"] .nav-links a:hover{color:var(--gold-lt);}
+  .nav-links a::after{
+    content:'';position:absolute;bottom:0;right:0;
+    width:0;height:2px;background:var(--gold-soft);
+    transition:width .25s ease;
+  }
+  html[data-theme="dark"] .nav-links a::after{background:var(--gold-lt);}
+  .nav-links a:hover::after{width:100%;}
+
+  /* nav-right: ترتيب ثابت */
+  .nav-right{
+    display:flex;align-items:center;gap:10px;
+    flex-direction:row;
+    flex-shrink:0;
+  }
+
+  /* lang-toggle */
+  .lang-toggle{
+    display:flex;align-items:center;
+    background:rgba(255,255,255,.06);border:1px solid rgba(217,185,104,.35);
+    border-radius:20px;padding:2px;flex-shrink:0;
+    flex-direction:row;
+  }
+  .lang-toggle button{
+    background:transparent;border:0;color:rgba(244,243,239,.65);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:16px;
+    cursor:pointer;transition:all .15s ease;white-space:nowrap;line-height:1;
+  }
+  .lang-toggle button.active{background:var(--red);color:#fff;}
+  html[data-theme="dark"] .lang-toggle button.active{background:var(--red-lt);}
+  .lang-toggle button:not(.active):hover{color:var(--gold-soft);}
+  html[data-theme="dark"] .lang-toggle button:not(.active):hover{color:var(--gold-lt);}
+
+  /* theme-toggle button */
+  .theme-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:rgba(255,255,255,.06);border:1px solid rgba(217,185,104,.35);
+    color:var(--gold-soft);cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  html[data-theme="dark"] .theme-btn{color:var(--gold-lt);border-color:rgba(184,149,76,.35);}
+  .theme-btn:hover{background:rgba(217,185,104,.15);}
+  .theme-btn svg{width:16px;height:16px;}
+  .theme-btn .moon{display:none;}
+  html[data-theme="dark"] .theme-btn .sun{display:none;}
+  html[data-theme="dark"] .theme-btn .moon{display:block;}
+
+  .burger{
+    display:none;width:38px;height:38px;border-radius:8px;
+    background:rgba(255,255,255,.06);border:1px solid var(--gold);
+    color:#fff;align-items:center;justify-content:center;cursor:pointer;
+    flex-shrink:0;
+  }
+  .burger svg{width:18px;height:18px;}
+  .mobile-panel{
+    display:none;position:fixed;inset:62px 0 0 0;
+    background:var(--ink);z-index:59;padding:22px;
+  }
+  html[data-theme="dark"] .mobile-panel{background:var(--paper);}
+  .mobile-panel.open{display:block;}
+  .mobile-panel a{
+    display:block;color:#fff;padding:15px 4px;
+    border-bottom:1px solid rgba(217,185,104,.15);
+    font-weight:600;font-size:16px;
+  }
+  .mobile-panel a:hover{color:var(--gold-soft);}
+  html[data-theme="dark"] .mobile-panel a:hover{color:var(--gold-lt);}
+
+  /* ═══ HERO ═══ */
+  .hero{
+    position:relative;overflow:hidden;
+    background:
+      radial-gradient(900px 460px at 18% -10%,rgba(206,17,38,.10),transparent),
+      var(--hero-bg);
+    color:var(--hero-text);padding:54px 0 46px;
+    transition:background .3s ease,color .3s ease;
+  }
+  html[data-theme="dark"] .hero{
+    background:
+      radial-gradient(900px 460px at 18% -10%,rgba(229,52,71,.2),transparent),
+      var(--hero-bg);
+  }
+  .hero::after{
+    content:'';position:absolute;inset:0;
+    background-image:repeating-linear-gradient(45deg,rgba(156,122,60,.04) 0 1px,transparent 1px 24px);
+    pointer-events:none;
+  }
+  .hero .container{
+    position:relative;display:flex;gap:38px;align-items:center;flex-wrap:wrap;
+    flex-direction:row;
+  }
+  .frame{position:relative;width:150px;height:186px;flex-shrink:0;}
+  .frame-inner{
+    position:absolute;inset:0;
+    background:linear-gradient(160deg,#FFFFFF,var(--paper-3));
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    border-radius:4px;
+  }
+  html[data-theme="dark"] .frame-inner{
+    background:linear-gradient(160deg,var(--paper-3),var(--paper-2));
+    border-color:rgba(184,149,76,.4);
+  }
+  .frame-inner svg{width:74px;height:74px;color:rgba(23,24,28,.5);}
+  html[data-theme="dark"] .frame-inner svg{color:rgba(184,149,76,.6);}
+  .frame-corner{
+    position:absolute;width:22px;height:22px;
+    border:2px solid var(--red);
+  }
+  html[data-theme="dark"] .frame-corner{border-color:var(--red-lt);}
+  .frame-corner.tl{top:-6px;right:-6px;border-left:none;border-bottom:none;}
+  .frame-corner.br{bottom:-6px;left:-6px;border-right:none;border-top:none;}
+  .hero-text{flex:1;min-width:260px;}
+  .badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;flex-direction:row;}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:10.5px;font-weight:700;padding:5px 11px;border-radius:14px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .badge-tier{
+    background:var(--red);border:1px solid var(--red);
+    color:#fff;
+  }
+  html[data-theme="dark"] .badge-tier{
+    background:rgba(229,52,71,.15);border-color:var(--red-lt);color:var(--red-lt);
+  }
+  .badge-lic{
+    background:var(--hero-lic-bg);border:1px solid var(--hero-lic-border);
+    color:var(--hero-lic-color);
+  }
+  html[data-theme="light"] .badge-lic{
+    background:rgba(23,24,28,.04);border-color:rgba(23,24,28,.18);color:var(--ink);
+  }
+  .badge svg{width:11px;height:11px;}
+  .placeholder-name{
+    font-family:'Cairo',sans-serif;font-weight:900;
+    font-size:clamp(24px,4.4vw,34px);
+    color:var(--hero-name);
+    letter-spacing:.5px;
+    line-height:1.15;
+  }
+  .role{
+    font-size:16px;font-weight:700;color:var(--red);
+    margin-top:8px;font-family:'IBM Plex Mono',monospace;
+  }
+  html[data-theme="dark"] .role{color:var(--red-lt);}
+  .bio{
+    font-size:13.5px;color:var(--hero-bio);
+    margin-top:13px;max-width:560px;line-height:1.85;
+  }
+  .cta-row{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;
+    flex-direction:row;
+  }
+  .btn{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;
+    padding:10px 16px;border-radius:8px;transition:.2s;cursor:pointer;border:none;
+  }
+  .btn svg{width:15px;height:15px;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{background:var(--red-lt);transform:translateY(-2px);box-shadow:0 10px 22px rgba(206,17,38,.35);}
+  html[data-theme="dark"] .btn-red{background:var(--red-lt);}
+  html[data-theme="dark"] .btn-red:hover{background:#FF6B7D;box-shadow:0 10px 22px rgba(229,52,71,.35);}
+  .btn-line{background:var(--hero-btn-line-bg);color:var(--hero-btn-line-color);border:1px solid var(--hero-btn-line-border);}
+  .btn-line:hover{border-color:var(--red);color:var(--red);background:rgba(206,17,38,.06);}
+  html[data-theme="dark"] .btn-line:hover{border-color:var(--red-lt);color:var(--red-lt);background:rgba(229,52,71,.08);}
+
+  /* ═══ STATS ═══ */
+  .stats{background:var(--stats-bg);border-bottom:1px solid var(--line);}
+  .stats .container{display:grid;grid-template-columns:repeat(4,1fr);}
+  .stat{
+    padding:22px 14px;text-align:center;
+    border-left:1px solid var(--line);
+    position:relative;
+  }
+  .stat:last-child{border-left:none;}
+  .stat b{
+    display:block;font-family:'IBM Plex Mono',monospace;font-size:24px;
+    color:var(--stats-b-color);font-weight:700;
+  }
+  html[data-theme="dark"] .stat b{color:var(--ink);}
+  .stat span{font-size:11px;color:var(--soft);text-transform:uppercase;letter-spacing:.5px;font-family:'IBM Plex Mono',monospace;}
+  .stat::before{
+    content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    width:30px;height:2px;background:var(--red);
+  }
+  html[data-theme="dark"] .stat::before{background:var(--red-lt);}
+
+  /* ═══ SECTIONS ═══ */
+  section{padding:54px 0;scroll-margin-top:74px;}
+  html[data-theme="light"] section:nth-of-type(even){background:var(--paper);}
+  html[data-theme="light"] section:nth-of-type(odd){background:#FFFFFF;}
+  html[data-theme="dark"] section:nth-of-type(even){background:var(--paper);}
+  html[data-theme="dark"] section:nth-of-type(odd){background:var(--paper-2);}
+  .sec-head{
+    display:flex;align-items:center;gap:12px;margin-bottom:28px;
+    padding-bottom:12px;border-bottom:1px solid var(--line);
+  }
+  .sec-num{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--gold);
+    font-weight:700;
+  }
+  html[data-theme="dark"] .sec-num{color:var(--gold-lt);}
+  .sec-head h2{font-size:22px;color:var(--ink);font-weight:800;}
+  html[data-theme="dark"] .sec-head h2{color:var(--ink);}
+  .sec-line{flex:1;height:1px;background:var(--line);}
+
+  /* about */
+  .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+  .about-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);
+    border-right:3px solid var(--red);
+  }
+  html[dir="ltr"] .about-card{border-right:1px solid var(--line);border-left:3px solid var(--red);}
+  html[data-theme="dark"] .about-card{border-right-color:var(--red-lt);}
+  html[dir="ltr"][data-theme="dark"] .about-card{border-left-color:var(--red-lt);}
+  .about-card p{font-size:13.5px;color:var(--mid);margin-bottom:11px;line-height:1.85;}
+  html[data-theme="dark"] .about-card p{color:var(--mid);}
+  .info-list li{
+    font-size:13px;color:var(--mid);
+    padding:9px 0;border-bottom:1px dashed var(--line);
+    display:flex;justify-content:space-between;gap:14px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .info-list li:last-child{border-bottom:none;}
+  .info-list .lbl{color:var(--soft);font-size:11px;}
+  .info-list .val{font-weight:700;color:var(--ink);}
+  html[data-theme="dark"] .info-list .val{color:var(--ink);}
+
+  /* service areas (instead of practice areas) */
+  .practice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .practice-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px 18px;
+    transition:transform .2s ease,box-shadow .2s ease;
+    position:relative;
+  }
+  .practice-card:hover{transform:translateY(-3px);box-shadow:var(--shadow);}
+  .practice-card .ic{
+    width:42px;height:42px;border-radius:8px;
+    background:var(--paper);border:1px solid var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:12px;color:var(--ink);
+  }
+  html[data-theme="dark"] .practice-card .ic{background:var(--paper-3);color:var(--ink);border-color:var(--gold-lt);}
+  .practice-card .ic svg{width:20px;height:20px;}
+  .practice-card h3{font-size:15px;color:var(--ink);margin-bottom:6px;}
+  html[data-theme="dark"] .practice-card h3{color:var(--ink);}
+  .practice-card h3{font-family:'Cairo',sans-serif;}
+  .practice-card p{font-size:12.5px;color:var(--mid);line-height:1.7;}
+
+  /* timeline */
+  .timeline{position:relative;padding-right:32px;}
+  html[dir="ltr"] .timeline{padding-right:0;padding-left:32px;}
+  .timeline::before{
+    content:'';position:absolute;right:7px;top:8px;bottom:8px;
+    width:2px;background:var(--line);
+  }
+  html[dir="ltr"] .timeline::before{right:auto;left:7px;}
+  .t-item{position:relative;padding-bottom:28px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;right:-32px;top:5px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--paper);border:3px solid var(--red);
+  }
+  html[data-theme="dark"] .t-dot{background:var(--paper-2);border-color:var(--red-lt);}
+  html[dir="ltr"] .t-dot{right:auto;left:-32px;}
+  .t-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;}
+  .t-title{font-weight:700;font-size:15.5px;color:var(--ink);}
+  html[data-theme="dark"] .t-title{color:var(--ink);}
+  .t-title{font-family:'Cairo',sans-serif;}
+  .t-date{
+    font-size:11px;font-weight:700;color:var(--red);
+    background:rgba(206,17,38,.14);padding:3px 11px;border-radius:20px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  html[data-theme="dark"] .t-date{color:var(--red-lt);background:rgba(229,52,71,.14);}
+  .t-org{font-size:13px;font-weight:600;color:var(--gold);margin-top:3px;}
+  html[data-theme="dark"] .t-org{color:var(--gold-lt);}
+  .t-note{font-size:13px;color:var(--mid);margin-top:5px;line-height:1.75;}
+  .t-ul{margin-top:8px;}
+  .t-ul li{
+    font-size:13px;color:var(--mid);
+    padding-right:15px;position:relative;margin-bottom:5px;line-height:1.65;
+  }
+  html[dir="ltr"] .t-ul li{padding-right:0;padding-left:15px;}
+  .t-ul li::before{
+    content:'◆';position:absolute;right:0;top:2px;
+    color:var(--red);font-size:8px;
+  }
+  html[data-theme="dark"] .t-ul li::before{color:var(--red-lt);}
+  html[dir="ltr"] .t-ul li::before{right:auto;left:0;}
+
+  /* education + bar */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .info-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);
+  }
+  .info-card h3{
+    font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+    color:var(--red);margin-bottom:14px;
+    display:flex;align-items:center;gap:7px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  html[data-theme="dark"] .info-card h3{color:var(--red-lt);}
+  .info-card h3 svg{width:15px;height:15px;}
+  .info-card .item{padding:11px 0;border-bottom:1px dashed var(--line);}
+  .info-card .item:last-child{border-bottom:none;padding-bottom:0;}
+  .info-card .item:first-child{padding-top:0;}
+  .info-card .item .title{font-size:14px;font-weight:700;color:var(--ink);}
+  html[data-theme="dark"] .info-card .item .title{color:var(--ink);}
+  .info-card .item .title{font-family:'Cairo',sans-serif;}
+  .info-card .item .meta{font-size:11px;color:var(--soft);margin-top:3px;font-family:'IBM Plex Mono',monospace;}
+  .info-card .item .desc{font-size:12.5px;color:var(--mid);margin-top:4px;line-height:1.65;}
+
+  /* certifications */
+  .cert-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+  .cert-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:8px;padding:14px 16px;
+    display:flex;gap:11px;align-items:flex-start;
+    transition:transform .2s ease,border-color .2s ease;
+  }
+  .cert-card:hover{transform:translateY(-2px);border-color:var(--red);}
+  html[data-theme="dark"] .cert-card:hover{border-color:var(--red-lt);}
+  .cert-card .ic{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--red);flex-shrink:0;
+  }
+  html[data-theme="dark"] .cert-card .ic{background:var(--paper-3);color:var(--red-lt);border-color:var(--gold-lt);}
+  .cert-card .ic svg{width:15px;height:15px;}
+  .cert-card .name{font-weight:700;font-size:13.5px;color:var(--ink);}
+  html[data-theme="dark"] .cert-card .name{color:var(--ink);}
+  .cert-card .name{font-family:'Cairo',sans-serif;}
+  .cert-card .meta{font-size:11px;color:var(--soft);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
+  .cert-card .pdf-link{
+    display:inline-flex;align-items:center;gap:5px;
+    margin-top:8px;font-size:11px;font-weight:700;
+    color:var(--red);font-family:'IBM Plex Mono',monospace;
+  }
+  html[data-theme="dark"] .cert-card .pdf-link{color:var(--red-lt);}
+  .cert-card .pdf-link svg{width:11px;height:11px;}
+
+  /* languages */
+  .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .lang-row{margin-bottom:13px;}
+  .lang-row:last-child{margin-bottom:0;}
+  .lang-top{display:flex;justify-content:space-between;font-size:13px;font-weight:700;margin-bottom:5px;}
+  .lang-top span:first-child{color:var(--ink);}
+  html[data-theme="dark"] .lang-top span:first-child{color:var(--ink);}
+  .lang-top span:last-child{font-weight:500;color:var(--soft);font-size:11.5px;}
+  .bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden;}
+  .bar-f{height:100%;background:linear-gradient(90deg,var(--red),var(--gold-soft));border-radius:3px;}
+  html[data-theme="dark"] .bar-f{background:linear-gradient(90deg,var(--red-lt),var(--gold-lt));}
+
+  /* contact */
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+  .contact-card{
+    background:var(--bg-card);border:1px solid var(--line);
+    border-radius:var(--radius);padding:22px 14px;text-align:center;
+    transition:transform .2s ease,box-shadow .2s ease;
+  }
+  .contact-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+  .contact-card .ic{
+    width:46px;height:46px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--gold-soft);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto 12px;color:var(--ink);
+  }
+  html[data-theme="dark"] .contact-card .ic{background:var(--paper-3);color:var(--ink);border-color:var(--gold-lt);}
+  .contact-card .ic svg{width:21px;height:21px;}
+  .contact-card .lbl{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--soft);margin-bottom:5px;font-family:'IBM Plex Mono',monospace;}
+  .contact-card .val{font-size:13px;font-weight:700;color:var(--ink);word-break:break-word;font-family:'IBM Plex Mono',monospace;}
+  html[data-theme="dark"] .contact-card .val{color:var(--ink);}
+
+  /* footer */
+  footer{
+    background:var(--footer-bg);color:var(--footer-text);
+    padding:30px 0 110px;text-align:center;font-size:12.5px;
+    border-top:2px solid var(--gold);
+  }
+  footer .brand-foot{color:var(--gold-soft);font-weight:700;font-size:14px;font-family:'IBM Plex Mono',monospace;letter-spacing:.5px;}
+  html[data-theme="dark"] footer .brand-foot{color:var(--gold-lt);}
+
+  /* floating action bar */
+  .fab-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:90;
+    background:var(--fab-bg);backdrop-filter:blur(10px);
+    border-top:1px solid rgba(217,185,104,.2);
+    padding-bottom:env(safe-area-inset-bottom);
+  }
+  .fab-bar .container{display:flex;gap:4px;padding:8px 14px;flex-direction:row;}
+  .fab{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+    padding:8px 4px;border-radius:8px;color:rgba(244,243,239,.85);
+    transition:background .2s ease;
+  }
+  .fab:hover{background:rgba(206,17,38,.15);}
+  html[data-theme="dark"] .fab:hover{background:rgba(229,52,71,.15);}
+  .fab svg{width:20px;height:20px;color:var(--gold-soft);}
+  html[data-theme="dark"] .fab svg{color:var(--gold-lt);}
+  .fab span{font-size:10px;font-weight:600;font-family:'IBM Plex Mono',monospace;}
+
+  .to-top{
+    position:fixed;bottom:74px;z-index:91;
+    width:42px;height:42px;border-radius:50%;
+    background:var(--red);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    opacity:0;pointer-events:none;transform:translateY(10px);
+    transition:opacity .25s ease,transform .25s ease;border:none;cursor:pointer;
+  }
+  html[data-theme="dark"] .to-top{background:var(--red-lt);}
+  html[dir="rtl"] .to-top{left:18px;}
+  html[dir="ltr"] .to-top{right:18px;}
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+  body{padding-bottom:64px;}
+
+  /* ═══ RESPONSIVE ═══ */
+  @media(max-width:900px){
+    .practice-grid{grid-template-columns:repeat(2,1fr);}
+    .about-grid{grid-template-columns:1fr;}
+    .lang-grid{grid-template-columns:1fr;}
+  }
+  @media(max-width:760px){
+    .nav-links{display:none;}
+    .burger{display:flex;}
+    .hero .container{flex-direction:column;text-align:center;}
+    .cta-row{justify-content:center;}
+    .stats .container{grid-template-columns:repeat(2,1fr);}
+    .stat:nth-child(2){border-left:none;}
+    .stat{border-bottom:1px solid var(--line);}
+    .stat:nth-child(3),.stat:nth-child(4){border-bottom:none;}
+    .grid-2{grid-template-columns:1fr;}
+    .cert-grid{grid-template-columns:1fr;}
+    .contact-grid{grid-template-columns:repeat(2,1fr);}
+    .fab span{display:none;}
+  }
+  @media(min-width:761px){
+    .fab-bar{display:none;}
+    body{padding-bottom:0;}
+    .to-top{bottom:24px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ DEMO NOTE ═══ -->
+<div class="demo-note">
+  <div class="container">
+    <div class="dn-head">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span data-i18n="demo.title">معاينة الباقة القياسية للشركات — موظف خدمة عملاء</span>
+      <span class="tier-chip">STANDARD · CORP</span>
+    </div>
+    <div class="dn-body">
+      <span data-i18n="demo.body">هذه معاينة توضيحية فقط، جميع البيانات والأسماء وأرقام التذاكر وهمية.</span>
+      <strong data-i18n="demo.body2">ما تتضمنه الباقة القياسية:</strong>
+    </div>
+    <ul class="dn-list">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f1">كل ما في الباقة الأساسية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f2">دعم لغتين (عربي/إنجليزي) بزر تبديل</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f3">صورة شخصية مستطيلة عمودية</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f4">أقسام إنجازات وشهادات منظّمة</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f5">ترجمة تلقائية للغة أخرى عند الطلب</span></li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg><span data-i18n="demo.f6">حتى 3 شهادات PDF فعلية بزر يفتحها</span></li>
+    </ul>
+    <div class="dn-note">
+      <strong data-i18n="demo.noteL">ملاحظة:</strong>
+      <span data-i18n="demo.noteB">جرّب زر التبديل بين العربية والإنجليزية وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل في هذه الباقة.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══ -->
+<nav class="top">
+  <div class="container">
+    <a href="#home" class="brand">
+      <span class="crest">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      </span>
+      <span class="brand-text">
+        <span class="brand-name" data-i18n="nav.brandName">خدمة العملاء</span>
+        <span class="brand-sub" data-i18n="nav.brandSub">الباقة القياسية للشركات</span>
+      </span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav.about">نبذة</a></li>
+      <li><a href="#practice" data-i18n="nav.practice">المسؤوليات</a></li>
+      <li><a href="#experience" data-i18n="nav.experience">الخبرات</a></li>
+      <li><a href="#education" data-i18n="nav.education">التعليم</a></li>
+      <li><a href="#certifications" data-i18n="nav.certifications">الشهادات</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">تواصل</a></li>
+    </ul>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar" class="active">AR</button>
+        <button type="button" data-lang="en">EN</button>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="تبديل الوضع" type="button">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+      <button class="burger" id="burgerBtn" aria-label="القائمة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-panel" id="mobilePanel">
+  <a href="#about" data-i18n="nav.about">نبذة</a>
+  <a href="#practice" data-i18n="nav.practice">المسؤوليات</a>
+  <a href="#experience" data-i18n="nav.experience">الخبرات</a>
+  <a href="#education" data-i18n="nav.education">التعليم</a>
+  <a href="#certifications" data-i18n="nav.certifications">الشهادات</a>
+  <a href="#contact" data-i18n="nav.contact">تواصل</a>
+</div>
+
+<!-- ═══ HERO ═══ -->
+<header class="hero" id="home">
+  <div class="container">
+    <div class="frame">
+      <div class="frame-inner">
+        <svg viewBox="0 0 64 80" fill="currentColor" aria-hidden="true">
+          <rect x="0" y="0" width="64" height="80" fill="none"/>
+          <circle cx="32" cy="28" r="13"/>
+          <path d="M6 80c0-15 12-24 26-24s26 9 26 24z"/>
+        </svg>
+      </div>
+      <div class="frame-corner tl"></div>
+      <div class="frame-corner br"></div>
+    </div>
+    <div class="hero-text">
+      <div class="badge-row">
+        <span class="badge badge-tier">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.5 5 5.5.8-4 4 1 5.5L12 15l-5 2.3 1-5.5-4-4 5.5-.8z"/></svg>
+          <span data-i18n="hero.tier">الباقة القياسية للشركات</span>
+        </span>
+        <span class="badge badge-lic" data-i18n="hero.lic">موظف خدمة عملاء — رقم وهمي</span>
+      </div>
+      <h1 class="placeholder-name" data-i18n="hero.name">[ الاسم الكامل ]</h1>
+      <div class="role" data-i18n="hero.role">موظف خدمة عملاء</div>
+      <p class="bio" data-i18n="hero.bio">
+        موظف خدمة عملاء بخبرة تتجاوز ست سنوات في إدارة تذاكر الدعم الفني
+        والاستفسارات عبر القنوات الرقمية. أُؤمن بأن كل تذكرة هي فرصة لبناء علاقة
+        طويلة مع العميل، وأن الإجابة السريعة والواضحة هي جوهر التجربة المريحة.
+      </p>
+      <div class="cta-row">
+        <a href="tel:+97300000000" class="btn btn-red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <span data-i18n="hero.btnCall">اتصال مباشر</span>
+        </a>
+        <a href="https://wa.me/97300000000" class="btn btn-line" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+          <span data-i18n="hero.btnWa">واتساب</span>
+        </a>
+        <a href="mailto:example@example.com" class="btn btn-line">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+          <span data-i18n="hero.btnMail">بريد إلكتروني</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ STATS ═══ -->
+<div class="stats">
+  <div class="container">
+    <div class="stat"><b data-i18n="stat.exp">+6</b><span data-i18n="stat.expL">سنة خبرة</span></div>
+    <div class="stat"><b data-i18n="stat.tickets">+12k</b><span data-i18n="stat.ticketsL">تذكرة مغلقة</span></div>
+    <div class="stat"><b data-i18n="stat.csat">96%</b><span data-i18n="stat.csatL">رضا العملاء</span></div>
+    <div class="stat"><b data-i18n="stat.langs">3</b><span data-i18n="stat.langsL">لغات دعم</span></div>
+  </div>
+</div>
+
+<!-- ═══ ABOUT ═══ -->
+<section id="about">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.aboutN">I.</span>
+      <h2 data-i18n="sec.about">نبذة عن الموظف</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-grid">
+      <div class="about-card">
+        <p data-i18n="about.p1">
+          موظف خدمة عملاء يمتلك خبرة واسعة في إدارة تذاكر الدعم الفني عبر
+          البريد والواتساب والاتصالات، مع قدرة على صياغة ردود واضحة تحلّ المشكلة
+          من رسالة واحدة. أُتقن التعامل مع أنظمة CRM الحديثة وتوثيق التذاكر
+          بدقّة لمتابعة سلسلة الحل حتى الإغلاق.
+        </p>
+        <p data-i18n="about.p2">
+          أمضيت سنوات في خدمة عملاء قطاعات التقنية والتجارة الإلكترونية، واكتسبت
+          بذلك فهماً عميقاً لرحلة العميل عبر القنوات الرقمية. أُولي اهتماماً خاصاً
+          بخفض زمن الاستجابة الأول، وأسعى دائماً إلى تحويل العميل المستاء إلى سفير
+          للعلامة من خلال التعاطف المهني والإجابات العملية.
+        </p>
+      </div>
+      <div class="about-card">
+        <ul class="info-list">
+          <li><span class="lbl" data-i18n="info.role">المسمى</span><span class="val" data-i18n="info.roleV">موظف خدمة عملاء أول</span></li>
+          <li><span class="lbl" data-i18n="info.id">الرقم الوظيفي</span><span class="val" data-i18n="info.idV">0000 / وهمي</span></li>
+          <li><span class="lbl" data-i18n="info.dept">القسم</span><span class="val" data-i18n="info.deptV">خدمة العملاء</span></li>
+          <li><span class="lbl" data-i18n="info.office">المكتب</span><span class="val" data-i18n="info.officeV">المنامة، البحرين</span></li>
+          <li><span class="lbl" data-i18n="info.year">سنة الالتحاق</span><span class="val" data-i18n="info.yearV">2019</span></li>
+          <li><span class="lbl" data-i18n="info.shift">نوبة العمل</span><span class="val" data-i18n="info.shiftV">صباحية / مرنة</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SERVICE AREAS (المسؤوليات) ═══ -->
+<section id="practice">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.practiceN">II.</span>
+      <h2 data-i18n="sec.practice">مجالات المسؤولية</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="practice-grid">
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+        <h3 data-i18n="prac.1t">الدعم عبر التذاكر</h3>
+        <p data-i18n="prac.1p">إدارة تذاكر الدعم عبر البريد ونظام CRM، مع التوثيق الكامل لكل تفاعل حتى الإغلاق.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <h3 data-i18n="prac.2t">المكالمات الهاتفية</h3>
+        <p data-i18n="prac.2p">الردّ على المكالمات الواردة وحلّ الاستفسارات الفورية، مع تحويل الحالات المعقّدة للقسم المختصّ.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></div>
+        <h3 data-i18n="prac.3t">دعم الواتساب والشات</h3>
+        <p data-i18n="prac.3p">إدارة محادثات الواتساب والشات المباشر بمتوسط زمن استجابة أقل من دقيقتين.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L4 7v6c0 5 3 9 8 10 5-1 8-5 8-10V7z"/></svg></div>
+        <h3 data-i18n="prac.4t">إدارة الشكاوى</h3>
+        <p data-i18n="prac.4p">استقبال الشكاوى وتصعيدها للإدارة عند الحاجة، مع متابعة العميل حتى الرضا التام.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
+        <h3 data-i18n="prac.5t">تحليل رضا العملاء</h3>
+        <p data-i18n="prac.5p">متابعة مؤشّرات CSAT و NPS وتحليل التعليقات لتحسين جودة الردود باستمرار.</p>
+      </div>
+      <div class="practice-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg></div>
+        <h3 data-i18n="prac.6t">قاعدة المعرفة</h3>
+        <p data-i18n="prac.6p">كتابة وإثراء مقالات قاعدة المعرفة لتقليل التذاكر المتكرّرة وتمكين العميل من خدمة نفسه.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.expN">III.</span>
+      <h2 data-i18n="sec.exp">الخبرات المهنية</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.1t">موظف خدمة عملاء أول</span>
+            <span class="t-date" data-i18n="exp.1d">2021 — الآن</span>
+          </div>
+          <div class="t-org" data-i18n="exp.1o">شركة [الاسم] للتجارة الإلكترونية — المنامة</div>
+          <p class="t-note" data-i18n="exp.1n">
+            قيادة فريق صغير من 3 موظفي دعم، إدارة تذاكر العملاء VIP،
+            وتدريب الموظفين الجدد على سياسات الشركة.
+          </p>
+          <ul class="t-ul">
+            <li data-i18n="exp.1l1">إغلاق أكثر من 8,000 تذكرة بمعدّل رضا 96%.</li>
+            <li data-i18n="exp.1l2">خفض متوسط زمن الاستجابة الأول من 4 ساعات إلى 35 دقيقة.</li>
+            <li data-i18n="exp.1l3">تحسين قاعدة المعرفة بخمسة عشر مقالاً جديداً.</li>
+          </ul>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.2t">موظف خدمة عملاء</span>
+            <span class="t-date" data-i18n="exp.2d">2019 — 2021</span>
+          </div>
+          <div class="t-org" data-i18n="exp.2o">شركة تقنية إقليمية — المنامة</div>
+          <p class="t-note" data-i18n="exp.2n">
+            الردّ على استفسارات العملاء عبر البريد والهاتف، توثيق التذاكر في نظام
+            Zendesk، والتنسيق مع فريق المنتج لرفع الملاحظات.
+          </p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <div class="t-head">
+            <span class="t-title" data-i18n="exp.3t">موظف استقبال / دعم مبتدئ</span>
+            <span class="t-date" data-i18n="exp.3d">2018 — 2019</span>
+          </div>
+          <div class="t-org" data-i18n="exp.3o">مكتب خدمات — المحرق</div>
+          <p class="t-note" data-i18n="exp.3n">
+            مرحلة أولى بعد التخرّج، شملت استقبال الزبائن والردّ على الاستفسارات
+            الأساسية وتحويل الحالات المعقّدة للموظفين الأقدم.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION + BAR ═══ -->
+<section id="education">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.eduN">IV.</span>
+      <h2 data-i18n="sec.edu">التعليم والاعتمادات</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="grid-2">
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg>
+          <span data-i18n="edu.title">المؤهلات العلمية</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="edu.1t">بكالوريوس إدارة أعمال (B.B.A)</div>
+          <div class="meta" data-i18n="edu.1m">جامعة [الاسم] — 2018</div>
+          <div class="desc" data-i18n="edu.1d">تخصّص في إدارة الخدمات والتسويق.</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="edu.2t">دبلوم خدمة العملاء</div>
+          <div class="meta" data-i18n="edu.2m">معهد [الاسم] — 2017</div>
+          <div class="desc" data-i18n="edu.2d">برنامج عملي في إدارة التذاكر والتواصل الفعّال.</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <h3>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="bar.title">الاعتمادات والعضويات</span>
+        </h3>
+        <div class="item">
+          <div class="title" data-i18n="bar.1t">شهادة خدمة العملاء المعتمدة (CSC)</div>
+          <div class="meta" data-i18n="bar.1m">معهد [الاسم] — 2022</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.2t">اعتماد Zendesk Support Administrator</div>
+          <div class="meta" data-i18n="bar.2m">Zendesk · 2021</div>
+        </div>
+        <div class="item">
+          <div class="title" data-i18n="bar.3t">عضو جمعية محترفي خدمة العملاء</div>
+          <div class="meta" data-i18n="bar.3m">عضو منذ 2020</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section id="certifications">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.certN">V.</span>
+      <h2 data-i18n="sec.cert">الشهادات والإنجازات</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.1t">دبلوم التواصل الفعّال مع العميل</div>
+          <div class="meta" data-i18n="cert.1m">أكاديمية [الاسم] — دبي · 2023</div>
+          <a href="#" class="pdf-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="cert.pdf">عرض الشهادة PDF</span>
+          </a>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M9 14l-2 7 5-3 5 3-2-7"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.2t">شهادة إدارة الشكاوى وخدمة الضيوف</div>
+          <div class="meta" data-i18n="cert.2m">معهد [الاسم] — البحرين · 2022</div>
+          <a href="#" class="pdf-link">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+            <span data-i18n="cert.pdf">عرض الشهادة PDF</span>
+          </a>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.3t">موظف الشهر — ثلاث مرات متتالية</div>
+          <div class="meta" data-i18n="cert.3m">شركة [الاسم] · 2022 — 2023</div>
+        </div>
+      </div>
+      <div class="cert-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div>
+          <div class="name" data-i18n="cert.4t">جائزة أعلى نسبة رضا عملاء (CSAT)</div>
+          <div class="meta" data-i18n="cert.4m">قسم خدمة العملاء · 2023</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LANGUAGES ═══ -->
+<section id="languages">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.langN">VI.</span>
+      <h2 data-i18n="sec.lang">اللغات</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="about-card">
+      <div class="lang-grid">
+        <div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.ar">العربية</span><span data-i18n="lang.arL">اللغة الأم</span></div>
+            <div class="bar"><div class="bar-f" style="width:100%"></div></div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.en">الإنجليزية</span><span data-i18n="lang.enL">إجادة كاملة مهنية</span></div>
+            <div class="bar"><div class="bar-f" style="width:90%"></div></div>
+          </div>
+        </div>
+        <div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.hi">الهندية</span><span data-i18n="lang.hiL">مستوى عمل متوسط</span></div>
+            <div class="bar"><div class="bar-f" style="width:60%"></div></div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-top"><span data-i18n="lang.fr">الفرنسية</span><span data-i18n="lang.frL">أساسيات</span></div>
+            <div class="bar"><div class="bar-f" style="width:30%"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num" data-i18n="sec.contactN">VII.</span>
+      <h2 data-i18n="sec.contact">تواصل مع الموظف</h2>
+      <span class="sec-line"></span>
+    </div>
+    <div class="contact-grid">
+      <a href="tel:+97300000000" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+        <div class="lbl" data-i18n="contact.phoneL">الهاتف</div>
+        <div class="val" dir="ltr">+973 0000 0000</div>
+      </a>
+      <a href="https://wa.me/97300000000" class="contact-card" target="_blank" rel="noopener">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg></div>
+        <div class="lbl" data-i18n="contact.waL">واتساب</div>
+        <div class="val" data-i18n="contact.waV">راسل الآن</div>
+      </a>
+      <a href="mailto:example@example.com" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></div>
+        <div class="lbl" data-i18n="contact.mailL">البريد</div>
+        <div class="val" dir="ltr">example@example.com</div>
+      </a>
+      <a href="#" class="contact-card">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3A2 2 0 0121 5v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2zM8.34 18.34V10H5.67v8.34zM7 8.84A1.55 1.55 0 107 5.74a1.55 1.55 0 000 3.1zM18.34 18.34v-4.6c0-2.46-1.31-3.6-3.06-3.6a2.64 2.64 0 00-2.39 1.32V10H10.2v8.34h2.68v-4.66c0-.72.55-1.42 1.33-1.42.79 0 1.13.7 1.13 1.46v4.62z"/></svg></div>
+        <div class="lbl" data-i18n="contact.liL">لينكدإن</div>
+        <div class="val" dir="ltr">/in/example</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <p><span class="brand-foot" data-i18n="foot.brand">بطاقتي</span> — <span data-i18n="foot.tier">الباقة القياسية للشركات</span></p>
+    <p style="margin-top:8px;opacity:.55;font-size:11px;" data-i18n="foot.note">© 2026 · البحرين · جميع البيانات والأرقام والأسماء في هذه المعاينة وهمية لأغراض العرض فقط.</p>
+  </div>
+</footer>
+
+<!-- Floating action bar -->
+<div class="fab-bar">
+  <div class="container">
+    <a href="tel:+97300000000" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+      <span data-i18n="fab.call">اتصال</span>
+    </a>
+    <a href="https://wa.me/97300000000" class="fab" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.4 1.26 4.83L2 22l5.4-1.41a9.9 9.9 0 004.64 1.18h.01c5.46 0 9.9-4.45 9.9-9.91S17.5 2 12.04 2z"/></svg>
+      <span data-i18n="fab.wa">واتساب</span>
+    </a>
+    <a href="mailto:example@example.com" class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
+      <span data-i18n="fab.mail">بريد</span>
+    </a>
+  </div>
+</div>
+
+<button class="to-top" id="toTop" aria-label="للأعلى">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+  // ═══ i18n: نظام تبديل اللغة ═══
+  const I18N = {
+    ar: {
+      "demo.title":"معاينة الباقة القياسية للشركات — موظف خدمة عملاء",
+      "demo.body":"هذه معاينة توضيحية فقط، جميع البيانات والأسماء وأرقام التذاكر وهمية.",
+      "demo.body2":"ما تتضمنه الباقة القياسية:",
+      "demo.f1":"كل ما في الباقة الأساسية",
+      "demo.f2":"دعم لغتين (عربي/إنجليزي) بزر تبديل",
+      "demo.f3":"صورة شخصية مستطيلة عمودية",
+      "demo.f4":"أقسام إنجازات وشهادات منظّمة",
+      "demo.f5":"ترجمة تلقائية للغة أخرى عند الطلب",
+      "demo.f6":"حتى 3 شهادات PDF فعلية بزر يفتحها",
+      "demo.noteL":"ملاحظة:",
+      "demo.noteB":"جرّب زر التبديل بين العربية والإنجليزية وزر الوضع الفاتح/الداكن في الأعلى — يعملان بالكامل في هذه الباقة.",
+      "nav.brandName":"خدمة العملاء","nav.brandSub":"الباقة القياسية للشركات",
+      "nav.about":"نبذة","nav.practice":"المسؤوليات","nav.experience":"الخبرات",
+      "nav.education":"التعليم","nav.certifications":"الشهادات","nav.contact":"تواصل",
+      "hero.tier":"الباقة القياسية للشركات","hero.lic":"موظف خدمة عملاء — رقم وهمي",
+      "hero.name":"[ الاسم الكامل ]","hero.role":"موظف خدمة عملاء",
+      "hero.bio":"موظف خدمة عملاء بخبرة تتجاوز ست سنوات في إدارة تذاكر الدعم الفني والاستفسارات عبر القنوات الرقمية. أُؤمن بأن كل تذكرة هي فرصة لبناء علاقة طويلة مع العميل، وأن الإجابة السريعة والواضحة هي جوهر التجربة المريحة.",
+      "hero.btnCall":"اتصال مباشر","hero.btnWa":"واتساب","hero.btnMail":"بريد إلكتروني",
+      "stat.exp":"+6","stat.expL":"سنة خبرة","stat.tickets":"+12k","stat.ticketsL":"تذكرة مغلقة","stat.csat":"96%","stat.csatL":"رضا العملاء","stat.langs":"3","stat.langsL":"لغات دعم",
+      "sec.aboutN":"I.","sec.about":"نبذة عن الموظف",
+      "about.p1":"موظف خدمة عملاء يمتلك خبرة واسعة في إدارة تذاكر الدعم الفني عبر البريد والواتساب والاتصالات، مع قدرة على صياغة ردود واضحة تحلّ المشكلة من رسالة واحدة. أُتقن التعامل مع أنظمة CRM الحديثة وتوثيق التذاكر بدقّة لمتابعة سلسلة الحل حتى الإغلاق.",
+      "about.p2":"أمضيت سنوات في خدمة عملاء قطاعات التقنية والتجارة الإلكترونية، واكتسبت بذلك فهماً عميقاً لرحلة العميل عبر القنوات الرقمية. أُولي اهتماماً خاصاً بخفض زمن الاستجابة الأول، وأسعى دائماً إلى تحويل العميل المستاء إلى سفير للعلامة من خلال التعاطف المهني والإجابات العملية.",
+      "info.role":"المسمى","info.roleV":"موظف خدمة عملاء أول","info.id":"الرقم الوظيفي","info.idV":"0000 / وهمي","info.dept":"القسم","info.deptV":"خدمة العملاء","info.office":"المكتب","info.officeV":"المنامة، البحرين","info.year":"سنة الالتحاق","info.yearV":"2019","info.shift":"نوبة العمل","info.shiftV":"صباحية / مرنة",
+      "sec.practiceN":"II.","sec.practice":"مجالات المسؤولية",
+      "prac.1t":"الدعم عبر التذاكر","prac.1p":"إدارة تذاكر الدعم عبر البريد ونظام CRM، مع التوثيق الكامل لكل تفاعل حتى الإغلاق.",
+      "prac.2t":"المكالمات الهاتفية","prac.2p":"الردّ على المكالمات الواردة وحلّ الاستفسارات الفورية، مع تحويل الحالات المعقّدة للقسم المختصّ.",
+      "prac.3t":"دعم الواتساب والشات","prac.3p":"إدارة محادثات الواتساب والشات المباشر بمتوسط زمن استجابة أقل من دقيقتين.",
+      "prac.4t":"إدارة الشكاوى","prac.4p":"استقبال الشكاوى وتصعيدها للإدارة عند الحاجة، مع متابعة العميل حتى الرضا التام.",
+      "prac.5t":"تحليل رضا العملاء","prac.5p":"متابعة مؤشّرات CSAT و NPS وتحليل التعليقات لتحسين جودة الردود باستمرار.",
+      "prac.6t":"قاعدة المعرفة","prac.6p":"كتابة وإثراء مقالات قاعدة المعرفة لتقليل التذاكر المتكرّرة وتمكين العميل من خدمة نفسه.",
+      "sec.expN":"III.","sec.exp":"الخبرات المهنية",
+      "exp.1t":"موظف خدمة عملاء أول","exp.1d":"2021 — الآن","exp.1o":"شركة [الاسم] للتجارة الإلكترونية — المنامة","exp.1n":"قيادة فريق صغير من 3 موظفي دعم، إدارة تذاكر العملاء VIP، وتدريب الموظفين الجدد على سياسات الشركة.",
+      "exp.1l1":"إغلاق أكثر من 8,000 تذكرة بمعدّل رضا 96%.","exp.1l2":"خفض متوسط زمن الاستجابة الأول من 4 ساعات إلى 35 دقيقة.","exp.1l3":"تحسين قاعدة المعرفة بخمسة عشر مقالاً جديداً.",
+      "exp.2t":"موظف خدمة عملاء","exp.2d":"2019 — 2021","exp.2o":"شركة تقنية إقليمية — المنامة","exp.2n":"الردّ على استفسارات العملاء عبر البريد والهاتف، توثيق التذاكر في نظام Zendesk، والتنسيق مع فريق المنتج لرفع الملاحظات.",
+      "exp.3t":"موظف استقبال / دعم مبتدئ","exp.3d":"2018 — 2019","exp.3o":"مكتب خدمات — المحرق","exp.3n":"مرحلة أولى بعد التخرّج، شملت استقبال الزبائن والردّ على الاستفسارات الأساسية وتحويل الحالات المعقّدة للموظفين الأقدم.",
+      "sec.eduN":"IV.","sec.edu":"التعليم والاعتمادات",
+      "edu.title":"المؤهلات العلمية","edu.1t":"بكالوريوس إدارة أعمال (B.B.A)","edu.1m":"جامعة [الاسم] — 2018","edu.1d":"تخصّص في إدارة الخدمات والتسويق.","edu.2t":"دبلوم خدمة العملاء","edu.2m":"معهد [الاسم] — 2017","edu.2d":"برنامج عملي في إدارة التذاكر والتواصل الفعّال.",
+      "bar.title":"الاعتمادات والعضويات","bar.1t":"شهادة خدمة العملاء المعتمدة (CSC)","bar.1m":"معهد [الاسم] — 2022","bar.2t":"اعتماد Zendesk Support Administrator","bar.2m":"Zendesk · 2021","bar.3t":"عضو جمعية محترفي خدمة العملاء","bar.3m":"عضو منذ 2020",
+      "sec.certN":"V.","sec.cert":"الشهادات والإنجازات",
+      "cert.1t":"دبلوم التواصل الفعّال مع العميل","cert.1m":"أكاديمية [الاسم] — دبي · 2023","cert.pdf":"عرض الشهادة PDF",
+      "cert.2t":"شهادة إدارة الشكاوى وخدمة الضيوف","cert.2m":"معهد [الاسم] — البحرين · 2022",
+      "cert.3t":"موظف الشهر — ثلاث مرات متتالية","cert.3m":"شركة [الاسم] · 2022 — 2023",
+      "cert.4t":"جائزة أعلى نسبة رضا عملاء (CSAT)","cert.4m":"قسم خدمة العملاء · 2023",
+      "sec.langN":"VI.","sec.lang":"اللغات",
+      "lang.ar":"العربية","lang.arL":"اللغة الأم","lang.en":"الإنجليزية","lang.enL":"إجادة كاملة مهنية","lang.hi":"الهندية","lang.hiL":"مستوى عمل متوسط","lang.fr":"الفرنسية","lang.frL":"أساسيات",
+      "sec.contactN":"VII.","sec.contact":"تواصل مع الموظف",
+      "contact.phoneL":"الهاتف","contact.waL":"واتساب","contact.waV":"راسل الآن","contact.mailL":"البريد","contact.liL":"لينكدإن",
+      "foot.brand":"بطاقتي","foot.tier":"الباقة القياسية للشركات","foot.note":"© 2026 · البحرين · جميع البيانات والأرقام والأسماء في هذه المعاينة وهمية لأغراض العرض فقط.",
+      "fab.call":"اتصال","fab.wa":"واتساب","fab.mail":"بريد"
+    },
+    en: {
+      "demo.title":"Standard Corporate Package Preview — Customer Service Representative",
+      "demo.body":"This is a demonstration preview only; all data, names, and ticket numbers are fictional.",
+      "demo.body2":"What the Standard package includes:",
+      "demo.f1":"Everything in the Basic package",
+      "demo.f2":"Two-language support (Arabic/English) with a toggle button",
+      "demo.f3":"Portrait rectangular personal photo",
+      "demo.f4":"Organized achievements & certifications sections",
+      "demo.f5":"Automatic translation to another language on request",
+      "demo.f6":"Up to 3 real PDF certificates with open buttons",
+      "demo.noteL":"Note:",
+      "demo.noteB":"Try the Arabic/English toggle and the light/dark mode button at the top — both work fully in this package.",
+      "nav.brandName":"Customer Service","nav.brandSub":"Standard Corporate Package",
+      "nav.about":"About","nav.practice":"Responsibilities","nav.experience":"Experience",
+      "nav.education":"Education","nav.certifications":"Certifications","nav.contact":"Contact",
+      "hero.tier":"Standard Corporate Package","hero.lic":"Customer Service Representative — fictional ID",
+      "hero.name":"[ Full Name ]","hero.role":"Customer Service Representative",
+      "hero.bio":"A customer service representative with over six years of experience managing technical support tickets and inquiries across digital channels. I believe every ticket is a chance to build a long-term customer relationship, and that a fast, clear answer is the essence of a comfortable experience.",
+      "hero.btnCall":"Direct Call","hero.btnWa":"WhatsApp","hero.btnMail":"Email",
+      "stat.exp":"+6","stat.expL":"Years Experience","stat.tickets":"+12k","stat.ticketsL":"Closed Tickets","stat.csat":"96%","stat.csatL":"CSAT Score","stat.langs":"3","stat.langsL":"Support Languages",
+      "sec.aboutN":"I.","sec.about":"About the Employee",
+      "about.p1":"A customer service representative with extensive experience managing technical support tickets via email, WhatsApp, and phone calls, with the ability to craft clear replies that resolve the issue in a single message. I master modern CRM systems and accurately document tickets to follow the resolution chain through to closure.",
+      "about.p2":"I spent years in customer service for tech and e-commerce sectors, gaining a deep understanding of the customer journey across digital channels. I pay special attention to reducing first response time, and always strive to turn an upset customer into a brand ambassador through professional empathy and practical answers.",
+      "info.role":"Title","info.roleV":"Senior CS Representative","info.id":"Employee ID","info.idV":"0000 / fictional","info.dept":"Department","info.deptV":"Customer Service","info.office":"Office","info.officeV":"Manama, Bahrain","info.year":"Joined Year","info.yearV":"2019","info.shift":"Shift","info.shiftV":"Morning / Flexible",
+      "sec.practiceN":"II.","sec.practice":"Areas of Responsibility",
+      "prac.1t":"Ticket Support","prac.1p":"Managing support tickets via email and CRM system, with full documentation of every interaction through to closure.",
+      "prac.2t":"Phone Calls","prac.2p":"Answering inbound calls and resolving instant inquiries, escalating complex cases to the appropriate department.",
+      "prac.3t":"WhatsApp & Chat Support","prac.3p":"Managing WhatsApp conversations and live chat with an average first response time under two minutes.",
+      "prac.4t":"Complaints Management","prac.4p":"Receiving complaints and escalating to management when needed, following up with the customer until full satisfaction.",
+      "prac.5t":"CSAT Analysis","prac.5p":"Tracking CSAT and NPS metrics and analyzing feedback to continuously improve response quality.",
+      "prac.6t":"Knowledge Base","prac.6p":"Writing and enriching knowledge base articles to reduce repetitive tickets and empower customer self-service.",
+      "sec.expN":"III.","sec.exp":"Professional Experience",
+      "exp.1t":"Senior Customer Service Representative","exp.1d":"2021 — Present","exp.1o":"[Name] E-commerce Co. — Manama","exp.1n":"Leading a small team of 3 support agents, managing VIP customer tickets, and training new hires on company policies.",
+      "exp.1l1":"Closed over 8,000 tickets with a 96% satisfaction rate.","exp.1l2":"Reduced average first response time from 4 hours to 35 minutes.","exp.1l3":"Improved the knowledge base with fifteen new articles.",
+      "exp.2t":"Customer Service Representative","exp.2d":"2019 — 2021","exp.2o":"Regional Tech Company — Manama","exp.2n":"Answering customer inquiries via email and phone, documenting tickets in Zendesk, and coordinating with the product team to escalate feedback.",
+      "exp.3t":"Receptionist / Junior Support","exp.3d":"2018 — 2019","exp.3o":"Services Office — Muharraq","exp.3n":"Entry-level role after graduation, including greeting customers, answering basic inquiries, and routing complex cases to senior staff.",
+      "sec.eduN":"IV.","sec.edu":"Education & Credentials",
+      "edu.title":"Academic Qualifications","edu.1t":"Bachelor of Business Administration (B.B.A)","edu.1m":"[Name] University — 2018","edu.1d":"Major in services management and marketing.","edu.2t":"Customer Service Diploma","edu.2m":"[Name] Institute — 2017","edu.2d":"Practical program in ticket management and effective communication.",
+      "bar.title":"Credentials & Memberships","bar.1t":"Certified Service Certificate (CSC)","bar.1m":"[Name] Institute — 2022","bar.2t":"Zendesk Support Administrator","bar.2m":"Zendesk · 2021","bar.3t":"Customer Service Professionals Association","bar.3m":"Member since 2020",
+      "sec.certN":"V.","sec.cert":"Certifications & Achievements",
+      "cert.1t":"Effective Customer Communication Diploma","cert.1m":"[Name] Academy — Dubai · 2023","cert.pdf":"View Certificate PDF",
+      "cert.2t":"Complaints & Guest Service Certificate","cert.2m":"[Name] Institute — Bahrain · 2022",
+      "cert.3t":"Employee of the Month — three consecutive times","cert.3m":"[Name] Co. · 2022 — 2023",
+      "cert.4t":"Highest CSAT Award","cert.4m":"Customer Service Dept · 2023",
+      "sec.langN":"VI.","sec.lang":"Languages",
+      "lang.ar":"Arabic","lang.arL":"Native","lang.en":"English","lang.enL":"Full Professional Proficiency","lang.hi":"Hindi","lang.hiL":"Intermediate Working Level","lang.fr":"French","lang.frL":"Basics",
+      "sec.contactN":"VII.","sec.contact":"Contact the Employee",
+      "contact.phoneL":"Phone","contact.waL":"WhatsApp","contact.waV":"Message Now","contact.mailL":"Email","contact.liL":"LinkedIn",
+      "foot.brand":"Bitaqti","foot.tier":"Standard Corporate Package","foot.note":"© 2026 · Bahrain · All data, numbers, and names in this preview are fictional for display purposes only.",
+      "fab.call":"Call","fab.wa":"WhatsApp","fab.mail":"Email"
+    }
+  };
+
+  // ✅ applyLanguage: لا تُبدّل ترتيب أي عنصر، فقط تغيّر المحتوى والاتجاه
+  function applyLanguage(lang){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+    });
+    document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    try{ localStorage.setItem('bitaqti_lang', lang); }catch(e){}
+  }
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+    btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+  });
+
+  // ✅ Theme toggle: الوضع الفاتح/الداكن
+  function applyTheme(theme){
+    document.documentElement.setAttribute('data-theme', theme);
+    try{ localStorage.setItem('bitaqti_theme', theme); }catch(e){}
+  }
+  const themeBtn = document.getElementById('themeBtn');
+  if(themeBtn){
+    themeBtn.addEventListener('click', ()=>{
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      applyTheme(current === 'dark' ? 'light' : 'dark');
+    });
+  }
+
+  // ✅ التهيئة الأولية للّغة والوضع (القياسية تبدأ فاتحة)
+  (function init(){
+    let savedLang = 'ar', savedTheme = 'light';
+    try{ savedLang = localStorage.getItem('bitaqti_lang') || 'ar'; }catch(e){}
+    try{ savedTheme = localStorage.getItem('bitaqti_theme') || 'light'; }catch(e){}
+    applyLanguage(savedLang);
+    applyTheme(savedTheme);
+  })();
+
+  // Burger + to-top
+  const burger = document.getElementById('burgerBtn');
+  const panel = document.getElementById('mobilePanel');
+  if(burger){
+    burger.addEventListener('click', ()=>panel.classList.toggle('open'));
+    panel.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>panel.classList.remove('open')));
+  }
+  const toTop = document.getElementById('toTop');
+  window.addEventListener('scroll', ()=>{
+    if(window.scrollY > 300) toTop.classList.add('show');
+    else toTop.classList.remove('show');
+  });
+  toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+</script>
+
+</body>
+</html>
