@@ -1,0 +1,32 @@
+{
+  "name": "بطاقتي — Bitaqti",
+  "short_name": "بطاقتي",
+  "description": "بطاقة رقمية واحدة تُعرّف بك — خدمة فردية في البحرين.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F4F3EF",
+  "theme_color": "#17181C",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-192.png",
+      "sizes": "192×192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512.png",
+      "sizes": "512×512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
