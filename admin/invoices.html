@@ -1312,7 +1312,12 @@
             <div class="form-row cols-2">
               <div class="form-group">
                 <label>رقم الفاتورة <span class="hint">(تلقائي)</span></label>
-                <input type="text" class="form-control mono" id="fCode" dir="ltr">
+                <div style="display:flex;gap:4px;">
+                  <input type="text" class="form-control mono" id="fCode" dir="ltr" style="flex:1;">
+                  <button type="button" id="btnGenCode" title="توليد رقم تلقائي" style="padding:8px 10px;border:1px solid var(--line);background:var(--paper);border-radius:8px;cursor:pointer;color:var(--red);flex-shrink:0;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+                  </button>
+                </div>
               </div>
               <div class="form-group">
                 <label>تاريخ الإصدار</label>
@@ -1360,16 +1365,8 @@
                 <label>تاريخ الدفع</label>
                 <input type="date" class="form-control" id="fPayDate">
               </div>
-              <div class="form-group">
-                <label>مرجع الدفع <span class="hint">(رقم مرجعي)</span></label>
-                <input type="text" class="form-control mono" id="fPayRef" dir="ltr" placeholder="INV-REF-001">
-              </div>
             </div>
             <div class="form-row cols-2 admin-only-screen">
-              <div class="form-group">
-                <label>مرجع أمر الشراء <span class="hint">(PO #)</span></label>
-                <input type="text" class="form-control mono" id="fPoRef" dir="ltr" placeholder="PO-2026-001">
-              </div>
               <div class="form-group">
                 <label>اسم المشروع / العقد</label>
                 <input type="text" class="form-control" id="fProject" placeholder="مثال: تصميم بطاقة تعريفية">
@@ -1694,6 +1691,10 @@
               <div class="inv-qr" id="pQrWrap" style="display:none;">
                 <canvas id="pQrCanvas"></canvas>
                 <span>امسح للوصول للبطاقة</span>
+                <div id="pReferralCode" style="display:none;margin-top:6px;padding:4px 8px;background:#F3ECDD;border-radius:6px;text-align:center;">
+                  <div style="font-size:9px;color:#9C7A3C;font-weight:700;">كود الإحالة</div>
+                  <div id="pReferralCodeText" style="font-size:13px;font-weight:700;color:#17181C;font-family:'IBM Plex Mono',monospace;direction:ltr;letter-spacing:1px;"></div>
+                </div>
               </div>
             </div>
             <table class="inv-items-table" id="pItemsTable">
@@ -5853,6 +5854,15 @@ function initApp(){
 
   // Buttons
   $('btnAddItem').addEventListener('click', () => addItem());
+  $('btnGenCode')?.addEventListener('click', () => {
+    if(typeof smartGenerateInvoiceCode === 'function'){
+      $('fCode').value = smartGenerateInvoiceCode();
+      if(typeof toast === 'function') toast('تم توليد رقم فاتورة جديد', 'success');
+    } else if(typeof genInvoiceCode === 'function'){
+      $('fCode').value = genInvoiceCode();
+      if(typeof toast === 'function') toast('تم توليد رقم فاتورة جديد', 'success');
+    }
+  });
   $('btnSave').addEventListener('click', saveInvoice);
   $('btnPrint').addEventListener('click', () => {
     // ننتقل لتبويب "فاتورة جديدة" أولاً (إن لم نكن فيه) لضمان ظهور المعاينة عند الطباعة
