@@ -10,6 +10,7 @@ exports.config = {
 };
 
 const crypto = require('crypto');
+const { sbSelectAll, ConfigError } = require('./lib/supabase');
 
 // ─────────────────────────────────────────────────────────────
 //  الحقول الآمنة للإرجاع (لا نُرجع رمز التحقق أبداً)
@@ -114,51 +115,16 @@ async function handleAdminSync(body){
     }, corsHeaders());
   }
 
-  const SHEET_ID = process.env.ORDERS_SHEET_ID;
-  if (!SHEET_ID) {
-    return jsonResponse(500, { error: 'server_not_configured', message: 'ORDERS_SHEET_ID غير مُعدّ.' }, corsHeaders());
-  }
-
-  // ═══ بناء URL التصدير ═══
-  // ملاحظة مهمة: بعض أوراق Google Sheets المنشورة لا تقبل gid=0 وتُرجع HTTP 400.
-  // الحل: نستخدم URL بدون gid إن لم يُحدّد، أو مع gid إن حُدد بقيمة غير 0.
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
-  const csvUrl = SHEET_GID && SHEET_GID !== '0'
-    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
-    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
-
   try {
-    const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(15000) });
-    if (!sheetRes.ok) {
-      console.error('[track-order/admin] sheet fetch failed', sheetRes.status, csvUrl);
-      const msg = sheetRes.status === 400
-        ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة: File → Share → Publish to web. أو أن ORDERS_SHEET_GID صحيح.'
-        : sheetRes.status === 404
-        ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
-        : `تعذّر الوصول إلى Google Sheets (HTTP ${sheetRes.status}).`;
-      return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
-    }
+    const rawRows = await sbSelectAll('customers', { order: 'id.desc' });
 
-    const csvText = await sheetRes.text();
-
-    // تحقق إن كان الرد HTML (خطأ) بدلاً من CSV
-    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
-      console.error('[track-order/admin] got HTML instead of CSV');
-      return jsonResponse(502, {
-        error: 'source_unavailable',
-        message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web → Entire document → CSV.',
-      }, corsHeaders());
-    }
-
-    const rows = parseCSV(csvText);
-
-    // نتخطّى صف العناوين العربية تلقائياً
-    let dataRows = rows.filter(r => {
+    // نتخطّى أي صف بلا رقم هاتف صالح (احتياطاً فقط)
+    let dataRows = rawRows.filter(r => {
       const p = String(r.phone || '').trim();
       return p && /^[\d.+]+$/.test(p);
     });
 
-    // تطبيع كل صف
+    // تطبيع كل صف (يحوّل الحقول الرقمية القادمة كنص من Postgres numeric إلى أرقام)
     dataRows = dataRows.map(r => normalizeRow(r));
 
     // فلترة اختيارية (للأدمن أيضاً)
@@ -193,7 +159,10 @@ async function handleAdminSync(body){
     }, corsHeaders());
   } catch (err) {
     console.error('[track-order/admin] internal error', err);
-    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم.' }, corsHeaders());
+    if (err instanceof ConfigError || err.code === 'server_not_configured') {
+      return jsonResponse(500, { error: 'server_not_configured', message: 'SUPABASE_URL أو SUPABASE_SERVICE_KEY غير مضبوطين في Netlify.' }, corsHeaders());
+    }
+    return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى قاعدة البيانات (Supabase). تحقق من متغيرات البيئة في Netlify.' }, corsHeaders());
   }
 }
 
@@ -209,27 +178,9 @@ async function handleReferralValidate(body){
     return jsonResponse(400, { ok: false, valid: false, message: 'يرجى إدخال كود الإحالة.' }, corsHeaders());
   }
 
-  const SHEET_ID = process.env.ORDERS_SHEET_ID;
-  if (!SHEET_ID) {
-    return jsonResponse(500, { ok: false, error: 'server_not_configured' }, corsHeaders());
-  }
-
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
-  const csvUrl = SHEET_GID && SHEET_GID !== '0'
-    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
-    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
-
   try {
-    const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
-    if (!sheetRes.ok) {
-      return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى الخادم.' }, corsHeaders());
-    }
-    const csvText = await sheetRes.text();
-    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
-      return jsonResponse(502, { ok: false, valid: false, message: 'الشيت غير منشور.' }, corsHeaders());
-    }
-    const rows = parseCSV(csvText);
-    const dataRows = rows.filter(r => {
+    const rawRows = await sbSelectAll('customers');
+    const dataRows = rawRows.filter(r => {
       const p = String(r.phone || '').trim();
       return p && /^[\d.+]+$/.test(p);
     }).map(r => normalizeRow(r));
@@ -258,7 +209,10 @@ async function handleReferralValidate(body){
 
   } catch(err){
     console.error('[track-order/referral] error', err);
-    return jsonResponse(500, { ok: false, valid: false, message: 'خطأ داخلي.' }, corsHeaders());
+    if (err instanceof ConfigError || err.code === 'server_not_configured') {
+      return jsonResponse(500, { ok: false, error: 'server_not_configured', message: 'قاعدة البيانات غير مُعدّة على الخادم.' }, corsHeaders());
+    }
+    return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى قاعدة البيانات.' }, corsHeaders());
   }
 }
 
@@ -276,42 +230,9 @@ async function handleCustomerTrack(body){
     return jsonResponse(400, { error: 'missing_fields', message: 'يرجى إدخال رقم الهاتف ورمز التحقق.' }, corsHeaders());
   }
 
-  const SHEET_ID = process.env.ORDERS_SHEET_ID;
-  if (!SHEET_ID) {
-    return jsonResponse(500, { error: 'server_not_configured', message: 'الخدمة غير مُعدّة بشكل صحيح.' }, corsHeaders());
-  }
-
-  // ═══ بناء URL التصدير (بدون gid إن لم يُحدّد لتجنب HTTP 400) ═══
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
-  const csvUrl = SHEET_GID && SHEET_GID !== '0'
-    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
-    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
-
   try {
-    const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
-    if (!sheetRes.ok) {
-      console.error('[track-order/customer] sheet fetch failed', sheetRes.status, csvUrl);
-      const msg = sheetRes.status === 400
-        ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة.'
-        : sheetRes.status === 404
-        ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
-        : `تعذّر الوصول إلى مصدر البيانات (HTTP ${sheetRes.status}).`;
-      return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
-    }
-
-    const csvText = await sheetRes.text();
-
-    // تحقق إن كان الرد HTML (خطأ) بدلاً من CSV
-    if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
-      console.error('[track-order/customer] got HTML instead of CSV');
-      return jsonResponse(502, {
-        error: 'source_unavailable',
-        message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web.',
-      }, corsHeaders());
-    }
-
-    const rows = parseCSV(csvText);
-    const dataRows = rows.filter(r => {
+    const rawRows = await sbSelectAll('customers');
+    const dataRows = rawRows.filter(r => {
       const p = String(r.phone || '').trim();
       return p && /^[\d.+]+$/.test(p);
     });
@@ -411,7 +332,10 @@ async function handleCustomerTrack(body){
     }, corsHeaders());
   } catch (err) {
     console.error('[track-order/customer] internal error', err);
-    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم.' }, corsHeaders());
+    if (err instanceof ConfigError || err.code === 'server_not_configured') {
+      return jsonResponse(500, { error: 'server_not_configured', message: 'الخدمة غير مُعدّة بشكل صحيح على الخادم.' }, corsHeaders());
+    }
+    return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى قاعدة البيانات.' }, corsHeaders());
   }
 }
 
@@ -651,29 +575,3 @@ function jsonResponse(statusCode, payload, extraHeaders = {}){
   };
 }
 
-function parseCSVLine(line){
-  const result = [];
-  let current = '';
-  let inQuotes = false;
-  for (const char of line) {
-    if (char === '"') inQuotes = !inQuotes;
-    else if (char === ',' && !inQuotes) { result.push(current); current = ''; }
-    else current += char;
-  }
-  result.push(current);
-  return result;
-}
-
-function parseCSV(text){
-  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
-  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
-  if (lines.length < 2) return [];
-  const headers = parseCSVLine(lines[0]).map(h => h.trim());
-  return lines
-    .slice(1)
-    .filter(l => l.trim())
-    .map(line => {
-      const values = parseCSVLine(line);
-      return Object.fromEntries(headers.map((h, i) => [h, (values[i] || '').trim()]));
-    });
-}
