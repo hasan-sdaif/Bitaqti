@@ -773,12 +773,12 @@
             <div class="quick-action" id="qaAddCustomer">
               <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></div>
               <div class="qa-label">عميل جديد</div>
-              <div class="qa-sub">إضافة للشيت مباشرة</div>
+              <div class="qa-sub">إضافة لقاعدة البيانات مباشرة</div>
             </div>
             <div class="quick-action" id="qaSync">
               <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg></div>
               <div class="qa-label">مزامنة</div>
-              <div class="qa-sub">جلب من Google Sheets</div>
+              <div class="qa-sub">جلب من قاعدة البيانات</div>
             </div>
             <div class="quick-action" id="qaInvoices">
               <div class="qa-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></div>
@@ -854,7 +854,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
             <div>
               <strong>مرحباً بك في لوحة التحكم الإدارية</strong><br>
-              من هنا يمكنك إدارة كل عملائك وفواتيرك مباشرة في Google Sheets، وإنشاء فواتير جديدة، وتعديل البيانات، وطباعتها — كل ذلك بدون فتح Google Sheets يدوياً.
+              من هنا يمكنك إدارة كل عملائك وفواتيرك مباشرة في قاعدة البيانات، وإنشاء فواتير جديدة، وتعديل البيانات، وطباعتها — كل ذلك مباشرة من الموقع بدون أي إدخال يدوي في جدول بيانات خارجي.
             </div>
           </div>
 
@@ -876,7 +876,7 @@
           <div class="empty-state" id="recentEmpty" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3>لا يوجد عملاء بعد</h3>
-            <p>اضغط زر «تحديث» أو اذهب لتبويب العملاء للمزامنة من Google Sheets</p>
+            <p>اضغط زر «تحديث» أو اذهب لتبويب العملاء للمزامنة من قاعدة البيانات</p>
           </div>
         </div>
       </div>
@@ -893,7 +893,7 @@
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
             <button class="btn btn-outline btn-sm" id="btnSync">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
-              مزامنة من Google Sheets
+              مزامنة من قاعدة البيانات
             </button>
             <button class="btn btn-blue btn-sm" id="btnAdd">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
@@ -948,7 +948,7 @@
           <div class="empty-state" id="customersEmpty" style="display:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
             <h3>لا يوجد عملاء بعد</h3>
-            <p>اضغط «مزامنة من Google Sheets» لجلب بياناتك، أو «إضافة عميل جديد» للبدء.</p>
+            <p>اضغط «مزامنة من قاعدة البيانات» لجلب بياناتك، أو «إضافة عميل جديد» للبدء.</p>
           </div>
         </div>
       </div>
@@ -1069,8 +1069,8 @@
       <div class="panel">
         <div class="panel-header">
           <div>
-            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>الإعدادات والربط مع Google Sheets</svg></h2>
-            <div class="sub">إعداد الربط بين لوحة التحكم و Google Sheets</div>
+            <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>الإعدادات والربط مع قاعدة البيانات</h2>
+            <div class="sub">إعداد الربط بين لوحة التحكم وقاعدة بيانات Supabase</div>
           </div>
         </div>
         <div class="panel-body">
@@ -1088,28 +1088,28 @@
 
           <div class="form-section-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
-            إعداد Google Apps Script Webhook (للكتابة في Google Sheets)
+            إعداد قاعدة البيانات (Supabase)
           </div>
           <div class="alert alert-warning">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
             <div>
-              <strong>مطلوب إعداد لمرة واحدة فقط</strong> — للسماح بتعديل Google Sheets مباشرة من لوحة التحكم (إضافة/تعديل/حذف عملاء):
+              <strong>مطلوب إعداد لمرة واحدة فقط</strong> — للسماح بتعديل قاعدة البيانات مباشرة من لوحة التحكم (إضافة/تعديل/حذف عملاء):
               <ol style="margin:8px 0 0 22px;line-height:1.9;">
-                <li>افتح Google Sheet الخاص بك</li>
-                <li>القائمة: <strong>Extensions → Apps Script</strong></li>
-                <li>الصق الكود من الصندوق بالأسفل (استبدل كل ما فيه)</li>
-                <li>احفظ (Ctrl+S) ثم: <strong>Project Settings → Script properties</strong></li>
-                <li>أضف خاصية: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">ADMIN_PASSWORD</code> = <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">&lt;نفس INVOICE_PASSWORD&gt;</code></li>
-                <li><strong>Deploy → New deployment → Web app</strong> → Execute as: <em>Me</em> → Who has access: <em>Anyone</em></li>
-                <li>انسخ الـ URL (ينتهي بـ <code>/exec</code>)</li>
-                <li>في Netlify: أضف متغير <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SHEETS_WEBHOOK_URL</code> = ذلك الـ URL</li>
+                <li>أنشئ حساباً مجانياً على <strong>supabase.com</strong> وأنشئ مشروعاً جديداً</li>
+                <li>من القائمة الجانبية: <strong>SQL Editor → New query</strong></li>
+                <li>الصق محتوى ملف <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">supabase_schema.sql</code> كاملاً واضغط <strong>Run</strong></li>
+                <li>من <strong>Project Settings → API</strong> انسخ:<br>
+                  &nbsp;&nbsp;• <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">Project URL</code><br>
+                  &nbsp;&nbsp;• <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">service_role</code> secret key (ليس anon!)</li>
+                <li>في <strong>Netlify → Site settings → Environment variables</strong> أضف:<br>
+                  &nbsp;&nbsp;• <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SUPABASE_URL</code> = Project URL<br>
+                  &nbsp;&nbsp;• <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SUPABASE_SERVICE_KEY</code> = مفتاح service_role<br>
+                  &nbsp;&nbsp;• <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">INVOICE_PASSWORD</code> = رمز الأمان (موجود مسبقاً)</li>
+                <li>أعد نشر الموقع (Deploy) — اضغط زر «إعادة الفحص» بالأسفل للتحقق</li>
               </ol>
+              <div style="margin-top:10px;font-size:12px;color:var(--ink-soft);">📄 الخطوات الكاملة مع الصور في ملف <strong>SETUP_GUIDE.md</strong></div>
             </div>
           </div>
-          <details style="margin-top:14px;">
-            <summary style="cursor:pointer;font-size:13px;font-weight:700;color:var(--ink-soft);padding:8px 0;">📋 اضغط لعرض كود Apps Script الكامل (انسخه كاملاً)</summary>
-            <div class="code-block" id="appsScriptCode" style="margin-top:12px;"></div>
-          </details>
 
           <div class="form-section-title">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
@@ -1126,7 +1126,7 @@
             </button>
             <button class="btn btn-outline btn-sm" id="btnPushToSheet">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-              رفع كل العملاء للشيت
+              رفع كل العملاء لقاعدة البيانات
             </button>
           </div>
 
@@ -1313,7 +1313,7 @@ const PAYMENT_COLORS = {
 };
 
 // ════════════════════════════════════════════════════════════════
-//  SYNC FROM GOOGLE SHEETS — عبر track-order.js بوضع admin
+//  SYNC FROM DATABASE — عبر track-order.js بوضع admin
 // ════════════════════════════════════════════════════════════════
 async function syncFromSheet(silent = false){
   if(!adminPassword){
@@ -1356,7 +1356,7 @@ async function syncFromSheet(silent = false){
 
     if(!silent){
       toast(`تمت مزامنة ${customers.length} عميل بنجاح`, 'success');
-      logActivity('sync', `مزامنة من Google Sheets`, `${customers.length} عميل`);
+      logActivity('sync', `مزامنة من قاعدة البيانات`, `${customers.length} عميل`);
     }
     return { ok: true, data };
   } catch(err){
@@ -1366,13 +1366,13 @@ async function syncFromSheet(silent = false){
   } finally {
     if(btn && !silent){
       btn.disabled = false;
-      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> مزامنة من Google Sheets`;
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg> مزامنة من قاعدة البيانات`;
     }
   }
 }
 
 // ════════════════════════════════════════════════════════════════
-//  WRITE TO GOOGLE SHEETS — عبر sheet-update.js
+//  WRITE TO DATABASE — عبر sheet-update.js
 // ════════════════════════════════════════════════════════════════
 async function writeToSheet(action, record){
   if(!adminPassword){
@@ -1399,7 +1399,7 @@ async function writeToSheet(action, record){
       return { ok: false, error: data.message };
     }
     if(res.status === 500 && data.error === 'server_not_configured'){
-      toast('SHEETS_WEBHOOK_URL غير مضبوط. راجع تبويب الإعدادات.', 'error');
+      toast('SUPABASE_URL / SUPABASE_SERVICE_KEY غير مضبوطين في Netlify. راجع تبويب الإعدادات.', 'error');
       return { ok: false, error: data.message };
     }
     if(!res.ok){
@@ -1846,7 +1846,7 @@ function openEditModal(c, isNew = false){
       <div style="text-align:right;max-height:60vh;overflow-y:auto;padding:0 8px;">${html}</div>
       <div class="alert alert-info" style="margin-top:14px;text-align:right;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <div>سيتم ${isNew ? 'إضافة' : 'تحديث'} البيانات مباشرة في Google Sheets عند الحفظ.</div>
+        <div>سيتم ${isNew ? 'إضافة' : 'تحديث'} البيانات مباشرة في قاعدة البيانات عند الحفظ.</div>
       </div>
     `,
     confirmText: isNew ? 'إضافة العميل' : 'حفظ التعديلات',
@@ -1871,9 +1871,9 @@ function openEditModal(c, isNew = false){
 
       // إغلاق النافذة فوراً وإظهار toast تحميل
       closeModal();
-      toast('جارٍ الحفظ في Google Sheets...', 'info');
+      toast('جارٍ الحفظ في قاعدة البيانات...', 'info');
 
-      // الكتابة للشيت
+      // الكتابة لقاعدة البيانات
       const action = isNew ? 'add' : 'update';
       const result = await writeToSheet(action, updated);
       if(result.ok){
@@ -1903,12 +1903,12 @@ function deleteCustomer(c){
   showModal({
     type: 'danger',
     title: 'حذف العميل',
-    body: `هل أنت متأكد من حذف العميل "${c.customer_name || c.phone}"؟\n\nسيتم حذفه نهائياً من Google Sheets.`,
+    body: `هل أنت متأكد من حذف العميل "${c.customer_name || c.phone}"؟\n\nسيتم حذفه نهائياً من قاعدة البيانات.`,
     confirmText: 'حذف نهائي',
     cancelText: 'إلغاء',
     onConfirm: async () => {
       closeModal();
-      toast('جارٍ الحذف من Google Sheets...', 'info');
+      toast('جارٍ الحذف من قاعدة البيانات...', 'info');
       const result = await writeToSheet('delete', c);
       if(result.ok){
         customers = customers.filter(x => !(String(x.phone) === String(c.phone) && String(x.order_code) === String(c.order_code)));
@@ -2031,8 +2031,8 @@ async function pushAllToSheet(){
   if(!customers.length){ toast('لا يوجد عملاء لرفعهم', 'error'); return; }
   showModal({
     type: 'warning',
-    title: 'رفع كل العملاء للشيت',
-    body: `سيتم استبدال كل البيانات في Google Sheets بـ ${customers.length} عميل من القائمة المحلية.\n\nهذا الإجراء لا يمكن التراجع عنه.`,
+    title: 'رفع كل العملاء لقاعدة البيانات',
+    body: `سيتم استبدال كل البيانات في قاعدة البيانات بـ ${customers.length} عميل من القائمة المحلية.\n\nهذا الإجراء لا يمكن التراجع عنه.`,
     confirmText: 'استبدال الكل',
     cancelText: 'إلغاء',
     onConfirm: async () => {
@@ -2040,7 +2040,7 @@ async function pushAllToSheet(){
       toast('جارٍ رفع البيانات...', 'info');
       const result = await bulkReplaceOnSheet(customers);
       if(result.ok){
-        toast('تم رفع كل العملاء للشيت بنجاح', 'success');
+        toast('تم رفع كل العملاء إلى قاعدة البيانات بنجاح', 'success');
       }
     },
   });
@@ -2062,7 +2062,7 @@ async function checkConnection(){
   const result = await syncFromSheet(true);
   if(result.ok){
     dot.style.background = 'var(--green)';
-    text.textContent = `متصل بـ Google Sheets — ${customers.length} عميل`;
+    text.textContent = `متصل بقاعدة البيانات — ${customers.length} عميل`;
     // تحقق من إمكانية الكتابة
     try {
       const testRes = await fetch(UPDATE_ENDPOINT, {
@@ -2076,14 +2076,14 @@ async function checkConnection(){
         dot.style.background = 'var(--green)';
       } else if(testRes.status === 500){
         if(testData.error === 'server_not_configured'){
-          text.textContent = `قراءة فقط — SHEETS_WEBHOOK_URL غير مضبوط في Netlify`;
+          text.textContent = `قراءة فقط — SUPABASE_URL / SUPABASE_SERVICE_KEY غير مضبوطين في Netlify`;
           dot.style.background = 'var(--amber)';
         } else {
           text.textContent = `قراءة فقط — ${testData.message || 'خطأ في الخادم'}`;
           dot.style.background = 'var(--amber)';
         }
       } else if(testRes.status === 502){
-        text.textContent = `قراءة فقط — تعذّر الوصول إلى Apps Script (تأكد من النشر)`;
+        text.textContent = `قراءة فقط — تعذّر الوصول إلى قاعدة البيانات (تأكد من المفاتيح)`;
         dot.style.background = 'var(--amber)';
       } else {
         text.textContent = `قراءة فقط — تحقق من الإعدادات (HTTP ${testRes.status})`;
@@ -2092,119 +2092,18 @@ async function checkConnection(){
     } catch(e) {}
   } else {
     dot.style.background = 'var(--red)';
-    text.textContent = 'فشل الاتصال — تحقق من ORDERS_SHEET_ID';
+    text.textContent = 'فشل الاتصال — تحقق من SUPABASE_URL في Netlify';
   }
 }
 
 // ════════════════════════════════════════════════════════════════
-//  APPS SCRIPT CODE DISPLAY
+//  SUPABASE STATUS — لا حاجة لعرض كود Apps Script بعد الآن
+//  (كل التفاصيل في تبويب الإعدادات وملف SETUP_GUIDE.md)
 // ════════════════════════════════════════════════════════════════
 function displayAppsScriptCode(){
-  const code = `const SHEET_NAME = 'العملاء';
-const HEADER_ROW = 2;
-
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const password = data.password;
-    const action = data.action;
-    const record = data.record;
-
-    const correctPassword = PropertiesService
-      .getScriptProperties().getProperty('ADMIN_PASSWORD') || 'CHANGE_ME';
-    if (password !== correctPassword) {
-      return jsonOut({ok: false, error: 'unauthorized'});
-    }
-
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) { sheet = ss.getSheets()[0]; }
-    if (!sheet) { return jsonOut({ok: false, error: 'no_sheet_found'}); }
-
-    const lastCol = sheet.getLastColumn();
-    if (lastCol < 1) { return jsonOut({ok: false, error: 'no_headers'}); }
-    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-
-    const neededCols = ['referral_code', 'referral_points', 'referred_by'];
-    neededCols.forEach(col => {
-      if (headers.indexOf(col) === -1) {
-        sheet.getRange(1, headers.length + 1).setValue(col);
-        headers.push(col);
-      }
-    });
-
-    if (action === 'add') {
-      const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-      sheet.appendRow(row);
-    } else if (action === 'update') {
-      const rowIndex = findRow(sheet, headers, record);
-      if (rowIndex > 0) {
-        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-        sheet.getRange(rowIndex, 1, 1, headers.length).setValues([row]);
-      } else {
-        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-        sheet.appendRow(row);
-      }
-    } else if (action === 'delete') {
-      const rowIndex = findRow(sheet, headers, record);
-      if (rowIndex > 0) sheet.deleteRow(rowIndex);
-    } else if (action === 'bulk_replace') {
-      const lastRow = sheet.getLastRow();
-      if (lastRow > HEADER_ROW) {
-        sheet.deleteRows(HEADER_ROW + 1, lastRow - HEADER_ROW);
-      }
-      const records = data.records || [];
-      records.forEach(rec => {
-        const row = headers.map(h => rec[h] !== undefined ? rec[h] : '');
-        sheet.appendRow(row);
-      });
-    } else {
-      return jsonOut({ok: false, error: 'invalid_action: ' + action});
-    }
-    return jsonOut({ok: true, action: action});
-  } catch(err) {
-    return jsonOut({ok: false, error: String(err)});
-  }
-}
-
-function findRow(sheet, headers, record) {
-  const data = sheet.getDataRange().getValues();
-  for (let i = HEADER_ROW; i < data.length; i++) {
-    const row = data[i];
-    const phone = String(row[0] || '').replace(/\.0$/, '').trim();
-    const code = String(row[1] || '').replace(/\.0$/, '').trim();
-    const rPhone = String(record.phone || '').replace(/\.0$/, '').trim();
-    const rCode = String(record.code || '').replace(/\.0$/, '').trim();
-    if (phone === rPhone && code === rCode) return i + 1;
-    const orderCodeIdx = headers.indexOf('order_code');
-    if (orderCodeIdx >= 0) {
-      const rowOC = String(row[orderCodeIdx] || '').trim();
-      const recOC = String(record.order_code || '').trim();
-      if (rowOC && recOC && rowOC === recOC) return i + 1;
-    }
-  }
-  return -1;
-}
-
-function jsonOut(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doGet() {
-  return jsonOut({ok: true, message: 'Bitaqti Sheets Webhook is running'});
-}`;
-
-  const codeEl = $('appsScriptCode');
-  if(codeEl){
-    // syntax highlighting بسيط
-    let highlighted = code
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
-      .replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>')
-      .replace(/\b(function|const|let|var|if|else|return|try|catch|for|while|new|typeof)\b/g, '<span class="keyword">$1</span>');
-    codeEl.innerHTML = highlighted;
-  }
+  // دالة فارغة الآن — حُذِف عرض كود Apps Script لأن النظام يستخدم Supabase مباشرة.
+  // نُبقيها لتجنّب كسر أي استدعاء لها في initApp().
+  return;
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2380,7 +2279,7 @@ function renderReferrals(){
   if(!body) return;
   body.innerHTML = '';
   if(!customers.length){
-    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--ink-faint);padding:30px;">لا يوجد عملاء — زامن من Google Sheets أولاً.</td></tr>';
+    body.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--ink-faint);padding:30px;">لا يوجد عملاء — زامن من قاعدة البيانات أولاً.</td></tr>';
     return;
   }
   let totalPoints = 0, totalReferrals = 0;
@@ -2455,7 +2354,7 @@ function editPoints(c){
     onConfirm: async () => {
       const pts = Number($('ef_points').value) || 0;
       c.referral_points = pts;
-      // محاولة حفظ في Google Sheets
+      // محاولة حفظ في قاعدة البيانات
       if(adminPassword){
         toast('جارٍ حفظ النقاط...', 'info');
         await writeToSheet('update', c);
