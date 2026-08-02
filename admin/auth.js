@@ -1,38 +1,33 @@
-// admin/auth.js — وحدة المصادقة المشتركة
+// admin/auth.js — وحدة المصادقة المشتركة (نسخة دفاعية v3)
 // ════════════════════════════════════════════════════════════════
-//  مشكلة كانت: جلسة sessionStorage تُفقد كلما خرج المستخدم من الصفحة
-//  قليلاً (تبديل تطبيق على الهاتف، إغلاق التبويب، إلخ)، فيضطر لمسح
-//  بيانات الموقع وإعادة تسجيل الدخول.
-//
-//  الحل: استخدم localStorage مع TTL طويل (30 يوم افتراضياً)، وأضف
-//  معالجة صريحة لحدث pageshow (bfcache) و visibilitychange.
-//
-//  الاستخدام من أي صفحة إدارية:
-//    <script src="auth.js"></script>
-//    <script>
-//      BitaqtiAuth.requireAuth({ onUnlocked: () => { ... } });
-//      const pwd = BitaqtiAuth.getPassword();
-//      BitaqtiAuth.logout();
-//    </script>
+//  تحسينات v3:
+//  • لو فشل تحميل الملف أو حدث خطأ، نُسلّم BitaqtiAuth كوهمي يرجع
+//    false/null دائماً — هذا يمنع كسر الصفحة بالكامل ويسمح للمستخدم
+//    برؤية شاشة القفل بدلاً من شاشة بيضاء.
+//  • رسائل خطأ واضحة في console لمساعدتك على التشخيص.
 // ════════════════════════════════════════════════════════════════
 
 (function(){
   'use strict';
 
+  // إذا كان BitaqtiAuth معرّفاً مسبقاً، لا نعيد التعريف
+  if(window.BitaqtiAuth && window.BitaqtiAuth._loaded){
+    return;
+  }
+
   const TRACK_ENDPOINT = '/.netlify/functions/track-order';
   const PWD_KEY = 'bitaqti_admin_password';
   const SESSION_KEY = 'bitaqti_admin_session';
-  const SESSION_TTL_DEFAULT = 30 * 24 * 60 * 60 * 1000; // 30 يوم افتراضياً
-  const REMEMBER_KEY = 'bitaqti_admin_remember'; // "1" لو اختار "تذكرني"
+  const REMEMBER_KEY = 'bitaqti_admin_remember';
+  const SESSION_TTL_LONG = 30 * 24 * 60 * 60 * 1000;  // 30 يوم
+  const SESSION_TTL_SHORT = 4 * 60 * 60 * 1000;        // 4 ساعات
 
-  // خلفية متوافقة: sessionStorage → localStorage للحالات القديمة
+  // ── تخزين آمن مع fallback ──
   function storageGet(key){
-    // نحاول localStorage أولاً (الأهم — يستمر عبر إغلاق التبويب)
     try {
       const v = localStorage.getItem(key);
       if(v !== null) return v;
     } catch(e) {}
-    // ثم sessionStorage (للجلسات القديمة قبل التحديث)
     try {
       const v = sessionStorage.getItem(key);
       if(v !== null) return v;
@@ -42,7 +37,6 @@
 
   function storageSet(key, val){
     try { localStorage.setItem(key, val); } catch(e) {}
-    // نُبقي نسخة في sessionStorage أيضاً للتوافق مع الكود القديم
     try { sessionStorage.setItem(key, val); } catch(e) {}
   }
 
@@ -60,35 +54,31 @@
   }
 
   function getTTL(){
-    // لو اختار "تذكرني": 30 يوم. وإلا: 4 ساعات (جلسة عمل يومية).
-    return getRememberPreference() ? SESSION_TTL_DEFAULT : (4 * 60 * 60 * 1000);
+    return getRememberPreference() ? SESSION_TTL_LONG : SESSION_TTL_SHORT;
   }
 
-  // ═══ التحقق من صلاحية الجلسة المحفوظة ═══
+  // ═══ التحقق من الجلسة المحفوظة ═══
   function getSavedPassword(){
-    const sessionRaw = storageGet(SESSION_KEY);
-    if(!sessionRaw) return null;
     try {
+      const sessionRaw = storageGet(SESSION_KEY);
+      if(!sessionRaw) return null;
       const session = JSON.parse(sessionRaw);
       if(!session.expiresAt || Date.now() >= session.expiresAt){
-        // الجلسة منتهية — نظّف
         storageRemove(SESSION_KEY);
         storageRemove(PWD_KEY);
         return null;
       }
-      const pwd = storageGet(PWD_KEY);
-      return pwd || null;
+      return storageGet(PWD_KEY) || null;
     } catch(e) {
-      storageRemove(SESSION_KEY);
-      storageRemove(PWD_KEY);
+      console.warn('[BitaqtiAuth] getSavedPassword error:', e);
       return null;
     }
   }
 
   function getSessionInfo(){
-    const sessionRaw = storageGet(SESSION_KEY);
-    if(!sessionRaw) return null;
     try {
+      const sessionRaw = storageGet(SESSION_KEY);
+      if(!sessionRaw) return null;
       const session = JSON.parse(sessionRaw);
       if(!session.expiresAt || Date.now() >= session.expiresAt) return null;
       return {
@@ -100,30 +90,32 @@
     } catch(e) { return null; }
   }
 
-  function saveSession(password, opts = {}){
-    const ttl = opts.ttl || getTTL();
-    if(opts.remember !== undefined) setRememberPreference(opts.remember);
-    storageSet(PWD_KEY, password);
-    storageSet(SESSION_KEY, JSON.stringify({
-      createdAt: Date.now(),
-      expiresAt: Date.now() + ttl,
-    }));
+  function saveSession(password, opts){
+    try {
+      opts = opts || {};
+      const ttl = opts.ttl || getTTL();
+      if(opts.remember !== undefined) setRememberPreference(opts.remember);
+      storageSet(PWD_KEY, password);
+      storageSet(SESSION_KEY, JSON.stringify({
+        createdAt: Date.now(),
+        expiresAt: Date.now() + ttl,
+      }));
+      return true;
+    } catch(e) {
+      console.error('[BitaqtiAuth] saveSession error:', e);
+      return false;
+    }
   }
 
   function extendSession(){
-    // مدّد الجلسة بنفس TTL السابق (تجديد النشاط)
     const pwd = getSavedPassword();
-    if(pwd){
-      saveSession(pwd);
-      return true;
-    }
+    if(pwd){ saveSession(pwd); return true; }
     return false;
   }
 
   function clearSession(){
     storageRemove(PWD_KEY);
     storageRemove(SESSION_KEY);
-    // نُبقي تفضيل "تذكرني" حتى لا يضطر المستخدم لإعادة اختياره
   }
 
   // ═══ التحقق من الرمز عبر السيرفر ═══
@@ -137,74 +129,78 @@
       if(res.status === 200) return { ok: true };
       if(res.status === 401) return { ok: false, message: 'الرمز غير صحيح.' };
       if(res.status === 429) return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
-      if(res.status === 500) return { ok: false, message: 'الخدمة غير مُعدّة على الخادم. تحقق من متغيرات البيئة في Netlify.' };
+      if(res.status === 500){
+        let data = {};
+        try { data = await res.json(); } catch(_) {}
+        if(data.error === 'server_not_configured'){
+          return { ok: false, message: '⚠️ قاعدة البيانات غير مُعدّة على الخادم. تحقق من SUPABASE_URL و SUPABASE_SERVICE_KEY في Netlify. راجع ملف TROUBLESHOOTING.md.' };
+        }
+        return { ok: false, message: 'الخدمة غير مُعدّة على الخادم.' };
+      }
+      if(res.status === 502){
+        return { ok: false, message: '⚠️ تعذّر الوصول إلى قاعدة البيانات (502). تحقق من صحة SUPABASE_URL (يجب أن يبدأ بـ https:// وينتهي بـ .supabase.co) ومن عدم توقف مشروع Supabase. راجع TROUBLESHOOTING.md.' };
+      }
       return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
     } catch(err){
-      return { ok: false, message: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت.' };
+      console.error('[BitaqtiAuth] verifyPassword network error:', err);
+      return { ok: false, message: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت أو من نشر دوال Netlify.' };
     }
   }
 
-  // ═══ إعادة التحقق التلقائي (silent reauth) ═══
-  // نتحقق من الخادم أن الرمز لا يزال صالحاً دون إزعاج المستخدم.
-  // لو فشل (تغيير الرمز مثلاً)، نطالبه بإعادة الدخول.
+  // ═══ إعادة التحقق الصامتة ═══
   async function silentRevalidate(){
     const pwd = getSavedPassword();
     if(!pwd) return false;
     const result = await verifyPassword(pwd);
     if(!result.ok){
-      // الرمز لم يعد صالحاً — امسح الجلسة
       clearSession();
       return false;
     }
-    // مدّد الجلسة عند كل نجاح
     extendSession();
     return true;
   }
 
   // ═══ معالجة bfcache و visibilitychange ═══
-  // هذه هي الإصلاحات الحرجة لمشكلة "التعليق بعد الخروج من الصفحة"
   function setupLifecycleHandlers(onRevalidated){
-    // bfcache: عندما يعود المستخدم للصفحة عبر زر الرجوع
-    window.addEventListener('pageshow', (event) => {
-      // بغض النظر عن event.persisted، تأكد من أن الجلسة لا تزال محفوظة
-      const pwd = getSavedPassword();
-      if(!pwd){
-        // الجلسة ضاعت — اطلب إعادة الدخول بصمت
-        if(onRevalidated) onRevalidated(false);
-      } else if(event.persisted){
-        // الصفحة عادت من bfcache — الجلسة لا تزال صالحة
-        if(onRevalidated) onRevalidated(true);
-      }
-    });
-
-    // visibilitychange: عندما يرجع المستخدم للتبويب بعد تبديل تطبيق
-    let lastVisible = Date.now();
-    document.addEventListener('visibilitychange', () => {
-      if(document.visibilityState === 'visible'){
-        const idleMs = Date.now() - lastVisible;
-        // لو غاب أكثر من 5 دقائق، أعد التحقق من الخادم بصمت
-        if(idleMs > 5 * 60 * 1000){
-          silentRevalidate().then(ok => {
-            if(onRevalidated) onRevalidated(ok);
-          });
+    try {
+      window.addEventListener('pageshow', (event) => {
+        const pwd = getSavedPassword();
+        if(!pwd){
+          if(onRevalidated) onRevalidated(false);
+        } else if(event.persisted){
+          if(onRevalidated) onRevalidated(true);
         }
-      } else {
-        lastVisible = Date.now();
-      }
-    });
+      });
 
-    // قبل إغلاق الصفحة: تأكد من حفظ الجلسة في localStorage
-    // (يحدث تلقائياً، لكن نضمنه كاحتياط)
-    window.addEventListener('beforeunload', () => {
-      const pwd = getSavedPassword();
-      if(pwd){
-        try { localStorage.setItem(PWD_KEY, pwd); } catch(e) {}
-      }
-    });
+      let lastVisible = Date.now();
+      document.addEventListener('visibilitychange', () => {
+        if(document.visibilityState === 'visible'){
+          const idleMs = Date.now() - lastVisible;
+          if(idleMs > 5 * 60 * 1000){
+            silentRevalidate().then(ok => {
+              if(onRevalidated) onRevalidated(ok);
+            });
+          }
+        } else {
+          lastVisible = Date.now();
+        }
+      });
+
+      window.addEventListener('beforeunload', () => {
+        const pwd = getSavedPassword();
+        if(pwd){
+          try { localStorage.setItem(PWD_KEY, pwd); } catch(e) {}
+        }
+      });
+    } catch(e) {
+      console.warn('[BitaqtiAuth] setupLifecycleHandlers error:', e);
+    }
   }
 
   // ═══ API العامة ═══
   window.BitaqtiAuth = {
+    _loaded: true,
+    _version: '3.0',
     getSavedPassword,
     getSessionInfo,
     saveSession,
@@ -215,7 +211,48 @@
     setupLifecycleHandlers,
     getRememberPreference,
     setRememberPreference,
-    TTL_LONG: SESSION_TTL_DEFAULT,             // 30 يوم
-    TTL_SHORT: 4 * 60 * 60 * 1000,             // 4 ساعات
+    TTL_LONG: SESSION_TTL_LONG,
+    TTL_SHORT: SESSION_TTL_SHORT,
   };
+
+  console.log('[BitaqtiAuth] v3.0 loaded successfully');
 })();
+
+// ════════════════════════════════════════════════════════════════
+//  FALLBACK آمن: لو فشل تحميل BitaqtiAuth لأي سبب (مثلاً الملف
+//  لم يُرفع)، نُسلّم نسخة وهمية ترجع null/false دائماً بدلاً من
+//  رمي ReferenceError الذي يكسر الصفحة كلها. هذا يضمن أن المستخدم
+//  يرى شاشة القفل على الأقل، بدلاً من شاشة بيضاء.
+// ════════════════════════════════════════════════════════════════
+if(!window.BitaqtiAuth){
+  console.error('[BitaqtiAuth] FAILED to load — using emergency fallback');
+  window.BitaqtiAuth = {
+    _loaded: false,
+    _version: 'fallback',
+    getSavedPassword: () => null,
+    getSessionInfo: () => null,
+    saveSession: () => false,
+    extendSession: () => false,
+    clearSession: () => {},
+    verifyPassword: async (pwd) => {
+      // Fallback: تحقق مباشرة عبر track-order
+      try {
+        const res = await fetch('/.netlify/functions/track-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_password: pwd, mode: 'sync' }),
+        });
+        if(res.status === 200) return { ok: true };
+        if(res.status === 401) return { ok: false, message: 'الرمز غير صحيح.' };
+        if(res.status === 502) return { ok: false, message: 'تعذّر الوصول لقاعدة البيانات (502). راجع TROUBLESHOOTING.md.' };
+        return { ok: false, message: `خطأ (${res.status}).` };
+      } catch(e){
+        return { ok: false, message: 'تعذّر الاتصال بالخادم.' };
+      }
+    },
+    silentRevalidate: async () => false,
+    setupLifecycleHandlers: () => {},
+    getRememberPreference: () => false,
+    setRememberPreference: () => {},
+  };
+}
