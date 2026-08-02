@@ -1200,7 +1200,8 @@ const $ = id => document.getElementById(id);
 const CURRENCY = 'د.ب';
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — بسيط ومباشر (يستخدم localStorage لمنع التعليق)
+//  AUTH — شاشة قفل محفوظة + تحقق localStorage فقط (سريع، بدون fetch)
+//  لو الجلسة محفوظة → تفتح فوراً. ولو لا → تطلب كلمة المرور.
 // ════════════════════════════════════════════════════════════════
 const TRACK_ENDPOINT = '/.netlify/functions/track-order';
 const UPDATE_ENDPOINT = '/.netlify/functions/sheet-update';
@@ -1245,7 +1246,7 @@ function lockApp(){
   $('lockError').classList.remove('show');
 }
 
-// محاولة تسجيل الدخول عبر track-order بوضع admin (مباشر بدون BitaqtiAuth)
+// محاولة تسجيل الدخول (تتحقق عبر track-order)
 async function tryLogin(password, remember){
   const res = await fetch(TRACK_ENDPOINT, {
     method: 'POST',
@@ -1255,7 +1256,6 @@ async function tryLogin(password, remember){
   if(res.status === 200){
     adminPassword = password;
     try {
-      // استخدم localStorage (يدوم عبر إغلاق التبويب) بدلاً من sessionStorage
       const ttl = remember ? (30 * 24 * 60 * 60 * 1000) : (12 * 60 * 60 * 1000);
       localStorage.setItem(PWD_KEY, password);
       localStorage.setItem(SESSION_KEY, JSON.stringify({
@@ -1265,27 +1265,21 @@ async function tryLogin(password, remember){
     } catch(e) {}
     return { ok: true };
   }
-  if(res.status === 401){
-    return { ok: false, message: 'الرمز غير صحيح.' };
-  }
-  if(res.status === 429){
-    return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
-  }
+  if(res.status === 401) return { ok: false, message: 'الرمز غير صحيح.' };
+  if(res.status === 429) return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
   if(res.status === 500){
     let data = {};
     try { data = await res.json(); } catch(_) {}
     if(data.error === 'server_not_configured'){
-      return { ok: false, message: '⚠️ مصدر البيانات غير مُعدّ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify. راجع TROUBLESHOOTING.md.' };
+      return { ok: false, message: '⚠️ مصدر البيانات غير مُعدّ. راجع TROUBLESHOOTING.md.' };
     }
     return { ok: false, message: 'الخدمة غير مُعدّة على الخادم.' };
   }
-  if(res.status === 502){
-    return { ok: false, message: '⚠️ تعذّر الوصول إلى مصدر البيانات (502). تحقق من إعداد Supabase أو Google Sheets. راجع TROUBLESHOOTING.md.' };
-  }
+  if(res.status === 502) return { ok: false, message: '⚠️ تعذّر الوصول لمصدر البيانات (502).' };
   return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
 }
 
-// التحقق التلقائي عند فتح الصفحة
+// التحقق التلقائي — يقرأ localStorage فقط (سريع جداً، بدون اتصال بالخادم)
 (function checkExistingSession(){
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   const session = getSavedSession();
@@ -1294,17 +1288,19 @@ async function tryLogin(password, remember){
     unlockApp();
     return;
   }
+  // لا توجد جلسة — أظهر شاشة القفل
   $('lockScreen').style.display='flex';
   $('app').classList.remove('unlocked');
 })();
 
-// إصلاح bfcache: استعادة الجلسة عند العودة للصفحة
+// bfcache
 window.addEventListener('pageshow', () => {
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   if(savedPwd){
     adminPassword = savedPwd;
     $('lockScreen').style.display = 'none';
     $('app').classList.add('unlocked');
+    if(!initApp._done) initApp();
   } else {
     $('lockScreen').style.display = 'flex';
     $('app').classList.remove('unlocked');
