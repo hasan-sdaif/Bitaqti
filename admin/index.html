@@ -219,6 +219,21 @@
 
 <!-- وحدة المصادقة المشتركة (تصلح مشكلة التعليق بعد الخروج من الصفحة) -->
 <script src="auth.js"></script>
+<!-- نظام الربط الموحد بين الصفحات (شريط التنقل + البحث العالمي + الإشعارات) -->
+<script src="bridge.js"></script>
+
+<!-- تحسينات تجاوب مشتركة لكل الصفحات الإدارية -->
+<style>
+  html, body{ overflow-x:hidden; max-width:100vw; }
+  img, canvas, svg, table{ max-width:100% !important; }
+  pre, code{ white-space:pre-wrap; word-break:break-word; }
+  .lock-card{ max-width:calc(100vw - 16px) !important; }
+  @media(max-width:480px){
+    .lock-card{ padding:24px 18px !important; }
+    .lock-card h1{ font-size:18px !important; }
+    .lock-input{ font-size:14px !important; padding:12px !important; }
+  }
+</style>
 
 <script>
 // ════════════════════════════════════════════════════════════════
