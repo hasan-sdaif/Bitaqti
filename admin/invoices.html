@@ -3203,7 +3203,7 @@ function loadInvoice(id){
   $('fCode').value = inv.code;
   $('fDate').value = inv.date;
   $('fDueDate').value = inv.dueDate || '';
-  $('fPoRef').value = inv.poRef || '';
+  if($('fPoRef'))$('fPoRef').value = inv.poRef || '';
   $('fProject').value = inv.project || '';
   $('fStatus').value = inv.status;
   $('fPayment').value = inv.paymentMethod || '';
@@ -3234,22 +3234,22 @@ function loadInvoice(id){
     originalPrice: Number(it.originalPrice) || 0
   })) : [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0, originalPrice:0}];
   $('fDiscountType').value = inv.discount.type;
-  $('fDiscountValue').value = inv.discount.value;
+  if($('fDiscountValue')) $('fDiscountValue').value = inv.discount.value;
   $('fVatRate').value = inv.vatRate;
   const vatIncEl = $('fVatIncluded');
   if(vatIncEl) vatIncEl.checked = inv.vatIncluded || false;
   const showItemDiscEl = $('fShowItemDiscount');
   if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false;
-  $('fShipping').value = inv.shipping || '';
-  $('fTip').value = inv.tip || '';
-  $('fDeposit').value = inv.deposit || '';
+  if($('fShipping')) $('fShipping').value = inv.shipping || '';
+  if($('fTip')) $('fTip').value = inv.tip || '';
+  if($('fDeposit')) $('fDeposit').value = inv.deposit || '';
   payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
   customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
-  $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
-  $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
-  $('fRecurringNext').value = inv.recurring?.next || '';
-  $('fNotes').value = inv.notes;
-  $('fDiscountValue').disabled = inv.discount.type === 'none';
+  if($('fRecurringEnabled')) $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
+  if($('fRecurringFreq')) $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
+  if($('fRecurringNext')) $('fRecurringNext').value = inv.recurring?.next || '';
+  if($('fNotes')) $('fNotes').value = inv.notes;
+  if($('fDiscountValue')) $('fDiscountValue').disabled = inv.discount.type === 'none';
   renderItemsTable();
   renderPaymentsList();
   renderCustomFieldsList();
@@ -3264,7 +3264,7 @@ function duplicateInvoice(id){
   editingId = null;
   $('fDate').value = todayISO();
   $('fDueDate').value = '';
-  $('fPoRef').value = inv.poRef || '';
+  if($('fPoRef'))$('fPoRef').value = inv.poRef || '';
   $('fProject').value = inv.project || '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
@@ -3294,22 +3294,22 @@ function duplicateInvoice(id){
     originalPrice: Number(it.originalPrice) || 0
   }));
   $('fDiscountType').value = inv.discount.type;
-  $('fDiscountValue').value = inv.discount.value;
+  if($('fDiscountValue')) $('fDiscountValue').value = inv.discount.value;
   $('fVatRate').value = inv.vatRate;
   const vatIncEl = $('fVatIncluded');
   if(vatIncEl) vatIncEl.checked = inv.vatIncluded || false;
   const showItemDiscEl = $('fShowItemDiscount');
   if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false;
-  $('fShipping').value = inv.shipping || '';
-  $('fTip').value = inv.tip || '';
-  $('fDeposit').value = inv.deposit || '';
+  if($('fShipping')) $('fShipping').value = inv.shipping || '';
+  if($('fTip')) $('fTip').value = inv.tip || '';
+  if($('fDeposit')) $('fDeposit').value = inv.deposit || '';
   payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
   customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
-  $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
-  $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
-  $('fRecurringNext').value = inv.recurring?.next || '';
-  $('fNotes').value = inv.notes;
-  $('fDiscountValue').disabled = inv.discount.type === 'none';
+  if($('fRecurringEnabled')) $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
+  if($('fRecurringFreq')) $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
+  if($('fRecurringNext')) $('fRecurringNext').value = inv.recurring?.next || '';
+  if($('fNotes')) $('fNotes').value = inv.notes;
+  if($('fDiscountValue')) $('fDiscountValue').disabled = inv.discount.type === 'none';
   // New code
   settings.nextSeq++;
   saveSettings();
@@ -3386,7 +3386,7 @@ function resetForm(){
   $('fCode').value = genInvoiceCode();
   $('fDate').value = todayISO();
   $('fDueDate').value = '';
-  $('fPoRef').value = '';
+  if($('fPoRef'))$('fPoRef').value = '';
   $('fProject').value = '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
@@ -3403,22 +3403,22 @@ function resetForm(){
   updateDocTypePills();
   items = [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0, originalPrice:0}];
   $('fDiscountType').value = 'none';
-  $('fDiscountValue').value = '';
-  $('fDiscountValue').disabled = true;
+  if($('fDiscountValue')) $('fDiscountValue').value = '';
+  if($('fDiscountValue')) $('fDiscountValue').disabled = true;
   $('fVatRate').value = settings.defaultVat;
   const vatIncEl = $('fVatIncluded');
   if(vatIncEl) vatIncEl.checked = false;
   const showItemDiscEl = $('fShowItemDiscount');
   if(showItemDiscEl) showItemDiscEl.checked = true;
-  $('fShipping').value = '';
-  $('fTip').value = '';
-  $('fDeposit').value = '';
+  if($('fShipping')) $('fShipping').value = '';
+  if($('fTip')) $('fTip').value = '';
+  if($('fDeposit')) $('fDeposit').value = '';
   payments = [];
   customFields = [];
-  $('fRecurringEnabled').checked = false;
-  $('fRecurringFreq').value = 'monthly';
-  $('fRecurringNext').value = '';
-  $('fNotes').value = '';
+  if($('fRecurringEnabled')) $('fRecurringEnabled').checked = false;
+  if($('fRecurringFreq')) $('fRecurringFreq').value = 'monthly';
+  if($('fRecurringNext')) $('fRecurringNext').value = '';
+  if($('fNotes')) $('fNotes').value = '';
   renderItemsTable();
   renderPaymentsList();
   renderCustomFieldsList();
@@ -5683,7 +5683,7 @@ $('btnValidateReferral')?.addEventListener('click', async () => {
       if(msgEl) msgEl.innerHTML = '<span style="color:#0C9A63;font-weight:700;">✓ كود صحيح! خصم ' + data.discount_percent + '% — بواسطة: ' + (data.referrer_name || 'غير معروف') + '</span>';
       // تطبيق خصم 20% تلقائياً
       if($('fDiscountType')) $('fDiscountType').value = 'percent';
-      if($('fDiscountValue')) { $('fDiscountValue').value = data.discount_percent; $('fDiscountValue').disabled = false; }
+      if($('fDiscountValue')) { if($('fDiscountValue')) $('fDiscountValue').value = data.discount_percent; if($('fDiscountValue')) $('fDiscountValue').disabled = false; }
       updatePreview();
       toast('تم تطبيق خصم ' + data.discount_percent + '% بنجاح', 'success');
     } else {
@@ -5729,8 +5729,8 @@ function initApp(){
 
   // Discount type toggle
   $('fDiscountType').addEventListener('change', () => {
-    $('fDiscountValue').disabled = $('fDiscountType').value === 'none';
-    if($('fDiscountType').value === 'none') $('fDiscountValue').value = '';
+    if($('fDiscountValue')) $('fDiscountValue').disabled = $('fDiscountType').value === 'none';
+    if($('fDiscountType').value === 'none') if($('fDiscountValue')) $('fDiscountValue').value = '';
     updatePreview();
   });
 
