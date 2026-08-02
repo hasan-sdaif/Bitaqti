@@ -1209,6 +1209,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
+      <label class="lock-remember" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;">
+        <input type="checkbox" id="lockRememberChk" style="cursor:pointer;width:16px;height:16px;">
+        <span>تذكّرني على هذا الجهاز لمدة 30 يوماً</span>
+      </label>
       <button type="submit" class="lock-btn" id="lockSubmitBtn">
         <span class="spinner"></span>
         <span class="lock-btn-text">دخول</span>
@@ -2042,6 +2046,27 @@
             </button>
             <input type="file" id="importFile" accept=".json" style="display:none;">
           </div>
+          <div class="alert alert-info" style="margin-top:14px;font-size:12px;line-height:1.6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span style="vertical-align:middle;">
+              <strong>نسخة احتياطية على قاعدة البيانات (Supabase):</strong> ارفع نسخة من فواتيرك إلى السحابة لتبقى متاحة حتى لو مسحت بيانات المتصفح أو غيّرت الجهاز.
+            </span>
+          </div>
+          <div class="setting-actions" style="margin-top:10px;">
+            <button class="btn btn-green btn-sm" id="btnBackupToSupabase">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+              رفع نسخة احتياطية إلى Supabase
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnRestoreFromSupabase">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              استعادة من Supabase
+            </button>
+            <button class="btn btn-outline btn-sm" id="btnTestSupabase">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+              اختبار الاتصال
+            </button>
+          </div>
+          <div id="supabaseBackupStatus" style="margin-top:10px;font-size:11.5px;color:var(--ink-faint);line-height:1.6;"></div>
           <div class="danger-zone">
             <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>منطقة الخطر</h4>
             <p>حذف جميع الفواتير والإعدادات نهائياً. لا يمكن التراجع عن هذا الإجراء.</p>
@@ -2075,9 +2100,14 @@
   </div>
 </div>
 
+<!-- وحدة المصادقة المشتركة (تصلح مشكلة التعليق بعد الخروج من الصفحة) -->
+<script src="auth.js"></script>
+<script src="lock.js"></script>
+
 <script>
 // ════════════════════════════════════════════════════════════════
-//  نظام الفواتير المحسّن — Bitaqti Enhanced Invoice System
+//  نظام الفواتير المحسّن — Bitaqti Enhanced Invoice System v2.0
+//  (مع إصلاح الجلسة + تجاوب الشاشات + نسخ احتياطي لـ Supabase)
 // ════════════════════════════════════════════════════════════════
 
 const $ = id => document.getElementById(id);
@@ -2089,46 +2119,30 @@ const formatMoney = (n, currency) => {
 };
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — التحقق من الرمز عبر Netlify Function (track-order بوضع admin)
+//  AUTH — عبر BitaqtiAuth المشتركة (localStorage + 30 يوم TTL)
+//  يصلح مشكلة التعليق بعد الخروج من الصفحة التي كانت تضطرك لمسح
+//  بيانات الموقع وإعادة تسجيل الدخول.
 // ════════════════════════════════════════════════════════════════
 const AUTH_ENDPOINT = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
 
-function getSavedSession(){
-  try{
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if(!raw) return null;
-    const p = JSON.parse(raw);
-    if(!p.expiresAt) return null;
-    if(Date.now() > p.expiresAt){
-      sessionStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(PWD_KEY);
-      return null;
-    }
-    return p;
-  }catch(e){ return null; }
-}
-
-function saveSession(password){
-  try {
-    sessionStorage.setItem(PWD_KEY, password);
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 12 * 60 * 60 * 1000,
-    }));
-  } catch(e) {}
-}
-
-function clearSession(){
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
-  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
-}
+// للتوافق مع الكود القديم — توجيه نحو BitaqtiAuth
+function getSavedSession(){ return BitaqtiAuth.getSessionInfo(); }
+function saveSession(password, opts){ return BitaqtiAuth.saveSession(password, opts || {}); }
+function clearSession(){ return BitaqtiAuth.clearSession(); }
 
 function unlockApp(){
   $('lockScreen').style.display='none';
   $('app').classList.add('unlocked');
   initApp();
+  // إعداد معالجات دورة حياة الصفحة (bfcache + visibilitychange)
+  BitaqtiAuth.setupLifecycleHandlers((ok) => {
+    if(!ok){
+      showToast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+      setTimeout(() => window.location.reload(), 1200);
+    }
+  });
 }
 
 function lockApp(){
@@ -2139,16 +2153,28 @@ function lockApp(){
   $('lockError').classList.remove('show');
 }
 
+// التحقق التلقائي عند فتح الصفحة — يستخدم localStorage الآن (لا يُفقد عند إغلاق التبويب)
 (function checkExistingSession(){
-  const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
-  const session = getSavedSession();
-  if(savedPwd && session){
+  const savedPwd = BitaqtiAuth.getSavedPassword();
+  if(savedPwd){
     unlockApp();
   } else {
     $('lockScreen').style.display='flex';
     $('app').classList.remove('unlocked');
   }
 })();
+
+// إصلاح bfcache: استعادة الجلسة عند العودة للصفحة
+window.addEventListener('pageshow', () => {
+  const savedPwd = BitaqtiAuth.getSavedPassword();
+  if(savedPwd){
+    $('lockScreen').style.display = 'none';
+    $('app').classList.add('unlocked');
+  } else {
+    $('lockScreen').style.display = 'flex';
+    $('app').classList.remove('unlocked');
+  }
+});
 
 $('lockToggle').addEventListener('click', () => {
   const inp = $('lockPassword');
@@ -2160,22 +2186,19 @@ $('lockForm').addEventListener('submit', async (e) => {
   const password = $('lockPassword').value;
   if(!password) return;
   const btn = $('lockSubmitBtn');
+  const rememberChk = $('lockRememberChk');
   btn.disabled = true; btn.classList.add('loading');
   $('lockError').classList.remove('show');
   try{
-    // التحقق عبر track-order.js بوضع admin (أكثر استقراراً من invoice-auth)
-    const res = await fetch(AUTH_ENDPOINT, {
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ admin_password: password, mode: 'sync' }),
-    });
-    if(res.status === 429){ showError('محاولات كثيرة جداً. انتظر دقيقة.'); return; }
-    if(res.status === 500){ showError('الخدمة غير مُعدّة على الخادم.'); return; }
-    if(res.status === 401){ showError('الرمز غير صحيح.'); $('lockPassword').value=''; $('lockPassword').focus(); return; }
-    if(!res.ok){ showError(`خطأ (${res.status}). حاول لاحقاً.`); return; }
-    // نجح التحقق — حفظ الجلسة
-    saveSession(password);
-    unlockApp();
+    // التحقق عبر BitaqtiAuth (يستخدم track-order بوضع admin داخلياً)
+    const result = await BitaqtiAuth.verifyPassword(password);
+    if(result.ok){
+      BitaqtiAuth.saveSession(password, { remember: !!(rememberChk && rememberChk.checked) });
+      unlockApp();
+    } else {
+      showError(result.message || 'الرمز غير صحيح.');
+      $('lockPassword').value=''; $('lockPassword').focus();
+    }
   }catch(err){
     showError('تعذّر الاتصال بالسيرفر. تحقق من الإنترنت.');
   }finally{
@@ -4631,6 +4654,174 @@ function importJSON(file){
   reader.readAsText(file);
 }
 
+// ════════════════════════════════════════════════════════════════
+//  SUPABASE BACKUP — رفع/استعادة الفواتير إلى/من قاعدة البيانات
+//  (يستخدم netlify/functions/invoices-manage.js)
+// ════════════════════════════════════════════════════════════════
+const INVOICES_MANAGE_ENDPOINT = '/.netlify/functions/invoices-manage';
+
+function getAdminPwdForBackup(){
+  // نستخدم BitaqtiAuth المشتركة (localStorage)
+  return (window.BitaqtiAuth && BitaqtiAuth.getSavedPassword()) || '';
+}
+
+function setSupabaseStatus(html, type){
+  const el = $('supabaseBackupStatus');
+  if(!el) return;
+  el.innerHTML = html;
+  el.style.color = type === 'error' ? 'var(--red)' : (type === 'success' ? 'var(--green)' : (type === 'warning' ? 'var(--amber)' : 'var(--ink-faint)'));
+}
+
+async function testSupabaseConnection(){
+  const pwd = getAdminPwdForBackup();
+  if(!pwd){
+    setSupabaseStatus('⚠️ سجّل الدخول أولاً.', 'warning');
+    return;
+  }
+  setSupabaseStatus('جارٍ اختبار الاتصال بقاعدة البيانات...', 'info');
+  try {
+    const res = await fetch(INVOICES_MANAGE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd, action: 'test' }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(res.status === 200 && data.ok){
+      setSupabaseStatus('✅ الاتصال بقاعدة البيانات يعمل بشكل صحيح.', 'success');
+      toast('الاتصال بقاعدة البيانات يعمل', 'success');
+    } else if(res.status === 500 && data.error === 'server_not_configured'){
+      setSupabaseStatus('⚠️ SUPABASE_URL أو SUPABASE_SERVICE_KEY غير مضبوطين في Netlify. راجع دليل الإعداد SETUP_GUIDE.md.', 'warning');
+    } else {
+      setSupabaseStatus(`⚠️ ${data.message || 'تعذّر الاتصال (' + res.status + ')'}`, 'warning');
+    }
+  } catch(err){
+    setSupabaseStatus('❌ تعذّر الاتصال بالخادم. تحقق من الإنترنت.', 'error');
+  }
+}
+
+async function backupInvoicesToSupabase(){
+  const pwd = getAdminPwdForBackup();
+  if(!pwd){
+    setSupabaseStatus('⚠️ سجّل الدخول أولاً.', 'warning');
+    return;
+  }
+  if(!invoices.length){
+    setSupabaseStatus('⚠️ لا توجد فواتير محلية للنسخ.', 'warning');
+    toast('لا توجد فواتير للنسخ', 'error');
+    return;
+  }
+
+  // تحويل كل فاتورة محلية إلى صيغة جدول invoices في Supabase
+  const records = invoices.map(inv => ({
+    invoice_no:      inv.invoiceNo || inv.invoice_no || '',
+    order_code:      inv.orderCode || inv.order_code || '',
+    phone:           inv.phone || '',
+    customer_name:   inv.customerName || inv.customer_name || '',
+    issue_date:      inv.issueDate || inv.issue_date || '',
+    due_date:        inv.dueDate || inv.due_date || '',
+    package:         inv.package || '',
+    items_summary:   inv.itemsSummary || inv.items_summary || (inv.items || []).map(i => i.description || i.name).join('، '),
+    subtotal:        Number(inv.subtotal || 0),
+    discount_amount: Number(inv.discountAmount || inv.discount_amount || 0),
+    vat_amount:      Number(inv.vatAmount || inv.vat_amount || 0),
+    total:           Number(inv.total || 0),
+    payment_method:  inv.paymentMethod || inv.payment_method || '',
+    payment_status:  inv.paymentStatus || inv.payment_status || '',
+    status:          inv.status || '',
+    notes:           inv.notes || '',
+  })).filter(r => r.invoice_no);
+
+  setSupabaseStatus(`جارٍ رفع ${records.length} فاتورة إلى قاعدة البيانات...`, 'info');
+  toast('جارٍ الرفع إلى Supabase...', 'info');
+
+  try {
+    const res = await fetch(INVOICES_MANAGE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pwd, action: 'bulk_sync', records }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if(res.status === 200 && data.ok){
+      setSupabaseStatus(`✅ ${data.message || 'تم الرفع بنجاح'} — ${records.length} فاتورة.`, 'success');
+      toast(`تم رفع ${records.length} فاتورة إلى Supabase`, 'success');
+    } else {
+      setSupabaseStatus(`❌ ${data.message || 'فشل الرفع (' + res.status + ')'}`, 'error');
+      toast(data.message || 'فشل الرفع', 'error');
+    }
+  } catch(err){
+    setSupabaseStatus('❌ تعذّر الاتصال بالخادم. تحقق من الإنترنت.', 'error');
+    toast('تعذّر الاتصال بالخادم', 'error');
+  }
+}
+
+async function restoreInvoicesFromSupabase(){
+  const pwd = getAdminPwdForBackup();
+  if(!pwd){
+    setSupabaseStatus('⚠️ سجّل الدخول أولاً.', 'warning');
+    return;
+  }
+
+  showModal('warning', 'استعادة من Supabase',
+    'سيتم جلب كل الفواتير من قاعدة البيانات وإضافتها إلى الفواتير المحلية. الفواتير الموجودة محلياً لن تُحذف.\n\nهل تريد المتابعة؟',
+    async () => {
+      closeModal();
+      setSupabaseStatus('جارٍ جلب الفواتير من قاعدة البيانات...', 'info');
+      toast('جارٍ الاستعادة...', 'info');
+
+      try {
+        const res = await fetch(INVOICES_MANAGE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password: pwd, action: 'list' }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if(res.status === 200 && data.ok){
+          const remoteInvoices = data.invoices || [];
+          // ادمج الفواتير البعيدة مع المحلية — لا نحذف المحلية
+          let added = 0;
+          remoteInvoices.forEach(rinv => {
+            const exists = invoices.find(inv => (inv.invoiceNo || inv.invoice_no) === rinv.invoice_no);
+            if(!exists){
+              // حوّل الفاتورة البعيدة إلى الصيغة المحلية
+              invoices.push({
+                invoiceNo:      rinv.invoice_no,
+                orderCode:      rinv.order_code,
+                phone:          rinv.phone,
+                customerName:   rinv.customer_name,
+                issueDate:      rinv.issue_date,
+                dueDate:        rinv.due_date,
+                package:        rinv.package,
+                itemsSummary:   rinv.items_summary,
+                subtotal:       Number(rinv.subtotal || 0),
+                discountAmount: Number(rinv.discount_amount || 0),
+                vatAmount:      Number(rinv.vat_amount || 0),
+                total:          Number(rinv.total || 0),
+                paymentMethod:  rinv.payment_method,
+                paymentStatus:  rinv.payment_status,
+                status:         rinv.status,
+                notes:          rinv.notes,
+                items:          [],
+                createdAt:      new Date().toISOString(),
+              });
+              added++;
+            }
+          });
+          saveInvoices();
+          renderInvoices();
+          setSupabaseStatus(`✅ تمت استعادة ${added} فاتورة من قاعدة البيانات (الإجمالي البعيد: ${remoteInvoices.length}).`, 'success');
+          toast(`تمت استعادة ${added} فاتورة من Supabase`, 'success');
+        } else {
+          setSupabaseStatus(`❌ ${data.message || 'فشل الجلب (' + res.status + ')'}`, 'error');
+          toast(data.message || 'فشل الاستعادة', 'error');
+        }
+      } catch(err){
+        setSupabaseStatus('❌ تعذّر الاتصال بالخادم. تحقق من الإنترنت.', 'error');
+        toast('تعذّر الاتصال بالخادم', 'error');
+      }
+    }
+  );
+}
+
 function clearAllData(){
   showModal('danger', 'حذف كل البيانات',
     'سيتم حذف جميع الفواتير والإعدادات نهائياً. لا يمكن التراجع. ننصح بتصدير نسخة احتياطية أولاً.',
@@ -5224,20 +5415,15 @@ function exportCustomersXlsx(){
 }
 
 // ════════════════════════════════════════════════════════════════
-//  SYNC FROM GOOGLE SHEETS — مزامنة عبر track-order.js (وضع admin)
-//  يستخدم الرمز المحفوظ في sessionStorage بعد تسجيل الدخول
+//  SYNC FROM DATABASE — مزامنة عبر track-order.js (وضع admin)
+//  يستخدم الرمز المحفوظ في BitaqtiAuth (localStorage) بعد تسجيل الدخول
 // ════════════════════════════════════════════════════════════════
 const SYNC_ENDPOINT = '/.netlify/functions/track-order';
 
-/** يجلب قائمة العملاء من Google Sheets عبر track-order.js بوضع admin */
+/** يجلب قائمة العملاء من قاعدة البيانات عبر track-order.js بوضع admin */
 async function syncFromSheet(){
-  // الرمز محفوظ بالفعل في الجلسة بعد تسجيل الدخول — لا حاجة لطلبه مجدداً
-  let adminPassword = '';
-  try {
-    adminPassword = sessionStorage.getItem(PWD_KEY) || '';
-  } catch(e) {
-    adminPassword = '';
-  }
+  // الرمز محفوظ بالفعل في BitaqtiAuth بعد تسجيل الدخول — لا حاجة لطلبه مجدداً
+  const adminPassword = BitaqtiAuth.getSavedPassword() || '';
 
   if(!adminPassword){
     toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
@@ -5694,6 +5880,11 @@ function initApp(){
   });
   $('btnClearAll').addEventListener('click', clearAllData);
 
+  // Supabase backup buttons
+  if($('btnBackupToSupabase'))    $('btnBackupToSupabase').addEventListener('click', backupInvoicesToSupabase);
+  if($('btnRestoreFromSupabase')) $('btnRestoreFromSupabase').addEventListener('click', restoreInvoicesFromSupabase);
+  if($('btnTestSupabase'))        $('btnTestSupabase').addEventListener('click', testSupabaseConnection);
+
   // Modal
   $('modalCancel').addEventListener('click', () => {
     // cancel: نُنفّذ onCancel إن وُجد، ثم نُغلق دائماً
@@ -5765,16 +5956,16 @@ function initApp(){
 }
 
   // ═══ إصلاح bfcache: عند العودة للصفحة ═══
-  window.addEventListener('pageshow', (event) => {
-    if(event.persisted){
-      const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
-      const session = getSavedSession();
-      if(savedPwd && session){
-        $('lockScreen').style.display = 'none';
-        $('app').classList.add('unlocked');
-      } else {
-        lockApp();
-      }
+  // نعتمد على BitaqtiAuth.setupLifecycleHandlers المُعدّ في unlockApp
+  // هنا فقط نضمن استعادة الواجهة عند العودة من bfcache
+  window.addEventListener('pageshow', () => {
+    const savedPwd = BitaqtiAuth.getSavedPassword();
+    if(savedPwd){
+      $('lockScreen').style.display = 'none';
+      $('app').classList.add('unlocked');
+    } else {
+      $('lockScreen').style.display = 'flex';
+      $('app').classList.remove('unlocked');
     }
   });
 
