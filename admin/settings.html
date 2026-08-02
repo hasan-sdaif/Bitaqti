@@ -618,17 +618,24 @@ const BIZ_KEY = 'bitaqti_business_settings';
 const ACTIVITY_KEY = 'bitaqti_activity_log';
 const CURRENCY = 'د.ب';
 
-// ═══ AUTH — عبر BitaqtiAuth المشتركة (localStorage + 30 يوم TTL) ═══
+// ═══ AUTH — بسيط ومباشر (يستخدم localStorage لمنع التعليق) ═══
 const TRACK_ENDPOINT_AUTH = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
 
 function getAdminPassword(){
-  return BitaqtiAuth.getSavedPassword() || '';
+  try { return localStorage.getItem(PWD_KEY) || ''; } catch(e) { return ''; }
 }
 
 function getSavedSession(){
-  return BitaqtiAuth.getSessionInfo();
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(!p.expiresAt) return null;
+    if(Date.now() > p.expiresAt){ localStorage.removeItem(SESSION_KEY); localStorage.removeItem(PWD_KEY); return null; }
+    return p;
+  } catch(e){ return null; }
 }
 
 function unlockApp(){
@@ -636,18 +643,12 @@ function unlockApp(){
   fillBizForm();
   displayAppsScriptCode();
   checkConnection();
-  // إعداد معالجات دورة حياة الصفحة (bfcache + visibilitychange)
-  BitaqtiAuth.setupLifecycleHandlers((ok) => {
-    if(!ok){
-      toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
-      setTimeout(() => window.location.reload(), 1200);
-    }
-  });
   setTimeout(() => toast('مرحباً بك في صفحة الإعدادات', 'info'), 200);
 }
 
 function lockApp(){
-  BitaqtiAuth.clearSession();
+  try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+  try { localStorage.removeItem(PWD_KEY); } catch(e) {}
   document.body.classList.add('locked');
   const pwdInput = $('lockPassword');
   if(pwdInput) pwdInput.value = '';
@@ -655,19 +656,20 @@ function lockApp(){
   if(errEl) errEl.classList.remove('show');
 }
 
-// التحقق التلقائي عند فتح الصفحة — يستخدم localStorage الآن
+// التحقق التلقائي عند فتح الصفحة
 (function checkExistingSession(){
-  const savedPwd = BitaqtiAuth.getSavedPassword();
-  if(savedPwd){
+  const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+  const session = getSavedSession();
+  if(savedPwd && session){
     unlockApp();
   } else {
     document.body.classList.add('locked');
   }
 })();
 
-// إصلاح bfcache: استعادة الجلسة عند العودة للصفحة
+// إصلاح bfcache
 window.addEventListener('pageshow', () => {
-  const savedPwd = BitaqtiAuth.getSavedPassword();
+  const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   if(savedPwd){
     document.body.classList.remove('locked');
   } else {
@@ -695,14 +697,38 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true; btn.classList.add('loading');
       $('lockError').classList.remove('show');
       try{
-        const result = await BitaqtiAuth.verifyPassword(password);
-        if(result.ok){
-          BitaqtiAuth.saveSession(password, { remember: !!(rememberChk && rememberChk.checked) });
+        // التحقق المباشر عبر track-order
+        const res = await fetch(TRACK_ENDPOINT_AUTH, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ admin_password: password, mode: 'sync' }),
+        });
+        if(res.status === 200){
+          try {
+            const ttl = (rememberChk && rememberChk.checked) ? (30 * 24 * 60 * 60 * 1000) : (12 * 60 * 60 * 1000);
+            localStorage.setItem(PWD_KEY, password);
+            localStorage.setItem(SESSION_KEY, JSON.stringify({
+              createdAt: Date.now(),
+              expiresAt: Date.now() + ttl,
+            }));
+          } catch(e) {}
           unlockApp();
-        } else {
-          showError(result.message || 'الرمز غير صحيح.');
+        } else if(res.status === 401){
+          showError('الرمز غير صحيح.');
           $('lockPassword').value = '';
           $('lockPassword').focus();
+        } else if(res.status === 429){
+          showError('محاولات كثيرة جداً. انتظر دقيقة.');
+        } else if(res.status === 500){
+          let data = {};
+          try { data = await res.json(); } catch(_) {}
+          showError(data.error === 'server_not_configured'
+            ? '⚠️ مصدر البيانات غير مُعدّ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.'
+            : 'الخدمة غير مُعدّة على الخادم.');
+        } else if(res.status === 502){
+          showError('⚠️ تعذّر الوصول إلى مصدر البيانات (502). راجع TROUBLESHOOTING.md.');
+        } else {
+          showError(`خطأ في الاتصال (${res.status}).`);
         }
       }catch(err){
         showError('تعذّر الاتصال بالسيرفر. تحقق من الإنترنت.');
