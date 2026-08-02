@@ -304,22 +304,30 @@
   .modal-overlay.show{opacity:1;pointer-events:auto;}
   .modal{
     background:var(--surface);border-radius:var(--radius);
-    max-width:560px;width:100%;max-height:90vh;overflow-y:auto;
+    max-width:560px;width:100%;max-height:92vh;
+    display:flex;flex-direction:column;overflow:hidden;
     box-shadow:0 30px 60px rgba(0,0,0,.35);
     transform:translateY(18px);opacity:0;transition:transform .25s,opacity .25s;
   }
   .modal-overlay.show .modal{transform:translateY(0);opacity:1;}
   .modal-icon{
     width:56px;height:56px;border-radius:50%;background:var(--blue-tint);color:var(--blue);
-    display:flex;align-items:center;justify-content:center;margin:24px auto 14px;
+    display:flex;align-items:center;justify-content:center;margin:20px auto 12px;
+    flex-shrink:0;
   }
   .modal-icon.danger{background:var(--red-tint);color:var(--red);}
   .modal-icon.warning{background:var(--amber-tint);color:var(--amber);}
   .modal-icon svg{width:28px;height:28px;}
-  .modal h3{font-size:18px;font-weight:700;text-align:center;margin-bottom:10px;padding:0 24px;}
-  .modal-body{padding:0 24px 20px;font-size:13.5px;color:var(--ink-soft);line-height:1.7;text-align:center;white-space:pre-wrap;}
-  .modal-actions{padding:16px 24px 24px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .modal h3{font-size:18px;font-weight:700;text-align:center;margin-bottom:8px;padding:0 24px;flex-shrink:0;}
+  .modal-body{padding:0 24px 16px;font-size:13.5px;color:var(--ink-soft);line-height:1.7;text-align:center;white-space:pre-wrap;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;flex:1 1 auto;min-height:0;}
+  .modal-actions{padding:12px 24px 18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;flex-shrink:0;border-top:1px solid var(--line);background:var(--surface);}
   .modal-actions .btn{min-width:120px;}
+  /* نافذة كبيرة للنماذج الطويلة (تعديل العميل، إنشاء فاتورة) */
+  .modal.wide{max-width:760px;}
+  .modal.wide .modal-body{text-align:right;white-space:normal;}
+  .modal.wide .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px;}
+  @media(max-width:600px){.modal.wide .form-row{grid-template-columns:1fr;}}
+  .modal-scroll-inner{max-height:none !important;overflow:visible !important;padding:0 4px;}
 
   /* ═══ TOAST ═══ */
   .toast-container{
@@ -629,12 +637,18 @@
     .quick-action .qa-sub{display:none;}
   }
 
-  /* منع قطع النوافذ المنبثقة على الجوال */
+  /* منع قطع النوافذ المنبثقة على الجوال — يطبق دائمًا */
   .modal-overlay{padding:8px;}
+  .modal{max-height:94vh;}
+  .modal-body{max-height:calc(94vh - 180px);overflow-y:auto;}
   @media(max-width:480px){
     .modal-overlay{padding:4px;}
-    .modal{max-height:96vh;}
-    .modal-body{max-height:60vh;overflow-y:auto;}
+    .modal{max-height:96vh;border-radius:12px;}
+    .modal-body{max-height:calc(96vh - 160px);font-size:12px;padding:0 14px 12px;}
+    .modal-actions{flex-direction:column;padding:10px 14px 14px;}
+    .modal-actions .btn{width:100%;}
+    .modal.wide{max-width:100vw;}
+    .modal.wide .form-row{grid-template-columns:1fr;}
   }
 
   /* تحسينات الطباعة على الجوال */
@@ -664,6 +678,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
+      <label class="lock-remember" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;">
+        <input type="checkbox" id="lockRememberChk" style="cursor:pointer;width:16px;height:16px;">
+        <span>تذكّرني على هذا الجهاز لمدة 30 يوماً</span>
+      </label>
       <button type="submit" class="lock-btn" id="lockSubmitBtn">
         <span class="spinner"></span>
         <span class="lock-btn-text">متابعة</span>
@@ -671,7 +689,7 @@
     </form>
     <div class="lock-error" id="lockError"></div>
     <div class="lock-hint">
-      🔒 هذه المنطقة مخصصة لصاحب المشروع فقط.
+      🔒 هذه المنطقة مخصصة لصاحب المشروع فقط. تذكّرني يحفظ الجلسة على هذا الجهاز فقط.
     </div>
   </div>
 </div>
@@ -926,6 +944,12 @@
               <option value="غير مدفوع">غير مدفوع</option>
               <option value="مدفوع جزئياً">مدفوع جزئياً</option>
             </select>
+            <select class="filter-select" id="filterReferral">
+              <option value="">كل الإحالات</option>
+              <option value="used">استخدم رمز إحالة</option>
+              <option value="none">بدون إحالة</option>
+              <option value="has_points">لديه نقاط</option>
+            </select>
           </div>
 
           <div class="table-wrap">
@@ -1155,51 +1179,61 @@
 <!-- Toast container -->
 <div class="toast-container" id="toastContainer"></div>
 
+<!-- وحدة المصادقة المشتركة (تستخدم localStorage مع TTL 30 يوم + إصلاح مشكلة التعليق) -->
+<script src="auth.js"></script>
+<script src="lock.js"></script>
+
 <script>
 // ════════════════════════════════════════════════════════════════
-//  بطاقتي — لوحة التحكم الإدارية v1.0
+//  بطاقتي — لوحة التحكم الإدارية v2.0 (مع Supabase + إصلاح الجلسة)
 // ════════════════════════════════════════════════════════════════
 
 const $ = id => document.getElementById(id);
 const CURRENCY = 'د.ب';
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — التحقق من الرمز عبر Netlify Function
+//  AUTH — عبر BitaqtiAuth المشتركة (localStorage + 30 يوم TTL)
 // ════════════════════════════════════════════════════════════════
 const TRACK_ENDPOINT = '/.netlify/functions/track-order';
 const UPDATE_ENDPOINT = '/.netlify/functions/sheet-update';
+
+// نستخدم BitaqtiAuth المشتركة (localStorage + TTL 30 يوم + إصلاح التعليق)
+// للتوافق مع الكود القديم، نُبقي هذه الأسماء كمراجع
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
 
 let adminPassword = '';
 
 function getSavedSession(){
-  try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if(!raw) return null;
-    const p = JSON.parse(raw);
-    if(!p.expiresAt) return null;
-    if(Date.now() > p.expiresAt){ sessionStorage.removeItem(SESSION_KEY); sessionStorage.removeItem(PWD_KEY); return null; }
-    return p;
-  } catch(e){ return null; }
+  // يرجع كائن الجلسة من BitaqtiAuth أو null
+  return BitaqtiAuth.getSessionInfo();
 }
 
 function unlockApp(){
-  // نضبط adminPassword من sessionStorage (مهم جداً لاستمرار الجلسة بعد إعادة التحميل)
-  try {
-    adminPassword = sessionStorage.getItem(PWD_KEY) || '';
-  } catch(e) {
-    adminPassword = '';
+  // نضبط adminPassword من الجلسة المحفوظة (localStorage يدوم عبر إغلاق التبويب)
+  adminPassword = BitaqtiAuth.getSavedPassword() || '';
+  if(!adminPassword){
+    // لا توجد جلسة — أظهر شاشة القفل
+    $('lockScreen').style.display='flex';
+    $('app').classList.remove('unlocked');
+    return;
   }
   $('lockScreen').style.display='none';
   $('app').classList.add('unlocked');
   initApp();
+  // إعداد معالجات دورة حياة الصفحة (bfcache + visibilitychange)
+  BitaqtiAuth.setupLifecycleHandlers((ok) => {
+    if(!ok){
+      // الجلسة لم تعد صالحة — أعد التحميل لإظهار شاشة القفل
+      toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
+      setTimeout(() => window.location.reload(), 1200);
+    }
+  });
   setTimeout(() => logActivity('login', 'تسجيل دخول إلى لوحة التحكم', new Date().toLocaleString('ar')), 100);
 }
 
 function lockApp(){
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
-  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
+  BitaqtiAuth.clearSession();
   adminPassword = '';
   $('lockScreen').style.display='flex';
   $('app').classList.remove('unlocked');
@@ -1207,38 +1241,19 @@ function lockApp(){
   $('lockError').classList.remove('show');
 }
 
-// محاولة تسجيل الدخول عبر track-order بوضع admin
-async function tryLogin(password){
-  const res = await fetch(TRACK_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ admin_password: password, mode: 'sync' }),
-  });
-  if(res.status === 200){
-    adminPassword = password;
-    try {
-      sessionStorage.setItem(PWD_KEY, password);
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 12 * 60 * 60 * 1000,
-      }));
-    } catch(e) {}
-    return { ok: true };
+// محاولة تسجيل الدخول عبر track-order بوضع admin — تستخدم BitaqtiAuth
+async function tryLogin(password, remember){
+  const result = await BitaqtiAuth.verifyPassword(password);
+  if(result.ok){
+    BitaqtiAuth.saveSession(password, { remember: !!remember });
   }
-  if(res.status === 401){
-    return { ok: false, message: 'الرمز غير صحيح.' };
-  }
-  if(res.status === 429){
-    return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
-  }
-  return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
+  return result;
 }
 
-// التحقق التلقائي عند فتح الصفحة
+// التحقق التلقائي عند فتح الصفحة — يستخدم localStorage الآن (لا يُفقد عند إغلاق التبويب)
 (function checkExistingSession(){
-  const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
-  const session = getSavedSession();
-  if(savedPwd && session){
+  const savedPwd = BitaqtiAuth.getSavedPassword();
+  if(savedPwd){
     adminPassword = savedPwd;
     unlockApp();
     return;
@@ -1259,10 +1274,11 @@ $('lockForm').addEventListener('submit', async (e) => {
   const password = $('lockPassword').value;
   if(!password) return;
   const btn = $('lockSubmitBtn');
+  const rememberChk = $('lockRememberChk');
   btn.disabled = true; btn.classList.add('loading');
   $('lockError').classList.remove('show');
   try{
-    const result = await tryLogin(password);
+    const result = await tryLogin(password, rememberChk && rememberChk.checked);
     if(result.ok){
       unlockApp();
     } else {
@@ -1299,6 +1315,8 @@ const CUSTOMER_FIELDS = [
   'vat_amount','discount_amount','total_with_vat',
   'delivery_date','assigned_designer','design_link','qr_code_path',
   'invoice_notes','last_updated','invoice_status',
+  // حقول نظام الإحالة (متاحة الآن في نافذة التعديل)
+  'referral_code','referral_points','referred_by',
 ];
 
 let customers = [];
@@ -1715,6 +1733,7 @@ function renderCustomers(){
   const search = ($('searchInput')?.value || '').toLowerCase().trim();
   const statusFilter = $('filterStatus')?.value || '';
   const paymentFilter = $('filterPayment')?.value || '';
+  const referralFilter = $('filterReferral')?.value || '';
 
   let list = [...customers];
   if(search){
@@ -1723,11 +1742,16 @@ function renderCustomers(){
       String(c.phone || '').toLowerCase().includes(search) ||
       String(c.order_code || '').toLowerCase().includes(search) ||
       String(c.package || '').toLowerCase().includes(search) ||
-      String(c.customer_email || '').toLowerCase().includes(search)
+      String(c.customer_email || '').toLowerCase().includes(search) ||
+      String(c.referral_code || '').toLowerCase().includes(search) ||
+      String(c.referred_by || '').toLowerCase().includes(search)
     );
   }
   if(statusFilter)  list = list.filter(c => c.status === statusFilter);
   if(paymentFilter) list = list.filter(c => c.payment_status === paymentFilter);
+  if(referralFilter === 'used')       list = list.filter(c => c.referred_by && String(c.referred_by).trim() !== '');
+  else if(referralFilter === 'none')  list = list.filter(c => !c.referred_by || String(c.referred_by).trim() === '');
+  else if(referralFilter === 'has_points') list = list.filter(c => Number(c.referral_points) > 0);
 
   list.sort((a, b) => String(b.order_date || '').localeCompare(String(a.order_date || '')));
 
@@ -1748,9 +1772,20 @@ function renderCustomers(){
     const statusColor = STATUS_COLORS[c.status] || '#53565C';
     const payColor = PAYMENT_COLORS[c.payment_status] || '#53565C';
     const total = Number(c.total_with_vat) || Number(c.price) || 0;
+    // شارة الإحالة: هل استخدم العميل رمز صديقه؟
+    const useReferral = c.referred_by && String(c.referred_by).trim() !== '';
+    const referralBadge = useReferral
+      ? `<span class="pill" style="background:var(--green-tint);color:var(--green);font-size:10px;margin-top:2px;display:inline-block;" title="أُحيل بواسطة: ${escapeAttr(c.referred_by)}">أُحيل: ${escapeHtml(c.referred_by)}</span>`
+      : `<span class="pill" style="background:var(--line);color:var(--ink-faint);font-size:10px;margin-top:2px;display:inline-block;" title="لم يستخدم رمز إحالة">بدون إحالة</span>`;
+    const pointsBadge = (Number(c.referral_points) > 0)
+      ? `<span class="pill" style="background:var(--gold-tint);color:var(--gold);font-size:10px;display:inline-block;margin-top:2px;">${Number(c.referral_points)} نقطة</span>`
+      : '';
     tr.innerHTML = `
       <td class="col-code">${escapeHtml(c.order_code || '—')}</td>
-      <td><strong>${escapeHtml(c.customer_name || '—')}</strong></td>
+      <td>
+        <strong>${escapeHtml(c.customer_name || '—')}</strong>
+        <div style="margin-top:3px;display:flex;gap:3px;flex-wrap:wrap;">${referralBadge}${pointsBadge}</div>
+      </td>
       <td class="col-code" dir="ltr">${escapeHtml(c.phone || '—')}</td>
       <td>${escapeHtml(c.package || '—')}</td>
       <td class="col-amount">${total.toFixed(3)}</td>
@@ -1810,56 +1845,151 @@ function openAddModal(){
     delivery_date: '', assigned_designer: 'حسن سديف',
     design_link: '', qr_code_path: '',
     invoice_notes: '', last_updated: today, invoice_status: 'مسودة',
+    // حقول الإحالة (فارغة افتراضياً)
+    referral_code: '', referral_points: 0, referred_by: '',
   };
   openEditModal(newC, true);
 }
 
 function openEditModal(c, isNew = false){
-  const fields = [
-    ['customer_name','اسم العميل'],['phone','الهاتف'],['code','رمز التحقق'],
-    ['customer_email','البريد الإلكتروني'],['customer_country','الدولة'],
-    ['package','الباقة'],['price','السعر (د.ب)'],['discount_amount','الخصم (د.ب)'],
-    ['vat_amount','VAT (د.ب)'],['total_with_vat','الإجمالي شامل VAT (د.ب)'],
-    ['order_date','تاريخ الطلب'],['delivery_date','تاريخ التسليم'],
-    ['status','الحالة'],['payment_method','طريقة الدفع'],['payment_status','حالة الدفع'],
-    ['payment_date','تاريخ الدفع'],['order_code','رمز الطلب'],['order_count','عدد الطلبات'],
-    ['cv_link','رابط البطاقة'],['assigned_designer','المصمم المسؤول'],
-    ['design_link','رابط المعاينة'],['qr_code_path','رمز QR (نص/رابط)'],
-    ['invoice_status','حالة الفاتورة'],['customer_language','لغة العميل'],
-    ['actions_log','سجل الإجراءات (افصل بـ |)'],['subpage_content','ملاحظة تظهر للعميل'],
-    ['invoice_notes','ملاحظات داخلية'],
+  // تعريف الأقسام لتنظيم الحقول في مجموعات منطقية
+  const sections = [
+    {
+      title: 'بيانات العميل',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>',
+      fields: [
+        ['customer_name','اسم العميل','text'],
+        ['phone','الهاتف','tel'],
+        ['code','رمز التحقق','text'],
+        ['customer_email','البريد الإلكتروني','email'],
+        ['customer_country','الدولة','text'],
+        ['customer_language','لغة العميل','select:العربية,English,اردو'],
+      ],
+    },
+    {
+      title: 'تفاصيل الطلب',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>',
+      fields: [
+        ['order_code','رمز الطلب','text'],
+        ['order_date','تاريخ الطلب','date'],
+        ['delivery_date','تاريخ التسليم','date'],
+        ['package','الباقة','select:الأساسية,القياسية,المميزة,مخصص'],
+        ['price','السعر (د.ب)','number'],
+        ['discount_amount','الخصم (د.ب)','number'],
+        ['vat_amount','VAT (د.ب)','number'],
+        ['total_with_vat','الإجمالي شامل VAT (د.ب)','number'],
+        ['status','الحالة','select:قيد التنفيذ,بانتظار الدفع,تم التصميم,تم التسليم,ملغي'],
+        ['order_count','عدد الطلبات','number'],
+      ],
+    },
+    {
+      title: 'الدفع والفاتورة',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+      fields: [
+        ['payment_method','طريقة الدفع','select:تحويل بنكي,بنفت باي (BenefitPay),بطاقة ائتمان,كاش,أخرى'],
+        ['payment_status','حالة الدفع','select:غير مدفوع,مدفوع,مدفوع جزئياً,مسترجع'],
+        ['payment_date','تاريخ الدفع','date'],
+        ['invoice_status','حالة الفاتورة','select:مسودة,مُرسلة,مدفوعة,ملغاة'],
+      ],
+    },
+    {
+      title: 'التصميم والتسليم',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>',
+      fields: [
+        ['assigned_designer','المصمم المسؤول','text'],
+        ['cv_link','رابط البطاقة','url'],
+        ['design_link','رابط المعاينة','url'],
+        ['qr_code_path','رمز QR (نص/رابط)','text'],
+      ],
+    },
+    {
+      title: 'نظام الإحالة والنقاط',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 12V8H6a2 2 0 01-2-2c0-1.1.9-2 2-2h12v4M4 6v12c0 1.1.9 2 2 2h14v-4M18 12a2 2 0 000 4h4v-4z"/></svg>',
+      fields: [
+        ['referral_code','كود الإحالة الخاص بالعميل','text'],
+        ['referral_points','رصيد النقاط','number'],
+        ['referred_by','أُحيل بواسطة (كود صديقه)','text'],
+      ],
+    },
+    {
+      title: 'ملاحظات وسجلات',
+      icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
+      fields: [
+        ['actions_log','سجل الإجراءات (افصل بـ |)','textarea'],
+        ['subpage_content','ملاحظة تظهر للعميل','textarea'],
+        ['invoice_notes','ملاحظات داخلية','textarea'],
+      ],
+    },
   ];
-  const numFields = ['price','discount_amount','vat_amount','total_with_vat','order_count'];
-  const ltrFields = ['phone','code','customer_email','price','discount_amount','vat_amount','total_with_vat','cv_link','order_date','delivery_date','payment_date','design_link','qr_code_path','order_code'];
 
-  const html = fields.map(([k, label]) => `
-    <div class="form-group">
-      <label>${label}</label>
-      <input type="text" class="form-control ${ltrFields.includes(k) ? 'mono' : ''}" id="ef_${k}" value="${escapeAttr(c[k] ?? '')}" placeholder="${label}">
+  const numFields = ['price','discount_amount','vat_amount','total_with_vat','order_count','referral_points'];
+  const ltrFields = ['phone','code','customer_email','price','discount_amount','vat_amount','total_with_vat','cv_link','order_date','delivery_date','payment_date','design_link','qr_code_path','order_code','referral_code','referral_points','referred_by'];
+
+  function renderField([k, label, type]){
+    const val = escapeAttr(c[k] ?? '');
+    const isLtr = ltrFields.includes(k);
+    const cls = isLtr ? 'mono' : '';
+    if(type === 'textarea'){
+      return `
+        <div class="form-group" style="grid-column:1 / -1;">
+          <label>${label}</label>
+          <textarea class="form-control ${cls}" id="ef_${k}" rows="2" placeholder="${label}" style="resize:vertical;min-height:48px;font-family:inherit;">${val}</textarea>
+        </div>`;
+    }
+    if(type.startsWith('select:')){
+      const options = type.slice(7).split(',').map(o => o.trim());
+      const optsHtml = options.map(o => `<option value="${escapeAttr(o)}" ${c[k] === o ? 'selected' : ''}>${escapeHtml(o)}</option>`).join('');
+      return `
+        <div class="form-group">
+          <label>${label}</label>
+          <select class="form-control ${cls}" id="ef_${k}">${optsHtml}</select>
+        </div>`;
+    }
+    const inputType = type === 'number' ? 'number' : (type === 'date' ? 'text' : (type === 'tel' ? 'tel' : (type === 'email' ? 'email' : (type === 'url' ? 'url' : 'text'))));
+    const placeholder = type === 'date' ? 'DD/MM/YYYY' : label;
+    return `
+      <div class="form-group">
+        <label>${label}</label>
+        <input type="${inputType}" class="form-control ${cls}" id="ef_${k}" value="${val}" placeholder="${placeholder}">
+      </div>`;
+  }
+
+  // اجمع كل أسماء الحقول لاستخدامها لاحقاً عند الحفظ
+  const allFields = sections.flatMap(s => s.fields);
+
+  const sectionsHtml = sections.map(sec => `
+    <div style="margin-bottom:14px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--line);">
+        <span style="width:16px;height:16px;color:var(--red);display:inline-flex;">${sec.icon}</span>
+        <strong style="font-size:12.5px;color:var(--ink);">${sec.title}</strong>
+      </div>
+      <div class="form-row">
+        ${sec.fields.map(renderField).join('')}
+      </div>
     </div>
   `).join('');
 
   showModal({
     type: 'info',
     title: isNew ? 'إضافة عميل جديد' : 'تعديل بيانات العميل',
+    wide: true,
     bodyHtml: `
-      <div style="text-align:right;max-height:60vh;overflow-y:auto;padding:0 8px;">${html}</div>
-      <div class="alert alert-info" style="margin-top:14px;text-align:right;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-        <div>سيتم ${isNew ? 'إضافة' : 'تحديث'} البيانات مباشرة في قاعدة البيانات عند الحفظ.</div>
-      </div>
-    `,
+      <div style="text-align:right;">${sectionsHtml}</div>
+      <div class="alert alert-info" style="margin:8px 0 0;text-align:right;font-size:11.5px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span style="vertical-align:middle;">سيتم ${isNew ? 'إضافة' : 'تحديث'} البيانات مباشرة في قاعدة البيانات عند الحفظ.</span>
+      </div>`,
     confirmText: isNew ? 'إضافة العميل' : 'حفظ التعديلات',
     cancelText: 'إلغاء',
     autoClose: false,
     onConfirm: async () => {
       // جمع القيم
       const updated = { ...c };
-      fields.forEach(([k]) => {
+      allFields.forEach(([k, , type]) => {
         const el = $('ef_' + k);
         if(el){
           let v = el.value.trim();
-          if(numFields.includes(k)){
+          if(numFields.includes(k) || type === 'number'){
             const n = Number(v.replace(/[^0-9.\-]/g, ''));
             updated[k] = isNaN(n) ? 0 : n;
           } else {
@@ -1886,6 +2016,7 @@ function openEditModal(c, isNew = false){
         }
         renderCustomers();
         renderRecentCustomers();
+        renderReferrals();
         toast(isNew ? 'تمت إضافة العميل بنجاح' : 'تم تحديث بيانات العميل', 'success');
         logActivity(
           isNew ? 'add' : 'update',
@@ -2127,9 +2258,11 @@ function showModal(opts){
   if(opts.bodyHtml !== undefined){
     bodyEl.innerHTML = opts.bodyHtml;
     bodyEl.style.whiteSpace = 'normal';
+    bodyEl.style.textAlign = opts.bodyAlign || 'right';
   } else {
     bodyEl.textContent = opts.body || '';
     bodyEl.style.whiteSpace = 'pre-wrap';
+    bodyEl.style.textAlign = 'center';
   }
 
   $('modalConfirm').textContent = opts.confirmText || 'تأكيد';
@@ -2139,11 +2272,26 @@ function showModal(opts){
   modalCallback = opts.onConfirm || null;
   modalOnCancel = opts.onCancel || null;
   modalAutoClose = opts.autoClose !== false;
+
+  // إضافة فئة wide للنوافذ التي تحتوي نماذج طويلة
+  const modalEl = document.querySelector('.modal');
+  if(modalEl){
+    if(opts.wide) modalEl.classList.add('wide');
+    else modalEl.classList.remove('wide');
+  }
+
   $('modalOverlay').classList.add('show');
+  // ضمان focus داخل النافذة لتسهيل التصفح بلوحة المفاتيح
+  setTimeout(() => {
+    const firstInput = bodyEl.querySelector('input, select, textarea');
+    if(firstInput) firstInput.focus();
+  }, 200);
 }
 
 function closeModal(){
   $('modalOverlay').classList.remove('show');
+  const modalEl = document.querySelector('.modal');
+  if(modalEl) modalEl.classList.remove('wide');
   modalCallback = null;
   modalOnCancel = null;
   modalAutoClose = true;
@@ -2485,6 +2633,7 @@ function initApp(){
   $('searchInput').addEventListener('input', renderCustomers);
   $('filterStatus').addEventListener('change', renderCustomers);
   $('filterPayment').addEventListener('change', renderCustomers);
+  $('filterReferral').addEventListener('change', renderCustomers);
 
   // Quick actions (الإجراءات السريعة)
   $('qaAddCustomer').addEventListener('click', openAddModal);
@@ -2523,18 +2672,18 @@ function initApp(){
   toast('مرحباً بك في لوحة التحكم الإدارية', 'info');
 }
   // ═══ إصلاح bfcache: عند العودة للصفحة عبر زر الرجوع ═══
+  // نعتمد على BitaqtiAuth.setupLifecycleHandlers المُعدّ في unlockApp
+  // هنا فقط نضمن استعادة الواجهة عند العودة من bfcache
   window.addEventListener('pageshow', (event) => {
-    if(event.persisted){
-      // الصفحة عادت من bfcache — تأكد من أن كل شيء يعمل
-      const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
-      const session = getSavedSession();
-      if(savedPwd && session){
-        adminPassword = savedPwd;
-        $('lockScreen').style.display = 'none';
-        $('app').classList.add('unlocked');
-      } else {
-        lockApp();
-      }
+    const savedPwd = BitaqtiAuth.getSavedPassword();
+    if(savedPwd){
+      adminPassword = savedPwd;
+      $('lockScreen').style.display = 'none';
+      $('app').classList.add('unlocked');
+    } else {
+      // لا توجد جلسة محفوظة — أظهر شاشة القفل
+      $('lockScreen').style.display = 'flex';
+      $('app').classList.remove('unlocked');
     }
   });
 
