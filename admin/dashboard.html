@@ -1200,28 +1200,31 @@ const $ = id => document.getElementById(id);
 const CURRENCY = 'د.ب';
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — عبر BitaqtiAuth المشتركة (localStorage + 30 يوم TTL)
+//  AUTH — بسيط ومباشر (يستخدم localStorage لمنع التعليق)
 // ════════════════════════════════════════════════════════════════
 const TRACK_ENDPOINT = '/.netlify/functions/track-order';
 const UPDATE_ENDPOINT = '/.netlify/functions/sheet-update';
-
-// نستخدم BitaqtiAuth المشتركة (localStorage + TTL 30 يوم + إصلاح التعليق)
-// للتوافق مع الكود القديم، نُبقي هذه الأسماء كمراجع
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
 
 let adminPassword = '';
 
 function getSavedSession(){
-  // يرجع كائن الجلسة من BitaqtiAuth أو null
-  return BitaqtiAuth.getSessionInfo();
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(!p.expiresAt) return null;
+    if(Date.now() > p.expiresAt){ localStorage.removeItem(SESSION_KEY); localStorage.removeItem(PWD_KEY); return null; }
+    return p;
+  } catch(e){ return null; }
 }
 
 function unlockApp(){
-  // نضبط adminPassword من الجلسة المحفوظة (localStorage يدوم عبر إغلاق التبويب)
-  adminPassword = BitaqtiAuth.getSavedPassword() || '';
+  try {
+    adminPassword = localStorage.getItem(PWD_KEY) || '';
+  } catch(e) { adminPassword = ''; }
   if(!adminPassword){
-    // لا توجد جلسة — أظهر شاشة القفل
     $('lockScreen').style.display='flex';
     $('app').classList.remove('unlocked');
     return;
@@ -1229,19 +1232,12 @@ function unlockApp(){
   $('lockScreen').style.display='none';
   $('app').classList.add('unlocked');
   initApp();
-  // إعداد معالجات دورة حياة الصفحة (bfcache + visibilitychange)
-  BitaqtiAuth.setupLifecycleHandlers((ok) => {
-    if(!ok){
-      // الجلسة لم تعد صالحة — أعد التحميل لإظهار شاشة القفل
-      toast('انتهت الجلسة. يُرجى إعادة تسجيل الدخول.', 'error');
-      setTimeout(() => window.location.reload(), 1200);
-    }
-  });
   setTimeout(() => logActivity('login', 'تسجيل دخول إلى لوحة التحكم', new Date().toLocaleString('ar')), 100);
 }
 
 function lockApp(){
-  BitaqtiAuth.clearSession();
+  try { localStorage.removeItem(SESSION_KEY); } catch(e) {}
+  try { localStorage.removeItem(PWD_KEY); } catch(e) {}
   adminPassword = '';
   $('lockScreen').style.display='flex';
   $('app').classList.remove('unlocked');
@@ -1249,27 +1245,71 @@ function lockApp(){
   $('lockError').classList.remove('show');
 }
 
-// محاولة تسجيل الدخول عبر track-order بوضع admin — تستخدم BitaqtiAuth
+// محاولة تسجيل الدخول عبر track-order بوضع admin (مباشر بدون BitaqtiAuth)
 async function tryLogin(password, remember){
-  const result = await BitaqtiAuth.verifyPassword(password);
-  if(result.ok){
-    BitaqtiAuth.saveSession(password, { remember: !!remember });
+  const res = await fetch(TRACK_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ admin_password: password, mode: 'sync' }),
+  });
+  if(res.status === 200){
+    adminPassword = password;
+    try {
+      // استخدم localStorage (يدوم عبر إغلاق التبويب) بدلاً من sessionStorage
+      const ttl = remember ? (30 * 24 * 60 * 60 * 1000) : (12 * 60 * 60 * 1000);
+      localStorage.setItem(PWD_KEY, password);
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        createdAt: Date.now(),
+        expiresAt: Date.now() + ttl,
+      }));
+    } catch(e) {}
+    return { ok: true };
   }
-  return result;
+  if(res.status === 401){
+    return { ok: false, message: 'الرمز غير صحيح.' };
+  }
+  if(res.status === 429){
+    return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
+  }
+  if(res.status === 500){
+    let data = {};
+    try { data = await res.json(); } catch(_) {}
+    if(data.error === 'server_not_configured'){
+      return { ok: false, message: '⚠️ مصدر البيانات غير مُعدّ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify. راجع TROUBLESHOOTING.md.' };
+    }
+    return { ok: false, message: 'الخدمة غير مُعدّة على الخادم.' };
+  }
+  if(res.status === 502){
+    return { ok: false, message: '⚠️ تعذّر الوصول إلى مصدر البيانات (502). تحقق من إعداد Supabase أو Google Sheets. راجع TROUBLESHOOTING.md.' };
+  }
+  return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
 }
 
-// التحقق التلقائي عند فتح الصفحة — يستخدم localStorage الآن (لا يُفقد عند إغلاق التبويب)
+// التحقق التلقائي عند فتح الصفحة
 (function checkExistingSession(){
-  const savedPwd = BitaqtiAuth.getSavedPassword();
-  if(savedPwd){
+  const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+  const session = getSavedSession();
+  if(savedPwd && session){
     adminPassword = savedPwd;
     unlockApp();
     return;
   }
-  // لا توجد جلسة فعّالة — تأكد أن شاشة القفل ظاهرة
   $('lockScreen').style.display='flex';
   $('app').classList.remove('unlocked');
 })();
+
+// إصلاح bfcache: استعادة الجلسة عند العودة للصفحة
+window.addEventListener('pageshow', () => {
+  const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
+  if(savedPwd){
+    adminPassword = savedPwd;
+    $('lockScreen').style.display = 'none';
+    $('app').classList.add('unlocked');
+  } else {
+    $('lockScreen').style.display = 'flex';
+    $('app').classList.remove('unlocked');
+  }
+});
 
 // ═══ معالجات شاشة القفل ═══
 $('lockToggle').addEventListener('click', () => {
@@ -2835,21 +2875,8 @@ function initApp(){
 
   toast('مرحباً بك في لوحة التحكم الإدارية', 'info');
 }
-  // ═══ إصلاح bfcache: عند العودة للصفحة عبر زر الرجوع ═══
-  // نعتمد على BitaqtiAuth.setupLifecycleHandlers المُعدّ في unlockApp
-  // هنا فقط نضمن استعادة الواجهة عند العودة من bfcache
-  window.addEventListener('pageshow', (event) => {
-    const savedPwd = BitaqtiAuth.getSavedPassword();
-    if(savedPwd){
-      adminPassword = savedPwd;
-      $('lockScreen').style.display = 'none';
-      $('app').classList.add('unlocked');
-    } else {
-      // لا توجد جلسة محفوظة — أظهر شاشة القفل
-      $('lockScreen').style.display = 'flex';
-      $('app').classList.remove('unlocked');
-    }
-  });
+  // ═══ إصلاح bfcache تمت معالجته أعلاه في قسم AUTH ═══
+  // (تم إزالة المستمع المكرر — المستمع في قسم AUTH يستخدم localStorage مباشرة)
 
 
 </script>
