@@ -152,6 +152,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
         </button>
       </div>
+      <label class="lock-remember" style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;">
+        <input type="checkbox" id="lockRememberChk" style="cursor:pointer;width:16px;height:16px;">
+        <span>تذكّرني على هذا الجهاز لمدة 30 يوماً</span>
+      </label>
       <button type="submit" class="lock-btn" id="lockSubmitBtn">
         <span class="spinner"></span>
         <span class="lock-btn-text">متابعة</span>
@@ -213,9 +217,12 @@
   </div>
 </div>
 
+<!-- وحدة المصادقة المشتركة (تصلح مشكلة التعليق بعد الخروج من الصفحة) -->
+<script src="auth.js"></script>
+
 <script>
 // ════════════════════════════════════════════════════════════════
-//  AUTH — نفس آلية dashboard.html (مستقلة)
+//  AUTH — عبر BitaqtiAuth المشتركة (localStorage + 30 يوم TTL)
 // ════════════════════════════════════════════════════════════════
 const TRACK_ENDPOINT = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
@@ -224,39 +231,32 @@ const PWD_KEY = 'bitaqti_admin_password';
 const $ = id => document.getElementById(id);
 
 function getSavedSession(){
-  try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
-    if(!raw) return null;
-    const p = JSON.parse(raw);
-    if(!p.expiresAt) return null;
-    if(Date.now() > p.expiresAt){
-      sessionStorage.removeItem(SESSION_KEY);
-      sessionStorage.removeItem(PWD_KEY);
-      return null;
-    }
-    return p;
-  } catch(e){ return null; }
+  return BitaqtiAuth.getSessionInfo();
 }
 
 function unlockApp(){
   $('lockScreen').style.display='none';
   $('appContent').classList.add('unlocked');
+  // إعداد معالجات دورة حياة الصفحة (bfcache + visibilitychange)
+  BitaqtiAuth.setupLifecycleHandlers((ok) => {
+    if(!ok){
+      setTimeout(() => window.location.reload(), 1200);
+    }
+  });
 }
 
 function lockApp(){
-  try { sessionStorage.removeItem(SESSION_KEY); } catch(e) {}
-  try { sessionStorage.removeItem(PWD_KEY); } catch(e) {}
+  BitaqtiAuth.clearSession();
   $('lockScreen').style.display='flex';
   $('appContent').classList.remove('unlocked');
   $('lockPassword').value='';
   $('lockError').classList.remove('show');
 }
 
-// التحقق التلقائي عند فتح الصفحة
+// التحقق التلقائي عند فتح الصفحة — يستخدم localStorage الآن
 (function checkExistingSession(){
-  const savedPwd = (() => { try { return sessionStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
-  const session = getSavedSession();
-  if(savedPwd && session){
+  const savedPwd = BitaqtiAuth.getSavedPassword();
+  if(savedPwd){
     unlockApp();
     return;
   }
@@ -264,6 +264,18 @@ function lockApp(){
   $('lockScreen').style.display='flex';
   $('appContent').classList.remove('unlocked');
 })();
+
+// إصلاح bfcache: استعادة الجلسة عند العودة للصفحة
+window.addEventListener('pageshow', () => {
+  const savedPwd = BitaqtiAuth.getSavedPassword();
+  if(savedPwd){
+    $('lockScreen').style.display='none';
+    $('appContent').classList.add('unlocked');
+  } else {
+    $('lockScreen').style.display='flex';
+    $('appContent').classList.remove('unlocked');
+  }
+});
 
 // ═══ معالجات شاشة القفل ═══
 $('lockToggle').addEventListener('click', () => {
@@ -276,29 +288,20 @@ $('lockForm').addEventListener('submit', async (e) => {
   const password = $('lockPassword').value;
   if(!password) return;
   const btn = $('lockSubmitBtn');
+  const rememberChk = $('lockRememberChk');
   btn.disabled = true; btn.classList.add('loading');
   $('lockError').classList.remove('show');
   try{
-    const res = await fetch(TRACK_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ admin_password: password, mode: 'sync' }),
-    });
-    if(res.status === 429){ showError('محاولات كثيرة جداً. انتظر دقيقة.'); return; }
-    if(res.status === 500){ showError('الخدمة غير مُعدّة على الخادم.'); return; }
-    if(res.status === 401){ showError('الرمز غير صحيح.'); $('lockPassword').value=''; $('lockPassword').focus(); return; }
-    if(!res.ok){ showError(`خطأ (${res.status}). حاول لاحقاً.`); return; }
-    // نجح التحقق
-    try {
-      sessionStorage.setItem(PWD_KEY, password);
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        createdAt: Date.now(),
-        expiresAt: Date.now() + 12 * 60 * 60 * 1000,
-      }));
-    } catch(e) {}
-    unlockApp();
+    const result = await BitaqtiAuth.verifyPassword(password);
+    if(result.ok){
+      BitaqtiAuth.saveSession(password, { remember: !!(rememberChk && rememberChk.checked) });
+      unlockApp();
+    } else {
+      showError(result.message || 'الرمز غير صحيح.');
+      $('lockPassword').value=''; $('lockPassword').focus();
+    }
   }catch(err){
-    showError('تعذّر الاتصال بالسيرفر. تحقق من الإنترنت.');
+    showError('تعذّر الاتصال بالخادم. تحقق من الإنترنت.');
   }finally{
     btn.disabled = false; btn.classList.remove('loading');
   }
