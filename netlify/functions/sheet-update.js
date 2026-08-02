@@ -10,6 +10,19 @@ exports.config = {
 };
 
 const crypto = require('crypto');
+const { sbInsert, sbUpdateWhere, sbDeleteWhere, sbDeleteAll, sbPing, ConfigError } = require('./lib/supabase');
+
+// ═══ أعمدة جدول customers المسموح كتابتها (نفس أعمدة supabase_schema.sql) ═══
+const CUSTOMER_COLUMNS = [
+  'phone', 'code', 'package', 'price', 'order_date', 'status', 'order_count',
+  'cv_link', 'actions_log', 'subpage_content', 'order_code',
+  'customer_name', 'customer_email', 'customer_country', 'customer_language',
+  'payment_method', 'payment_status', 'payment_date',
+  'vat_amount', 'discount_amount', 'total_with_vat',
+  'delivery_date', 'assigned_designer', 'design_link', 'qr_code_path',
+  'invoice_notes', 'last_updated', 'invoice_status',
+  'referral_code', 'referral_points', 'referred_by',
+];
 
 exports.handler = async (event) => {
   // ── CORS preflight ──
@@ -53,49 +66,25 @@ exports.handler = async (event) => {
     }, corsHeaders());
   }
 
-  // ═══ التحقق من رابط الـ Webhook ═══
-  const webhookUrl = process.env.SHEETS_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error('[sheet-update] SHEETS_WEBHOOK_URL env var not set');
-    return jsonResponse(500, {
-      error: 'server_not_configured',
-      message: 'SHEETS_WEBHOOK_URL غير مضبوط.',
-    }, corsHeaders());
-  }
-
   const action = String(body.action || '').trim();
 
-  // ═══ وضع اختبار: يتخطى فحص الـ action ويختبر الاتصال بالـ Webhook فقط ═══
-  if(action === 'test'){
+  // ═══ وضع اختبار: يتحقق من الاتصال بقاعدة البيانات فقط ═══
+  if (action === 'test') {
     try {
-      const testRes = await fetch(webhookUrl, {
-        method: 'GET',
-        redirect: 'follow',
-        signal: AbortSignal.timeout(10000),
-      });
-      const testText = await testRes.text();
-      let testData;
-      try { testData = JSON.parse(testText); }
-      catch(_) { testData = { raw: testText.slice(0, 200) }; }
-      
-      if(testData.ok === true || testData.message){
-        return jsonResponse(200, {
-          ok: true,
-          action: 'test',
-          message: 'Webhook يعمل بشكل صحيح',
-          webhook_response: testData,
-        }, corsHeaders());
-      }
+      await sbPing();
       return jsonResponse(200, {
         ok: true,
         action: 'test',
-        message: 'Webhook متصل',
-        webhook_response: testData,
+        message: 'الاتصال بقاعدة البيانات (Supabase) يعمل بشكل صحيح',
       }, corsHeaders());
-    } catch(e) {
+    } catch (e) {
+      if (e instanceof ConfigError) {
+        return jsonResponse(500, { error: 'server_not_configured', message: e.message }, corsHeaders());
+      }
+      console.error('[sheet-update] test failed', e);
       return jsonResponse(502, {
-        error: 'webhook_unreachable',
-        message: 'تعذّر الوصول إلى Apps Script Webhook. تحقق من الرابط.',
+        error: 'db_unreachable',
+        message: 'تعذّر الوصول إلى قاعدة البيانات. تحقق من SUPABASE_URL و SUPABASE_SERVICE_KEY.',
       }, corsHeaders());
     }
   }
@@ -108,82 +97,80 @@ exports.handler = async (event) => {
     }, corsHeaders());
   }
 
-  // ═══ تنفيذ العملية عبر Apps Script Webhook ═══
-  // نرسل الطلب إلى Apps Script مع كلمة السر (للتحقق المزدوج)
-  // ملاحظة: Apps Script لا يقبل Content-Type: application/json مع POST مباشرة
-  //         لذا نرسله كنص عادي ونحلله يدوياً في الـ Script
-  const payload = {
-    password: adminPassword,
-    action: action,
-  };
-
   if (action === 'bulk_replace') {
     if (!Array.isArray(body.records)) {
       return jsonResponse(400, { error: 'invalid_request', message: 'records يجب أن تكون مصفوفة.' }, corsHeaders());
     }
-    payload.records = body.records;
   } else {
     if (!body.record || typeof body.record !== 'object') {
       return jsonResponse(400, { error: 'invalid_request', message: 'record يجب أن يكون كائناً.' }, corsHeaders());
     }
-    payload.record = body.record;
+  }
+
+  // ═══ تنظيف السجل: نُبقي فقط أعمدة جدول customers المعروفة ═══
+  function cleanRecord(rec) {
+    const out = {};
+    CUSTOMER_COLUMNS.forEach(col => {
+      if (rec[col] !== undefined) out[col] = rec[col] === '' ? null : rec[col];
+    });
+    return out;
   }
 
   try {
-    console.log(`[sheet-update] forwarding ${action} to Apps Script`);
-    const bodyStr = JSON.stringify(payload);
+    let dbResponse;
 
-    // ═══ Google Apps Script Web Apps تعمل بـ POST ثم GET ═══
-    // 1) POST إلى /exec يعالج البيانات ويُعيد 302 redirect
-    // 2) GET على رابط الـ redirect يُرجع نتيجة المعالجة (JSON)
-    const postRes = await fetch(webhookUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: bodyStr,
-      redirect: 'manual',
-      signal: AbortSignal.timeout(30000),
-    });
+    if (action === 'add') {
+      const record = cleanRecord(body.record);
+      dbResponse = await sbInsert('customers', record);
+    }
 
-    // استخراج رابط الـ redirect
-    let finalText = '';
-    if([301, 302, 303, 307, 308].includes(postRes.status)){
-      const location = postRes.headers.get('location');
-      console.log(`[sheet-update] redirect ${postRes.status} → ${location ? location.substring(0, 80) + '...' : 'null'}`);
-      if(location){
-        // GET على رابط الـ redirect لاستلام النتيجة
-        const getRes = await fetch(location, {
-          method: 'GET',
-          redirect: 'follow',
-          signal: AbortSignal.timeout(30000),
-        });
-        finalText = await getRes.text();
-      } else {
-        // لا يوجد Location — نقرأ من الاستجابة الأصلية
-        finalText = await postRes.text();
+    else if (action === 'update') {
+      const record = cleanRecord(body.record);
+      const orderCode = String(body.record.order_code || '').trim();
+      const phone = String(body.record.phone || '').trim();
+      const code  = String(body.record.code  || '').trim();
+
+      let updated = [];
+      if (orderCode) {
+        updated = await sbUpdateWhere('customers', `order_code=eq.${encodeURIComponent(orderCode)}`, record);
       }
-    } else {
-      // لم يكن redirect — نقرأ الاستجابة مباشرة
-      finalText = await postRes.text();
+      if ((!updated || updated.length === 0) && phone && code) {
+        updated = await sbUpdateWhere(
+          'customers',
+          `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`,
+          record
+        );
+      }
+      if (!updated || updated.length === 0) {
+        // لم يوجد صف مطابق — نضيفه كصف جديد بدلاً من فقدان البيانات
+        dbResponse = await sbInsert('customers', record);
+      } else {
+        dbResponse = updated;
+      }
     }
 
-    // تحليل النتيجة
-    let webhookData;
-    try {
-      webhookData = JSON.parse(finalText);
-    } catch(_) {
-      webhookData = { ok: false, raw: finalText.slice(0, 500) };
+    else if (action === 'delete') {
+      const orderCode = String(body.record.order_code || '').trim();
+      const phone = String(body.record.phone || '').trim();
+      const code  = String(body.record.code  || '').trim();
+
+      let deleted = [];
+      if (orderCode) {
+        deleted = await sbDeleteWhere('customers', `order_code=eq.${encodeURIComponent(orderCode)}`);
+      }
+      if ((!deleted || deleted.length === 0) && phone && code) {
+        deleted = await sbDeleteWhere(
+          'customers',
+          `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`
+        );
+      }
+      dbResponse = deleted;
     }
 
-    if (webhookData.ok === false) {
-      const errMsg = webhookData.error || 'خطأ غير معروف من Apps Script';
-      const userMsg = errMsg === 'unauthorized'
-        ? 'الرمز في Apps Script لا يطابق INVOICE_PASSWORD. تحقق من Script properties → ADMIN_PASSWORD.'
-        : `خطأ من Apps Script: ${errMsg}`;
-      console.error('[sheet-update] script error:', errMsg);
-      return jsonResponse(400, {
-        error: 'script_error',
-        message: userMsg,
-      }, corsHeaders());
+    else if (action === 'bulk_replace') {
+      const records = body.records.map(cleanRecord);
+      await sbDeleteAll('customers');
+      dbResponse = records.length ? await sbInsert('customers', records) : [];
     }
 
     console.log(`[sheet-update] ${action} success`);
@@ -192,14 +179,23 @@ exports.handler = async (event) => {
       ok: true,
       action: action,
       message: getSuccessMessage(action),
-      webhook_response: webhookData,
+      db_response: dbResponse,
     }, corsHeaders());
 
   } catch (err) {
     console.error('[sheet-update] internal error', err);
-    return jsonResponse(500, {
-      error: 'internal_error',
-      message: 'خطأ داخلي أثناء الاتصال بـ Google Sheets. تحقق من SHEETS_WEBHOOK_URL.',
+    if (err instanceof ConfigError) {
+      return jsonResponse(500, { error: 'server_not_configured', message: err.message }, corsHeaders());
+    }
+    if (err.status === 409) {
+      return jsonResponse(409, {
+        error: 'duplicate',
+        message: 'رمز الطلب (order_code) موجود مسبقاً — استخدم رمزاً مختلفاً أو حدّث السجل الموجود بدل الإضافة.',
+      }, corsHeaders());
+    }
+    return jsonResponse(502, {
+      error: 'db_error',
+      message: 'خطأ أثناء الاتصال بقاعدة البيانات (Supabase). تحقق من SUPABASE_URL و SUPABASE_SERVICE_KEY في Netlify.',
     }, corsHeaders());
   }
 };
@@ -210,10 +206,10 @@ exports.handler = async (event) => {
 
 function getSuccessMessage(action){
   const messages = {
-    'add':           'تمت إضافة العميل بنجاح إلى Google Sheets.',
-    'update':        'تم تحديث بيانات العميل بنجاح في Google Sheets.',
-    'delete':        'تم حذف العميل بنجاح من Google Sheets.',
-    'bulk_replace':  'تم استبدال كل البيانات في Google Sheets بنجاح.',
+    'add':           'تمت إضافة العميل بنجاح إلى قاعدة البيانات.',
+    'update':        'تم تحديث بيانات العميل بنجاح في قاعدة البيانات.',
+    'delete':        'تم حذف العميل بنجاح من قاعدة البيانات.',
+    'bulk_replace':  'تم استبدال كل البيانات في قاعدة البيانات بنجاح.',
   };
   return messages[action] || 'تمت العملية بنجاح.';
 }
