@@ -204,6 +204,11 @@
   }
   .amount-row.remaining .lbl{color:var(--red-deep);font-weight:700;}
   .amount-row.remaining .val{color:var(--red-deep);}
+  .amount-row.gift{
+    background:var(--green-tint);border-radius:8px;padding:10px 12px;margin-top:6px;
+  }
+  .amount-row.gift .lbl{color:#065F46;font-weight:700;}
+  .amount-row.gift .val{color:var(--green);font-weight:800;}
 
   /* Actions */
   .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;}
@@ -362,6 +367,10 @@
           <span class="lbl" data-i18n="amt.discount">خصم على البنود</span>
           <span class="val">د.ب −3.000</span>
         </div>
+        <div class="amount-row gift">
+          <span class="lbl">🎁 <span data-i18n="amt.gift">بند هدية — تعديل مجاني للسيرة الورقية</span></span>
+          <span class="val" data-i18n="amt.giftV">مجاني</span>
+        </div>
         <div class="amount-row">
           <span class="lbl" data-i18n="amt.vat">ضريبة القيمة المضافة (10%)</span>
           <span class="val">د.ب 1.091</span>
@@ -425,6 +434,8 @@ const I18N = {
     "pay.sub":"تم دفع عربون 6 د.ب — المتبقي بعد التسليم",
     "amt.subtotal":"المجموع الفرعي",
     "amt.discount":"خصم على البنود",
+    "amt.gift":"بند هدية — تعديل مجاني للسيرة الورقية",
+    "amt.giftV":"مجاني",
     "amt.vat":"ضريبة القيمة المضافة (10%)",
     "amt.total":"الإجمالي شامل الضريبة",
     "amt.deposit":"عربون / دفعة مقدمة",
@@ -448,6 +459,8 @@ const I18N = {
     "pay.sub":"Deposit of BHD 6 paid — balance due on delivery",
     "amt.subtotal":"Subtotal",
     "amt.discount":"Item Discount",
+    "amt.gift":"Gift Item — Free Paper CV Edit",
+    "amt.giftV":"Free",
     "amt.vat":"VAT (10%)",
     "amt.total":"Total incl. VAT",
     "amt.deposit":"Deposit / Advance",
