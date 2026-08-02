@@ -1,79 +1,33 @@
+// admin/lock.js — شاشة قفل موحدة تستخدم BitaqtiAuth
+// (يُحمّل بعد auth.js)
+// ════════════════════════════════════════════════════════════════
+//  يوفر شاشة قفل مرئية (overlay) قابلة لإعادة الاستخدام في أي
+//  صفحة إدارية. يتحقق من الجلسة المحفوظة تلقائياً، ويعرض شاشة
+//  القفل فقط عند الحاجة. يدعم خيار "تذكّرني لمدة 30 يوماً".
+// ════════════════════════════════════════════════════════════════
 
 (function(){
   'use strict';
 
-  // ═══ ثوابت ═══
-  const TRACK_ENDPOINT = '/.netlify/functions/track-order';
-  const PWD_KEY = 'bitaqti_admin_password';
-  const SESSION_KEY = 'bitaqti_admin_session';
-  const SESSION_TTL = 12 * 60 * 60 * 1000; // 12 ساعة
+  if(!window.BitaqtiAuth){
+    console.error('[lock.js] BitaqtiAuth not loaded — load auth.js before lock.js');
+    return;
+  }
 
-  // ═══ حالة المكوّن ═══
   let onUnlockedCallback = null;
   let lockOverlay = null;
-
-  // ═══ التحقق من الجلسة المحفوظة ═══
-  function getSavedPassword(){
-    try {
-      // تحقق من صلاحية الجلسة
-      const sessionRaw = sessionStorage.getItem(SESSION_KEY);
-      if(sessionRaw){
-        const session = JSON.parse(sessionRaw);
-        if(session.expiresAt && Date.now() < session.expiresAt){
-          return sessionStorage.getItem(PWD_KEY) || null;
-        }
-        // الجلسة منتهية
-        sessionStorage.removeItem(SESSION_KEY);
-        sessionStorage.removeItem(PWD_KEY);
-      }
-    } catch(e) {}
-    return null;
-  }
-
-  function saveSession(password){
-    try {
-      sessionStorage.setItem(PWD_KEY, password);
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
-        createdAt: Date.now(),
-        expiresAt: Date.now() + SESSION_TTL,
-      }));
-    } catch(e) {}
-  }
-
-  function clearSession(){
-    try {
-      sessionStorage.removeItem(PWD_KEY);
-      sessionStorage.removeItem(SESSION_KEY);
-    } catch(e) {}
-  }
+  let pendingAuth = false;
 
   // ═══ التحقق من الرمز عبر السيرفر ═══
-  async function verifyPassword(password){
-    try {
-      const res = await fetch(TRACK_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ admin_password: password, mode: 'sync' }),
-      });
-      if(res.status === 200){
-        return { ok: true };
-      }
-      if(res.status === 401){
-        return { ok: false, message: 'الرمز غير صحيح.' };
-      }
-      if(res.status === 429){
-        return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
-      }
-      if(res.status === 500){
-        return { ok: false, message: 'الخدمة غير مُعدّة على الخادم.' };
-      }
-      return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
-    } catch(err){
-      return { ok: false, message: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت.' };
+  async function verifyPassword(password, remember){
+    const result = await BitaqtiAuth.verifyPassword(password);
+    if(result.ok){
+      BitaqtiAuth.saveSession(password, { remember: !!remember });
     }
+    return result;
   }
 
-  // ═══ بناء شاشة القفل ═══
+  // ═══ بناء شاشة القفل (مرة واحدة) ═══
   function createLockScreen(){
     if(lockOverlay) return lockOverlay;
 
@@ -89,15 +43,16 @@
       <style>
         #bitaqtiLockScreen *{box-sizing:border-box;}
         #bitaqtiLockCard{
-          background:#fff;border-radius:20px;padding:36px 32px;
+          background:#fff;border-radius:20px;padding:32px 28px;
           max-width:400px;width:100%;text-align:center;
           box-shadow:0 24px 60px rgba(0,0,0,.4);
+          max-height:92vh;overflow-y:auto;
         }
         #bitaqtiLockIcon{
           width:64px;height:64px;border-radius:50%;
           background:#FBE9EA;color:#CE1126;
           display:flex;align-items:center;justify-content:center;
-          margin:0 auto 18px;
+          margin:0 auto 18px;flex-shrink:0;
         }
         #bitaqtiLockIcon svg{width:30px;height:30px;}
         #bitaqtiLockScreen h1{
@@ -119,6 +74,11 @@
         }
         #bitaqtiLockToggle:hover{color:#17181C;}
         #bitaqtiLockToggle svg{width:18px;height:18px;}
+        #bitaqtiLockRemember{
+          display:flex;align-items:center;justify-content:center;gap:8px;
+          margin-bottom:14px;font-size:12.5px;color:#53565C;cursor:pointer;
+        }
+        #bitaqtiLockRemember input{cursor:pointer;width:16px;height:16px;}
         #bitaqtiLockSubmit{
           width:100%;padding:14px;border:none;border-radius:10px;
           background:#17181C;color:#fff;font-size:14px;font-weight:700;
@@ -163,6 +123,10 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
           </div>
+          <label id="bitaqtiLockRemember">
+            <input type="checkbox" id="bitaqtiLockRememberChk">
+            <span>تذكّرني على هذا الجهاز لمدة 30 يوماً</span>
+          </label>
           <button type="submit" id="bitaqtiLockSubmit">
             <span class="spinner"></span>
             <span class="lock-btn-text">متابعة</span>
@@ -170,7 +134,7 @@
         </form>
         <div id="bitaqtiLockError"></div>
         <div id="bitaqtiLockHint">
-          🔒 هذه المنطقة مخصصة لصاحب المشروع فقط.
+          🔒 هذه المنطقة مخصصة لصاحب المشروع فقط. الرمز هو نفسه المستخدم في صفحة الفواتير.
         </div>
         <a href="../index.html" id="bitaqtiLockBack">
           ← العودة إلى الموقع العام
@@ -184,8 +148,12 @@
     const form = overlay.querySelector('#bitaqtiLockForm');
     const passwordInput = overlay.querySelector('#bitaqtiLockPassword');
     const toggleBtn = overlay.querySelector('#bitaqtiLockToggle');
+    const rememberChk = overlay.querySelector('#bitaqtiLockRememberChk');
     const submitBtn = overlay.querySelector('#bitaqtiLockSubmit');
     const errorEl = overlay.querySelector('#bitaqtiLockError');
+
+    // استعادة تفضيل "تذكّرني" السابق
+    rememberChk.checked = BitaqtiAuth.getRememberPreference();
 
     toggleBtn.addEventListener('click', () => {
       passwordInput.type = passwordInput.type === 'password' ? 'text' : 'password';
@@ -193,17 +161,18 @@
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      if(pendingAuth) return;
       const password = passwordInput.value;
       if(!password) return;
 
+      pendingAuth = true;
       submitBtn.disabled = true;
       submitBtn.classList.add('loading');
       errorEl.classList.remove('show');
 
-      const result = await verifyPassword(password);
+      const result = await verifyPassword(password, rememberChk.checked);
 
       if(result.ok){
-        saveSession(password);
         hideLockScreen();
         if(onUnlockedCallback) onUnlockedCallback();
       } else {
@@ -213,6 +182,7 @@
         passwordInput.focus();
       }
 
+      pendingAuth = false;
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
     });
@@ -245,40 +215,53 @@
   }
 
   // ═══ API العامة ═══
-  const BitaqtiLock = {
+  window.BitaqtiLock = {
     /**
      * يفرض تسجيل الدخول إن لم تكن الجلسة فعّالة.
      * @param {Object} opts - {title, subtitle, onUnlocked}
      */
     requireAuth(opts = {}){
       onUnlockedCallback = opts.onUnlocked || null;
-      const savedPwd = getSavedPassword();
+      const savedPwd = BitaqtiAuth.getSavedPassword();
       if(savedPwd){
-        // الجلسة فعّالة
+        // الجلسة فعّالة — لا حاجة لشاشة القفل
         hideLockScreen();
         if(onUnlockedCallback) onUnlockedCallback();
         return true;
       }
       // لا توجد جلسة فعّالة — أظهر شاشة القفل
-      // نخفي محتوى الصفحة حتى لا يُرى قبل التحقق
       showLockScreen(opts.title, opts.subtitle);
       return false;
     },
 
     /** يرجع الرمز المحفوظ أو null */
     getPassword(){
-      return getSavedPassword();
+      return BitaqtiAuth.getSavedPassword();
     },
 
     /** يتحقق إن كانت الجلسة فعّالة */
     isAuthenticated(){
-      return getSavedPassword() !== null;
+      return BitaqtiAuth.getSavedPassword() !== null;
+    },
+
+    /** معلومات الجلسة للعرض (مثل الوقت المتبقي) */
+    getSessionInfo(){
+      return BitaqtiAuth.getSessionInfo();
+    },
+
+    /** يمدّد الجلسة (نشاط المستخدم) */
+    extendSession(){
+      return BitaqtiAuth.extendSession();
+    },
+
+    /** إعادة تحقق صامتة من الخادم */
+    async silentRevalidate(){
+      return await BitaqtiAuth.silentRevalidate();
     },
 
     /** تسجيل خروج */
     logout(){
-      clearSession();
-      // إعادة تحميل الصفحة لإظهار شاشة القفل
+      BitaqtiAuth.clearSession();
       window.location.reload();
     },
 
@@ -287,7 +270,4 @@
       onUnlockedCallback = callback;
     },
   };
-
-  // تصدير العام
-  window.BitaqtiLock = BitaqtiLock;
 })();
