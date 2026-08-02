@@ -2128,7 +2128,8 @@ const formatMoney = (n, currency) => {
 };
 
 // ════════════════════════════════════════════════════════════════
-//  AUTH — بسيط ومباشر (يستخدم localStorage لمنع التعليق)
+//  AUTH — شاشة قفل محفوظة + تحقق localStorage فقط (سريع، بدون fetch)
+//  لو الجلسة محفوظة → تفتح فوراً. ولو لا → تطلب كلمة المرور.
 // ════════════════════════════════════════════════════════════════
 const AUTH_ENDPOINT = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
@@ -2176,7 +2177,7 @@ function lockApp(){
   $('lockError').classList.remove('show');
 }
 
-// التحقق التلقائي عند فتح الصفحة
+// التحقق التلقائي — يقرأ localStorage فقط (سريع جداً، بدون اتصال بالخادم)
 (function checkExistingSession(){
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   const session = getSavedSession();
@@ -2188,18 +2189,20 @@ function lockApp(){
   }
 })();
 
-// إصلاح bfcache
+// bfcache
 window.addEventListener('pageshow', () => {
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   if(savedPwd){
     $('lockScreen').style.display = 'none';
     $('app').classList.add('unlocked');
+    if(!initApp._done) initApp();
   } else {
     $('lockScreen').style.display = 'flex';
     $('app').classList.remove('unlocked');
   }
 });
 
+// ═══ معالجات شاشة القفل ═══
 $('lockToggle').addEventListener('click', () => {
   const inp = $('lockPassword');
   inp.type = inp.type === 'password' ? 'text' : 'password';
@@ -2214,7 +2217,6 @@ $('lockForm').addEventListener('submit', async (e) => {
   btn.disabled = true; btn.classList.add('loading');
   $('lockError').classList.remove('show');
   try{
-    // التحقق المباشر عبر track-order
     const res = await fetch(AUTH_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -2232,10 +2234,10 @@ $('lockForm').addEventListener('submit', async (e) => {
       let data = {};
       try { data = await res.json(); } catch(_) {}
       showError(data.error === 'server_not_configured'
-        ? '⚠️ مصدر البيانات غير مُعدّ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.'
+        ? '⚠️ مصدر البيانات غير مُعدّ. راجع TROUBLESHOOTING.md.'
         : 'الخدمة غير مُعدّة على الخادم.');
     } else if(res.status === 502){
-      showError('⚠️ تعذّر الوصول إلى مصدر البيانات (502). راجع TROUBLESHOOTING.md.');
+      showError('⚠️ تعذّر الوصول لمصدر البيانات (502).');
     } else {
       showError(`خطأ في الاتصال (${res.status}).`);
     }
@@ -5715,9 +5717,8 @@ function initApp(){
 
   // Form events
   ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes',
-   // ═══ حقول إضافية ═══
-   'fDueDate','fPoRef','fProject','fCustEmail','fCustCountry',
-   'fShipping','fTip','fDeposit','fRecurringNext','fPayDate','fPayRef'
+   'fDueDate','fProject','fCustEmail','fCustCountry',
+   'fShipping','fTip','fDeposit','fRecurringNext','fPayDate'
   ].forEach(id => {
     const el = $(id);
     if(el){
