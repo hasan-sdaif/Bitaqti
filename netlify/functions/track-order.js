@@ -70,7 +70,7 @@ exports.handler = async (event) => {
 
   // ═══════════════════════════════════════════════════════════════
   //  الوضع 3: التحقق من كود إحالة (عام — بدون كلمة سر)
-  //  POST { referral_code: "HS1234" }
+  //  POST { referral_code: "TST123" }
   //  → يرجع: { ok, valid, discount_percent, referrer_name }
   // ═══════════════════════════════════════════════════════════════
   if (body.referral_code !== undefined && body.referral_code !== '') {
@@ -199,7 +199,7 @@ async function handleAdminSync(body){
 
 // ─────────────────────────────────────────────────────────────
 //  الوضع 3: التحقق من كود إحالة (عام)
-//  POST { referral_code: "HS1234" }
+//  POST { referral_code: "TST123" }
 //  → { ok, valid, discount_percent, referrer_name }
 // ─────────────────────────────────────────────────────────────
 async function handleReferralValidate(body){
@@ -436,23 +436,23 @@ function normalizeRow(r){
   return out;
 }
 
-/** يولّد كود إحالة من حرفين + 4 أرقام (مثل: HS1234) */
+/** يولّد كود إحالة من 3 أحرف + 3 أرقام (مثل: TST123) */
 function generateReferralCode(name){
-  // استخراج أول حرفين من الاسم (تجاهل المسافات والرموز)
+  // استخراج أول 3 أحرف من الاسم (تجاهل المسافات والرموز)
   const cleanName = String(name || '').replace(/[^\u0600-\u06FFa-zA-Z]/g, '');
   let letters = '';
-  // إن كان الاسم عربياً، نحوّل أول حرفين لصيغة لاتينية مبسّطة
+  // إن كان الاسم عربياً، نحوّل أول 3 أحرف لصيغة لاتينية مبسّطة
   if(/[\u0600-\u06FF]/.test(cleanName)){
-    // خذ أول حرفين من transliteration بسيط
+    // خذ أول 3 أحرف من transliteration بسيط
     const map = {'ا':'A','ب':'B','ت':'T','ث':'S','ج':'J','ح':'H','خ':'K','د':'D','ذ':'Z','ر':'R','ز':'Z','س':'S','ش':'X','ص':'C','ض':'D','ط':'T','ظ':'Z','ع':'A','غ':'G','ف':'F','ق':'Q','ك':'K','ل':'L','م':'M','ن':'N','ه':'H','و':'W','ي':'Y','ى':'Y','ء':'A','أ':'A','إ':'I','آ':'A','ؤ':'W','ئ':'Y','ة':'T'};
     const chars = cleanName.split('').filter(c => map[c]);
-    letters = (map[chars[0]] || 'X') + (map[chars[1]] || 'X');
+    letters = (map[chars[0]] || 'X') + (map[chars[1]] || 'X') + (map[chars[2]] || 'X');
   } else {
-    // إن كان لاتينياً، خذ أول حرفين
-    letters = cleanName.substring(0, 2).toUpperCase().padEnd(2, 'X');
+    // إن كان لاتينياً، خذ أول 3 أحرف
+    letters = cleanName.substring(0, 3).toUpperCase().padEnd(3, 'X');
   }
-  // 4 أرقام عشوائية
-  const digits = String(Math.floor(1000 + Math.random() * 9000));
+  // 3 أرقام عشوائية (100–999)
+  const digits = String(Math.floor(100 + Math.random() * 900));
   return letters.toUpperCase() + digits;
 }
 
