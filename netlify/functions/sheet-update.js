@@ -1,9 +1,9 @@
 // netlify/functions/sheet-update.js
 // ════════════════════════════════════════════════════════════════
-//  يدعم مصدرين للكتابة تلقائياً:
-//    1. Supabase (لو SUPABASE_URL + SUPABASE_SERVICE_KEY موجودان) — مُفضّل
-//    2. Google Sheets Webhook (لو SHEETS_WEBHOOK_URL موجود) — احتياطي
-//  هذا يضمن أن الكتابة تعمل سواء أتممت إعداد Supabase أم لا.
+//  يدعم مصدرين للكتابة:
+//    1. Google Sheets Webhook (افتراضي — يستخدم SHEETS_WEBHOOK_URL)
+//    2. Supabase (اختياري — يستخدم SUPABASE_URL + SUPABASE_SERVICE_KEY)
+//  لو Supabase مهيأ وصالح → يستخدمه. وإلا → يستخدم Google Sheets.
 // ════════════════════════════════════════════════════════════════
 
 exports.config = {
@@ -30,71 +30,94 @@ const CUSTOMER_COLUMNS = [
 ];
 
 // ─────────────────────────────────────────────────────────────
-//  كشف المصدر النشط
+//  كشف المصدر + طبقة Supabase
 // ─────────────────────────────────────────────────────────────
-function getDataSource(){
-  const supaUrl = (process.env.SUPABASE_URL || '').trim();
-  const supaKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
-  if(supaUrl && supaKey && /^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(supaUrl) && supaKey.length > 30){
-    return 'supabase';
-  }
-  if(process.env.SHEETS_WEBHOOK_URL){
-    return 'sheets';
-  }
-  return 'none';
+function isSupabaseConfigured(){
+  const url = (process.env.SUPABASE_URL || '').trim();
+  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
+  return !!(url && key && /^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url) && key.length > 30);
 }
 
-// ─────────────────────────────────────────────────────────────
-//  طبقة Supabase للكتابة
-// ─────────────────────────────────────────────────────────────
 function getSupabaseConfig(){
   const url = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
-  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
-  if(!url || !serviceKey) return null;
-  return { url, serviceKey };
+  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
+  return { url, key };
 }
 
-async function sbRequest(path, options = {}){
+async function sbInsert(record){
   const cfg = getSupabaseConfig();
-  if(!cfg) throw Object.assign(new Error('Supabase not configured'), { code: 'server_not_configured' });
-  let res;
-  try {
-    res = await fetch(`${cfg.url}/rest/v1/${path}`, {
-      method: options.method || 'GET',
-      headers: {
-        'apikey': cfg.serviceKey,
-        'Authorization': `Bearer ${cfg.serviceKey}`,
-        'Content-Type': 'application/json; charset=utf-8',
-        'Prefer': options.prefer || 'return=representation',
-      },
-      body: options.body ? JSON.stringify(options.body) : undefined,
-    });
-  } catch(networkErr){
-    throw Object.assign(new Error('تعذّر الوصول إلى Supabase.'), { code: 'source_unavailable' });
-  }
-  if(res.status === 401 || res.status === 403){
-    throw Object.assign(new Error('مفتاح Supabase غير صالح.'), { code: 'auth_error' });
-  }
-  if(res.status === 409){
-    throw Object.assign(new Error('تضارب — السجل موجود مسبقاً.'), { code: 'duplicate', status: 409 });
-  }
-  if(!res.ok){
-    throw Object.assign(new Error(`خطأ من Supabase (HTTP ${res.status})`), { code: 'db_error' });
-  }
-  if(res.status === 204) return [];
+  const res = await fetch(`${cfg.url}/rest/v1/customers`, {
+    method: 'POST',
+    headers: {
+      'apikey': cfg.key, 'Authorization': `Bearer ${cfg.key}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation',
+    },
+    body: JSON.stringify(record),
+  });
+  if(!res.ok) throw new Error(`Supabase insert HTTP ${res.status}`);
   return await res.json().catch(() => []);
 }
 
-async function sbInsert(table, record){ return await sbRequest(encodeURIComponent(table), { method: 'POST', prefer: 'return=representation', body: record }); }
-async function sbUpdateWhere(table, filter, values){ return await sbRequest(`${encodeURIComponent(table)}?${filter}`, { method: 'PATCH', prefer: 'return=representation', body: values }); }
-async function sbDeleteWhere(table, filter){ return await sbRequest(`${encodeURIComponent(table)}?${filter}`, { method: 'DELETE', prefer: 'return=representation' }); }
-async function sbDeleteAll(table){ return await sbRequest(`${encodeURIComponent(table)}?id=gte.0`, { method: 'DELETE', prefer: 'return=representation' }); }
-async function sbPing(){ await sbRequest(`${encodeURIComponent('customers')}?select=id&limit=1`, { method: 'GET' }); return true; }
+async function sbUpdate(orderCode, phone, code, record){
+  const cfg = getSupabaseConfig();
+  let filter = '';
+  if(orderCode) filter = `order_code=eq.${encodeURIComponent(orderCode)}`;
+  else if(phone && code) filter = `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`;
+  else throw new Error('No filter for update');
+  const res = await fetch(`${cfg.url}/rest/v1/customers?${filter}`, {
+    method: 'PATCH',
+    headers: {
+      'apikey': cfg.key, 'Authorization': `Bearer ${cfg.key}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation',
+    },
+    body: JSON.stringify(record),
+  });
+  if(!res.ok) throw new Error(`Supabase update HTTP ${res.status}`);
+  const result = await res.json().catch(() => []);
+  // لو لم يجد الصف، أدرجه بدلاً من فقدان البيانات
+  if(!result || result.length === 0){
+    return await sbInsert(record);
+  }
+  return result;
+}
 
-// ─────────────────────────────────────────────────────────────
-//  Handler الرئيسي
-// ─────────────────────────────────────────────────────────────
+async function sbDelete(orderCode, phone, code){
+  const cfg = getSupabaseConfig();
+  let filter = '';
+  if(orderCode) filter = `order_code=eq.${encodeURIComponent(orderCode)}`;
+  else if(phone && code) filter = `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`;
+  else throw new Error('No filter for delete');
+  const res = await fetch(`${cfg.url}/rest/v1/customers?${filter}`, {
+    method: 'DELETE',
+    headers: {
+      'apikey': cfg.key, 'Authorization': `Bearer ${cfg.key}`,
+      'Content-Type': 'application/json', 'Prefer': 'return=representation',
+    },
+  });
+  if(!res.ok) throw new Error(`Supabase delete HTTP ${res.status}`);
+  return await res.json().catch(() => []);
+}
+
+async function sbPing(){
+  const cfg = getSupabaseConfig();
+  const res = await fetch(`${cfg.url}/rest/v1/customers?select=id&limit=1`, {
+    method: 'GET',
+    headers: { 'apikey': cfg.key, 'Authorization': `Bearer ${cfg.key}` },
+  });
+  if(!res.ok) throw new Error(`Supabase ping HTTP ${res.status}`);
+  return true;
+}
+
+function cleanRecord(rec){
+  const out = {};
+  CUSTOMER_COLUMNS.forEach(col => {
+    if(rec[col] !== undefined) out[col] = rec[col] === '' ? null : rec[col];
+  });
+  return out;
+}
+
 exports.handler = async (event) => {
+  // ── CORS preflight ──
   if (event.httpMethod === 'OPTIONS') {
     return jsonResponse(204, null, corsHeaders());
   }
@@ -102,209 +125,258 @@ exports.handler = async (event) => {
     return jsonResponse(405, { error: 'method_not_allowed', message: 'الطريقة غير مسموحة.' }, corsHeaders());
   }
 
+  // parse body
   let body = {};
   try { body = JSON.parse(event.body || '{}'); } catch(_) {
     return jsonResponse(400, { error: 'invalid_request', message: 'صيغة الطلب غير صحيحة.' }, corsHeaders());
   }
 
-  // ═══ التحقق من كلمة السر ═══
+  // ═══ التحقق من كلمة السر (نفس INVOICE_PASSWORD) ═══
   const adminPassword = String(body.password || '');
   const correctPassword = process.env.INVOICE_PASSWORD;
+
   if (!correctPassword) {
-    return jsonResponse(500, { error: 'server_not_configured', message: 'INVOICE_PASSWORD غير مضبوط على الخادم.' }, corsHeaders());
-  }
-  if (!adminPassword) {
-    return jsonResponse(401, { error: 'missing_password', message: 'يرجى إدخال رمز الأمان.' }, corsHeaders());
-  }
-  if (!timingSafeStringEqual(adminPassword, correctPassword)) {
-    return jsonResponse(401, { error: 'wrong_password', message: 'رمز الأمان غير صحيح.' }, corsHeaders());
-  }
-
-  const action = String(body.action || '').trim();
-  const source = getDataSource();
-
-  if (source === 'none') {
+    console.error('[sheet-update] INVOICE_PASSWORD env var not set');
     return jsonResponse(500, {
       error: 'server_not_configured',
-      message: 'لا يوجد مصدر بيانات مهيأ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو SHEETS_WEBHOOK_URL في Netlify.',
+      message: 'INVOICE_PASSWORD غير مضبوط على الخادم.',
     }, corsHeaders());
   }
 
+  if (!adminPassword) {
+    return jsonResponse(401, {
+      error: 'missing_password',
+      message: 'يرجى إدخال رمز الأمان.',
+    }, corsHeaders());
+  }
+
+  if (!timingSafeStringEqual(adminPassword, correctPassword)) {
+    console.warn('[sheet-update] failed admin login attempt');
+    return jsonResponse(401, {
+      error: 'wrong_password',
+      message: 'رمز الأمان غير صحيح.',
+    }, corsHeaders());
+  }
+
+  // ═══ التحقق من المصدر (Supabase أو Google Sheets) ═══
+  const webhookUrl = process.env.SHEETS_WEBHOOK_URL;
+  const useSupabase = isSupabaseConfigured();
+
+  if (!webhookUrl && !useSupabase) {
+    console.error('[sheet-update] no data source configured');
+    return jsonResponse(500, {
+      error: 'server_not_configured',
+      message: 'لا يوجد مصدر بيانات مهيأ. اضبط SHEETS_WEBHOOK_URL أو SUPABASE_URL+SUPABASE_SERVICE_KEY في Netlify.',
+    }, corsHeaders());
+  }
+
+  const action = String(body.action || '').trim();
+
   // ═══ وضع اختبار ═══
-  if (action === 'test') {
-    if (source === 'supabase') {
+  if(action === 'test'){
+    // لو Supabase مهيأ، اختبره
+    if(useSupabase){
       try {
         await sbPing();
-        return jsonResponse(200, { ok: true, action: 'test', message: 'الاتصال بقاعدة البيانات (Supabase) يعمل بشكل صحيح' }, corsHeaders());
-      } catch (e) {
-        return jsonResponse(502, { error: 'db_unreachable', message: e.message }, corsHeaders());
+        return jsonResponse(200, {
+          ok: true, action: 'test',
+          message: 'الاتصال بقاعدة البيانات (Supabase) يعمل بشكل صحيح',
+        }, corsHeaders());
+      } catch(e) {
+        return jsonResponse(502, {
+          error: 'db_unreachable',
+          message: 'تعذّر الوصول إلى Supabase: ' + e.message,
+        }, corsHeaders());
       }
     }
-    // sheets
+    // وإلا اختبر Webhook
     try {
-      const webhookUrl = process.env.SHEETS_WEBHOOK_URL;
-      const testRes = await fetch(webhookUrl, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000) });
+      const testRes = await fetch(webhookUrl, {
+        method: 'GET',
+        redirect: 'follow',
+        signal: AbortSignal.timeout(10000),
+      });
       const testText = await testRes.text();
       let testData;
-      try { testData = JSON.parse(testText); } catch(_) { testData = { raw: testText.slice(0, 200) }; }
-      return jsonResponse(200, { ok: true, action: 'test', message: 'Webhook يعمل بشكل صحيح', webhook_response: testData }, corsHeaders());
+      try { testData = JSON.parse(testText); }
+      catch(_) { testData = { raw: testText.slice(0, 200) }; }
+
+      if(testData.ok === true || testData.message){
+        return jsonResponse(200, {
+          ok: true, action: 'test',
+          message: 'Webhook يعمل بشكل صحيح',
+          webhook_response: testData,
+        }, corsHeaders());
+      }
+      return jsonResponse(200, {
+        ok: true, action: 'test',
+        message: 'Webhook متصل',
+        webhook_response: testData,
+      }, corsHeaders());
     } catch(e) {
-      return jsonResponse(502, { error: 'webhook_unreachable', message: 'تعذّر الوصول إلى Apps Script Webhook.' }, corsHeaders());
+      return jsonResponse(502, {
+        error: 'webhook_unreachable',
+        message: 'تعذّر الوصول إلى Apps Script Webhook. تحقق من الرابط.',
+      }, corsHeaders());
     }
   }
 
   const validActions = ['add', 'update', 'delete', 'bulk_replace'];
   if (!validActions.includes(action)) {
-    return jsonResponse(400, { error: 'invalid_action', message: `action يجب أن يكون أحد: ${validActions.join(', ')}` }, corsHeaders());
-  }
-
-  // تنسيق السجلات
-  if (action === 'bulk_replace') {
-    if (!Array.isArray(body.records)) {
-      return jsonResponse(400, { error: 'invalid_request', message: 'records يجب أن تكون مصفوفة.' }, corsHeaders());
-    }
-  } else {
-    if (!body.record || typeof body.record !== 'object') {
-      return jsonResponse(400, { error: 'invalid_request', message: 'record يجب أن يكون كائناً.' }, corsHeaders());
-    }
-  }
-
-  function cleanRecord(rec){
-    const out = {};
-    CUSTOMER_COLUMNS.forEach(col => {
-      if(rec[col] !== undefined) out[col] = rec[col] === '' ? null : rec[col];
-    });
-    return out;
+    return jsonResponse(400, {
+      error: 'invalid_action',
+      message: `action يجب أن يكون أحد: ${validActions.join(', ')}`,
+    }, corsHeaders());
   }
 
   // ═══ تنفيذ العملية ═══
-  try {
-    let dbResponse;
-
-    if (source === 'supabase') {
-      // ── Supabase path ──
-      if (action === 'add') {
-        const record = cleanRecord(body.record);
-        dbResponse = await sbInsert('customers', record);
-      } else if (action === 'update') {
-        const record = cleanRecord(body.record);
-        const orderCode = String(body.record.order_code || '').trim();
-        const phone = String(body.record.phone || '').trim();
-        const code  = String(body.record.code  || '').trim();
-        let updated = [];
-        if (orderCode) updated = await sbUpdateWhere('customers', `order_code=eq.${encodeURIComponent(orderCode)}`, record);
-        if ((!updated || updated.length === 0) && phone && code) {
-          updated = await sbUpdateWhere('customers', `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`, record);
+  // لو Supabase مهيأ، استخدمه مباشرة
+  if(useSupabase){
+    try {
+      let result;
+      if(action === 'add'){
+        if (!body.record || typeof body.record !== 'object') {
+          return jsonResponse(400, { error: 'invalid_request', message: 'record يجب أن يكون كائناً.' }, corsHeaders());
         }
-        if (!updated || updated.length === 0) {
-          // لم يجد الصف — أضفه بدل أن تضيع البيانات
-          dbResponse = await sbInsert('customers', record);
-        } else {
-          dbResponse = updated;
+        result = await sbInsert(cleanRecord(body.record));
+      } else if(action === 'update'){
+        if (!body.record || typeof body.record !== 'object') {
+          return jsonResponse(400, { error: 'invalid_request', message: 'record يجب أن يكون كائناً.' }, corsHeaders());
         }
-      } else if (action === 'delete') {
-        const orderCode = String(body.record.order_code || '').trim();
-        const phone = String(body.record.phone || '').trim();
-        const code  = String(body.record.code  || '').trim();
-        let deleted = [];
-        if (orderCode) deleted = await sbDeleteWhere('customers', `order_code=eq.${encodeURIComponent(orderCode)}`);
-        if ((!deleted || deleted.length === 0) && phone && code) {
-          deleted = await sbDeleteWhere('customers', `phone=eq.${encodeURIComponent(phone)}&code=eq.${encodeURIComponent(code)}`);
+        const r = body.record;
+        result = await sbUpdate(r.order_code, r.phone, r.code, cleanRecord(r));
+      } else if(action === 'delete'){
+        const r = body.record || {};
+        result = await sbDelete(r.order_code, r.phone, r.code);
+      } else if(action === 'bulk_replace'){
+        if (!Array.isArray(body.records)) {
+          return jsonResponse(400, { error: 'invalid_request', message: 'records يجب أن تكون مصفوفة.' }, corsHeaders());
         }
-        dbResponse = deleted;
-      } else if (action === 'bulk_replace') {
-        const records = body.records.map(cleanRecord);
-        await sbDeleteAll('customers');
-        dbResponse = records.length ? await sbInsert('customers', records) : [];
+        // ملاحظة: bulk_replace على Supabase يتطلب حذف الكل ثم إدراج الجديد
+        // لكن هذا خطر — نتجاهله هنا ونرجع خطأ واضح
+        return jsonResponse(400, { error: 'not_supported', message: 'bulk_replace غير مدعوم على Supabase مباشرة. استخدم add/update/delete.' }, corsHeaders());
       }
-
       console.log(`[sheet-update] ${action} success via Supabase`);
       return jsonResponse(200, {
         ok: true,
         action: action,
         message: getSuccessMessage(action),
-        db_response: dbResponse,
+        db_response: result,
       }, corsHeaders());
-
-    } else {
-      // ── Google Sheets Webhook path (الأصلي) ──
-      const webhookUrl = process.env.SHEETS_WEBHOOK_URL;
-      const payload = { password: adminPassword, action: action };
-      if (action === 'bulk_replace') {
-        payload.records = body.records;
-      } else {
-        payload.record = body.record;
+    } catch(err){
+      console.error('[sheet-update] Supabase error:', err.message);
+      // لو Supabase فشل ولم يكن webhookUrl موجوداً، أرجع خطأ
+      if(!webhookUrl){
+        return jsonResponse(502, { error: 'db_error', message: 'خطأ في Supabase: ' + err.message }, corsHeaders());
       }
+      // وإلا استمر لمحاولة Google Sheets
+      console.warn('[sheet-update] falling back to Google Sheets');
+    }
+  }
 
-      console.log(`[sheet-update] forwarding ${action} to Apps Script`);
-      const bodyStr = JSON.stringify(payload);
+  // ═══ تنفيذ العملية عبر Apps Script Webhook (النسخة الأصلية) ═══
+  const payload = {
+    password: adminPassword,
+    action: action,
+  };
 
-      const postRes = await fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: bodyStr,
-        redirect: 'manual',
-        signal: AbortSignal.timeout(30000),
-      });
+  if (action === 'bulk_replace') {
+    if (!Array.isArray(body.records)) {
+      return jsonResponse(400, { error: 'invalid_request', message: 'records يجب أن تكون مصفوفة.' }, corsHeaders());
+    }
+    payload.records = body.records;
+  } else {
+    if (!body.record || typeof body.record !== 'object') {
+      return jsonResponse(400, { error: 'invalid_request', message: 'record يجب أن يكون كائناً.' }, corsHeaders());
+    }
+    payload.record = body.record;
+  }
 
-      let finalText = '';
-      if([301, 302, 303, 307, 308].includes(postRes.status)){
-        const location = postRes.headers.get('location');
-        if(location){
-          const getRes = await fetch(location, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(30000) });
-          finalText = await getRes.text();
-        } else {
-          finalText = await postRes.text();
-        }
+  try {
+    console.log(`[sheet-update] forwarding ${action} to Apps Script`);
+    const bodyStr = JSON.stringify(payload);
+
+    // ═══ Google Apps Script Web Apps تعمل بـ POST ثم GET ═══
+    // 1) POST إلى /exec يعالج البيانات ويُعيد 302 redirect
+    // 2) GET على رابط الـ redirect يُرجع نتيجة المعالجة (JSON)
+    const postRes = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: bodyStr,
+      redirect: 'manual',
+      signal: AbortSignal.timeout(30000),
+    });
+
+    // استخراج رابط الـ redirect
+    let finalText = '';
+    if([301, 302, 303, 307, 308].includes(postRes.status)){
+      const location = postRes.headers.get('location');
+      console.log(`[sheet-update] redirect ${postRes.status} → ${location ? location.substring(0, 80) + '...' : 'null'}`);
+      if(location){
+        // GET على رابط الـ redirect لاستلام النتيجة
+        const getRes = await fetch(location, {
+          method: 'GET',
+          redirect: 'follow',
+          signal: AbortSignal.timeout(30000),
+        });
+        finalText = await getRes.text();
       } else {
+        // لا يوجد Location — نقرأ من الاستجابة الأصلية
         finalText = await postRes.text();
       }
+    } else {
+      // لم يكن redirect — نقرأ الاستجابة مباشرة
+      finalText = await postRes.text();
+    }
 
-      let webhookData;
-      try { webhookData = JSON.parse(finalText); }
-      catch(_) { webhookData = { ok: false, raw: finalText.slice(0, 500) }; }
+    // تحليل النتيجة
+    let webhookData;
+    try {
+      webhookData = JSON.parse(finalText);
+    } catch(_) {
+      webhookData = { ok: false, raw: finalText.slice(0, 500) };
+    }
 
-      if (webhookData.ok === false) {
-        const errMsg = webhookData.error || 'خطأ غير معروف من Apps Script';
-        const userMsg = errMsg === 'unauthorized'
-          ? 'الرمز في Apps Script لا يطابق INVOICE_PASSWORD.'
-          : `خطأ من Apps Script: ${errMsg}`;
-        return jsonResponse(400, { error: 'script_error', message: userMsg }, corsHeaders());
-      }
-
-      console.log(`[sheet-update] ${action} success via Google Sheets`);
-      return jsonResponse(200, {
-        ok: true,
-        action: action,
-        message: getSuccessMessage(action),
-        webhook_response: webhookData,
+    if (webhookData.ok === false) {
+      const errMsg = webhookData.error || 'خطأ غير معروف من Apps Script';
+      const userMsg = errMsg === 'unauthorized'
+        ? 'الرمز في Apps Script لا يطابق INVOICE_PASSWORD. تحقق من Script properties → ADMIN_PASSWORD.'
+        : `خطأ من Apps Script: ${errMsg}`;
+      console.error('[sheet-update] script error:', errMsg);
+      return jsonResponse(400, {
+        error: 'script_error',
+        message: userMsg,
       }, corsHeaders());
     }
 
+    console.log(`[sheet-update] ${action} success`);
+
+    return jsonResponse(200, {
+      ok: true,
+      action: action,
+      message: getSuccessMessage(action),
+      webhook_response: webhookData,
+    }, corsHeaders());
+
   } catch (err) {
-    console.error('[sheet-update] error:', err.message);
-    if(err.code === 'server_not_configured'){
-      return jsonResponse(500, { error: 'server_not_configured', message: err.message }, corsHeaders());
-    }
-    if(err.code === 'duplicate' || err.status === 409){
-      return jsonResponse(409, { error: 'duplicate', message: 'رمز الطلب (order_code) موجود مسبقاً.' }, corsHeaders());
-    }
-    if(err.code === 'source_unavailable' || err.code === 'db_error' || err.code === 'auth_error'){
-      return jsonResponse(502, { error: 'db_error', message: 'خطأ أثناء الاتصال بقاعدة البيانات: ' + err.message }, corsHeaders());
-    }
-    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي: ' + err.message }, corsHeaders());
+    console.error('[sheet-update] internal error', err);
+    return jsonResponse(500, {
+      error: 'internal_error',
+      message: 'خطأ داخلي أثناء الاتصال بـ Google Sheets. تحقق من SHEETS_WEBHOOK_URL.',
+    }, corsHeaders());
   }
 };
 
 // ─────────────────────────────────────────────────────────────
 //  Helpers
 // ─────────────────────────────────────────────────────────────
+
 function getSuccessMessage(action){
   const messages = {
-    'add':           'تمت إضافة العميل بنجاح.',
-    'update':        'تم تحديث بيانات العميل بنجاح.',
-    'delete':        'تم حذف العميل بنجاح.',
-    'bulk_replace':  'تم استبدال كل البيانات بنجاح.',
+    'add':           'تمت إضافة العميل بنجاح إلى Google Sheets.',
+    'update':        'تم تحديث بيانات العميل بنجاح في Google Sheets.',
+    'delete':        'تم حذف العميل بنجاح من Google Sheets.',
+    'bulk_replace':  'تم استبدال كل البيانات في Google Sheets بنجاح.',
   };
   return messages[action] || 'تمت العملية بنجاح.';
 }
