@@ -1,9 +1,10 @@
 // netlify/functions/track-order.js
 // ════════════════════════════════════════════════════════════════
-//  يدعم مصدرين للبيانات تلقائياً:
-//    1. Supabase (لو SUPABASE_URL + SUPABASE_SERVICE_KEY موجودان) — مُفضّل
-//    2. Google Sheets CSV (لو ORDERS_SHEET_ID موجود) — احتياطي
-//  هذا يضمن أن النظام يعمل سواء أتممت إعداد Supabase أم لا.
+//  يدعم مصدرين للبيانات:
+//    1. Google Sheets CSV (افتراضي — يستخدم ORDERS_SHEET_ID)
+//    2. Supabase (اختياري — يستخدم SUPABASE_URL + SUPABASE_SERVICE_KEY)
+//  لو Supabase مهيأ وصالح → يستخدمه. وإلا → يستخدم Google Sheets.
+//  هذا يضمن أن النظام يعمل سواء أتممت Supabase أم لا.
 // ════════════════════════════════════════════════════════════════
 
 exports.config = {
@@ -18,126 +19,31 @@ exports.config = {
 const crypto = require('crypto');
 
 // ─────────────────────────────────────────────────────────────
-//  كشف المصدر النشط
+//  كشف المصدر النشط + طبقة Supabase الإضافية
 // ─────────────────────────────────────────────────────────────
-function getDataSource(){
-  const supaUrl = (process.env.SUPABASE_URL || '').trim();
-  const supaKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
-  if(supaUrl && supaKey && /^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(supaUrl) && supaKey.length > 30){
-    return 'supabase';
-  }
-  if(process.env.ORDERS_SHEET_ID){
-    return 'sheets';
-  }
-  return 'none';
+function isSupabaseConfigured(){
+  const url = (process.env.SUPABASE_URL || '').trim();
+  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
+  return !!(url && key && /^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url) && key.length > 30);
 }
 
-// ─────────────────────────────────────────────────────────────
-//  طبقة Supabase (تُستخدم لو getDataSource() === 'supabase')
-// ─────────────────────────────────────────────────────────────
-function getSupabaseConfig(){
+async function fetchCustomersFromSupabase(){
   const url = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
-  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
-  if(!url || !serviceKey){
-    const err = new Error('SUPABASE_URL أو SUPABASE_SERVICE_KEY غير مضبوطين.');
-    err.code = 'server_not_configured';
-    return null;
-  }
-  return { url, serviceKey };
-}
-
-async function sbSelectAll(table, opts = {}){
-  const cfg = getSupabaseConfig();
-  if(!cfg) throw new Error('Supabase not configured');
-  let path = encodeURIComponent(table);
-  const params = [];
-  if(opts.order) params.push(`order=${encodeURIComponent(opts.order)}`);
-  params.push('limit=100000');
-  if(params.length) path += '?' + params.join('&');
-  let res;
-  try {
-    res = await fetch(`${cfg.url}/rest/v1/${path}`, {
-      method: 'GET',
-      headers: {
-        'apikey': cfg.serviceKey,
-        'Authorization': `Bearer ${cfg.serviceKey}`,
-        'Content-Type': 'application/json',
-      },
-    });
-  } catch(networkErr){
-    // خطأ شبكة — لا يمكن الوصول لـ Supabase
-    const err = new Error('تعذّر الوصول إلى Supabase. تحقق من SUPABASE_URL ومن اتصال الإنترنت.');
-    err.code = 'source_unavailable';
-    throw err;
-  }
-  if(res.status === 401 || res.status === 403){
-    const err = new Error('مفتاح Supabase غير صالح أو لا يملك صلاحيات.');
-    err.code = 'auth_error';
-    throw err;
-  }
+  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
+  const res = await fetch(`${url}/rest/v1/customers?order=id.desc&limit=100000`, {
+    method: 'GET',
+    headers: {
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+  });
   if(!res.ok){
-    const err = new Error(`خطأ من Supabase (HTTP ${res.status})`);
-    err.code = 'db_error';
+    const err = new Error(`Supabase HTTP ${res.status}`);
+    err.code = 'supabase_error';
     throw err;
   }
-  if(res.status === 204) return [];
-  return await res.json().catch(() => []);
-}
-
-// جلب كل العملاء من Supabase (مُطبَّع بنفس صيغة CSV)
-async function getCustomersFromSupabase(){
-  const rows = await sbSelectAll('customers', { order: 'id.desc' });
-  // طبّع كل صف (نفس دالة normalizeRow المستخدمة للـ CSV)
-  return rows.filter(r => {
-    const p = String(r.phone || '').trim();
-    return p && /^[\d.+]+$/.test(p);
-  }).map(r => normalizeRow(r));
-}
-
-// ─────────────────────────────────────────────────────────────
-//  جلب موحّد للعملاء (Supabase أو Sheets تلقائياً)
-// ─────────────────────────────────────────────────────────────
-async function getCustomers(){
-  const source = getDataSource();
-  if(source === 'supabase'){
-    return await getCustomersFromSupabase();
-  }
-  if(source === 'sheets'){
-    return await getCustomersFromSheets();
-  }
-  const err = new Error('لا يوجد مصدر بيانات مهيأ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.');
-  err.code = 'server_not_configured';
-  throw err;
-}
-
-// جلب العملاء من Google Sheets CSV (النسخة الأصلية)
-async function getCustomersFromSheets(){
-  const SHEET_ID = process.env.ORDERS_SHEET_ID;
-  if (!SHEET_ID) {
-    const err = new Error('ORDERS_SHEET_ID غير مُعدّ.');
-    err.code = 'server_not_configured';
-    throw err;
-  }
-  const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
-  const csvUrl = SHEET_GID && SHEET_GID !== '0'
-    ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
-    : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
-  const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(15000) });
-  if (!sheetRes.ok) {
-    const err = new Error(sheetRes.status === 400
-      ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة.'
-      : sheetRes.status === 404 ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
-      : `تعذّر الوصول إلى Google Sheets (HTTP ${sheetRes.status}).`);
-    err.code = 'source_unavailable';
-    throw err;
-  }
-  const csvText = await sheetRes.text();
-  if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
-    const err = new Error('الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web → CSV.');
-    err.code = 'source_unavailable';
-    throw err;
-  }
-  const rows = parseCSV(csvText);
+  const rows = await res.json();
   return rows.filter(r => {
     const p = String(r.phone || '').trim();
     return p && /^[\d.+]+$/.test(p);
@@ -247,14 +153,69 @@ async function handleAdminSync(body){
     }, corsHeaders());
   }
 
-  const source = getDataSource();
-  if (source === 'none') {
-    return jsonResponse(500, { error: 'server_not_configured', message: 'لا يوجد مصدر بيانات مهيأ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.' }, corsHeaders());
+  const SHEET_ID = process.env.ORDERS_SHEET_ID;
+  const useSupabase = isSupabaseConfigured();
+
+  if (!SHEET_ID && !useSupabase) {
+    return jsonResponse(500, { error: 'server_not_configured', message: 'لا يوجد مصدر بيانات مهيأ. اضبط ORDERS_SHEET_ID أو SUPABASE_URL+SUPABASE_SERVICE_KEY في Netlify.' }, corsHeaders());
   }
 
   try {
-    // جلب موحّد (Supabase أو Sheets تلقائياً)
-    let dataRows = await getCustomers();
+    let dataRows;
+
+    // ═══ محاولة Supabase أولاً (لو مهيأ) ═══
+    if(useSupabase){
+      try {
+        dataRows = await fetchCustomersFromSupabase();
+        console.log('[track-order/admin] fetched from Supabase:', dataRows.length);
+      } catch(supaErr){
+        console.warn('[track-order/admin] Supabase failed, falling back to Google Sheets:', supaErr.message);
+        // لو Supabase فشل ولم يكن SHEET_ID موجوداً، أرجع خطأ
+        if(!SHEET_ID){
+          return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى Supabase: ' + supaErr.message }, corsHeaders());
+        }
+        // وإلا استمر لمحاولة Google Sheets
+      }
+    }
+
+    // ═══ لو Supabase لم يُهيّأ أو فشل، استخدم Google Sheets ═══
+    if(!dataRows || !dataRows.length){
+      if(!SHEET_ID){
+        return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر جلب البيانات.' }, corsHeaders());
+      }
+      const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+      const csvUrl = SHEET_GID && SHEET_GID !== '0'
+        ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+        : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+
+      const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(15000) });
+      if (!sheetRes.ok) {
+        console.error('[track-order/admin] sheet fetch failed', sheetRes.status, csvUrl);
+        const msg = sheetRes.status === 400
+          ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة: File → Share → Publish to web. أو أن ORDERS_SHEET_GID صحيح.'
+          : sheetRes.status === 404
+          ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
+          : `تعذّر الوصول إلى Google Sheets (HTTP ${sheetRes.status}).`;
+        return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
+      }
+
+      const csvText = await sheetRes.text();
+
+      if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+        console.error('[track-order/admin] got HTML instead of CSV');
+        return jsonResponse(502, {
+          error: 'source_unavailable',
+          message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web → Entire document → CSV.',
+        }, corsHeaders());
+      }
+
+      const rows = parseCSV(csvText);
+      dataRows = rows.filter(r => {
+        const p = String(r.phone || '').trim();
+        return p && /^[\d.+]+$/.test(p);
+      }).map(r => normalizeRow(r));
+      console.log('[track-order/admin] fetched from Google Sheets:', dataRows.length);
+    }
 
     // فلترة اختيارية (للأدمن أيضاً)
     const filterStatus  = String(body.filter_status  || '').trim();
@@ -276,7 +237,7 @@ async function handleAdminSync(body){
 
     const stats = computeStats(dataRows);
 
-    console.log('[track-order/admin] sync success via ' + source + ':', { count: dataRows.length });
+    console.log('[track-order/admin] sync success:', { count: dataRows.length });
 
     return jsonResponse(200, {
       ok: true,
@@ -287,14 +248,8 @@ async function handleAdminSync(body){
       fetched_at: new Date().toISOString(),
     }, corsHeaders());
   } catch (err) {
-    console.error('[track-order/admin] error:', err.message);
-    if(err.code === 'server_not_configured'){
-      return jsonResponse(500, { error: 'server_not_configured', message: err.message }, corsHeaders());
-    }
-    if(err.code === 'source_unavailable' || err.code === 'db_error' || err.code === 'auth_error'){
-      return jsonResponse(502, { error: 'source_unavailable', message: err.message }, corsHeaders());
-    }
-    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم: ' + err.message }, corsHeaders());
+    console.error('[track-order/admin] internal error', err);
+    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم.' }, corsHeaders());
   }
 }
 
@@ -310,13 +265,50 @@ async function handleReferralValidate(body){
     return jsonResponse(400, { ok: false, valid: false, message: 'يرجى إدخال كود الإحالة.' }, corsHeaders());
   }
 
-  const source = getDataSource();
-  if (source === 'none') {
+  const SHEET_ID = process.env.ORDERS_SHEET_ID;
+  const useSupabase = isSupabaseConfigured();
+
+  if (!SHEET_ID && !useSupabase) {
     return jsonResponse(500, { ok: false, error: 'server_not_configured', message: 'لا يوجد مصدر بيانات مهيأ.' }, corsHeaders());
   }
 
   try {
-    const dataRows = await getCustomers();
+    let dataRows;
+
+    // Supabase أولاً
+    if(useSupabase){
+      try {
+        dataRows = await fetchCustomersFromSupabase();
+      } catch(supaErr){
+        if(!SHEET_ID){
+          return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى Supabase.' }, corsHeaders());
+        }
+      }
+    }
+
+    // Google Sheets fallback
+    if(!dataRows || !dataRows.length){
+      if(!SHEET_ID){
+        return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر جلب البيانات.' }, corsHeaders());
+      }
+      const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+      const csvUrl = SHEET_GID && SHEET_GID !== '0'
+        ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+        : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+      const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
+      if (!sheetRes.ok) {
+        return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى الخادم.' }, corsHeaders());
+      }
+      const csvText = await sheetRes.text();
+      if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+        return jsonResponse(502, { ok: false, valid: false, message: 'الشيت غير منشور.' }, corsHeaders());
+      }
+      const rows = parseCSV(csvText);
+      dataRows = rows.filter(r => {
+        const p = String(r.phone || '').trim();
+        return p && /^[\d.+]+$/.test(p);
+      }).map(r => normalizeRow(r));
+    }
 
     // البحث عن العميل صاحب كود الإحالة
     const referrer = dataRows.find(r => {
@@ -341,11 +333,8 @@ async function handleReferralValidate(body){
     }, corsHeaders());
 
   } catch(err){
-    console.error('[track-order/referral] error', err.message);
-    if(err.code === 'server_not_configured'){
-      return jsonResponse(500, { ok: false, error: 'server_not_configured', message: err.message }, corsHeaders());
-    }
-    return jsonResponse(502, { ok: false, valid: false, message: 'تعذّر الوصول إلى مصدر البيانات: ' + err.message }, corsHeaders());
+    console.error('[track-order/referral] error', err);
+    return jsonResponse(500, { ok: false, valid: false, message: 'خطأ داخلي.' }, corsHeaders());
   }
 }
 
@@ -363,13 +352,60 @@ async function handleCustomerTrack(body){
     return jsonResponse(400, { error: 'missing_fields', message: 'يرجى إدخال رقم الهاتف ورمز التحقق.' }, corsHeaders());
   }
 
-  const source = getDataSource();
-  if (source === 'none') {
-    return jsonResponse(500, { error: 'server_not_configured', message: 'الخدمة غير مُعدّة. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.' }, corsHeaders());
+  const SHEET_ID = process.env.ORDERS_SHEET_ID;
+  const useSupabase = isSupabaseConfigured();
+
+  if (!SHEET_ID && !useSupabase) {
+    return jsonResponse(500, { error: 'server_not_configured', message: 'الخدمة غير مُعدّة. اضبط ORDERS_SHEET_ID أو SUPABASE_URL+SUPABASE_SERVICE_KEY في Netlify.' }, corsHeaders());
   }
 
   try {
-    const dataRows = await getCustomers();
+    let dataRows;
+
+    // Supabase أولاً
+    if(useSupabase){
+      try {
+        dataRows = await fetchCustomersFromSupabase();
+      } catch(supaErr){
+        if(!SHEET_ID){
+          return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر الوصول إلى Supabase.' }, corsHeaders());
+        }
+      }
+    }
+
+    // Google Sheets fallback
+    if(!dataRows || !dataRows.length){
+      if(!SHEET_ID){
+        return jsonResponse(502, { error: 'source_unavailable', message: 'تعذّر جلب البيانات.' }, corsHeaders());
+      }
+      const SHEET_GID = process.env.ORDERS_SHEET_GID || '';
+      const csvUrl = SHEET_GID && SHEET_GID !== '0'
+        ? `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${SHEET_GID}`
+        : `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv`;
+      const sheetRes = await fetch(csvUrl, { signal: AbortSignal.timeout(10000) });
+      if (!sheetRes.ok) {
+        console.error('[track-order/customer] sheet fetch failed', sheetRes.status, csvUrl);
+        const msg = sheetRes.status === 400
+          ? 'تعذّر الوصول إلى Google Sheets (HTTP 400). تأكد أن الشيت منشور للعامة.'
+          : sheetRes.status === 404
+          ? 'الشيت غير موجود — تحقق من ORDERS_SHEET_ID.'
+          : `تعذّر الوصول إلى مصدر البيانات (HTTP ${sheetRes.status}).`;
+        return jsonResponse(502, { error: 'source_unavailable', message: msg }, corsHeaders());
+      }
+      const csvText = await sheetRes.text();
+      if (csvText.trimStart().startsWith('<!DOCTYPE') || csvText.trimStart().startsWith('<html')) {
+        console.error('[track-order/customer] got HTML instead of CSV');
+        return jsonResponse(502, {
+          error: 'source_unavailable',
+          message: 'الشيت غير منشور للعامة. افتح Google Sheets → File → Share → Publish to web.',
+        }, corsHeaders());
+      }
+      const rows = parseCSV(csvText);
+      dataRows = rows.filter(r => {
+        const p = String(r.phone || '').trim();
+        return p && /^[\d.+]+$/.test(p);
+      });
+    }
 
     if (!dataRows.length) {
       return jsonResponse(404, { error: 'not_found', message: 'لا توجد بيانات في قاعدة البيانات بعد.' }, corsHeaders());
@@ -465,14 +501,8 @@ async function handleCustomerTrack(body){
       fetched_at: new Date().toISOString(),
     }, corsHeaders());
   } catch (err) {
-    console.error('[track-order/customer] error:', err.message);
-    if(err.code === 'server_not_configured'){
-      return jsonResponse(500, { error: 'server_not_configured', message: err.message }, corsHeaders());
-    }
-    if(err.code === 'source_unavailable' || err.code === 'db_error' || err.code === 'auth_error'){
-      return jsonResponse(502, { error: 'source_unavailable', message: err.message }, corsHeaders());
-    }
-    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم: ' + err.message }, corsHeaders());
+    console.error('[track-order/customer] internal error', err);
+    return jsonResponse(500, { error: 'internal_error', message: 'خطأ داخلي في الخادم.' }, corsHeaders());
   }
 }
 
