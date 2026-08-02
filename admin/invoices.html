@@ -219,10 +219,12 @@
     font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
     color:var(--ink-faint);padding:8px 6px;text-align:right;border-bottom:1.5px solid var(--line);
   }
-  .items-table th.col-desc{width:40%;}
-  .items-table th.col-qty{width:12%;text-align:center;}
-  .items-table th.col-price{width:18%;text-align:center;}
-  .items-table th.col-total{width:20%;text-align:center;}
+  .items-table th.col-desc{width:30%;}
+  .items-table th.col-qty{width:8%;text-align:center;}
+  .items-table th.col-price{width:14%;text-align:center;}
+  .items-table th.col-disc{width:13%;text-align:center;}
+  .items-table th.col-type{width:11%;text-align:center;}
+  .items-table th.col-total{width:14%;text-align:center;}
   .items-table th.col-action{width:10%;}
   .items-table td{padding:6px;}
   .items-table .item-row td{vertical-align:middle;}
@@ -232,11 +234,21 @@
   }
   html[dir="rtl"] .items-table input.col-desc-input{text-align:right;direction:rtl;}
   .items-table input:focus{outline:none;border-color:var(--red);}
+  .items-table select{
+    width:100%;padding:8px 6px;border:1.5px solid var(--line);border-radius:7px;
+    background:var(--paper);font-size:12px;direction:ltr;text-align:center;cursor:pointer;
+  }
+  .items-table select:focus{outline:none;border-color:var(--red);}
+  .items-table select.item-type-select{font-size:11.5px;font-weight:700;}
+  .items-table select.item-type-select.gift{color:#0C9A63;border-color:#0C9A63;background:#E8F7F0;}
+  .items-table select.item-type-select.discount{color:#9C7A3C;border-color:#9C7A3C;background:#F3ECDD;}
   .items-table .item-total{
     font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:700;
     color:var(--ink);text-align:center;padding:8px 10px;
     background:var(--paper);border-radius:7px;border:1px solid var(--line);
   }
+  .items-table .item-total.gift-total{color:#0C9A63;background:#E8F7F0;border-color:#0C9A63;}
+  .items-table .item-total.discount-total{color:#9C7A3C;background:#F3ECDD;border-color:#9C7A3C;}
   .item-del{
     width:32px;height:32px;border-radius:7px;border:1px solid var(--line);
     background:var(--surface);color:var(--ink-faint);cursor:pointer;
@@ -252,6 +264,20 @@
   }
   .add-item-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-tint);}
   .add-item-btn svg{width:14px;height:14px;}
+  /* Quick action buttons for adding discount/gift items */
+  .quick-items{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
+  .quick-item-btn{
+    display:inline-flex;align-items:center;gap:5px;padding:6px 12px;
+    border:1.5px solid var(--line);background:var(--surface);color:var(--ink-soft);
+    border-radius:7px;cursor:pointer;font-size:11.5px;font-weight:700;
+    transition:all .15s;
+  }
+  .quick-item-btn:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(23,24,28,.08);}
+  .quick-item-btn.gift-btn{color:#0C9A63;border-color:#0C9A63;}
+  .quick-item-btn.gift-btn:hover{background:#E8F7F0;}
+  .quick-item-btn.discount-btn{color:#9C7A3C;border-color:#9C7A3C;}
+  .quick-item-btn.discount-btn:hover{background:#F3ECDD;}
+  .quick-item-btn svg{width:13px;height:13px;}
 
   /* Totals */
   .totals-section{background:var(--paper);border-radius:10px;padding:14px 16px;margin-top:8px;}
@@ -609,6 +635,242 @@
   .autocomplete-item .ai-name{font-weight:600;}
   .autocomplete-item .ai-phone{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);direction:ltr;}
 
+  /* ═══ ADVANCED FEATURES (v2.0) ═══ */
+  /* ملاحظة: جميع الأنماط الجديدة تُحترم قواعد الطباعة الموجودة أسفلها ولا تُخرِجها */
+
+  /* بند تفاصيل موسّع (SKU، فئة، وحدة، ملاحظات داخلية) */
+  .item-details-toggle{
+    width:24px;height:24px;border-radius:6px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .15s;
+  }
+  .item-details-toggle:hover{color:var(--red);border-color:var(--red);}
+  .item-details-toggle.open{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .item-details-toggle svg{width:13px;height:13px;transition:transform .2s;}
+  .item-details-toggle.open svg{transform:rotate(90deg);}
+  .item-details-row{display:none;background:var(--paper);}
+  .item-details-row.open{display:table-row;}
+  .item-details-row td{padding:8px 10px !important;border-top:1px dashed var(--line) !important;}
+  .item-details-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:100%;
+  }
+  @media(max-width:768px){.item-details-grid{grid-template-columns:1fr 1fr;}}
+  .item-details-grid .form-group{margin:0;}
+  .item-details-grid .form-group label{font-size:10.5px;font-weight:700;color:var(--ink-faint);}
+  .item-details-grid input,.item-details-grid select{
+    width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;
+    background:var(--surface);font-size:12px;
+  }
+  .item-details-grid input:focus,.item-details-grid select:focus{outline:none;border-color:var(--red);}
+  .item-internal-notes{
+    grid-column:1/-1;font-size:11px;padding:6px 8px;min-height:32px;
+    font-family:inherit;
+  }
+
+  /* مقبض السحب لإعادة الترتيب */
+  .item-drag-handle{
+    width:24px;height:24px;cursor:grab;color:var(--ink-faint);
+    display:flex;align-items:center;justify-content:center;
+    margin:0 auto;opacity:.5;transition:opacity .15s;
+  }
+  .item-drag-handle:hover{opacity:1;color:var(--ink);}
+  .item-drag-handle:active{cursor:grabbing;}
+  .item-drag-handle svg{width:13px;height:13px;}
+  .item-row.dragging{opacity:.5;background:var(--red-tint) !important;}
+  .item-row.drag-over{border-top:2px solid var(--red) !important;}
+
+  /* مكتبة البنود (Item Catalog) */
+  .catalog-bar{
+    display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;padding:10px;
+    background:var(--paper);border-radius:10px;border:1px dashed var(--line);
+  }
+  .catalog-item{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+    background:var(--surface);border:1px solid var(--line);border-radius:8px;
+    font-size:12px;cursor:pointer;transition:all .15s;
+  }
+  .catalog-item:hover{border-color:var(--red);color:var(--red);transform:translateY(-1px);}
+  .catalog-item .ci-price{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--green);font-size:11px;}
+  .catalog-item .ci-del{
+    margin-right:4px;width:16px;height:16px;border-radius:4px;border:none;
+    background:transparent;color:var(--ink-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .catalog-item .ci-del:hover{color:var(--red);background:var(--red-tint);}
+  .catalog-item .ci-del svg{width:11px;height:11px;}
+  .catalog-add-form{
+    display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;
+  }
+  .catalog-add-form input,.catalog-add-form select{
+    padding:7px 10px;border:1px solid var(--line);border-radius:7px;
+    font-size:12px;background:var(--surface);
+  }
+  .catalog-add-form input:focus,.catalog-add-form select:focus{outline:none;border-color:var(--red);}
+  .catalog-add-form .ci-name{flex:1;min-width:140px;}
+  .catalog-add-form .ci-price-input{width:90px;}
+  .catalog-add-form .ci-unit{width:90px;}
+  .catalog-add-form button{
+    padding:7px 14px;background:var(--ink);color:#fff;border:none;
+    border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;
+  }
+  .catalog-add-form button:hover{background:#000;}
+
+  /* قوالب الفواتير */
+  .templates-bar{
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px;
+  }
+  .template-chip{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 12px;
+    background:var(--blue-tint);border:1px solid var(--blue);border-radius:8px;
+    font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;
+  }
+  .template-chip:hover{background:var(--blue);color:#fff;}
+  .template-chip .tc-del{margin-right:2px;width:14px;height:14px;}
+  .template-save-btn{
+    padding:6px 12px;background:transparent;border:1px dashed var(--blue);
+    color:var(--blue);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;
+  }
+  .template-save-btn:hover{background:var(--blue-tint);}
+
+  /* الحقول المخصصة */
+  .custom-fields-list{display:flex;flex-direction:column;gap:8px;margin-top:8px;}
+  .custom-field-row{
+    display:grid;grid-template-columns:1fr 1.5fr 32px;gap:8px;align-items:center;
+  }
+  .custom-field-row input{
+    padding:8px 12px;border:1.5px solid var(--line);border-radius:7px;
+    background:var(--paper);font-size:13px;
+  }
+  .custom-field-row input:focus{outline:none;border-color:var(--red);}
+  .custom-field-row .cf-del{
+    width:32px;height:32px;border-radius:7px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .custom-field-row .cf-del:hover{color:var(--red);border-color:var(--red);background:var(--red-tint);}
+  .custom-field-row .cf-del svg{width:14px;height:14px;}
+
+  /* جدول الدفعات (Payment Schedule) */
+  .payments-list{display:flex;flex-direction:column;gap:6px;margin-top:8px;}
+  .payment-row{
+    display:grid;grid-template-columns:1fr 1fr 1fr 32px;gap:8px;align-items:center;
+    padding:8px;background:var(--paper);border-radius:8px;border:1px solid var(--line);
+  }
+  .payment-row input{padding:7px 10px;border:1px solid var(--line);border-radius:6px;font-size:12px;background:var(--surface);}
+  .payment-row input:focus{outline:none;border-color:var(--red);}
+  .payment-row.paid{background:var(--green-tint);border-color:var(--green);}
+  .payment-row .pay-del{
+    width:32px;height:32px;border-radius:7px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-faint);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .payment-row.paid .pay-del{color:var(--green);border-color:var(--green);}
+  .payment-row .pay-del svg{width:14px;height:14px;}
+
+  /* سجل التدقيق (Audit Log) */
+  .audit-log{
+    margin-top:10px;background:var(--paper);border:1px solid var(--line);
+    border-radius:10px;padding:10px 14px;max-height:160px;overflow-y:auto;
+    font-size:11.5px;color:var(--ink-soft);
+  }
+  .audit-log .audit-entry{
+    display:flex;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line);
+  }
+  .audit-log .audit-entry:last-child{border-bottom:none;}
+  .audit-log .audit-time{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--ink-faint);flex-shrink:0;direction:ltr;}
+  .audit-log .audit-action{font-weight:700;color:var(--ink);}
+  .audit-log .audit-empty{text-align:center;color:var(--ink-faint);padding:14px;font-style:italic;}
+
+  /* إعدادات البنك */
+  .bank-fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){.bank-fields-grid{grid-template-columns:1fr;}}
+
+  /* تلميحات سريعة */
+  .quick-hint{
+    display:inline-block;padding:2px 8px;background:var(--amber-tint);
+    color:var(--amber);border-radius:10px;font-size:10px;font-weight:700;
+    margin-right:6px;
+  }
+  .quick-hint.new{background:var(--green-tint);color:var(--green);}
+  .quick-hint.pro{background:var(--blue-tint);color:var(--blue);}
+
+  /* أزرار اللصق المتعدد */
+  .bulk-paste-wrap{
+    margin-top:8px;display:flex;gap:8px;align-items:flex-start;
+  }
+  .bulk-paste-wrap textarea{
+    flex:1;padding:8px 12px;border:1px dashed var(--line);border-radius:8px;
+    background:var(--paper);font-size:12px;min-height:60px;font-family:'IBM Plex Mono',monospace;
+    resize:vertical;
+  }
+  .bulk-paste-wrap textarea:focus{outline:none;border-color:var(--red);border-style:solid;}
+  .bulk-paste-wrap button{
+    padding:8px 16px;background:var(--ink);color:#fff;border:none;
+    border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;
+  }
+  .bulk-paste-wrap button:hover{background:#000;}
+
+  /* Document Type Pills */
+  .doc-type-pills{display:flex;gap:6px;margin-bottom:10px;}
+  .doc-type-pill{
+    padding:6px 14px;border:1.5px solid var(--line);background:var(--surface);
+    color:var(--ink-soft);border-radius:18px;font-size:12px;font-weight:700;
+    cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;
+  }
+  .doc-type-pill:hover{border-color:var(--ink);}
+  .doc-type-pill.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .doc-type-pill.active.quote{background:var(--blue);border-color:var(--blue);}
+  .doc-type-pill.active.credit{background:var(--gold);border-color:var(--gold);}
+  .doc-type-pill svg{width:13px;height:13px;}
+
+  /* إحصائيات متقدمة */
+  .advanced-stats-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;
+  }
+  @media(max-width:768px){.advanced-stats-grid{grid-template-columns:repeat(2,1fr);}}
+  .adv-stat-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:14px 16px;position:relative;overflow:hidden;
+  }
+  .adv-stat-card .adv-label{font-size:10.5px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+  .adv-stat-card .adv-value{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;color:var(--ink);direction:ltr;}
+  .adv-stat-card.profit .adv-value{color:var(--green);}
+  .adv-stat-card.overdue .adv-value{color:var(--red);}
+  .adv-stat-card.top-cust .adv-value{font-size:14px;color:var(--gold);}
+
+  .top-list{display:flex;flex-direction:column;gap:6px;}
+  .top-list-item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:8px 12px;background:var(--paper);border-radius:8px;font-size:12.5px;
+  }
+  .top-list-item .tli-name{font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .top-list-item .tli-val{font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);flex-shrink:0;direction:ltr;}
+
+  /* Aging Report */
+  .aging-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;}
+  @media(max-width:600px){.aging-grid{grid-template-columns:repeat(2,1fr);}}
+  .aging-cell{
+    background:var(--paper);border-radius:8px;padding:10px 12px;text-align:center;
+    border-top:3px solid var(--ink-faint);
+  }
+  .aging-cell.current{border-top-color:var(--green);}
+  .aging-cell.warn{border-top-color:var(--amber);}
+  .aging-cell.danger{border-top-color:var(--red);}
+  .aging-cell .ag-label{font-size:10.5px;color:var(--ink-faint);margin-bottom:4px;}
+  .aging-cell .ag-count{font-family:'IBM Plex Mono',monospace;font-size:18px;font-weight:700;}
+  .aging-cell .ag-amount{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);margin-top:2px;direction:ltr;}
+
+  /* إخفاء عناصر التحكم الإدارية في الطباعة (مع الحفاظ على الورقة) */
+  /* ملاحظة: قواعد @media print أدناه تبقى سليمة كما هي، وهذه القاعدة فقط تُحكم العناصر الجديدة */
+  .admin-only-screen{display:block;}
+  @media print{
+    .admin-only-screen{display:none !important;}
+    .item-details-row{display:none !important;}
+    .item-drag-handle{display:none !important;}
+    .catalog-bar,.templates-bar,.bulk-paste-wrap{display:none !important;}
+  }
+
   /* ═══ PRINT — v3.0: طباعة مباشرة لنفس المستند (بدون iframe)، بنفس فلسفة النظام
      القديم الناجحة: نُخفي كل شيء بـ display:none (وليس visibility) حتى لا يترك أي
      عنصر مخفي أثراً على ارتفاع/عرض الصفحة المطبوعة، ثم نُظهر ورقة A4 فقط بحجمها
@@ -942,6 +1204,22 @@
           </div>
           <div class="panel-body">
 
+            <!-- ═══ Document Type Pills (admin only) ═══ -->
+            <div class="admin-only-screen doc-type-pills" id="docTypePills">
+              <button type="button" class="doc-type-pill active" data-doctype="invoice">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+                فاتورة
+              </button>
+              <button type="button" class="doc-type-pill" data-doctype="quote">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10l4-4 4 4M3 14l4 4 4-4M14 6h7M14 12h7M14 18h7"/></svg>
+                عرض سعر
+              </button>
+              <button type="button" class="doc-type-pill" data-doctype="credit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 14l-4-4 4-4M5 10h11a4 4 0 014 4v0"/></svg>
+                إشعار دائن
+              </button>
+            </div>
+
             <div class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
               بيانات الطلب
@@ -956,7 +1234,11 @@
                 <input type="date" class="form-control" id="fDate">
               </div>
             </div>
-            <div class="form-row cols-2">
+            <div class="form-row cols-3 admin-only-screen">
+              <div class="form-group">
+                <label>تاريخ الاستحقاق <span class="hint">(للدفع)</span></label>
+                <input type="date" class="form-control" id="fDueDate">
+              </div>
               <div class="form-group">
                 <label>الحالة</label>
                 <select class="form-control" id="fStatus">
@@ -975,6 +1257,16 @@
                   <option value="online">دفع إلكتروني</option>
                   <option value="card">بطاقة</option>
                 </select>
+              </div>
+            </div>
+            <div class="form-row cols-2 admin-only-screen">
+              <div class="form-group">
+                <label>مرجع أمر الشراء <span class="hint">(PO #)</span></label>
+                <input type="text" class="form-control mono" id="fPoRef" dir="ltr" placeholder="PO-2026-001">
+              </div>
+              <div class="form-group">
+                <label>اسم المشروع / العقد</label>
+                <input type="text" class="form-control" id="fProject" placeholder="مثال: تصميم بطاقة تعريفية">
               </div>
             </div>
 
@@ -997,6 +1289,20 @@
                 <input type="text" class="form-control mono" id="fCvLink" dir="ltr" placeholder="username">
               </div>
             </div>
+            <div class="form-row cols-3 admin-only-screen">
+              <div class="form-group">
+                <label>الرقم الضريبي <span class="hint">(VAT)</span></label>
+                <input type="text" class="form-control mono" id="fCustVat" dir="ltr" placeholder="BH00000000000">
+              </div>
+              <div class="form-group">
+                <label>السجل التجاري <span class="hint">(CR)</span></label>
+                <input type="text" class="form-control mono" id="fCustCr" dir="ltr" placeholder="CR-000000">
+              </div>
+              <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" class="form-control mono" id="fCustEmail" dir="ltr" placeholder="customer@example.com">
+              </div>
+            </div>
 
             <div class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
@@ -1008,6 +1314,8 @@
                   <th class="col-desc">البيان / الوصف</th>
                   <th class="col-qty">الكمية</th>
                   <th class="col-price">سعر الوحدة</th>
+                  <th class="col-disc">خصم البند</th>
+                  <th class="col-type">النوع</th>
                   <th class="col-total">الإجمالي</th>
                   <th class="col-action"></th>
                 </tr>
@@ -1018,6 +1326,68 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
               إضافة بند
             </button>
+            <div class="quick-items">
+              <button class="quick-item-btn discount-btn" id="btnAddDiscount" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                + بند خصم
+              </button>
+              <button class="quick-item-btn gift-btn" id="btnAddGift" type="button">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 010-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 000-5C13 2 12 7 12 7z"/></svg>
+                + بند هدية
+              </button>
+            </div>
+
+            <!-- ═══ مكتبة البنود (Item Catalog) ═══ -->
+            <div class="admin-only-screen" style="margin-top:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;">
+                  📚 مكتبة البنود المحفوظة
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnToggleCatalog" style="font-size:11px;padding:4px 10px;">إظهار/إخفاء</button>
+              </div>
+              <div id="catalogWrap" style="display:none;">
+                <div class="catalog-bar" id="catalogBar">
+                  <span style="color:var(--ink-faint);font-size:11.5px;">لا توجد بنود محفوظة بعد. أضف بنداً جديداً أدناه:</span>
+                </div>
+                <div class="catalog-add-form">
+                  <input type="text" class="ci-name" id="catalogNewName" placeholder="اسم البند (مثال: تصميم بطاقة بريميوم)">
+                  <input type="text" class="ci-price-input mono" id="catalogNewPrice" dir="ltr" placeholder="السعر" inputmode="decimal">
+                  <select class="ci-unit" id="catalogNewUnit">
+                    <option value="piece">قطعة</option>
+                    <option value="hour">ساعة</option>
+                    <option value="day">يوم</option>
+                    <option value="project">مشروع</option>
+                    <option value="subscription">اشتراك</option>
+                    <option value="service">خدمة</option>
+                  </select>
+                  <button type="button" id="btnCatalogAdd">+ حفظ في المكتبة</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ═══ اللصق المتعدد (Bulk Paste) ═══ -->
+            <div class="admin-only-screen" style="margin-top:14px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                <div style="font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;">
+                  📋 لصق بنود متعددة من Excel
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm" id="btnToggleBulkPaste" style="font-size:11px;padding:4px 10px;">إظهار/إخفاء</button>
+              </div>
+              <div class="bulk-paste-wrap" id="bulkPasteWrap" style="display:none;">
+                <textarea id="bulkPasteInput" placeholder="الصق هنا صفوفاً بصيغة: الوصف، الكمية، سعر الوحدة (مفصولة بفاصلة أو tab)&#10;مثال:&#10;تصميم بطاقة بريميوم، 1، 15.000&#10;طباعة 100 نسخة، 100، 0.500"></textarea>
+                <button type="button" id="btnBulkPasteAdd">+ إضافة البنود</button>
+              </div>
+            </div>
+
+            <!-- ═══ قوالب الفواتير (Invoice Templates) ═══ -->
+            <div class="admin-only-screen" style="margin-top:14px;">
+              <div style="font-size:11px;font-weight:700;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                🗂️ قوالب البنود المحفوظة
+              </div>
+              <div class="templates-bar" id="templatesBar">
+                <button type="button" class="template-save-btn" id="btnSaveTemplate">+ حفظ القالب الحالي</button>
+              </div>
+            </div>
 
             <div class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -1025,7 +1395,7 @@
             </div>
             <div class="form-row cols-3">
               <div class="form-group">
-                <label>نوع الخصم</label>
+                <label>نوع الخصم (على الفاتورة)</label>
                 <select class="form-control" id="fDiscountType">
                   <option value="none">بدون</option>
                   <option value="percent">نسبة %</option>
@@ -1041,6 +1411,113 @@
                 <input type="text" class="form-control mono" id="fVatRate" dir="ltr" placeholder="0" inputmode="decimal" value="0">
               </div>
             </div>
+            <div class="form-row cols-2" style="margin-top:6px;">
+              <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--paper);border-radius:8px;border:1px solid var(--line);">
+                <input type="checkbox" id="fVatIncluded" style="width:18px;height:18px;cursor:pointer;accent-color:var(--red);">
+                <label for="fVatIncluded" style="margin:0;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);">
+                  الأسعار شاملة الضريبة
+                  <span style="display:block;font-size:11px;color:var(--ink-faint);font-weight:400;margin-top:2px;">
+                    عند التفعيل: ضريبة القيمة المضافة مستخرجة من السعر (وليست مضافة عليه)
+                  </span>
+                </label>
+              </div>
+              <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--paper);border-radius:8px;border:1px solid var(--line);">
+                <input type="checkbox" id="fShowItemDiscount" checked style="width:18px;height:18px;cursor:pointer;accent-color:var(--red);">
+                <label for="fShowItemDiscount" style="margin:0;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);">
+                  إظهار تفاصيل الخصم/الهدية في البنود
+                  <span style="display:block;font-size:11px;color:var(--ink-faint);font-weight:400;margin-top:2px;">
+                    عرض نوع كل بند (خصم/هدية) في الفاتورة المطبوعة
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- ═══ رسوم إضافية (شحن، إكرامية، عربون) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+              رسوم إضافية وعربون
+            </div>
+            <div class="form-row cols-3 admin-only-screen">
+              <div class="form-group">
+                <label>الشحن / التوصيل</label>
+                <input type="text" class="form-control mono" id="fShipping" dir="ltr" placeholder="0.000" inputmode="decimal">
+              </div>
+              <div class="form-group">
+                <label>الإكرامية / البقشيش</label>
+                <input type="text" class="form-control mono" id="fTip" dir="ltr" placeholder="0.000" inputmode="decimal">
+              </div>
+              <div class="form-group">
+                <label>عربون / دفعة مقدمة</label>
+                <input type="text" class="form-control mono" id="fDeposit" dir="ltr" placeholder="0.000" inputmode="decimal">
+              </div>
+            </div>
+            <div class="form-group admin-only-screen" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--amber-tint);border-radius:8px;border:1px solid var(--amber);">
+              <input type="checkbox" id="fLateFeeEnabled" style="width:18px;height:18px;cursor:pointer;accent-color:var(--amber);">
+              <label for="fLateFeeEnabled" style="margin:0;cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);">
+                تطبيق غرامة تأخير تلقائية
+                <span style="display:block;font-size:11px;color:#92400E;font-weight:400;margin-top:2px;">
+                  تُحسب الغرامة من تاريخ الاستحقاق: 1% شهرياً على المبالغ غير المدفوعة
+                </span>
+              </label>
+            </div>
+
+            <!-- ═══ جدول الدفعات (Payment Schedule) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M8 14h2M8 18h6"/></svg>
+              جدول الدفعات / الأقساط
+            </div>
+            <div class="admin-only-screen">
+              <div class="payments-list" id="paymentsList"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnAddPayment" style="margin-top:6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                + إضافة دفعة
+              </button>
+            </div>
+
+            <!-- ═══ الحقول المخصصة (Custom Fields) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg>
+              حقول مخصصة
+            </div>
+            <div class="admin-only-screen">
+              <div class="custom-fields-list" id="customFieldsList"></div>
+              <button type="button" class="btn btn-ghost btn-sm" id="btnAddCustomField" style="margin-top:6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                + إضافة حقل مخصص
+              </button>
+            </div>
+
+            <!-- ═══ الفاتورة المتكررة (Recurring) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>
+              الفاتورة المتكررة (Recurring)
+            </div>
+            <div class="form-row cols-3 admin-only-screen">
+              <div class="form-group" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--paper);border-radius:8px;border:1px solid var(--line);">
+                <input type="checkbox" id="fRecurringEnabled" style="width:18px;height:18px;cursor:pointer;accent-color:var(--blue);">
+                <label for="fRecurringEnabled" style="margin:0;cursor:pointer;font-size:13px;font-weight:600;color:var(--ink);">تفعيل التكرار</label>
+              </div>
+              <div class="form-group">
+                <label>تكرار كل</label>
+                <select class="form-control" id="fRecurringFreq">
+                  <option value="weekly">أسبوع</option>
+                  <option value="monthly">شهر</option>
+                  <option value="quarterly">ربع سنة</option>
+                  <option value="yearly">سنة</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>التاريخ القادم للتكرار</label>
+                <input type="date" class="form-control" id="fRecurringNext">
+              </div>
+            </div>
+
+            <!-- ═══ سجل التدقيق (Audit Log) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen" id="auditLogTitle" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              سجل التغييرات على الفاتورة
+            </div>
+            <div class="admin-only-screen audit-log" id="auditLog" style="display:none;"></div>
 
             <div class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
@@ -1317,6 +1794,12 @@
     <!-- ═══ TAB: STATS ═══ -->
     <div class="tab-panel" id="tab-stats">
       <div class="stats-grid" id="statsGrid"></div>
+
+      <!-- ═══ إحصائيات متقدمة (Advanced Analytics) — admin only ═══ -->
+      <div class="admin-only-screen">
+        <div class="advanced-stats-grid" id="advStatsGrid"></div>
+      </div>
+
       <div class="chart-card">
         <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg>الإيرادات الشهرية (آخر 6 أشهر)</h3>
         <div class="bar-chart" id="monthlyChart"></div>
@@ -1324,6 +1807,22 @@
       <div class="chart-card">
         <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>توزيع الفواتير حسب الحالة</h3>
         <div class="status-breakdown" id="statusBreakdown"></div>
+      </div>
+
+      <!-- ═══ تقرير الأعمار (Aging Report) ═══ -->
+      <div class="chart-card admin-only-screen">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>تقرير الأعمار للفواتير المستحقة (Aging Report)</h3>
+        <div class="aging-grid" id="agingGrid"></div>
+      </div>
+
+      <!-- ═══ أعلى البنود والعملاء ═══ -->
+      <div class="chart-card admin-only-screen">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>أعلى 5 عملاء</h3>
+        <div class="top-list" id="topCustomers"></div>
+      </div>
+      <div class="chart-card admin-only-screen">
+        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-9M14 17H5M17 17a3 3 0 100-6 3 3 0 000 6zM7 7a3 3 0 100-6 3 3 0 000 6z"/></svg>أكثر البنود مبيعاً</h3>
+        <div class="top-list" id="topItems"></div>
       </div>
     </div>
 
@@ -1389,6 +1888,42 @@
           <div class="form-group">
             <label>الدولة</label>
             <input type="text" class="form-control" id="setBizCountry" value="مملكة البحرين">
+          </div>
+        </div>
+
+        <div class="setting-card admin-only-screen">
+          <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>البيانات البنكية (للفواتير)</h3>
+          <div class="bank-fields-grid">
+            <div class="form-group">
+              <label>اسم البنك</label>
+              <input type="text" class="form-control" id="setBankName" placeholder="مثال: بنك البحرين الوطني">
+            </div>
+            <div class="form-group">
+              <label>اسم صاحب الحساب</label>
+              <input type="text" class="form-control" id="setBankAcctName" placeholder="بطاقتي / Bitaqti">
+            </div>
+            <div class="form-group">
+              <label>رقم الحساب (Account No.)</label>
+              <input type="text" class="form-control mono" id="setBankAcctNum" dir="ltr" placeholder="00000000000">
+            </div>
+            <div class="form-group">
+              <label>IBAN</label>
+              <input type="text" class="form-control mono" id="setBankIban" dir="ltr" placeholder="BH00 NBBB 0000 0000 0000 00">
+            </div>
+            <div class="form-group">
+              <label>SWIFT / BIC</label>
+              <input type="text" class="form-control mono" id="setBankSwift" dir="ltr" placeholder="NBBBBSH0XXX">
+            </div>
+            <div class="form-group">
+              <label>الرقم الضريبي للمنشأة (VAT)</label>
+              <input type="text" class="form-control mono" id="setBizVat" dir="ltr" placeholder="BH000000000">
+            </div>
+          </div>
+          <div class="setting-actions">
+            <button class="btn btn-green btn-sm" id="btnSaveBankSettings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+              حفظ البيانات البنكية
+            </button>
           </div>
         </div>
 
@@ -1562,6 +2097,9 @@ $('lockOutBtn').addEventListener('click', () => {
 // ════════════════════════════════════════════════════════════════
 const STORAGE_KEY = 'bitaqti_invoices_v1';
 const SETTINGS_KEY = 'bitaqti_invoice_settings_v1';
+const CATALOG_KEY = 'bitaqti_item_catalog_v1';     // مكتبة البنود
+const TEMPLATES_KEY = 'bitaqti_invoice_templates_v1'; // قوالب البنود
+const AUDIT_KEY = 'bitaqti_invoice_audit_v1';      // سجل التدقيق
 
 const DEFAULT_SETTINGS = {
   prefix: 'BH-CV',
@@ -1575,6 +2113,14 @@ const DEFAULT_SETTINGS = {
     phone: '+973 66302585',
     email: 'bitaqti.bh@gmail.com',
     country: 'مملكة البحرين'
+  },
+  bank: {  // ═══ جديد: البيانات البنكية ═══
+    bankName: '',
+    acctName: '',
+    acctNum: '',
+    iban: '',
+    swift: '',
+    vatNumber: ''
   }
 };
 
@@ -1583,6 +2129,14 @@ let settings = {...DEFAULT_SETTINGS};
 let editingId = null; // null = new invoice, string = editing existing
 let currentSort = 'date-desc';
 let selectedIds = new Set();
+
+// ═══ جديد: متغيرات الميزات المتقدمة ═══
+let itemCatalog = [];          // مكتبة البنود
+let invoiceTemplates = [];     // قوالب البنود
+let auditLogs = {};            // { [invoiceId]: [ {time, action, ...} ] }
+let currentDocType = 'invoice'; // invoice | quote | credit
+let payments = [];             // جدول الدفعات للفاتورة الحالية
+let customFields = [];         // الحقول المخصصة للفاتورة الحالية
 
 // ════════════════════════════════════════════════════════════════
 //  CUSTOMERS DATA LAYER — قاعدة بيانات العملاء
@@ -1635,8 +2189,27 @@ function loadData(){
   }catch(e){ invoices = []; }
   try{
     const rawS = localStorage.getItem(SETTINGS_KEY);
-    if(rawS){ settings = {...DEFAULT_SETTINGS, ...JSON.parse(rawS)}; }
+    if(rawS){
+      const parsed = JSON.parse(rawS);
+      settings = {...DEFAULT_SETTINGS, ...parsed};
+      // ضمان وجود settings.bank (توافق مع الإصدارات القديمة)
+      if(!settings.bank) settings.bank = {...DEFAULT_SETTINGS.bank};
+      else settings.bank = {...DEFAULT_SETTINGS.bank, ...parsed.bank};
+    }
   }catch(e){ settings = {...DEFAULT_SETTINGS}; }
+  // ═══ جديد: تحميل مكتبة البنود والقوالب وسجل التدقيق ═══
+  try{
+    const rawC = localStorage.getItem(CATALOG_KEY);
+    itemCatalog = rawC ? JSON.parse(rawC) : [];
+  }catch(e){ itemCatalog = []; }
+  try{
+    const rawT = localStorage.getItem(TEMPLATES_KEY);
+    invoiceTemplates = rawT ? JSON.parse(rawT) : [];
+  }catch(e){ invoiceTemplates = []; }
+  try{
+    const rawA = localStorage.getItem(AUDIT_KEY);
+    auditLogs = rawA ? JSON.parse(rawA) : {};
+  }catch(e){ auditLogs = {}; }
 }
 
 function saveInvoices(){
@@ -1647,6 +2220,59 @@ function saveInvoices(){
 function saveSettings(){
   try{ localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); }
   catch(e){ toast('فشل حفظ الإعدادات', 'error'); }
+}
+
+// ═══ جديد: دوال حفظ الميزات المتقدمة ═══
+function saveCatalog(){
+  try{ localStorage.setItem(CATALOG_KEY, JSON.stringify(itemCatalog)); }
+  catch(e){ console.error('saveCatalog failed', e); }
+}
+function saveTemplates(){
+  try{ localStorage.setItem(TEMPLATES_KEY, JSON.stringify(invoiceTemplates)); }
+  catch(e){ console.error('saveTemplates failed', e); }
+}
+function saveAuditLogs(){
+  try{ localStorage.setItem(AUDIT_KEY, JSON.stringify(auditLogs)); }
+  catch(e){ console.error('saveAuditLogs failed', e); }
+}
+
+// ═══ جديد: سجل التدقيق — إضافة وتحميل ═══
+function addAuditEntry(invoiceId, action, details = ''){
+  if(!invoiceId) return;
+  if(!auditLogs[invoiceId]) auditLogs[invoiceId] = [];
+  auditLogs[invoiceId].push({
+    time: new Date().toISOString(),
+    action: action,
+    details: details
+  });
+  // نحتفظ بآخر 50 إدخالاً فقط لكل فاتورة
+  if(auditLogs[invoiceId].length > 50){
+    auditLogs[invoiceId] = auditLogs[invoiceId].slice(-50);
+  }
+  saveAuditLogs();
+}
+
+function renderAuditLog(invoiceId){
+  const logEl = $('auditLog');
+  const titleEl = $('auditLogTitle');
+  if(!logEl || !titleEl) return;
+  const entries = invoiceId && auditLogs[invoiceId] ? auditLogs[invoiceId] : [];
+  if(entries.length === 0){
+    logEl.style.display = 'none';
+    titleEl.style.display = 'none';
+    return;
+  }
+  titleEl.style.display = 'flex';
+  logEl.style.display = 'block';
+  logEl.innerHTML = entries.slice(-20).reverse().map(e => {
+    const dt = new Date(e.time);
+    const timeStr = dt.toLocaleString('en-GB', {year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'});
+    return `<div class="audit-entry">
+      <span class="audit-time">${timeStr}</span>
+      <span class="audit-action">${escapeHtml(e.action)}</span>
+      <span style="color:var(--ink-faint);">${escapeHtml(e.details || '')}</span>
+    </div>`;
+  }).join('');
 }
 
 function genInvoiceCode(){
@@ -1661,10 +2287,28 @@ function generateId(){
 // ════════════════════════════════════════════════════════════════
 //  FORM & PREVIEW LOGIC
 // ════════════════════════════════════════════════════════════════
-let items = []; // [{description, qty, unitPrice}]
+let items = []; // [{description, qty, unitPrice, itemType, discount:{type,value}, sku, category, unit, internalNotes}]
+  // itemType: 'regular' (افتراضي) | 'discount' (بند خصم — يُطرح) | 'gift' (هدية — الإجمالي 0)
+  // discount: {type:'none'|'percent'|'fixed', value:Number} — خصم على مستوى البند نفسه
+  // sku: كود البند (اختياري - لا يظهر في الطباعة)
+  // category: فئة البند (service, product, design, ... - لا تظهر في الطباعة)
+  // unit: نوع الوحدة (piece, hour, day, project, subscription)
+  // internalNotes: ملاحظات داخلية (لا تظهر في الطباعة)
+  // cost: التكلفة الداخلية للبند (لحساب الربح - لا تظهر في الطباعة)
 
-function addItem(desc='', qty=1, price=0){
-  items.push({description:desc, qty:qty, unitPrice:price});
+function addItem(desc='', qty=1, price=0, opts={}){
+  items.push({
+    description: desc,
+    qty: qty,
+    unitPrice: price,
+    itemType: opts.itemType || 'regular', // regular | discount | gift
+    discount: opts.discount || {type:'none', value:0},
+    sku: opts.sku || '',
+    category: opts.category || '',
+    unit: opts.unit || 'piece',
+    internalNotes: opts.internalNotes || '',
+    cost: opts.cost || 0
+  });
   renderItemsTable();
   updatePreview();
 }
@@ -1675,49 +2319,236 @@ function removeItem(idx){
   updatePreview();
 }
 
+// حساب إجمالي بند واحد (مع مراعاة الخصم والهدية)
+function computeItemTotal(item){
+  if(item.itemType === 'gift') return 0; // الهدية = 0 دائماً
+  let lineGross = Number(item.qty) * Number(item.unitPrice);
+  // خصم على مستوى البند
+  const d = item.discount || {type:'none', value:0};
+  let itemDiscount = 0;
+  if(d.type === 'percent') itemDiscount = lineGross * (Number(d.value) / 100);
+  else if(d.type === 'fixed') itemDiscount = Number(d.value);
+  if(itemDiscount > lineGross) itemDiscount = lineGross;
+  let lineNet = lineGross - itemDiscount;
+  if(item.itemType === 'discount') lineNet = -lineNet; // بند خصم → سالب
+  return lineNet;
+}
+
+// ═══ جديد: حساب التكلفة والربح للبند ═══
+function computeItemCost(item){
+  if(item.itemType === 'gift' || item.itemType === 'discount') return 0;
+  const cost = Number(item.cost) || 0;
+  return cost * Number(item.qty || 0);
+}
+
 function renderItemsTable(){
   const body = $('itemsBody');
   body.innerHTML = '';
   if(items.length === 0){
-    items.push({description:'', qty:1, unitPrice:0});
+    items.push({description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0});
   }
   items.forEach((item, i) => {
     const tr = document.createElement('tr');
     tr.className = 'item-row';
+    tr.draggable = true;
+    tr.dataset.idx = i;
+    const dType = item.discount?.type || 'none';
+    const dVal  = item.discount?.value || 0;
+    const iType = item.itemType || 'regular';
+    const total = computeItemTotal(item);
+    const typeClass = iType === 'gift' ? 'gift' : (iType === 'discount' ? 'discount' : '');
+    const totalClass = iType === 'gift' ? 'item-total gift-total' : (iType === 'discount' ? 'item-total discount-total' : 'item-total');
+    const totalDisplay = iType === 'gift' ? '0.000' : (iType === 'discount' ? `-${Math.abs(total).toFixed(3)}` : total.toFixed(3));
+    const unitVal = item.unit || 'piece';
+    const costVal = item.cost || 0;
+
     tr.innerHTML = `
-      <td><input type="text" class="col-desc-input" placeholder="وصف البند..." value="${escapeHtml(item.description)}" data-idx="${i}" data-field="description"></td>
-      <td><input type="number" class="col-qty-input" placeholder="1" value="${item.qty}" min="0" step="1" data-idx="${i}" data-field="qty"></td>
-      <td><input type="text" class="col-price-input" placeholder="0.000" value="${item.unitPrice}" data-idx="${i}" data-field="unitPrice" inputmode="decimal"></td>
-      <td><div class="item-total">${(Number(item.qty) * Number(item.unitPrice)).toFixed(3)}</div></td>
-      <td><button class="item-del" data-idx="${i}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button></td>
+      <td style="position:relative;">
+        <input type="text" class="col-desc-input" placeholder="${iType==='gift'?'وصف الهدية...':(iType==='discount'?'وصف الخصم...':'وصف البند...')}" value="${escapeHtml(item.description)}" data-idx="${i}" data-field="description">
+        ${item.sku ? `<div style="font-size:9.5px;color:var(--ink-faint);margin-top:2px;font-family:'IBM Plex Mono',monospace;direction:ltr;">SKU: ${escapeHtml(item.sku)}</div>` : ''}
+      </td>
+      <td><input type="number" class="col-qty-input" placeholder="1" value="${item.qty}" min="0" step="1" data-idx="${i}" data-field="qty" ${iType==='gift'||iType==='discount'?'disabled':''}></td>
+      <td><input type="text" class="col-price-input" placeholder="0.000" value="${item.unitPrice}" data-idx="${i}" data-field="unitPrice" inputmode="decimal" ${iType==='gift'?'disabled':''}></td>
+      <td>
+        <select class="item-disc-select" data-idx="${i}" data-field="discountType">
+          <option value="none" ${dType==='none'?'selected':''}>بدون</option>
+          <option value="percent" ${dType==='percent'?'selected':''}>نسبة %</option>
+          <option value="fixed" ${dType==='fixed'?'selected':''}>مبلغ</option>
+        </select>
+        <input type="text" class="item-disc-val" placeholder="0" value="${dVal}" data-idx="${i}" data-field="discountValue" inputmode="decimal" style="margin-top:4px;${dType==='none'?'opacity:.4;':''}" ${dType==='none'?'disabled':''}>
+      </td>
+      <td>
+        <select class="item-type-select ${typeClass}" data-idx="${i}" data-field="itemType">
+          <option value="regular" ${iType==='regular'?'selected':''}>عادي</option>
+          <option value="discount" ${iType==='discount'?'selected':''}>خصم</option>
+          <option value="gift" ${iType==='gift'?'selected':''}>🎁 هدية</option>
+        </select>
+        <button type="button" class="item-details-toggle" data-idx="${i}" title="تفاصيل متقدمة" style="margin-top:4px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </td>
+      <td><div class="${totalClass}">${totalDisplay}</div></td>
+      <td style="display:flex;flex-direction:column;gap:4px;align-items:center;">
+        <div class="item-drag-handle" data-idx="${i}" title="اسحب لإعادة الترتيب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="6" r="1"/><circle cx="9" cy="12" r="1"/><circle cx="9" cy="18" r="1"/><circle cx="15" cy="6" r="1"/><circle cx="15" cy="12" r="1"/><circle cx="15" cy="18" r="1"/></svg>
+        </div>
+        <button class="item-del" data-idx="${i}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
+      </td>
     `;
     body.appendChild(tr);
+
+    // ═══ صف التفاصيل الموسّع (admin only — يُخفى في الطباعة) ═══
+    const detTr = document.createElement('tr');
+    detTr.className = 'item-details-row admin-only-screen';
+    detTr.dataset.idx = i;
+    detTr.innerHTML = `
+      <td colspan="7">
+        <div class="item-details-grid">
+          <div class="form-group">
+            <label>SKU / كود البند</label>
+            <input type="text" class="item-sku-input" placeholder="—" value="${escapeHtml(item.sku||'')}" data-idx="${i}" data-field="sku" dir="ltr">
+          </div>
+          <div class="form-group">
+            <label>الفئة</label>
+            <select class="item-category-select" data-idx="${i}" data-field="category">
+              <option value="" ${!item.category?'selected':''}>— غير محدد —</option>
+              <option value="service" ${item.category==='service'?'selected':''}>خدمة</option>
+              <option value="product" ${item.category==='product'?'selected':''}>منتج</option>
+              <option value="design" ${item.category==='design'?'selected':''}>تصميم</option>
+              <option value="subscription" ${item.category==='subscription'?'selected':''}>اشتراك</option>
+              <option value="print" ${item.category==='print'?'selected':''}>طباعة</option>
+              <option value="consultation" ${item.category==='consultation'?'selected':''}>استشارة</option>
+              <option value="other" ${item.category==='other'?'selected':''}>أخرى</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>وحدة القياس</label>
+            <select class="item-unit-select" data-idx="${i}" data-field="unit">
+              <option value="piece" ${unitVal==='piece'?'selected':''}>قطعة</option>
+              <option value="hour" ${unitVal==='hour'?'selected':''}>ساعة</option>
+              <option value="day" ${unitVal==='day'?'selected':''}>يوم</option>
+              <option value="project" ${unitVal==='project'?'selected':''}>مشروع</option>
+              <option value="subscription" ${unitVal==='subscription'?'selected':''}>اشتراك</option>
+              <option value="service" ${unitVal==='service'?'selected':''}>خدمة</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>التكلفة الداخلية <span style="color:var(--ink-faint);">(للربح)</span></label>
+            <input type="text" class="item-cost-input mono" placeholder="0.000" value="${costVal}" data-idx="${i}" data-field="cost" inputmode="decimal" dir="ltr">
+          </div>
+          <input type="text" class="item-internal-notes" placeholder="ملاحظات داخلية (لا تظهر في الفاتورة المطبوعة)..." value="${escapeHtml(item.internalNotes||'')}" data-idx="${i}" data-field="internalNotes" style="grid-column:1/-1;padding:8px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-size:12px;min-height:36px;">
+        </div>
+      </td>
+    `;
+    body.appendChild(detTr);
   });
 
-  // Bind events
-  body.querySelectorAll('input').forEach(inp => {
+  // Bind events for main row inputs
+  body.querySelectorAll('input[data-field]').forEach(inp => {
     inp.addEventListener('input', (e) => {
       const idx = parseInt(e.target.dataset.idx);
       const field = e.target.dataset.field;
-      if(field === 'qty' || field === 'unitPrice'){
-        items[idx][field] = parseFloat(e.target.value) || 0;
-      }else{
+      if(field === 'qty' || field === 'unitPrice' || field === 'discountValue' || field === 'cost'){
+        if(field === 'discountValue'){
+          items[idx].discount = {...items[idx].discount, value: parseFloat(e.target.value) || 0};
+        } else {
+          items[idx][field] = parseFloat(e.target.value) || 0;
+        }
+      }else if(field !== 'discountType'){
         items[idx][field] = e.target.value;
       }
-      // Update only the total cell
-      const row = e.target.closest('tr');
-      if(row){
-        const totalCell = row.querySelector('.item-total');
-        if(totalCell){
-          totalCell.textContent = (Number(items[idx].qty) * Number(items[idx].unitPrice)).toFixed(3);
+      // Update only the total cell (only for visible total fields)
+      if(field === 'qty' || field === 'unitPrice' || field === 'discountValue'){
+        const row = e.target.closest('tr');
+        if(row){
+          const totalCell = row.querySelector('.item-total');
+          if(totalCell){
+            const it = items[idx];
+            const tot = computeItemTotal(it);
+            const iType = it.itemType || 'regular';
+            if(iType === 'gift') totalCell.textContent = '0.000';
+            else if(iType === 'discount') totalCell.textContent = `-${Math.abs(tot).toFixed(3)}`;
+            else totalCell.textContent = tot.toFixed(3);
+          }
         }
       }
       updatePreview();
     });
   });
+  body.querySelectorAll('select[data-field]').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      if(field === 'discountType'){
+        items[idx].discount = {...items[idx].discount, type: e.target.value};
+      }else if(field === 'itemType'){
+        items[idx].itemType = e.target.value;
+        // عند تغيير النوع إلى هدية أو خصم، نضبط حقول معينة
+        if(e.target.value === 'gift'){
+          items[idx].qty = 1;
+          items[idx].discount = {type:'none', value:0};
+        }else if(e.target.value === 'discount'){
+          items[idx].qty = 1;
+        }
+        renderItemsTable(); // إعادة الرسم لتطبيق disabled والأنماط
+      }else if(field === 'category' || field === 'unit'){
+        items[idx][field] = e.target.value;
+      }
+      updatePreview();
+    });
+  });
+
+  // ═══ تفاصيل البند (toggle) ═══
+  body.querySelectorAll('.item-details-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      const detailsRow = body.querySelector(`.item-details-row[data-idx="${idx}"]`);
+      if(detailsRow){
+        detailsRow.classList.toggle('open');
+        btn.classList.toggle('open');
+      }
+    });
+  });
+
+  // ═══ حذف البند ═══
   body.querySelectorAll('.item-del').forEach(btn => {
     btn.addEventListener('click', () => {
       removeItem(parseInt(btn.dataset.idx));
+    });
+  });
+
+  // ═══ السحب لإعادة الترتيب (Drag to reorder) ═══
+  let dragSrcIdx = null;
+  body.querySelectorAll('.item-row').forEach(row => {
+    row.addEventListener('dragstart', (e) => {
+      dragSrcIdx = parseInt(row.dataset.idx);
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      try { e.dataTransfer.setData('text/plain', String(dragSrcIdx)); } catch(_) {}
+    });
+    row.addEventListener('dragend', () => {
+      row.classList.remove('dragging');
+      body.querySelectorAll('.item-row').forEach(r => r.classList.remove('drag-over'));
+    });
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => {
+      row.classList.remove('drag-over');
+    });
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const destIdx = parseInt(row.dataset.idx);
+      if(dragSrcIdx === null || dragSrcIdx === destIdx) return;
+      // نقل البند من المصدر إلى الوجهة
+      const moved = items.splice(dragSrcIdx, 1)[0];
+      items.splice(destIdx, 0, moved);
+      dragSrcIdx = null;
+      renderItemsTable();
+      updatePreview();
+      toast('تم إعادة ترتيب البنود', 'info');
     });
   });
 }
@@ -1727,18 +2558,135 @@ function escapeHtml(s){
 }
 
 function calculateTotals(){
-  const subtotal = items.reduce((sum, it) => sum + (Number(it.qty) * Number(it.unitPrice)), 0);
+  // ═══ الأسعار شاملة الضريبة؟ ═══
+  const vatIncluded = $('fVatIncluded')?.checked || false;
+  const vatRate = parseFloat($('fVatRate')?.value) || 0;
+
+  // ═══ حساب المجموع الفرعي الصافي من البنود (مع مراعاة الخصم/الهدية لكل بند) ═══
+  // نجمّع الإجماليات الصافية لكل بند
+  let itemsNet = 0; // المجموع بعد خصومات البنود
+  let itemsGross = 0; // المجموع قبل خصومات البنود (للعرض فقط)
+  let itemsDiscountSum = 0; // مجموع خصومات البنود
+  let giftsCount = 0;
+  let itemsCost = 0; // ═══ جديد: مجموع التكلفة الداخلية للبنود (للربح) ═══
+  items.forEach(it => {
+    if(it.itemType === 'gift'){ giftsCount++; return; } // الهدية لا تُحسب في المجموع
+    const gross = Number(it.qty) * Number(it.unitPrice);
+    const d = it.discount || {type:'none', value:0};
+    let dAmount = 0;
+    if(d.type === 'percent') dAmount = gross * (Number(d.value) / 100);
+    else if(d.type === 'fixed') dAmount = Number(d.value);
+    if(dAmount > gross) dAmount = gross;
+    itemsGross += gross;
+    itemsDiscountSum += dAmount;
+    itemsCost += computeItemCost(it); // ═══ جديد ═══
+    if(it.itemType === 'discount'){
+      // بند خصم → يُطرح من المجموع
+      itemsNet -= gross; // الخصم يُطرح كاملاً (لا خصم على الخصم)
+    }else{
+      itemsNet += (gross - dAmount);
+    }
+  });
+
+  // المجموع الفرعي = مجموع البنود الصافي (قد يكون سالباً لو هناك بنود خصم)
+  const subtotal = itemsNet;
+
+  // ═══ خصم على مستوى الفاتورة ═══
   const discType = $('fDiscountType').value;
   const discVal = parseFloat($('fDiscountValue').value) || 0;
-  let discount = 0;
-  if(discType === 'percent') discount = subtotal * (discVal / 100);
-  else if(discType === 'fixed') discount = discVal;
-  if(discount > subtotal) discount = subtotal;
-  const afterDiscount = subtotal - discount;
-  const vatRate = parseFloat($('fVatRate').value) || 0;
-  const vat = afterDiscount * (vatRate / 100);
-  const grand = afterDiscount + vat;
-  return {subtotal, discount, vat, grand, vatRate, discType, discVal};
+  let invoiceDiscount = 0;
+  if(discType === 'percent') invoiceDiscount = Math.abs(subtotal) * (discVal / 100);
+  else if(discType === 'fixed') invoiceDiscount = discVal;
+  if(invoiceDiscount > Math.abs(subtotal)) invoiceDiscount = Math.abs(subtotal);
+
+  const afterDiscount = subtotal - invoiceDiscount;
+
+  // ═══ جديد: رسوم إضافية (شحن، إكرامية) ═══
+  const shipping = parseFloat($('fShipping')?.value) || 0;
+  const tip = parseFloat($('fTip')?.value) || 0;
+  const extraFees = shipping + tip;
+
+  // المبلغ الخاضع للضريبة = afterDiscount + extraFees (الرسوم الإضافية خاضعة للضريبة)
+  const baseForVat = afterDiscount + extraFees;
+
+  // ═══ الضريبة ═══
+  let vat = 0, taxableBase = baseForVat;
+  if(vatRate > 0){
+    if(vatIncluded){
+      // الأسعار شاملة الضريبة → استخراج الضريبة من المبلغ الشامل
+      vat = baseForVat * vatRate / (100 + vatRate);
+      taxableBase = baseForVat - vat;
+    }else{
+      // الأسعار بدون ضريبة → إضافة الضريبة
+      vat = baseForVat * (vatRate / 100);
+      taxableBase = baseForVat;
+    }
+  }
+  let grand = vatIncluded ? baseForVat : (baseForVat + vat);
+
+  // ═══ جديد: غرامة تأخير (Late Fee) ═══
+  let lateFee = 0;
+  const lateFeeEnabled = $('fLateFeeEnabled')?.checked || false;
+  const dueDate = $('fDueDate')?.value;
+  const invStatus = $('fStatus')?.value || 'draft';
+  if(lateFeeEnabled && dueDate){
+    const due = new Date(dueDate);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    due.setHours(0,0,0,0);
+    if(today > due && invStatus !== 'paid' && invStatus !== 'cancelled'){
+      const daysOverdue = Math.floor((today - due) / (1000*60*60*24));
+      const monthsOverdue = Math.ceil(daysOverdue / 30);
+      if(monthsOverdue > 0){
+        // 1% شهرياً على المبلغ غير المدفوع
+        lateFee = grand * 0.01 * monthsOverdue;
+        grand += lateFee;
+      }
+    }
+  }
+
+  // ═══ جديد: عربون / دفعة مقدمة ═══
+  const deposit = parseFloat($('fDeposit')?.value) || 0;
+  const balanceDue = grand - deposit;
+
+  // ═══ جديد: الدفعات المسجلة في جدول الدفعات ═══
+  const totalPaidViaSchedule = payments
+    .filter(p => p.status === 'paid')
+    .reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+  const totalScheduled = payments
+    .reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+  const balanceAfterSchedule = grand - totalPaidViaSchedule;
+
+  // ═══ جديد: حساب الربح ═══
+  const profit = grand - itemsCost - (vatIncluded ? 0 : vat);
+  const profitMargin = grand > 0 ? (profit / grand * 100) : 0;
+
+  return {
+    subtotal: itemsGross,                    // المجموع قبل كل الخصومات
+    itemsGross,
+    itemsDiscount: itemsDiscountSum,         // مجموع خصومات البنود
+    invoiceDiscount,                          // خصم الفاتورة
+    discount: invoiceDiscount,                // للتوافق مع الكود القديم
+    totalDiscount: itemsDiscountSum + invoiceDiscount, // إجمالي الخصومات
+    giftsCount,
+    afterDiscount,
+    shipping,                                  // ═══ جديد ═══
+    tip,                                       // ═══ جديد ═══
+    extraFees,                                 // ═══ جديد ═══
+    taxableBase,                              // المبلغ الخاضع للضريبة
+    vat, vatRate, vatIncluded,
+    grand, discType, discVal,
+    lateFee,                                   // ═══ جديد ═══
+    lateFeeEnabled,                            // ═══ جديد ═══
+    deposit,                                   // ═══ جديد ═══
+    balanceDue,                                // ═══ جديد: الإجمالي بعد العربون ═══
+    totalPaidViaSchedule,                      // ═══ جديد: المدفوع عبر الجدول ═══
+    totalScheduled,                            // ═══ جديد: إجمالي الدفعات المجدولة ═══
+    balanceAfterSchedule,                      // ═══ جديد: المتبقي بعد الدفعات ═══
+    itemsCost,                                 // ═══ جديد: تكلفة البنود ═══
+    profit,                                    // ═══ جديد: صافي الربح ═══
+    profitMargin                               // ═══ جديد: هامش الربح % ═══
+  };
 }
 
 function updatePreview(){
@@ -1786,40 +2734,132 @@ function updatePreview(){
   $('pContactPhone').textContent = '📞 ' + settings.business.phone;
   $('pContactEmail').textContent = '✉️ ' + settings.business.email;
 
-  // Items table
+  // Items table — الحفاظ على شكل الطباعة (5 أعمدة كما هو)
   const pItemsBody = $('pItemsBody');
   pItemsBody.innerHTML = '';
+  const showItemDiscount = $('fShowItemDiscount')?.checked !== false; // افتراضي true
   items.forEach((item, i) => {
-    const total = Number(item.qty) * Number(item.unitPrice);
+    const iType = item.itemType || 'regular';
+    const gross = Number(item.qty) * Number(item.unitPrice);
+    const d = item.discount || {type:'none', value:0};
+    let dAmount = 0;
+    if(d.type === 'percent') dAmount = gross * (Number(d.value) / 100);
+    else if(d.type === 'fixed') dAmount = Number(d.value);
+    if(dAmount > gross) dAmount = gross;
+    const total = computeItemTotal(item);
+
+    // تزيين الوصف بإشارة للنوع عند الحاجة (للطباعة — بدون تغيير بنية الجدول)
+    let descDisplay = escapeHtml(item.description) || '—';
+    let rowStyle = '';
+    if(iType === 'gift'){
+      descDisplay = `🎁 ${descDisplay}`;
+      rowStyle = 'style="color:#0C9A63;font-style:italic;"';
+    }else if(iType === 'discount'){
+      descDisplay = `🏷️ ${descDisplay}`;
+      rowStyle = 'style="color:#9C7A3C;"';
+    }else if(dAmount > 0 && showItemDiscount){
+      // إظهار تفاصيل الخصم داخل الوصف إذا كانت مفعّلة
+      const discNote = d.type === 'percent' ? ` (خصم ${d.value}%)` : ` (خصم ${d.value.toFixed(3)})`;
+      descDisplay += `<span style="color:#9C7A3C;font-size:10.5px;">${discNote}</span>`;
+    }
     const tr = document.createElement('tr');
+    tr.setAttribute('style', rowStyle);
+    // عرض السعر/الإجمالي: الهدية = "مجاني"، الخصم = سالب
+    const priceDisplay = iType === 'gift' ? 'مجاني' : Number(item.unitPrice).toFixed(3);
+    const totalDisplay = iType === 'gift' ? '0.000' : (iType === 'discount' ? `-${Math.abs(total).toFixed(3)}` : total.toFixed(3));
     tr.innerHTML = `
       <td class="col-num">${i + 1}</td>
-      <td>${escapeHtml(item.description) || '—'}</td>
-      <td class="col-qty">${item.qty}</td>
-      <td class="col-price">${Number(item.unitPrice).toFixed(3)}</td>
-      <td class="col-total">${total.toFixed(3)}</td>
+      <td>${descDisplay}</td>
+      <td class="col-qty">${iType === 'gift' ? '—' : item.qty}</td>
+      <td class="col-price">${priceDisplay}</td>
+      <td class="col-total">${totalDisplay}</td>
     `;
     pItemsBody.appendChild(tr);
   });
 
-  // Totals
+  // Totals — عرض مفصّل مع الحفاظ على بنية الطباعة
   const t = calculateTotals();
   const cur = settings.currency;
   let totalsHtml = `
-    <div class="total-row"><span class="lbl">المجموع الفرعي</span><span class="val">${t.subtotal.toFixed(3)} ${cur}</span></div>
+    <div class="total-row"><span class="lbl">المجموع الفرعي</span><span class="val">${t.itemsGross.toFixed(3)} ${cur}</span></div>
   `;
-  if(t.discount > 0){
-    const discLabel = t.discType === 'percent' ? `خصم (${t.discVal}%)` : 'خصم';
-    totalsHtml += `<div class="total-row discount"><span class="lbl">${discLabel}</span><span class="val">-${t.discount.toFixed(3)} ${cur}</span></div>`;
+  // خصومات البنود
+  if(t.itemsDiscount > 0){
+    totalsHtml += `<div class="total-row discount"><span class="lbl">خصم على البنود</span><span class="val">-${t.itemsDiscount.toFixed(3)} ${cur}</span></div>`;
   }
+  // خصم الفاتورة
+  if(t.invoiceDiscount > 0){
+    const discLabel = t.discType === 'percent' ? `خصم فاتورة (${t.discVal}%)` : 'خصم فاتورة';
+    totalsHtml += `<div class="total-row discount"><span class="lbl">${discLabel}</span><span class="val">-${t.invoiceDiscount.toFixed(3)} ${cur}</span></div>`;
+  }
+  // إجمالي الخصومات (إن وُجد)
+  if(t.totalDiscount > 0 && t.itemsDiscount > 0 && t.invoiceDiscount > 0){
+    totalsHtml += `<div class="total-row"><span class="lbl" style="color:var(--ink-faint);">إجمالي الخصومات</span><span class="val" style="color:var(--green);font-size:11px;">-${t.totalDiscount.toFixed(3)} ${cur}</span></div>`;
+  }
+  // المبلغ بعد الخصم (قبل الضريبة)
+  if(t.itemsDiscount > 0 || t.invoiceDiscount > 0){
+    totalsHtml += `<div class="total-row"><span class="lbl">بعد الخصم</span><span class="val">${t.afterDiscount.toFixed(3)} ${cur}</span></div>`;
+  }
+  // ═══ جديد: رسوم إضافية (شحن، إكرامية) ═══
+  if(t.shipping > 0){
+    totalsHtml += `<div class="total-row"><span class="lbl">الشحن / التوصيل</span><span class="val">+${t.shipping.toFixed(3)} ${cur}</span></div>`;
+  }
+  if(t.tip > 0){
+    totalsHtml += `<div class="total-row"><span class="lbl">الإكرامية / البقشيش</span><span class="val">+${t.tip.toFixed(3)} ${cur}</span></div>`;
+  }
+  // هدايا
+  if(t.giftsCount > 0){
+    totalsHtml += `<div class="total-row"><span class="lbl" style="color:#0C9A63;">🎁 بنود هدية</span><span class="val" style="color:#0C9A63;">${t.giftsCount}</span></div>`;
+  }
+  // الضريبة
   if(t.vat > 0){
-    totalsHtml += `<div class="total-row vat"><span class="lbl">ضريبة القيمة المضافة (${t.vatRate}%)</span><span class="val">${t.vat.toFixed(3)} ${cur}</span></div>`;
+    const vatLabel = t.vatIncluded
+      ? `ضريبة القيمة المضافة (${t.vatRate}%) — مستخرجة من السعر الشامل`
+      : `ضريبة القيمة المضافة (${t.vatRate}%)`;
+    totalsHtml += `<div class="total-row vat"><span class="lbl">${vatLabel}</span><span class="val">${t.vat.toFixed(3)} ${cur}</span></div>`;
   }
-  totalsHtml += `<div class="total-row grand"><span class="lbl">الإجمالي النهائي</span><span class="val">${t.grand.toFixed(3)} ${cur}</span></div>`;
+  // ═══ جديد: غرامة تأخير ═══
+  if(t.lateFee > 0){
+    totalsHtml += `<div class="total-row" style="color:var(--amber);"><span class="lbl">غرامة تأخير</span><span class="val">+${t.lateFee.toFixed(3)} ${cur}</span></div>`;
+  }
+  totalsHtml += `<div class="total-row grand"><span class="lbl">${t.vatIncluded ? 'الإجمالي شامل الضريبة' : 'الإجمالي النهائي'}</span><span class="val">${t.grand.toFixed(3)} ${cur}</span></div>`;
+  // ═══ جديد: عربون / دفعة مقدمة ═══
+  if(t.deposit > 0){
+    totalsHtml += `<div class="total-row" style="color:var(--green);"><span class="lbl">عربون / دفعة مقدمة</span><span class="val">-${t.deposit.toFixed(3)} ${cur}</span></div>`;
+    totalsHtml += `<div class="total-row grand" style="border-top:1.5px solid var(--line);margin-top:6px;padding-top:10px;"><span class="lbl">المتبقي للسداد</span><span class="val" style="color:var(--red-deep);">${t.balanceDue.toFixed(3)} ${cur}</span></div>`;
+  }
+  // ═══ جديد: المدفوع عبر جدول الدفعات ═══
+  if(t.totalPaidViaSchedule > 0){
+    totalsHtml += `<div class="total-row" style="color:var(--green);"><span class="lbl">مدفوع (من الجدول)</span><span class="val">-${t.totalPaidViaSchedule.toFixed(3)} ${cur}</span></div>`;
+    if(t.balanceAfterSchedule > 0){
+      totalsHtml += `<div class="total-row grand" style="border-top:1.5px solid var(--line);margin-top:6px;padding-top:10px;"><span class="lbl">الرصيد المتبقي</span><span class="val" style="color:var(--red-deep);">${t.balanceAfterSchedule.toFixed(3)} ${cur}</span></div>`;
+    }else if(t.balanceAfterSchedule <= 0){
+      totalsHtml += `<div class="total-row grand" style="border-top:1.5px solid var(--line);margin-top:6px;padding-top:10px;"><span class="lbl" style="color:var(--green);">تم السداد بالكامل ✓</span><span class="val" style="color:var(--green);">0.000 ${cur}</span></div>`;
+    }
+  }
   $('pTotals').innerHTML = totalsHtml;
 
-  // Form totals summary
-  $('formTotals').innerHTML = totalsHtml;
+  // Form totals summary — نسخة مطوّرة تعرض كل التفاصيل بما فيها الربح
+  let formTotalsHtml = totalsHtml;
+  // إضافة معلومات الربح في النموذج فقط (لا تظهر في المعاينة المطبوعة)
+  if(t.itemsCost > 0){
+    formTotalsHtml += `<div class="total-row" style="border-top:1px dashed var(--line);margin-top:6px;padding-top:6px;color:var(--blue);">
+      <span class="lbl">التكلفة الداخلية</span><span class="val">${t.itemsCost.toFixed(3)} ${cur}</span>
+    </div>`;
+    formTotalsHtml += `<div class="total-row" style="color:var(--green);">
+      <span class="lbl">صافي الربح</span><span class="val">${t.profit.toFixed(3)} ${cur}</span>
+    </div>`;
+    formTotalsHtml += `<div class="total-row" style="color:var(--ink-faint);font-size:11px;">
+      <span class="lbl">هامش الربح</span><span class="val">${t.profitMargin.toFixed(1)}%</span>
+    </div>`;
+  }
+  $('formTotals').innerHTML = formTotalsHtml;
+
+  // ═══ جديد: تحديث نص عنوان الفاتورة حسب نوع المستند ═══
+  const docType = currentDocType || 'invoice';
+  const docTypeLabels = {invoice:'فاتورة', quote:'عرض سعر', credit:'إشعار دائن'};
+  const invTitleEl = document.querySelector('#sheet .inv-meta h1');
+  if(invTitleEl) invTitleEl.textContent = docTypeLabels[docType] || 'فاتورة';
 
   // Notes
   const notes = $('fNotes').value.trim();
@@ -1835,6 +2875,11 @@ function updatePreview(){
     $('pPayStatus').textContent = statusVal === 'paid' ? 'مدفوع' : (statusVal === 'cancelled' ? 'ملغى' : (statusVal === 'sent' ? 'بانتظار الدفع' : '—'));
   }else{
     $('pPaymentWrap').style.display = 'none';
+  }
+
+  // ═══ جديد: عرض سجل التدقيق ═══
+  if(typeof renderAuditLog === 'function'){
+    renderAuditLog(editingId);
   }
 }
 
@@ -1873,20 +2918,47 @@ function collectInvoiceData(){
   return {
     code: $('fCode').value.trim(),
     date: $('fDate').value,
+    dueDate: $('fDueDate')?.value || '',
+    poRef: $('fPoRef')?.value.trim() || '',
+    project: $('fProject')?.value.trim() || '',
+    docType: currentDocType || 'invoice',
     status: $('fStatus').value,
     paymentMethod: $('fPayment').value,
     customer: {
       name: $('fName').value.trim(),
       phone: $('fPhone').value.trim(),
-      cvLink: $('fCvLink').value.trim()
+      cvLink: $('fCvLink').value.trim(),
+      vat: $('fCustVat')?.value.trim() || '',
+      cr: $('fCustCr')?.value.trim() || '',
+      email: $('fCustEmail')?.value.trim() || ''
     },
-    items: items.filter(it => it.description || it.unitPrice > 0).map(it => ({
+    items: items.filter(it => it.description || it.unitPrice > 0 || it.itemType === 'gift').map(it => ({
       description: it.description,
       qty: Number(it.qty) || 1,
-      unitPrice: Number(it.unitPrice) || 0
+      unitPrice: Number(it.unitPrice) || 0,
+      itemType: it.itemType || 'regular', // regular | discount | gift
+      discount: it.discount || {type:'none', value:0},
+      sku: it.sku || '',
+      category: it.category || '',
+      unit: it.unit || 'piece',
+      internalNotes: it.internalNotes || '',
+      cost: Number(it.cost) || 0
     })),
     discount: {type: $('fDiscountType').value, value: parseFloat($('fDiscountValue').value) || 0},
     vatRate: parseFloat($('fVatRate').value) || 0,
+    vatIncluded: $('fVatIncluded')?.checked || false,
+    showItemDiscount: $('fShowItemDiscount')?.checked !== false,
+    shipping: parseFloat($('fShipping')?.value) || 0,
+    tip: parseFloat($('fTip')?.value) || 0,
+    deposit: parseFloat($('fDeposit')?.value) || 0,
+    lateFeeEnabled: $('fLateFeeEnabled')?.checked || false,
+    payments: [...payments],
+    customFields: [...customFields],
+    recurring: {
+      enabled: $('fRecurringEnabled')?.checked || false,
+      freq: $('fRecurringFreq')?.value || 'monthly',
+      next: $('fRecurringNext')?.value || ''
+    },
     notes: $('fNotes').value.trim(),
     totals: calculateTotals()
   };
@@ -1909,6 +2981,7 @@ function saveInvoice(){
     const idx = invoices.findIndex(i => i.id === editingId);
     if(idx >= 0){
       invoices[idx] = {...invoices[idx], ...data, updatedAt: now};
+      addAuditEntry(editingId, 'تحديث الفاتورة', `الحالة: ${data.status}`);
     }
     toast('تم تحديث الفاتورة', 'success');
   }else{
@@ -1917,12 +2990,14 @@ function saveInvoice(){
     invoices.push(inv);
     settings.nextSeq++;
     saveSettings();
-    toast('تم حفظ الفاتورة بنجاح', 'success');
+    addAuditEntry(inv.id, 'إنشاء الفاتورة', `نوع المستند: ${data.docType || 'invoice'}`);
+    editingId = inv.id; // لعرض سجل التدقيق
   }
   saveInvoices();
-  editingId = null;
   updateHistoryBadge();
-  resetForm();
+  renderItemsTable();
+  updatePreview();
+  toast('تم حفظ الفاتورة بنجاح', 'success');
 }
 
 function loadInvoice(id){
@@ -1931,18 +3006,58 @@ function loadInvoice(id){
   editingId = id;
   $('fCode').value = inv.code;
   $('fDate').value = inv.date;
+  $('fDueDate').value = inv.dueDate || '';
+  $('fPoRef').value = inv.poRef || '';
+  $('fProject').value = inv.project || '';
   $('fStatus').value = inv.status;
   $('fPayment').value = inv.paymentMethod || '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
-  items = inv.items.length ? inv.items.map(it => ({...it})) : [{description:'', qty:1, unitPrice:0}];
+  $('fCustVat').value = inv.customer?.vat || '';
+  $('fCustCr').value = inv.customer?.cr || '';
+  $('fCustEmail').value = inv.customer?.email || '';
+  // نوع المستند
+  currentDocType = inv.docType || 'invoice';
+  updateDocTypePills();
+  // استرجاع البنود مع الحقول الجديدة (مع التوافق مع الفواتير القديمة)
+  items = inv.items.length ? inv.items.map(it => ({
+    description: it.description || '',
+    qty: it.qty || 1,
+    unitPrice: it.unitPrice || 0,
+    itemType: it.itemType || 'regular',
+    discount: it.discount || {type:'none', value:0},
+    sku: it.sku || '',
+    category: it.category || '',
+    unit: it.unit || 'piece',
+    internalNotes: it.internalNotes || '',
+    cost: Number(it.cost) || 0
+  })) : [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0}];
   $('fDiscountType').value = inv.discount.type;
   $('fDiscountValue').value = inv.discount.value;
   $('fVatRate').value = inv.vatRate;
+  // استرجاع خيار "الأسعار شاملة الضريبة" (افتراضي false للفواتير القديمة)
+  const vatIncEl = $('fVatIncluded');
+  if(vatIncEl) vatIncEl.checked = inv.vatIncluded || false;
+  const showItemDiscEl = $('fShowItemDiscount');
+  if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false; // افتراضي true
+  // ═══ جديد: استرجاع الحقول المتقدمة ═══
+  $('fShipping').value = inv.shipping || '';
+  $('fTip').value = inv.tip || '';
+  $('fDeposit').value = inv.deposit || '';
+  $('fLateFeeEnabled').checked = inv.lateFeeEnabled || false;
+  // ═══ جديد: استرجاع جدول الدفعات والحقول المخصصة ═══
+  payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
+  customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
+  // ═══ جديد: استرجاع إعدادات التكرار ═══
+  $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
+  $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
+  $('fRecurringNext').value = inv.recurring?.next || '';
   $('fNotes').value = inv.notes;
   $('fDiscountValue').disabled = inv.discount.type === 'none';
   renderItemsTable();
+  renderPaymentsList();
+  renderCustomFieldsList();
   updatePreview();
   switchTab('new');
   toast('تم تحميل الفاتورة للتعديل', 'info');
@@ -1953,15 +3068,48 @@ function duplicateInvoice(id){
   if(!inv) return;
   editingId = null;
   $('fDate').value = todayISO();
+  $('fDueDate').value = '';
+  $('fPoRef').value = inv.poRef || '';
+  $('fProject').value = inv.project || '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
-  items = inv.items.map(it => ({...it}));
+  $('fCustVat').value = inv.customer?.vat || '';
+  $('fCustCr').value = inv.customer?.cr || '';
+  $('fCustEmail').value = inv.customer?.email || '';
+  currentDocType = inv.docType || 'invoice';
+  updateDocTypePills();
+  // نسخ البنود مع الحقول الجديدة (مع التوافق مع القديمة)
+  items = inv.items.map(it => ({
+    description: it.description || '',
+    qty: it.qty || 1,
+    unitPrice: it.unitPrice || 0,
+    itemType: it.itemType || 'regular',
+    discount: it.discount || {type:'none', value:0},
+    sku: it.sku || '',
+    category: it.category || '',
+    unit: it.unit || 'piece',
+    internalNotes: it.internalNotes || '',
+    cost: Number(it.cost) || 0
+  }));
   $('fDiscountType').value = inv.discount.type;
   $('fDiscountValue').value = inv.discount.value;
   $('fVatRate').value = inv.vatRate;
+  const vatIncEl = $('fVatIncluded');
+  if(vatIncEl) vatIncEl.checked = inv.vatIncluded || false;
+  const showItemDiscEl = $('fShowItemDiscount');
+  if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false;
+  $('fShipping').value = inv.shipping || '';
+  $('fTip').value = inv.tip || '';
+  $('fDeposit').value = inv.deposit || '';
+  $('fLateFeeEnabled').checked = inv.lateFeeEnabled || false;
+  payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
+  customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
+  $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
+  $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
+  $('fRecurringNext').value = inv.recurring?.next || '';
   $('fNotes').value = inv.notes;
   $('fDiscountValue').disabled = inv.discount.type === 'none';
   // New code
@@ -1969,6 +3117,8 @@ function duplicateInvoice(id){
   saveSettings();
   $('fCode').value = genInvoiceCode();
   renderItemsTable();
+  renderPaymentsList();
+  renderCustomFieldsList();
   updatePreview();
   switchTab('new');
   toast('تم نسخ الفاتورة — احفظها لتثبيتها', 'info');
@@ -1977,6 +3127,8 @@ function duplicateInvoice(id){
 function deleteInvoice(id){
   showModal('danger', 'حذف الفاتورة', 'هل تريد حذف هذه الفاتورة نهائياً؟ لا يمكن التراجع.', () => {
     invoices = invoices.filter(i => i.id !== id);
+    delete auditLogs[id]; // حذف سجل التدقيق الخاص بالفاتورة
+    saveAuditLogs();
     saveInvoices();
     updateHistoryBadge();
     renderHistory();
@@ -1989,6 +3141,7 @@ function markAsPaid(id){
   if(idx < 0) return;
   invoices[idx].status = 'paid';
   invoices[idx].updatedAt = Date.now();
+  addAuditEntry(id, 'تعليم كمدفوعة', `المبلغ: ${invoices[idx].totals.grand.toFixed(3)}`);
   saveInvoices();
   renderHistory();
   toast('تم تعليم الفاتورة كمدفوعة', 'success');
@@ -2007,19 +3160,653 @@ function resetForm(){
   editingId = null;
   $('fCode').value = genInvoiceCode();
   $('fDate').value = todayISO();
+  $('fDueDate').value = '';
+  $('fPoRef').value = '';
+  $('fProject').value = '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
   $('fName').value = '';
   $('fPhone').value = '';
   $('fCvLink').value = '';
-  items = [{description:'', qty:1, unitPrice:0}];
+  $('fCustVat').value = '';
+  $('fCustCr').value = '';
+  $('fCustEmail').value = '';
+  currentDocType = 'invoice';
+  updateDocTypePills();
+  items = [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0}];
   $('fDiscountType').value = 'none';
   $('fDiscountValue').value = '';
   $('fDiscountValue').disabled = true;
   $('fVatRate').value = settings.defaultVat;
+  const vatIncEl = $('fVatIncluded');
+  if(vatIncEl) vatIncEl.checked = false;
+  const showItemDiscEl = $('fShowItemDiscount');
+  if(showItemDiscEl) showItemDiscEl.checked = true;
+  $('fShipping').value = '';
+  $('fTip').value = '';
+  $('fDeposit').value = '';
+  $('fLateFeeEnabled').checked = false;
+  payments = [];
+  customFields = [];
+  $('fRecurringEnabled').checked = false;
+  $('fRecurringFreq').value = 'monthly';
+  $('fRecurringNext').value = '';
   $('fNotes').value = '';
   renderItemsTable();
+  renderPaymentsList();
+  renderCustomFieldsList();
   updatePreview();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: Document Type Pills Handler
+// ════════════════════════════════════════════════════════════════
+function updateDocTypePills(){
+  document.querySelectorAll('#docTypePills .doc-type-pill').forEach(p => {
+    p.classList.remove('active', 'quote', 'credit');
+    if(p.dataset.doctype === currentDocType){
+      p.classList.add('active');
+      if(currentDocType === 'quote') p.classList.add('quote');
+      if(currentDocType === 'credit') p.classList.add('credit');
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: مكتبة البنود (Item Catalog)
+//  نحفظ بنوداً متكررة الاستخدام لاستدعائها بنقرة واحدة
+// ════════════════════════════════════════════════════════════════
+function renderCatalog(){
+  const bar = $('catalogBar');
+  if(!bar) return;
+  if(itemCatalog.length === 0){
+    bar.innerHTML = '<span style="color:var(--ink-faint);font-size:11.5px;">لا توجد بنود محفوظة بعد. أضف بنداً جديداً أدناه:</span>';
+    return;
+  }
+  bar.innerHTML = itemCatalog.map((c, i) => `
+    <div class="catalog-item" data-idx="${i}" title="انقر لإضافته للفاتورة">
+      <button type="button" class="ci-del" data-del="${i}" title="حذف من المكتبة">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+      <span>${escapeHtml(c.name)}</span>
+      <span class="ci-price">${Number(c.price || 0).toFixed(3)} ${settings.currency}</span>
+    </div>
+  `).join('');
+  // ربط النقر على البند لإضافته
+  bar.querySelectorAll('.catalog-item').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('.ci-del')) return; // تجاهل النقر على زر الحذف
+      const idx = parseInt(el.dataset.idx);
+      const c = itemCatalog[idx];
+      if(c){
+        addItem(c.name, 1, Number(c.price) || 0, {unit: c.unit || 'piece', category: c.category || ''});
+        toast(`تمت إضافة: ${c.name}`, 'success');
+      }
+    });
+  });
+  // ربط زر الحذف
+  bar.querySelectorAll('.ci-del').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.del);
+      itemCatalog.splice(idx, 1);
+      saveCatalog();
+      renderCatalog();
+      toast('تم حذف البند من المكتبة', 'info');
+    });
+  });
+}
+
+function addToCatalog(name, price, unit, category){
+  if(!name || !name.trim()){ toast('أدخل اسماً للبند', 'error'); return; }
+  itemCatalog.push({
+    name: name.trim(),
+    price: parseFloat(price) || 0,
+    unit: unit || 'piece',
+    category: category || ''
+  });
+  saveCatalog();
+  renderCatalog();
+  toast('تم حفظ البند في المكتبة', 'success');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: قوالب البنود (Invoice Templates)
+//  نحفظ مجموعة البنود الحالية كقالب لإعادة استخدامه
+// ════════════════════════════════════════════════════════════════
+function renderTemplates(){
+  const bar = $('templatesBar');
+  if(!bar) return;
+  let html = '<button type="button" class="template-save-btn" id="btnSaveTemplate">+ حفظ القالب الحالي</button>';
+  if(invoiceTemplates.length > 0){
+    html += invoiceTemplates.map((t, i) => `
+      <div class="template-chip" data-idx="${i}" title="انقر لتطبيق القالب">
+        <button type="button" class="ci-del tc-del" data-del="${i}" title="حذف القالب">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <span>${escapeHtml(t.name)}</span>
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;opacity:.7;">(${t.items.length})</span>
+      </div>
+    `).join('');
+  }
+  bar.innerHTML = html;
+
+  // ربط زر الحفظ
+  const saveBtn = bar.querySelector('#btnSaveTemplate');
+  if(saveBtn){
+    saveBtn.addEventListener('click', saveCurrentTemplate);
+  }
+  // ربط النقر لتطبيق القالب
+  bar.querySelectorAll('.template-chip').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('.tc-del')) return;
+      const idx = parseInt(el.dataset.idx);
+      applyTemplate(idx);
+    });
+  });
+  // ربط زر الحذف
+  bar.querySelectorAll('.tc-del').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const idx = parseInt(btn.dataset.del);
+      invoiceTemplates.splice(idx, 1);
+      saveTemplates();
+      renderTemplates();
+      toast('تم حذف القالب', 'info');
+    });
+  });
+}
+
+function saveCurrentTemplate(){
+  const validItems = items.filter(it => it.description || it.unitPrice > 0 || it.itemType === 'gift');
+  if(validItems.length === 0){
+    toast('لا توجد بنود لحفظها كقالب', 'error');
+    return;
+  }
+  const name = prompt('أدخل اسماً للقالب:', `قالب ${invoiceTemplates.length + 1}`);
+  if(!name || !name.trim()) return;
+  invoiceTemplates.push({
+    name: name.trim(),
+    items: validItems.map(it => ({...it})),
+    createdAt: new Date().toISOString()
+  });
+  saveTemplates();
+  renderTemplates();
+  toast('تم حفظ القالب بنجاح', 'success');
+}
+
+function applyTemplate(idx){
+  const t = invoiceTemplates[idx];
+  if(!t || !t.items) return;
+  // استبدال البنود الحالية ببنود القالب
+  items = t.items.map(it => ({
+    description: it.description || '',
+    qty: it.qty || 1,
+    unitPrice: it.unitPrice || 0,
+    itemType: it.itemType || 'regular',
+    discount: it.discount || {type:'none', value:0},
+    sku: it.sku || '',
+    category: it.category || '',
+    unit: it.unit || 'piece',
+    internalNotes: it.internalNotes || '',
+    cost: Number(it.cost) || 0
+  }));
+  renderItemsTable();
+  updatePreview();
+  toast(`تم تطبيق القالب: ${t.name}`, 'success');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: جدول الدفعات (Payment Schedule)
+// ════════════════════════════════════════════════════════════════
+function renderPaymentsList(){
+  const list = $('paymentsList');
+  if(!list) return;
+  if(payments.length === 0){
+    list.innerHTML = '<div style="text-align:center;color:var(--ink-faint);padding:8px;font-size:11.5px;font-style:italic;">لا توجد دفعات مجدولة بعد</div>';
+    return;
+  }
+  list.innerHTML = payments.map((p, i) => `
+    <div class="payment-row ${p.status === 'paid' ? 'paid' : ''}" data-idx="${i}">
+      <input type="date" class="pay-date" value="${p.date || ''}" data-idx="${i}" data-field="date">
+      <input type="text" class="pay-amount mono" dir="ltr" placeholder="المبلغ" value="${p.amount || ''}" inputmode="decimal" data-idx="${i}" data-field="amount">
+      <select class="pay-status" data-idx="${i}" data-field="status">
+        <option value="pending" ${p.status === 'pending' ? 'selected' : ''}>بانتظار الدفع</option>
+        <option value="paid" ${p.status === 'paid' ? 'selected' : ''}>مدفوع</option>
+        <option value="overdue" ${p.status === 'overdue' ? 'selected' : ''}>متأخر</option>
+        <option value="cancelled" ${p.status === 'cancelled' ? 'selected' : ''}>ملغي</option>
+      </select>
+      <button type="button" class="pay-del" data-idx="${i}" title="حذف">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      </button>
+    </div>
+  `).join('');
+
+  // ربط الأحداث
+  list.querySelectorAll('input,select').forEach(el => {
+    el.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      if(field === 'amount'){
+        payments[idx].amount = parseFloat(e.target.value) || 0;
+      }else{
+        payments[idx][field] = e.target.value;
+      }
+      // تحديث الصف بصرياً
+      if(field === 'status'){
+        const row = e.target.closest('.payment-row');
+        if(row) row.classList.toggle('paid', e.target.value === 'paid');
+      }
+      updatePreview();
+    });
+    el.addEventListener('change', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      payments[idx][field] = e.target.value;
+      if(field === 'status'){
+        const row = e.target.closest('.payment-row');
+        if(row) row.classList.toggle('paid', e.target.value === 'paid');
+      }
+      updatePreview();
+    });
+  });
+  list.querySelectorAll('.pay-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      payments.splice(idx, 1);
+      renderPaymentsList();
+      updatePreview();
+    });
+  });
+}
+
+function addPayment(){
+  payments.push({
+    date: todayISO(),
+    amount: 0,
+    status: 'pending'
+  });
+  renderPaymentsList();
+  updatePreview();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: الحقول المخصصة (Custom Fields)
+// ════════════════════════════════════════════════════════════════
+function renderCustomFieldsList(){
+  const list = $('customFieldsList');
+  if(!list) return;
+  if(customFields.length === 0){
+    list.innerHTML = '<div style="text-align:center;color:var(--ink-faint);padding:8px;font-size:11.5px;font-style:italic;">لا توجد حقول مخصصة — أضف حقلاً لإرفاق بيانات إضافية بالفاتورة</div>';
+    return;
+  }
+  list.innerHTML = customFields.map((f, i) => `
+    <div class="custom-field-row" data-idx="${i}">
+      <input type="text" class="cf-key" placeholder="اسم الحقل (مثال: رقم الموظف)" value="${escapeHtml(f.key || '')}" data-idx="${i}" data-field="key">
+      <input type="text" class="cf-val" placeholder="القيمة" value="${escapeHtml(f.value || '')}" data-idx="${i}" data-field="value">
+      <button type="button" class="cf-del" data-idx="${i}" title="حذف">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      </button>
+    </div>
+  `).join('');
+
+  list.querySelectorAll('input').forEach(el => {
+    el.addEventListener('input', (e) => {
+      const idx = parseInt(e.target.dataset.idx);
+      const field = e.target.dataset.field;
+      customFields[idx][field] = e.target.value;
+      updatePreview();
+    });
+  });
+  list.querySelectorAll('.cf-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.idx);
+      customFields.splice(idx, 1);
+      renderCustomFieldsList();
+      updatePreview();
+    });
+  });
+}
+
+function addCustomField(){
+  customFields.push({key: '', value: ''});
+  renderCustomFieldsList();
+  updatePreview();
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: اللصق المتعدد (Bulk Paste from Excel)
+//  نسمح بلصق عدة بنود دفعة واحدة من Excel (مفصولة بـ tab أو فاصلة)
+// ════════════════════════════════════════════════════════════════
+function bulkPasteItems(text){
+  if(!text || !text.trim()){
+    toast('لا يوجد محتوى للصق', 'error');
+    return;
+  }
+  const lines = text.trim().split(/\r?\n/).filter(l => l.trim());
+  if(lines.length === 0){
+    toast('لم يتم العثور على بنود', 'error');
+    return;
+  }
+  let added = 0;
+  lines.forEach(line => {
+    // نتعامل مع الفاصلة أو الـ tab كفاصل
+    const parts = line.includes('\t') ? line.split('\t') : line.split(/[,،]/);
+    if(parts.length < 1) return;
+    const desc = parts[0]?.trim() || '';
+    if(!desc) return;
+    const qty = parts[1] ? (parseFloat(parts[1].replace(/[^0-9.\-]/g, '')) || 1) : 1;
+    const price = parts[2] ? (parseFloat(parts[2].replace(/[^0-9.\-]/g, '')) || 0) : 0;
+    addItem(desc, qty, price);
+    added++;
+  });
+  toast(`تمت إضافة ${added} بند`, 'success');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: إحصائيات متقدمة (Advanced Analytics)
+// ════════════════════════════════════════════════════════════════
+function renderAdvancedStats(){
+  // الإيرادات، المستحقات، إجمالي الفواتير، متوسط الفاتورة (موجودة بالفعل في statsGrid)
+
+  // ═══ جديد: الربح الإجمالي ═══
+  let totalProfit = 0;
+  let totalCost = 0;
+  let overdueCount = 0;
+  let overdueAmount = 0;
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const customerMap = {}; // للعملاء الأعلى
+  const itemMap = {};     // للبنود الأكثر مبيعاً
+  const agingBuckets = {current: 0, days30: 0, days60: 0, days90: 0, days90p: 0};
+  const agingAmounts = {current: 0, days30: 0, days60: 0, days90: 0, days90p: 0};
+
+  invoices.forEach(inv => {
+    const t = inv.totals || {};
+    // الربح من الفواتير المدفوعة فقط
+    if(inv.status === 'paid'){
+      totalProfit += t.profit || (t.grand - (t.itemsCost || 0));
+      totalCost += t.itemsCost || 0;
+    }
+    // الفواتير المتأخرة
+    if((inv.status === 'sent' || inv.status === 'draft') && inv.dueDate){
+      const due = new Date(inv.dueDate);
+      due.setHours(0,0,0,0);
+      if(today > due){
+        overdueCount++;
+        overdueAmount += t.grand || 0;
+        const days = Math.floor((today - due) / (1000*60*60*24));
+        if(days <= 30){ agingBuckets.days30++; agingAmounts.days30 += t.grand || 0; }
+        else if(days <= 60){ agingBuckets.days60++; agingAmounts.days60 += t.grand || 0; }
+        else if(days <= 90){ agingBuckets.days90++; agingAmounts.days90 += t.grand || 0; }
+        else { agingBuckets.days90p++; agingAmounts.days90p += t.grand || 0; }
+      } else {
+        agingBuckets.current++;
+        agingAmounts.current += t.grand || 0;
+      }
+    } else if(inv.status === 'sent' || inv.status === 'draft'){
+      agingBuckets.current++;
+      agingAmounts.current += t.grand || 0;
+    }
+    // تجميع العملاء
+    if(inv.status !== 'cancelled'){
+      const key = inv.customer?.name || 'غير معروف';
+      if(!customerMap[key]) customerMap[key] = {count: 0, total: 0, paid: 0};
+      customerMap[key].count++;
+      customerMap[key].total += t.grand || 0;
+      if(inv.status === 'paid') customerMap[key].paid += t.grand || 0;
+    }
+    // تجميع البنود
+    (inv.items || []).forEach(it => {
+      if(it.itemType === 'gift' || it.itemType === 'discount') return;
+      const key = it.description || 'غير معروف';
+      if(!itemMap[key]) itemMap[key] = {qty: 0, revenue: 0, count: 0};
+      itemMap[key].qty += Number(it.qty) || 0;
+      itemMap[key].revenue += (Number(it.qty) || 0) * (Number(it.unitPrice) || 0);
+      itemMap[key].count++;
+    });
+  });
+
+  // ═══ رسم بطاقات الإحصائيات المتقدمة ═══
+  const advGrid = $('advStatsGrid');
+  if(advGrid){
+    advGrid.innerHTML = `
+      <div class="adv-stat-card profit">
+        <div class="adv-label">صافي الربح (المدفوع)</div>
+        <div class="adv-value">${totalProfit.toFixed(3)} ${settings.currency}</div>
+      </div>
+      <div class="adv-stat-card">
+        <div class="adv-label">إجمالي التكلفة</div>
+        <div class="adv-value">${totalCost.toFixed(3)} ${settings.currency}</div>
+      </div>
+      <div class="adv-stat-card overdue">
+        <div class="adv-label">فواتير متأخرة</div>
+        <div class="adv-value">${overdueCount}</div>
+      </div>
+      <div class="adv-stat-card overdue">
+        <div class="adv-label">مبالغ متأخرة</div>
+        <div class="adv-value">${overdueAmount.toFixed(3)} ${settings.currency}</div>
+      </div>
+    `;
+  }
+
+  // ═══ تقرير الأعمار (Aging Report) ═══
+  const agingGrid = $('agingGrid');
+  if(agingGrid){
+    agingGrid.innerHTML = `
+      <div class="aging-cell current">
+        <div class="ag-label">غير مستحقة</div>
+        <div class="ag-count">${agingBuckets.current}</div>
+        <div class="ag-amount">${agingAmounts.current.toFixed(3)}</div>
+      </div>
+      <div class="aging-cell current">
+        <div class="ag-label">0-30 يوم</div>
+        <div class="ag-count">${agingBuckets.days30}</div>
+        <div class="ag-amount">${agingAmounts.days30.toFixed(3)}</div>
+      </div>
+      <div class="aging-cell warn">
+        <div class="ag-label">31-60 يوم</div>
+        <div class="ag-count">${agingBuckets.days60}</div>
+        <div class="ag-amount">${agingAmounts.days60.toFixed(3)}</div>
+      </div>
+      <div class="aging-cell danger">
+        <div class="ag-label">61-90 يوم</div>
+        <div class="ag-count">${agingBuckets.days90}</div>
+        <div class="ag-amount">${agingAmounts.days90.toFixed(3)}</div>
+      </div>
+      <div class="aging-cell danger">
+        <div class="ag-label">+90 يوم</div>
+        <div class="ag-count">${agingBuckets.days90p}</div>
+        <div class="ag-amount">${agingAmounts.days90p.toFixed(3)}</div>
+      </div>
+    `;
+  }
+
+  // ═══ أعلى 5 عملاء ═══
+  const topCustEl = $('topCustomers');
+  if(topCustEl){
+    const topCusts = Object.entries(customerMap)
+      .sort((a, b) => b[1].total - a[1].total)
+      .slice(0, 5);
+    if(topCusts.length === 0){
+      topCustEl.innerHTML = '<div style="text-align:center;color:var(--ink-faint);padding:14px;font-size:12px;">لا توجد بيانات</div>';
+    } else {
+      topCustEl.innerHTML = topCusts.map(([name, data], i) => `
+        <div class="top-list-item">
+          <span class="tli-name"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#fff;text-align:center;line-height:20px;font-size:10px;margin-left:6px;">${i+1}</span> ${escapeHtml(name)}</span>
+          <span class="tli-val">${data.total.toFixed(3)} ${settings.currency}</span>
+        </div>
+      `).join('');
+    }
+  }
+
+  // ═══ أكثر البنود مبيعاً ═══
+  const topItemsEl = $('topItems');
+  if(topItemsEl){
+    const topItems = Object.entries(itemMap)
+      .sort((a, b) => b[1].revenue - a[1].revenue)
+      .slice(0, 5);
+    if(topItems.length === 0){
+      topItemsEl.innerHTML = '<div style="text-align:center;color:var(--ink-faint);padding:14px;font-size:12px;">لا توجد بنود بعد</div>';
+    } else {
+      topItemsEl.innerHTML = topItems.map(([name, data], i) => `
+        <div class="top-list-item">
+          <span class="tli-name"><span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;text-align:center;line-height:20px;font-size:10px;margin-left:6px;">${i+1}</span> ${escapeHtml(name)} <span style="color:var(--ink-faint);font-size:11px;">(${data.qty} وحدة)</span></span>
+          <span class="tli-val">${data.revenue.toFixed(3)} ${settings.currency}</span>
+        </div>
+      `).join('');
+    }
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: كشف حساب العميل (Customer Statement)
+//  يعرض جميع فواتير العميل ورصيده المستحق
+// ════════════════════════════════════════════════════════════════
+function showCustomerStatement(customerName, customerPhone){
+  const custInvoices = invoices.filter(inv =>
+    inv.customer &&
+    (inv.customer.name === customerName ||
+     (customerPhone && inv.customer.phone === customerPhone))
+  );
+  if(custInvoices.length === 0){
+    toast('لا توجد فواتير لهذا العميل', 'info');
+    return;
+  }
+  let totalInvoiced = 0, totalPaid = 0, totalOutstanding = 0;
+  custInvoices.forEach(inv => {
+    totalInvoiced += inv.totals?.grand || 0;
+    if(inv.status === 'paid') totalPaid += inv.totals?.grand || 0;
+    else if(inv.status !== 'cancelled') totalOutstanding += inv.totals?.grand || 0;
+  });
+  const rows = custInvoices.map(inv => {
+    const t = inv.totals || {};
+    const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
+    return `<tr style="border-bottom:1px solid var(--line);">
+      <td style="padding:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;">${escapeHtml(inv.code)}</td>
+      <td style="padding:6px;font-size:11px;">${formatDate(inv.date)}</td>
+      <td style="padding:6px;font-family:'IBM Plex Mono',monospace;font-size:11px;text-align:left;direction:ltr;">${(t.grand||0).toFixed(3)}</td>
+      <td style="padding:6px;font-size:11px;">${statusLabels[inv.status] || inv.status}</td>
+    </tr>`;
+  }).join('');
+  const html = `
+    <div style="margin-bottom:14px;padding:10px 14px;background:var(--paper);border-radius:8px;">
+      <div style="font-size:11px;color:var(--ink-faint);text-transform:uppercase;">العميل</div>
+      <div style="font-size:16px;font-weight:700;margin-top:2px;">${escapeHtml(customerName)}</div>
+      <div style="font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;direction:ltr;">${escapeHtml(customerPhone||'')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+      <div style="background:var(--blue-tint);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:10px;color:var(--blue);">إجمالي الفواتير</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--blue);">${totalInvoiced.toFixed(3)}</div>
+      </div>
+      <div style="background:var(--green-tint);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:10px;color:var(--green);">مدفوع</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--green);">${totalPaid.toFixed(3)}</div>
+      </div>
+      <div style="background:var(--red-tint);border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:10px;color:var(--red);">مستحق</div>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:var(--red);">${totalOutstanding.toFixed(3)}</div>
+      </div>
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead>
+        <tr style="background:var(--ink);color:#fff;">
+          <th style="padding:8px;text-align:right;font-size:10px;">رقم الفاتورة</th>
+          <th style="padding:8px;text-align:right;font-size:10px;">التاريخ</th>
+          <th style="padding:8px;text-align:left;font-size:10px;">المبلغ</th>
+          <th style="padding:8px;text-align:right;font-size:10px;">الحالة</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+  showModal({
+    title: 'كشف حساب العميل',
+    bodyHtml: html,
+    confirmText: 'إغلاق',
+    hideCancel: true,
+    onConfirm: () => closeModal(),
+  });
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: الفواتير المتكررة — فحص وتوليد تلقائي
+//  يفحص كل فاتورة متكررة، فإن حلّ موعد تكرارها، يُنشئ نسخة جديدة
+//  ويُحدّث التاريخ القادم. (يُستدعى عند فتح الصفحة)
+// ════════════════════════════════════════════════════════════════
+function processRecurringInvoices(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  let generated = 0;
+  invoices.forEach(inv => {
+    if(!inv.recurring?.enabled || !inv.recurring?.next) return;
+    const nextDate = new Date(inv.recurring.next);
+    nextDate.setHours(0,0,0,0);
+    if(nextDate > today) return; // لم يحلّ الموعد بعد
+    // إنشاء نسخة جديدة
+    const now = Date.now();
+    settings.nextSeq++;
+    const newCode = `${settings.prefix}-${settings.year}-${String(settings.nextSeq).padStart(3,'0')}`;
+    const newInv = {
+      ...inv,
+      id: generateId(),
+      code: newCode,
+      date: todayISO(),
+      status: 'draft',
+      createdAt: now,
+      updatedAt: now,
+      recurring: {...inv.recurring, next: computeNextRecurringDate(inv.recurring.next, inv.recurring.freq)},
+      // لا ننسخ المدفوعات القديمة
+      payments: [],
+      totals: inv.totals // نُعيد الحساب عند الحفظ
+    };
+    invoices.push(newInv);
+    addAuditEntry(newInv.id, 'توليد تلقائي من فاتورة متكررة', `الأصل: ${inv.code}`);
+    // تحديث الفاتورة الأصلية
+    inv.recurring.lastGenerated = todayISO();
+    inv.recurring.next = computeNextRecurringDate(inv.recurring.next, inv.recurring.freq);
+    generated++;
+  });
+  if(generated > 0){
+    saveInvoices();
+    saveSettings();
+    updateHistoryBadge();
+    toast(`تم توليد ${generated} فاتورة متكررة تلقائياً`, 'success');
+  }
+}
+
+function computeNextRecurringDate(currentDate, freq){
+  const d = new Date(currentDate);
+  switch(freq){
+    case 'weekly': d.setDate(d.getDate() + 7); break;
+    case 'monthly': d.setMonth(d.getMonth() + 1); break;
+    case 'quarterly': d.setMonth(d.getMonth() + 3); break;
+    case 'yearly': d.setFullYear(d.getFullYear() + 1); break;
+    default: d.setMonth(d.getMonth() + 1);
+  }
+  return d.toISOString().slice(0,10);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: حساب الرصيد المستحق لعميل (Customer Outstanding Balance)
+// ════════════════════════════════════════════════════════════════
+function getCustomerOutstanding(customerName, customerPhone){
+  let outstanding = 0;
+  let paidCount = 0, unpaidCount = 0;
+  invoices.forEach(inv => {
+    if(!inv.customer) return;
+    const match = inv.customer.name === customerName ||
+                  (customerPhone && inv.customer.phone === customerPhone);
+    if(!match) return;
+    if(inv.status === 'paid') paidCount++;
+    else if(inv.status !== 'cancelled') {
+      outstanding += inv.totals?.grand || 0;
+      unpaidCount++;
+    }
+  });
+  return {outstanding, paidCount, unpaidCount};
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2192,6 +3979,9 @@ function renderStats(){
     <div class="status-card paid"><div class="sc-count">${paid.length}</div><div class="sc-label">مدفوعة</div></div>
     <div class="status-card cancelled"><div class="sc-count">${cancelled.length}</div><div class="sc-label">ملغاة</div></div>
   `;
+
+  // ═══ جديد: الإحصائيات المتقدمة (الربح، الأعمار، أعلى العملاء/البنود) ═══
+  if(typeof renderAdvancedStats === 'function') renderAdvancedStats();
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -2208,6 +3998,13 @@ function loadSettingsForm(){
   $('setBizPhone').value = settings.business.phone;
   $('setBizEmail').value = settings.business.email;
   $('setBizCountry').value = settings.business.country;
+  // ═══ جديد: تحميل البيانات البنكية ═══
+  if($('setBankName')) $('setBankName').value = settings.bank?.bankName || '';
+  if($('setBankAcctName')) $('setBankAcctName').value = settings.bank?.acctName || '';
+  if($('setBankAcctNum')) $('setBankAcctNum').value = settings.bank?.acctNum || '';
+  if($('setBankIban')) $('setBankIban').value = settings.bank?.iban || '';
+  if($('setBankSwift')) $('setBankSwift').value = settings.bank?.swift || '';
+  if($('setBizVat')) $('setBizVat').value = settings.bank?.vatNumber || '';
 }
 
 function saveSettingsForm(){
@@ -2221,8 +4018,30 @@ function saveSettingsForm(){
   settings.business.phone = $('setBizPhone').value.trim();
   settings.business.email = $('setBizEmail').value.trim();
   settings.business.country = $('setBizCountry').value.trim();
+  // ═══ جديد: حفظ البيانات البنكية ═══
+  if(!settings.bank) settings.bank = {};
+  if($('setBankName')) settings.bank.bankName = $('setBankName').value.trim();
+  if($('setBankAcctName')) settings.bank.acctName = $('setBankAcctName').value.trim();
+  if($('setBankAcctNum')) settings.bank.acctNum = $('setBankAcctNum').value.trim();
+  if($('setBankIban')) settings.bank.iban = $('setBankIban').value.trim();
+  if($('setBankSwift')) settings.bank.swift = $('setBankSwift').value.trim();
+  if($('setBizVat')) settings.bank.vatNumber = $('setBizVat').value.trim();
   saveSettings();
   toast('تم حفظ الإعدادات', 'success');
+  updatePreview();
+}
+
+// ═══ جديد: حفظ منفصل للبيانات البنكية ═══
+function saveBankSettings(){
+  if(!settings.bank) settings.bank = {};
+  settings.bank.bankName = $('setBankName').value.trim();
+  settings.bank.acctName = $('setBankAcctName').value.trim();
+  settings.bank.acctNum = $('setBankAcctNum').value.trim();
+  settings.bank.iban = $('setBankIban').value.trim();
+  settings.bank.swift = $('setBankSwift').value.trim();
+  settings.bank.vatNumber = $('setBizVat').value.trim();
+  saveSettings();
+  toast('تم حفظ البيانات البنكية', 'success');
   updatePreview();
 }
 
@@ -2231,10 +4050,13 @@ function saveSettingsForm(){
 // ════════════════════════════════════════════════════════════════
 function exportJSON(){
   const data = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
     invoices: invoices,
-    settings: settings
+    settings: settings,
+    itemCatalog: itemCatalog,
+    invoiceTemplates: invoiceTemplates,
+    auditLogs: auditLogs
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -2248,18 +4070,40 @@ function exportJSON(){
 
 function exportCSV(){
   if(invoices.length === 0){ toast('لا توجد فواتير للتصدير', 'error'); return; }
-  const rows = [['رقم الفاتورة','التاريخ','العميل','الهاتف','البطاقة','الحالة','المجموع الفرعي','الخصم','VAT','الإجمالي','طريقة الدفع','ملاحظات']];
+  const rows = [['رقم الفاتورة','نوع المستند','التاريخ','تاريخ الاستحقاق','العميل','الهاتف','البريد','الرقم الضريبي','البطاقة','الحالة','المشروع','مرجع PO','المجموع الفرعي','خصم البنود','خصم الفاتورة','الشحن','الإكرامية','العربون','VAT','شامل الضريبة','عدد الهدايا','غرامة التأخير','الإجمالي','المتبقي','الربح','طريقة الدفع','متكررة','ملاحظات']];
   const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
   const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة'};
+  const docTypeLabels = {invoice:'فاتورة', quote:'عرض سعر', credit:'إشعار دائن'};
   invoices.forEach(inv => {
+    const t = inv.totals || {};
     rows.push([
-      inv.code, inv.date, inv.customer.name, inv.customer.phone, inv.customer.cvLink,
+      inv.code,
+      docTypeLabels[inv.docType] || 'فاتورة',
+      inv.date,
+      inv.dueDate || '',
+      inv.customer?.name || '',
+      inv.customer?.phone || '',
+      inv.customer?.email || '',
+      inv.customer?.vat || '',
+      inv.customer?.cvLink || '',
       statusLabels[inv.status] || inv.status,
-      inv.totals.subtotal.toFixed(3),
-      inv.totals.discount.toFixed(3),
-      inv.totals.vat.toFixed(3),
-      inv.totals.grand.toFixed(3),
+      inv.project || '',
+      inv.poRef || '',
+      (t.itemsGross ?? t.subtotal ?? 0).toFixed(3),
+      (t.itemsDiscount ?? 0).toFixed(3),
+      (t.invoiceDiscount ?? t.discount ?? 0).toFixed(3),
+      (t.shipping ?? 0).toFixed(3),
+      (t.tip ?? 0).toFixed(3),
+      (t.deposit ?? 0).toFixed(3),
+      (t.vat ?? 0).toFixed(3),
+      inv.vatIncluded ? 'نعم' : 'لا',
+      (t.giftsCount ?? 0),
+      (t.lateFee ?? 0).toFixed(3),
+      (t.grand ?? 0).toFixed(3),
+      (t.balanceDue ?? t.grand ?? 0).toFixed(3),
+      (t.profit ?? 0).toFixed(3),
       payLabels[inv.paymentMethod] || '',
+      inv.recurring?.enabled ? `كل ${inv.recurring.freq}` : 'لا',
       (inv.notes || '').replace(/"/g,'""').replace(/\n/g,' ')
     ]);
   });
@@ -2285,6 +4129,21 @@ function importJSON(file){
         () => {
           invoices = data.invoices;
           if(data.settings) settings = {...DEFAULT_SETTINGS, ...data.settings};
+          // ═══ جديد: استيراد الكتالوج والقوالب وسجل التدقيق إن وُجدت ═══
+          if(Array.isArray(data.itemCatalog)){
+            itemCatalog = data.itemCatalog;
+            saveCatalog();
+            renderCatalog();
+          }
+          if(Array.isArray(data.invoiceTemplates)){
+            invoiceTemplates = data.invoiceTemplates;
+            saveTemplates();
+            renderTemplates();
+          }
+          if(data.auditLogs && typeof data.auditLogs === 'object'){
+            auditLogs = data.auditLogs;
+            saveAuditLogs();
+          }
           saveInvoices(); saveSettings();
           updateHistoryBadge(); renderHistory(); loadSettingsForm();
           toast('تم استيراد البيانات بنجاح', 'success');
@@ -2302,14 +4161,22 @@ function clearAllData(){
     () => {
       invoices = [];
       settings = {...DEFAULT_SETTINGS};
+      itemCatalog = [];
+      invoiceTemplates = [];
+      auditLogs = {};
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(SETTINGS_KEY);
+      localStorage.removeItem(CATALOG_KEY);
+      localStorage.removeItem(TEMPLATES_KEY);
+      localStorage.removeItem(AUDIT_KEY);
       editingId = null;
       selectedIds.clear();
       resetForm();
       updateHistoryBadge();
       renderHistory();
       loadSettingsForm();
+      renderCatalog();
+      renderTemplates();
       toast('تم حذف جميع البيانات', 'success');
     });
 }
@@ -2437,6 +4304,7 @@ function renderCustomers(){
       <td class="col-date" dir="ltr">${c.order_date || '—'}</td>
       <td class="col-actions">
         <button class="row-action view" data-act="view" data-phone="${escapeAttr(c.phone)}" title="عرض"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button class="row-action" data-act="statement" data-phone="${escapeAttr(c.phone)}" title="كشف حساب العميل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></button>
         <button class="row-action" data-act="edit" data-phone="${escapeAttr(c.phone)}" title="تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 113 3L7 19l-4 1 1-4z"/></svg></button>
         <button class="row-action duplicate" data-act="invoice" data-phone="${escapeAttr(c.phone)}" title="إنشاء فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg></button>
         <button class="row-action view" data-act="print" data-phone="${escapeAttr(c.phone)}" title="طباعة فاتورة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
@@ -2455,6 +4323,7 @@ function renderCustomers(){
       const cust = customers.find(c => String(c.phone) === phone);
       if(!cust) return;
       if(act === 'view')      viewCustomer(cust);
+      else if(act === 'statement') showCustomerStatement(cust.customer_name, cust.phone);
       else if(act === 'edit')     editCustomer(cust);
       else if(act === 'invoice')  createInvoiceFromCustomer(cust);
       else if(act === 'print')    printCustomerInvoice(cust);
@@ -3118,9 +4987,16 @@ function initApp(){
   });
 
   // Form events
-  ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes'].forEach(id => {
-    $(id).addEventListener('input', updatePreview);
-    $(id).addEventListener('change', updatePreview);
+  ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes',
+   // ═══ جديد: حقول إضافية ═══
+   'fDueDate','fPoRef','fProject','fCustVat','fCustCr','fCustEmail',
+   'fShipping','fTip','fDeposit','fRecurringNext'
+  ].forEach(id => {
+    const el = $(id);
+    if(el){
+      el.addEventListener('input', updatePreview);
+      el.addEventListener('change', updatePreview);
+    }
   });
 
   // Discount type toggle
@@ -3129,6 +5005,90 @@ function initApp(){
     if($('fDiscountType').value === 'none') $('fDiscountValue').value = '';
     updatePreview();
   });
+
+  // ═══ مستمعو أحداث جدد للبنود الخاصة ═══
+  // زر "إضافة بند خصم" — يضيف بند خصم جاهز
+  $('btnAddDiscount')?.addEventListener('click', () => {
+    addItem('خصم خاص', 1, 0, {itemType:'discount'});
+    toast('تم إضافة بند خصم — أدخل قيمته كسعر للوحدة', 'info');
+  });
+  // زر "إضافة بند هدية" — يضيف بند هدية (الإجمالي = 0)
+  $('btnAddGift')?.addEventListener('click', () => {
+    addItem('هدية مجانية', 1, 0, {itemType:'gift'});
+    toast('تم إضافة بند هدية 🎁', 'info');
+  });
+  // خيار "الأسعار شاملة الضريبة" — تحديث المعاينة عند التغيير
+  $('fVatIncluded')?.addEventListener('change', updatePreview);
+  // خيار "إظهار تفاصيل الخصم/الهدية" — تحديث المعاينة عند التغيير
+  $('fShowItemDiscount')?.addEventListener('change', updatePreview);
+  // ═══ جديد: خيارات الرسوم والعربون وغرامة التأخير ═══
+  $('fShipping')?.addEventListener('input', updatePreview);
+  $('fTip')?.addEventListener('input', updatePreview);
+  $('fDeposit')?.addEventListener('input', updatePreview);
+  $('fLateFeeEnabled')?.addEventListener('change', updatePreview);
+  // ═══ جديد: خيارات التكرار ═══
+  $('fRecurringEnabled')?.addEventListener('change', updatePreview);
+  $('fRecurringFreq')?.addEventListener('change', updatePreview);
+  $('fRecurringNext')?.addEventListener('change', updatePreview);
+  // تحديث المعاينة عند تغيير VAT rate
+  $('fVatRate')?.addEventListener('input', updatePreview);
+  $('fDiscountValue')?.addEventListener('input', updatePreview);
+
+  // ═══ جديد: Document Type Pills ═══
+  document.querySelectorAll('#docTypePills .doc-type-pill').forEach(p => {
+    p.addEventListener('click', () => {
+      currentDocType = p.dataset.doctype;
+      updateDocTypePills();
+      updatePreview();
+      const labels = {invoice:'فاتورة', quote:'عرض سعر', credit:'إشعار دائن'};
+      toast(`تم التبديل إلى: ${labels[currentDocType]}`, 'info');
+    });
+  });
+
+  // ═══ جديد: مكتبة البنود (Catalog) ═══
+  $('btnToggleCatalog')?.addEventListener('click', () => {
+    const wrap = $('catalogWrap');
+    if(wrap) wrap.style.display = wrap.style.display === 'none' ? 'block' : 'none';
+  });
+  $('btnCatalogAdd')?.addEventListener('click', () => {
+    const name = $('catalogNewName')?.value || '';
+    const price = $('catalogNewPrice')?.value || '0';
+    const unit = $('catalogNewUnit')?.value || 'piece';
+    if(!name.trim()){ toast('أدخل اسم البند', 'error'); return; }
+    addToCatalog(name, price, unit);
+    $('catalogNewName').value = '';
+    $('catalogNewPrice').value = '';
+  });
+  renderCatalog();
+
+  // ═══ جديد: اللصق المتعدد (Bulk Paste) ═══
+  $('btnToggleBulkPaste')?.addEventListener('click', () => {
+    const wrap = $('bulkPasteWrap');
+    if(wrap) wrap.style.display = wrap.style.display === 'none' ? 'flex' : 'none';
+  });
+  $('btnBulkPasteAdd')?.addEventListener('click', () => {
+    const text = $('bulkPasteInput')?.value || '';
+    bulkPasteItems(text);
+    $('bulkPasteInput').value = '';
+    $('bulkPasteWrap').style.display = 'none';
+  });
+
+  // ═══ جديد: قوالب البنود (Templates) ═══
+  renderTemplates();
+
+  // ═══ جديد: جدول الدفعات (Payments Schedule) ═══
+  $('btnAddPayment')?.addEventListener('click', addPayment);
+  renderPaymentsList();
+
+  // ═══ جديد: الحقول المخصصة (Custom Fields) ═══
+  $('btnAddCustomField')?.addEventListener('click', addCustomField);
+  renderCustomFieldsList();
+
+  // ═══ جديد: حفظ البيانات البنكية ═══
+  $('btnSaveBankSettings')?.addEventListener('click', saveBankSettings);
+
+  // ═══ جديد: فحص الفواتير المتكررة عند بدء التشغيل ═══
+  processRecurringInvoices();
 
   // Buttons
   $('btnAddItem').addEventListener('click', () => addItem());
