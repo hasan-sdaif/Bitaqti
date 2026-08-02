@@ -119,6 +119,10 @@
   }
 
   // ═══ التحقق من الرمز عبر السيرفر ═══
+  // مميز بين 3 حالات:
+  //   - ok: true → كلمة المرور صحيحة
+  //   - ok: false + wrongPassword: true → كلمة المرور خاطئة فعلاً (آمن مسح الجلسة)
+  //   - ok: false + wrongPassword: false → خطأ شبكة/خادم (لا تمسح الجلسة)
   async function verifyPassword(password){
     try {
       const res = await fetch(TRACK_ENDPOINT, {
@@ -127,34 +131,49 @@
         body: JSON.stringify({ admin_password: password, mode: 'sync' }),
       });
       if(res.status === 200) return { ok: true };
-      if(res.status === 401) return { ok: false, message: 'الرمز غير صحيح.' };
-      if(res.status === 429) return { ok: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
+      // فقط 401 يعني كلمة المرور خاطئة فعلاً
+      if(res.status === 401) return { ok: false, wrongPassword: true, message: 'الرمز غير صحيح.' };
+      // 429 → محاولات كثيرة (لا نمسح الجلسة، المستخدم سيعيد المحاولة)
+      if(res.status === 429) return { ok: false, wrongPassword: false, message: 'محاولات كثيرة جداً. انتظر دقيقة.' };
+      // 500 / 502 → خطأ في الخادم أو قاعدة البيانات (لا نمسح الجلسة)
       if(res.status === 500){
         let data = {};
         try { data = await res.json(); } catch(_) {}
         if(data.error === 'server_not_configured'){
-          return { ok: false, message: '⚠️ قاعدة البيانات غير مُعدّة على الخادم. تحقق من SUPABASE_URL و SUPABASE_SERVICE_KEY في Netlify. راجع ملف TROUBLESHOOTING.md.' };
+          return { ok: false, wrongPassword: false, message: '⚠️ قاعدة البيانات غير مُعدّة على الخادم. تحقق من SUPABASE_URL و SUPABASE_SERVICE_KEY في Netlify. راجع ملف TROUBLESHOOTING.md.' };
         }
-        return { ok: false, message: 'الخدمة غير مُعدّة على الخادم.' };
+        return { ok: false, wrongPassword: false, message: 'الخدمة غير مُعدّة على الخادم.' };
       }
       if(res.status === 502){
-        return { ok: false, message: '⚠️ تعذّر الوصول إلى قاعدة البيانات (502). تحقق من صحة SUPABASE_URL (يجب أن يبدأ بـ https:// وينتهي بـ .supabase.co) ومن عدم توقف مشروع Supabase. راجع TROUBLESHOOTING.md.' };
+        return { ok: false, wrongPassword: false, message: '⚠️ تعذّر الوصول إلى قاعدة البيانات (502). تحقق من صحة SUPABASE_URL (يجب أن يبدأ بـ https:// وينتهي بـ .supabase.co) ومن عدم توقف مشروع Supabase. راجع TROUBLESHOOTING.md.' };
       }
-      return { ok: false, message: `خطأ في الاتصال (${res.status}).` };
+      // أي خطأ HTTP آخر — لا نمسح الجلسة
+      return { ok: false, wrongPassword: false, message: `خطأ في الاتصال (${res.status}).` };
     } catch(err){
       console.error('[BitaqtiAuth] verifyPassword network error:', err);
-      return { ok: false, message: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت أو من نشر دوال Netlify.' };
+      // خطأ شبكة — لا نمسح الجلسة بالتأكيد
+      return { ok: false, wrongPassword: false, message: 'تعذّر الاتصال بالخادم. تحقق من الإنترنت أو من نشر دوال Netlify.' };
     }
   }
 
   // ═══ إعادة التحقق الصامتة ═══
+  // مهم: لا نمسح الجلسة إلا لو تأكدنا أن كلمة المرور خاطئة فعلاً (wrongPassword: true).
+  // أخطاء الشبكة/الخادم/Supabase لا تُسقط الجلسة — المستخدم يبقى مسجلاً.
   async function silentRevalidate(){
     const pwd = getSavedPassword();
     if(!pwd) return false;
     const result = await verifyPassword(pwd);
     if(!result.ok){
-      clearSession();
-      return false;
+      // مسح الجلسة فقط لو كلمة المرور خاطئة فعلاً
+      if(result.wrongPassword){
+        console.warn('[BitaqtiAuth] password rejected by server, clearing session');
+        clearSession();
+        return false;
+      }
+      // خطأ مؤقت — نبقي الجلسة، نمدّدها
+      console.warn('[BitaqtiAuth] revalidate failed (transient), keeping session:', result.message);
+      extendSession();
+      return true;  // اعتبر الجلسة فعّالة لتجنّب طرد المستخدم
     }
     extendSession();
     return true;
@@ -243,11 +262,11 @@ if(!window.BitaqtiAuth){
           body: JSON.stringify({ admin_password: pwd, mode: 'sync' }),
         });
         if(res.status === 200) return { ok: true };
-        if(res.status === 401) return { ok: false, message: 'الرمز غير صحيح.' };
-        if(res.status === 502) return { ok: false, message: 'تعذّر الوصول لقاعدة البيانات (502). راجع TROUBLESHOOTING.md.' };
-        return { ok: false, message: `خطأ (${res.status}).` };
+        if(res.status === 401) return { ok: false, wrongPassword: true, message: 'الرمز غير صحيح.' };
+        if(res.status === 502) return { ok: false, wrongPassword: false, message: 'تعذّر الوصول لقاعدة البيانات (502). راجع TROUBLESHOOTING.md.' };
+        return { ok: false, wrongPassword: false, message: `خطأ (${res.status}).` };
       } catch(e){
-        return { ok: false, message: 'تعذّر الاتصال بالخادم.' };
+        return { ok: false, wrongPassword: false, message: 'تعذّر الاتصال بالخادم.' };
       }
     },
     silentRevalidate: async () => false,
