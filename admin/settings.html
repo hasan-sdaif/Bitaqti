@@ -356,16 +356,16 @@
   <div class="panel">
     <div class="panel-header">
       <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>حالة الربط</h2>
-      <div class="sub">تحقق من اتصال لوحة التحكم مع Google Sheets و Apps Script</div>
+      <div class="sub">تحقق من اتصال لوحة التحكم مع قاعدة بيانات Supabase</div>
     </div>
     <div class="panel-body">
       <div class="status-row">
         <div class="status-dot pending" id="dotSheet"></div>
-        <div class="status-text" id="textSheet">جارٍ التحقق من الاتصال بـ Google Sheets...</div>
+        <div class="status-text" id="textSheet">جارٍ التحقق من الاتصال بقاعدة البيانات (قراءة)...</div>
       </div>
       <div class="status-row">
         <div class="status-dot pending" id="dotWebhook"></div>
-        <div class="status-text" id="textWebhook">جارٍ التحقق من إعداد Apps Script Webhook...</div>
+        <div class="status-text" id="textWebhook">جارٍ التحقق من إعداد الكتابة في قاعدة البيانات...</div>
       </div>
       <div class="status-row">
         <div class="status-dot pending" id="dotAuth"></div>
@@ -433,42 +433,56 @@
     </div>
   </div>
 
-  <!-- ═══ Apps Script Webhook ═══ -->
+  <!-- ═══ إعداد Supabase ═══ -->
   <div class="panel">
     <div class="panel-header">
-      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>إعداد Google Apps Script Webhook</h2>
-      <div class="sub">للسماح بتعديل Google Sheets مباشرة من لوحة التحكم (إضافة/تعديل/حذف)</div>
+      <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>إعداد قاعدة البيانات (Supabase)</h2>
+      <div class="sub">للسماح بتعديل قاعدة البيانات مباشرة من لوحة التحكم (إضافة/تعديل/حذف عملاء)</div>
     </div>
     <div class="panel-body">
       <div class="alert alert-warning">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
         <div>
           <strong>إعداد لمرة واحدة فقط</strong> — اتبع الخطوات التالية بدقة:
-          <ol style="margin:8px 0 0 22px;line-height:1.9;">
-            <li>افتح Google Sheet الخاص بك</li>
-            <li>القائمة: <strong>Extensions → Apps Script</strong></li>
-            <li>الصق الكود من الصندوق بالأسفل (استبدل كل ما فيه)</li>
-            <li>احفظ (Ctrl+S)</li>
-            <li><strong>Project Settings (⚙️) → Script properties → Add property</strong>:
-              <ul style="margin-right:18px;"><li>المفتاح: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">ADMIN_PASSWORD</code></li><li>القيمة: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">&lt;نفس INVOICE_PASSWORD&gt;</code></li></ul>
+          <ol style="margin:8px 0 0 22px;line-height:2;">
+            <li>أنشئ حساباً مجانياً على <strong>supabase.com</strong> وسجّل الدخول</li>
+            <li>اضغط <strong>New Project</strong>، أعطه اسماً (مثل <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">bitaqti</code>) واختر كلمة سر قوية لقاعدة البيانات (احفظها في مكان آمن)</li>
+            <li>اختر أقرب منطقة (<em>Middle East</em> أو <em>Frankfurt</em> أو <em>Singapore</em>) وانتظر دقيقة حتى يجهز المشروع</li>
+            <li>من القائمة الجانبية: <strong>SQL Editor → New query</strong></li>
+            <li>افتح ملف <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">supabase_schema.sql</code> من مجلد المشروع، انسخ محتواه كاملاً، والصقه في نافذة SQL Editor</li>
+            <li>اضغط <strong>Run</strong> (Ctrl+Enter) — خلال ثوانٍ يكون الجدولان <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">customers</code> و <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">invoices</code> جاهزين، وتم ترحيل عملائك الثلاثة وفواتيرك الثلاث تلقائياً</li>
+            <li>من القائمة الجانبية: <strong>Project Settings (⚙️) → API</strong></li>
+            <li>انسخ القيمتين التاليتين:<br>
+              &nbsp;&nbsp;• <strong>Project URL</strong> — يبدأ بـ <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">https://xxxxx.supabase.co</code><br>
+              &nbsp;&nbsp;• <strong>service_role</strong> secret key — اضغط <em>Reveal</em> ثم انسخه (مفتاح طويل يبدأ بـ <code>eyJ...</code>)<br>
+              <span style="color:var(--red);font-weight:700;">⚠️ لا تشارك مفتاح service_role مع أحد أبداً — هو يملك صلاحية كاملة على قاعدة البيانات</span>
             </li>
-            <li><strong>Deploy → New deployment</strong>:
-              <ul style="margin-right:18px;"><li>Type: <em>Web app</em></li><li>Execute as: <em>Me</em></li><li>Who has access: <em>Anyone</em></li></ul>
-            </li>
-            <li>انسخ الـ <strong>Web App URL</strong> (ينتهي بـ <code>/exec</code>)</li>
-            <li>في Netlify: أضف متغير <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SHEETS_WEBHOOK_URL</code> = ذلك الـ URL</li>
+            <li>افتح <strong>Netlify → موقعك → Site settings → Environment variables → Add a variable</strong> وأضف:<br>
+              &nbsp;&nbsp;• المفتاح: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SUPABASE_URL</code> &nbsp;|&nbsp; القيمة: Project URL<br>
+              &nbsp;&nbsp;• المفتاح: <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">SUPABASE_SERVICE_KEY</code> &nbsp;|&nbsp; القيمة: مفتاح service_role<br>
+              &nbsp;&nbsp;• تأكد أيضاً أن <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">INVOICE_PASSWORD</code> موجود (نفس رمز الأمان الذي تستخدمه للدخول)</li>
+            <li>اضغط <strong>Deploy → Trigger deploy</strong> لإعادة نشر الموقع بالمفاتيح الجديدة</li>
+            <li>عُد إلى هذه الصفحة واضغط زر <strong>«إعادة الفحص»</strong> بالأعلى — ستظهر ثلاث نقاط خضراء ✅</li>
           </ol>
+          <div style="margin-top:14px;padding:10px 12px;background:var(--green-tint);border-radius:8px;font-size:12.5px;color:var(--ink);line-height:1.7;">
+            <strong>ماذا يحدث بعد الإعداد؟</strong><br>
+            • كل التعديلات (إضافة/تعديل/حذف) من لوحة التحكم تُحفظ مباشرة في Supabase<br>
+            • يمكنك أيضاً تعديل العملاء يدوياً من Supabase: <strong>Table Editor → customers</strong> (شاشة جدول مثل Excel تماماً)<br>
+            • بياناتك مأمونة: RLS مفعّل بدون أي policy عامة، فلا يمكن لأحد من المتصفح الوصول بدون المفتاح السرّي<br>
+            • الباقة المجانية تتيح 500MB تخزين و50,000 طلب شهرياً — يكفي لآلاف العملاء
+          </div>
+          <div style="margin-top:10px;font-size:12px;color:var(--ink-soft);">📄 الخطوات الكاملة مع لقطات شاشة في ملف <strong>SETUP_GUIDE.md</strong></div>
         </div>
       </div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <strong style="font-size:13px;">كود Apps Script الكامل:</strong>
-        <button class="btn btn-blue btn-sm copy-btn" id="btnCopyCode">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          نسخ الكود
-        </button>
+        <strong style="font-size:13px;">ملف الـ SQL الجاهز (مُضمّن في المشروع):</strong>
+        <code style="background:var(--paper);padding:4px 10px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--red);">supabase_schema.sql</code>
       </div>
-      <div class="code-block" id="appsScriptCode"></div>
+      <div class="alert alert-info" style="margin-top:8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div>لا تحتاج لأي كود برمجي خارجي بعد اليوم — النظام يتصل بـ Supabase مباشرة من خلال <code style="background:var(--paper);padding:1px 5px;border-radius:3px;">netlify/functions/lib/supabase.js</code>. انسخ فقط الملفات الثلاثة الجديدة إلى مشروعك وأعد النشر.</div>
+      </div>
     </div>
   </div>
 
@@ -506,7 +520,7 @@
     <div class="panel-body">
       <div class="danger-zone">
         <h4><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>حذف كل البيانات المحلية</h4>
-        <p>سيتم حذف: قائمة العملاء المحلية، الإعدادات، سجل النشاط. لن يتأثر Google Sheets.</p>
+        <p>سيتم حذف: قائمة العملاء المحلية، الإعدادات، سجل النشاط. لن تتأثر قاعدة البيانات على Supabase — بياناتك هناك تبقى آمنة.</p>
         <button class="btn btn-red btn-sm" id="btnClearAll">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
           حذف كل البيانات المحلية
@@ -528,7 +542,7 @@
         <div><strong>الترخيص:</strong> استخدام تجاري</div>
       </div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-faint);line-height:1.7;">
-        <strong>ملاحظة:</strong> كل البيانات الحساسة (كلمات السر، روابط Google Sheets) تبقى على السيرفر عبر Netlify Functions ولا تصل إلى المتصفح إطلاقاً. سجل النشاط محفوظ محلياً في متصفحك فقط.
+        <strong>ملاحظة:</strong> كل البيانات الحساسة (مفاتيح Supabase السرّية، رمز الأمان) تبقى على السيرفر عبر Netlify Functions ولا تصل إلى المتصفح إطلاقاً. سجل النشاط محفوظ محلياً في متصفحك فقط.
       </div>
     </div>
   </div>
@@ -705,8 +719,8 @@ async function checkConnection(){
   }
   setDot('dotAuth', 'ok', 'تم تسجيل الدخول برمز الأمان ✓');
 
-  // 2. التحقق من Google Sheets (قراءة)
-  setDot('dotSheet', 'pending', 'جارٍ التحقق من Google Sheets...');
+  // 2. التحقق من Supabase (قراءة)
+  setDot('dotSheet', 'pending', 'جارٍ التحقق من Supabase (قراءة)...');
   try {
     const res = await fetch(TRACK_ENDPOINT, {
       method: 'POST',
@@ -716,7 +730,7 @@ async function checkConnection(){
     if(res.status === 200){
       const data = await res.json();
       const count = data.count || (data.customers || []).length;
-      setDot('dotSheet', 'ok', `Google Sheets متصل — <strong>${count} عميل</strong> متاح`);
+      setDot('dotSheet', 'ok', `قاعدة البيانات متصلة — <strong>${count} عميل</strong> متاح`);
     } else if(res.status === 401){
       setDot('dotSheet', 'err', 'رمز الأمان غير صحيح — عُد إلى لوحة التحكم وأعد الدخول.');
     } else {
@@ -727,8 +741,8 @@ async function checkConnection(){
     setDot('dotSheet', 'err', 'تعذّر الاتصال بالخادم. تحقق من الإنترنت.');
   }
 
-  // 3. التحقق من Apps Script Webhook (كتابة)
-  setDot('dotWebhook', 'pending', 'جارٍ التحقق من إعداد Apps Script Webhook...');
+  // 3. التحقق من إمكانية الكتابة في Supabase (عبر sheet-update.js / action=test)
+  setDot('dotWebhook', 'pending', 'جارٍ التحقق من إمكانية الكتابة في قاعدة البيانات...');
   try {
     const res = await fetch(UPDATE_ENDPOINT, {
       method: 'POST',
@@ -737,15 +751,15 @@ async function checkConnection(){
     });
     const data = await res.json().catch(() => ({}));
     if(res.status === 200 && data.ok){
-      setDot('dotWebhook', 'ok', 'Webhook يعمل — الكتابة مفعّلة ✓');
+      setDot('dotWebhook', 'ok', 'الكتابة مفعّلة ✓ — يمكنك الإضافة/التعديل/الحذف مباشرة من لوحة التحكم');
     } else if(res.status === 500){
       if(data.error === 'server_not_configured'){
-        setDot('dotWebhook', 'warn', '<strong>SHEETS_WEBHOOK_URL غير مضبوط في Netlify</strong> — أضف متغير البيئة ثم أعد النشر.');
+        setDot('dotWebhook', 'warn', '<strong>SUPABASE_URL / SUPABASE_SERVICE_KEY غير مضبوطين في Netlify</strong> — أضف متغيري البيئة ثم أعد النشر.');
       } else {
         setDot('dotWebhook', 'err', `خطأ: ${data.message || data.error}`);
       }
     } else if(res.status === 502){
-      setDot('dotWebhook', 'warn', 'تعذّر الوصول إلى Apps Script — تأكد من نشر الـ Web App (Deploy → New deployment).');
+      setDot('dotWebhook', 'warn', 'تعذّر الوصول إلى Supabase — تأكد من صحة SUPABASE_URL و SUPABASE_SERVICE_KEY وأن المشروع لم يتوقف (paused).');
     } else if(res.status === 401){
       setDot('dotWebhook', 'err', 'الرمز غير صحيح.');
     } else {
@@ -767,142 +781,18 @@ function setDot(dotId, status, text){
   }
 }
 
-// ═══ كود Apps Script ═══
-const APPS_SCRIPT_CODE = `const SHEET_NAME = 'العملاء';
-const HEADER_ROW = 2;
-
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const password = data.password;
-    const action = data.action;
-    const record = data.record;
-
-    const correctPassword = PropertiesService
-      .getScriptProperties().getProperty('ADMIN_PASSWORD') || 'CHANGE_ME';
-    if (password !== correctPassword) {
-      return jsonOut({ok: false, error: 'unauthorized'});
-    }
-
-    // محاولة العثور على الشيت بالاسم، وإلا نستخدم الأول
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    let sheet = ss.getSheetByName(SHEET_NAME);
-    if (!sheet) {
-      sheet = ss.getSheets()[0];
-    }
-    if (!sheet) {
-      return jsonOut({ok: false, error: 'no_sheet_found'});
-    }
-
-    // قراءة المفاتيح من الصف 1
-    const lastCol = sheet.getLastColumn();
-    if (lastCol < 1) {
-      return jsonOut({ok: false, error: 'no_headers'});
-    }
-    const headers = sheet.getRange(1, 1, 1, lastCol).getValues()[0];
-
-    // دعم الأعمدة الجديدة (إحالة) إن لم توجد
-    const neededCols = ['referral_code', 'referral_points', 'referred_by'];
-    neededCols.forEach(col => {
-      if (headers.indexOf(col) === -1) {
-        sheet.getRange(1, headers.length + 1).setValue(col);
-        headers.push(col);
-      }
-    });
-
-    if (action === 'add') {
-      const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-      sheet.appendRow(row);
-    } else if (action === 'update') {
-      const rowIndex = findRow(sheet, headers, record);
-      if (rowIndex > 0) {
-        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-        sheet.getRange(rowIndex, 1, 1, headers.length).setValues([row]);
-      } else {
-        const row = headers.map(h => record[h] !== undefined ? record[h] : '');
-        sheet.appendRow(row);
-      }
-    } else if (action === 'delete') {
-      const rowIndex = findRow(sheet, headers, record);
-      if (rowIndex > 0) sheet.deleteRow(rowIndex);
-    } else if (action === 'bulk_replace') {
-      const lastRow = sheet.getLastRow();
-      if (lastRow > HEADER_ROW) {
-        sheet.deleteRows(HEADER_ROW + 1, lastRow - HEADER_ROW);
-      }
-      const records = data.records || [];
-      records.forEach(rec => {
-        const row = headers.map(h => rec[h] !== undefined ? rec[h] : '');
-        sheet.appendRow(row);
-      });
-    } else {
-      return jsonOut({ok: false, error: 'invalid_action: ' + action});
-    }
-
-    return jsonOut({ok: true, action: action});
-  } catch(err) {
-    return jsonOut({ok: false, error: String(err)});
-  }
-}
-
-function findRow(sheet, headers, record) {
-  const data = sheet.getDataRange().getValues();
-  for (let i = HEADER_ROW; i < data.length; i++) {
-    const row = data[i];
-    const phone = String(row[0] || '').replace(/\.0$/, '').trim();
-    const code = String(row[1] || '').replace(/\.0$/, '').trim();
-    const rPhone = String(record.phone || '').replace(/\.0$/, '').trim();
-    const rCode = String(record.code || '').replace(/\.0$/, '').trim();
-    // تطابق على phone + code، أو على order_code فقط
-    if (phone === rPhone && code === rCode) return i + 1;
-    // محاولة match على order_code
-    const orderCodeIdx = headers.indexOf('order_code');
-    if (orderCodeIdx >= 0) {
-      const rowOrderCode = String(row[orderCodeIdx] || '').trim();
-      const recOrderCode = String(record.order_code || '').trim();
-      if (rowOrderCode && recOrderCode && rowOrderCode === recOrderCode) return i + 1;
-    }
-  }
-  return -1;
-}
-
-function jsonOut(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doGet() {
-  return jsonOut({ok: true, message: 'Bitaqti Sheets Webhook is running'});
-}`;
+// ═══ كود Supabase — لا حاجة لكود Apps Script بعد الآن ═══
+// النظام يتصل بـ Supabase مباشرة عبر netlify/functions/lib/supabase.js
+// هذه الدوال محتفظة فقط لتفادي كسر الاستدعاءات الموجودة في unlockApp و INIT.
 
 function displayAppsScriptCode(){
-  const codeEl = $('appsScriptCode');
-  if(!codeEl) return;
-  let highlighted = APPS_SCRIPT_CODE
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/(\/\/.*)/g, '<span class="comment">$1</span>')
-    .replace(/'([^']*)'/g, '<span class="string">\'$1\'</span>')
-    .replace(/\b(function|const|let|var|if|else|return|try|catch|for|while|new|typeof)\b/g, '<span class="keyword">$1</span>');
-  codeEl.innerHTML = highlighted;
+  // دالة فارغة الآن — لا يوجد كود Apps Script لعرضه. النظام يستخدم Supabase مباشرة.
+  return;
 }
 
 async function copyCode(){
-  try {
-    await navigator.clipboard.writeText(APPS_SCRIPT_CODE);
-    const btn = $('btnCopyCode');
-    btn.classList.add('copied');
-    setTimeout(() => btn.classList.remove('copied'), 2000);
-    toast('تم نسخ الكود إلى الحافظة', 'success');
-  } catch(e) {
-    // fallback: استخدم textarea مؤقت
-    const ta = document.createElement('textarea');
-    ta.value = APPS_SCRIPT_CODE;
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); toast('تم نسخ الكود', 'success'); }
-    catch(_) { toast('تعذّر النسخ — انسخ يدوياً', 'error'); }
-    document.body.removeChild(ta);
-  }
+  // لا حاجة لنسخ أي كود بعد الآن. نُبقيها لتفادي كسر المستمع في INIT.
+  toast('لا حاجة لنسخ أي كود — النظام يستخدم Supabase مباشرة. اتبع الخطوات في الأعلى.', 'info');
 }
 
 // ═══ النسخ الاحتياطي ═══
@@ -947,7 +837,7 @@ function importBackup(file){
 
 function clearAllData(){
   // نستخدم confirm بسيط عبر toast
-  if(!confirm('هل أنت متأكد؟ سيتم حذف كل البيانات المحلية (الإعدادات، سجل النشاط، الفواتير المحلية، قائمة العملاء المحلية). لن يتأثر Google Sheets.')) return;
+  if(!confirm('هل أنت متأكد؟ سيتم حذف كل البيانات المحلية (الإعدادات، سجل النشاط، الفواتير المحلية، قائمة العملاء المحلية). لن تتأثر قاعدة البيانات على Supabase — بياناتك هناك تبقى آمنة.')) return;
   localStorage.removeItem(BIZ_KEY);
   localStorage.removeItem(ACTIVITY_KEY);
   localStorage.removeItem('bitaqti_invoices_v1');
