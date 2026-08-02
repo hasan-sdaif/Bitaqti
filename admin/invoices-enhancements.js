@@ -314,36 +314,16 @@
     if(match && match.customer && match.customer.referral_code){
       referralCode = match.customer.referral_code;
     }
-    // ابحث عن #pReferralWrap أو أنشئه
-    let wrap = $('pReferralWrap');
+    // استخدم العنصر الجديد أسفل QR مباشرة
+    const refBox = $('pReferralCode');
+    const refText = $('pReferralCodeText');
+    if(!refBox || !refText) return;
     if(!referralCode){
-      if(wrap) wrap.style.display = 'none';
+      refBox.style.display = 'none';
       return;
     }
-    if(!wrap){
-      // أضف صندوق كود الإحالة بين الملاحظات ومعلومات الدفع (يظهر في الطباعة أيضاً)
-      const notesWrap = $('pNotesWrap');
-      wrap = document.createElement('div');
-      wrap.id = 'pReferralWrap';
-      wrap.style.cssText = 'background:linear-gradient(135deg,#F3ECDD,#FBF8F0);border:1.5px dashed var(--gold);border-radius:10px;padding:12px 14px;margin:12px 0;text-align:center;';
-      // ضعه بعد pNotesWrap وقبل pPaymentWrap
-      if(notesWrap && notesWrap.nextSibling){
-        notesWrap.parentNode.insertBefore(wrap, notesWrap.nextSibling);
-      } else {
-        const totals = $('pTotals');
-        if(totals && totals.nextSibling){
-          totals.parentNode.insertBefore(wrap, totals.nextSibling);
-        }
-      }
-    }
-    wrap.innerHTML = `
-      <div style="font-size:11px;color:var(--gold);font-weight:700;margin-bottom:4px;">🎁 كود الإحالة الخاص بك</div>
-      <div style="font-size:18px;font-weight:700;color:var(--ink);font-family:'IBM Plex Mono',monospace;direction:ltr;letter-spacing:1px;">${referralCode}</div>
-      <div style="font-size:10.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5;">
-        شاركه مع أصدقائك — يحصلون على خصم 20% وأنت تحصل على 100 نقطة لكل إحالة ناجحة!
-      </div>
-    `;
-    wrap.style.display = 'block';
+    refText.textContent = referralCode;
+    refBox.style.display = 'block';
   }
 
   // ════════════════════════════════════════════════════════════════
@@ -355,102 +335,12 @@
     style = document.createElement('style');
     style.id = 'enhancementsResponsiveStyle';
     style.textContent = `
-      /* ═══ تحسينات تجاوب إضافية للجوال العمودي ═══ */
+      /* ═══ تحسينات تجاوب شاملة — منع خروج أي عنصر ═══ */
 
-      /* الجوال (480px وأقل) — اضمان عدم خروج أي عنصر */
-      @media(max-width:480px){
-        /* القسم العلوي — تصغير الحشو */
-        .inv-layout{padding:0 !important;}
-        .inv-form-col, .inv-preview-col{padding:0 !important;}
-
-        /* النموذج — حقول أصغر وعمود واحد */
-        .form-row.cols-2, .form-row.cols-3{grid-template-columns:1fr !important;}
-        .form-group{margin-bottom:8px !important;}
-        .form-control{font-size:14px;padding:8px 10px !important;}
-
-        /* أزرار البنود — تصغير وعمود واحد */
-        .items-table th, .items-table td{padding:5px 4px !important;font-size:11px !important;}
-        .items-table .col-actions{width:auto !important;}
-
-        /* المعاينة — تصغير الخطوط */
-        #sheet{padding:14px !important;font-size:11px !important;}
-        #sheet .inv-meta h1{font-size:18px !important;}
-        #sheet .inv-brand-text h2{font-size:14px !important;}
-        #sheet .inv-brand-text p{font-size:10px !important;}
-        #sheet .inv-customer{flex-direction:column !important;gap:8px !important;}
-        #sheet .inv-customer .cust-name{font-size:14px !important;}
-        #sheet .inv-qr{align-self:flex-start !important;}
-        #sheet .inv-qr canvas{width:80px !important;height:80px !important;}
-        #sheet .inv-items-table{font-size:10px !important;}
-        #sheet .inv-items-table th, #sheet .inv-items-table td{padding:4px 3px !important;}
-        #sheet .col-num{width:20px !important;}
-        #sheet .col-qty{width:35px !important;}
-        #sheet .col-price, #sheet .col-total{width:60px !important;}
-        #sheet .inv-totals{font-size:11px !important;}
-        #sheet .total-row{padding:3px 0 !important;}
-        #sheet .total-row .lbl{font-size:11px !important;}
-        #sheet .total-row .val{font-size:11px !important;}
-        #sheet .inv-footer{font-size:10px !important;padding-top:8px !important;}
-        #sheet .inv-footer .contact-info{flex-direction:column !important;gap:3px !important;font-size:9.5px !important;}
-
-        /* التبويبات — تصغير الحشو */
-        .tabs{padding:2px !important;gap:1px !important;}
-        .tab{padding:6px 8px !important;font-size:11px !important;}
-        .tab svg{width:13px !important;height:13px !important;}
-
-        /* الإحصائيات — عمود واحد */
-        .stats-grid{grid-template-columns:1fr !important;gap:8px !important;}
-        .stat-card{padding:10px 12px !important;}
-        .stat-card .stat-value{font-size:18px !important;}
-
-        /* الإعدادات — عمود واحد */
-        .setting-row{grid-template-columns:1fr !important;}
-        .setting-actions{flex-direction:column !important;}
-        .setting-actions .btn{width:100% !important;}
-
-        /* النوافذ المنبثقة */
-        .modal-overlay{padding:4px !important;}
-        .modal{max-width:100% !important;max-height:96vh !important;border-radius:10px !important;}
-        .modal-body{max-height:calc(96vh - 130px) !important;overflow-y:auto !important;}
-
-        /* أزرار شريط الأدوات */
-        .toolbar{flex-direction:column !important;align-items:stretch !important;}
-        .toolbar .btn{width:100% !important;justify-content:center !important;}
-
-        /* قائمة الإكمال التلقائي */
-        .autocomplete-list{max-height:200px !important;overflow-y:auto !important;font-size:12px !important;}
-
-        /* قائمة نوع الطلب */
-        #orderTypeSelector .ord-type-btn{font-size:11px !important;padding:6px 8px !important;min-width:0 !important;}
-
-        /* شبكة تفاصيل البنود */
-        .item-details-grid{grid-template-columns:1fr !important;}
-
-        /* المدفوعات والحقول المخصصة */
-        .payment-row, .custom-field-row{grid-template-columns:1fr !important;}
+      /* قاعدة عامة: كل العناصر تلتف للأسفل */
+      *{
+        box-sizing:border-box;
       }
-
-      /* تابلت عمودي (768px وأقل) — اضمان عدم خروج العناصر الأفقية */
-      @media(max-width:768px){
-        .inv-layout{grid-template-columns:1fr !important;}
-        .inv-preview-col{position:static !important;max-height:none !important;}
-        .form-row.cols-2{grid-template-columns:1fr 1fr;}
-        .item-details-grid{grid-template-columns:1fr 1fr;}
-      }
-
-      /* الجوال الأفقي (ارتفاع 500px وأقل) */
-      @media(max-height:500px) and (orientation:landscape){
-        .lock-card{padding:18px 20px !important;}
-        .lock-card h1{font-size:16px !important;}
-        .lock-card p{font-size:11px !important;margin-bottom:12px !important;}
-        .lock-input{padding:10px 12px !important;font-size:13px !important;}
-        .lock-btn{padding:10px !important;font-size:12px !important;}
-        .topbar{padding:6px 0 !important;}
-        .tabs{padding:2px !important;}
-        .tab{padding:4px 8px !important;font-size:11px !important;}
-      }
-
-      /* منع التمرير الأفقي للصفحة كلها */
       html, body{
         overflow-x:hidden;
         max-width:100vw;
@@ -458,9 +348,6 @@
       .main{
         max-width:100%;
         overflow-x:hidden;
-      }
-      *{
-        max-width:100%;
       }
       img, canvas, svg, table{
         max-width:100% !important;
@@ -473,7 +360,44 @@
         word-break:break-word;
       }
 
-      /* منع خروج النوافذ المنبثقة دائماً */
+      /* كل الحقول والصفوف تلتف */
+      .form-row, .form-row.cols-2, .form-row.cols-3{
+        flex-wrap:wrap;
+      }
+      .form-group{
+        min-width:0;
+      }
+      .form-control, input, select, textarea{
+        width:100% !important;
+        min-width:0;
+        box-sizing:border-box;
+      }
+
+      /* شريط الأدوات يلتف */
+      .toolbar{
+        flex-wrap:wrap;
+      }
+      .toolbar > *{
+        min-width:0;
+      }
+
+      /* أزرار القوالب تلتف */
+      #invoicePackageBar > div,
+      #orderTypeSelector > div,
+      #notesTemplatesBar{
+        flex-wrap:wrap;
+      }
+
+      /* جدول البنود — تمرير أفقي بدل الخروج */
+      .items-table-wrap, .table-wrap{
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      .items-table{
+        min-width:400px;
+      }
+
+      /* النوافذ المنبثقة — منع الخروج */
       .modal{
         max-width:calc(100vw - 16px) !important;
         max-height:calc(100vh - 16px) !important;
@@ -493,6 +417,81 @@
         border-top:1px solid var(--line);
         padding:10px 14px;
         background:var(--surface);
+        flex-wrap:wrap;
+      }
+
+      /* الجوال (480px وأقل) */
+      @media(max-width:480px){
+        .inv-layout{padding:0 !important;}
+        .inv-form-col, .inv-preview-col{padding:0 !important;}
+        .form-row.cols-2, .form-row.cols-3{grid-template-columns:1fr !important;}
+        .form-group{margin-bottom:8px !important;}
+        .form-control{font-size:14px;padding:8px 10px !important;}
+        .items-table th, .items-table td{padding:5px 4px !important;font-size:11px !important;}
+        .items-table .col-actions{width:auto !important;}
+        #sheet{padding:14px !important;font-size:11px !important;}
+        #sheet .inv-meta h1{font-size:18px !important;}
+        #sheet .inv-brand-text h2{font-size:14px !important;}
+        #sheet .inv-brand-text p{font-size:10px !important;}
+        #sheet .inv-customer{flex-direction:column !important;gap:8px !important;}
+        #sheet .inv-customer .cust-name{font-size:14px !important;}
+        #sheet .inv-qr{align-self:flex-start !important;}
+        #sheet .inv-qr canvas{width:80px !important;height:80px !important;}
+        #sheet .inv-items-table{font-size:10px !important;}
+        #sheet .inv-items-table th, #sheet .inv-items-table td{padding:4px 3px !important;}
+        #sheet .col-num{width:20px !important;}
+        #sheet .col-qty{width:35px !important;}
+        #sheet .col-price, #sheet .col-total{width:60px !important;}
+        #sheet .inv-totals{font-size:11px !important;}
+        #sheet .total-row{padding:3px 0 !important;}
+        #sheet .total-row .lbl{font-size:11px !important;}
+        #sheet .total-row .val{font-size:11px !important;}
+        #sheet .inv-footer{font-size:10px !important;padding-top:8px !important;}
+        #sheet .inv-footer .contact-info{flex-direction:column !important;gap:3px !important;font-size:9.5px !important;}
+        .tabs{padding:2px !important;gap:1px !important;flex-wrap:wrap !important;}
+        .tab{padding:6px 8px !important;font-size:11px !important;}
+        .tab svg{width:13px !important;height:13px !important;}
+        .stats-grid{grid-template-columns:1fr !important;gap:8px !important;}
+        .stat-card{padding:10px 12px !important;}
+        .stat-card .stat-value{font-size:18px !important;}
+        .setting-row{grid-template-columns:1fr !important;}
+        .setting-actions{flex-direction:column !important;}
+        .setting-actions .btn{width:100% !important;}
+        .toolbar{flex-direction:column !important;align-items:stretch !important;}
+        .toolbar .btn{width:100% !important;justify-content:center !important;}
+        .autocomplete-list{max-height:200px !important;overflow-y:auto !important;font-size:12px !important;}
+        #orderTypeSelector .ord-type-btn{font-size:11px !important;padding:6px 8px !important;min-width:0 !important;}
+        #invoicePackageBar .inv-pkg-btn{font-size:10px !important;padding:6px 6px !important;min-width:0 !important;}
+        .item-details-grid{grid-template-columns:1fr !important;}
+        .payment-row, .custom-field-row{grid-template-columns:1fr !important;}
+        #invoiceMiniStatsBar{flex-direction:column !important;gap:4px !important;}
+        #invoiceMiniStatsBar > div{width:100% !important;}
+      }
+
+      /* تابلت عمودي (768px وأقل) */
+      @media(max-width:768px){
+        .inv-layout{grid-template-columns:1fr !important;}
+        .inv-preview-col{position:static !important;max-height:none !important;}
+        .form-row.cols-2{grid-template-columns:1fr 1fr;}
+        .item-details-grid{grid-template-columns:1fr 1fr;}
+      }
+
+      /* تابلت أفقي (1024px وأقل) */
+      @media(max-width:1024px) and (min-width:769px){
+        .inv-layout{grid-template-columns:1fr !important;}
+        .inv-preview-col{position:static !important;max-height:none !important;}
+      }
+
+      /* الجوال الأفقي */
+      @media(max-height:500px) and (orientation:landscape){
+        .lock-card{padding:18px 20px !important;}
+        .lock-card h1{font-size:16px !important;}
+        .lock-card p{font-size:11px !important;margin-bottom:12px !important;}
+        .lock-input{padding:10px 12px !important;font-size:13px !important;}
+        .lock-btn{padding:10px !important;font-size:12px !important;}
+        .topbar{padding:6px 0 !important;}
+        .tabs{padding:2px !important;}
+        .tab{padding:4px 8px !important;font-size:11px !important;}
       }
     `;
     document.head.appendChild(style);
