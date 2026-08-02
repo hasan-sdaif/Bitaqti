@@ -1,14 +1,3 @@
-// ════════════════════════════════════════════════════════════════════
-// Service Worker — Aisha Alsumaim Digital CV (Premium PWA)
-// ─────────────────────────────────────────────────────────────────────
-// Full offline-first strategy:
-//   - Pre-cache the entire app shell on install
-//   - Navigations: network-first → fall back to cached index.html (offline)
-//   - Same-origin assets: cache-first (instant)
-//   - Cross-origin (Google Fonts): stale-while-revalidate
-//   - Cache versioning for clean updates
-//   - Offline fallback page (index.html) when nothing else is available
-// ════════════════════════════════════════════════════════════════════
 
 const CACHE_VERSION = 'v4';
 const CACHE_NAME = 'aisha-cv-' + CACHE_VERSION;
