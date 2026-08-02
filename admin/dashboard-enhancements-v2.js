@@ -17,6 +17,81 @@
   const $ = id => document.getElementById(id);
 
   // ════════════════════════════════════════════════════════════════
+  //  0) أزرار توليد تلقائي بجانب حقول معينة في نافذة التعديل
+  // ════════════════════════════════════════════════════════════════
+  function injectAutoGenerateButtons(){
+    const observer = new MutationObserver(() => {
+      // زر توليد رمز التحقق
+      const codeInput = $('ef_code');
+      if(codeInput && !codeInput.dataset.genBtn){
+        codeInput.dataset.genBtn = '1';
+        addGenButton(codeInput, () => {
+          const newCode = String(Math.floor(1000 + Math.random() * 9000));
+          codeInput.value = newCode;
+          if(typeof toast === 'function') toast('تم توليد رمز تحقق: ' + newCode, 'success');
+        }, 'توليد رمز تحقق');
+      }
+      // زر توليد رمز الطلب
+      const orderCodeInput = $('ef_order_code');
+      if(orderCodeInput && !orderCodeInput.dataset.genBtn){
+        orderCodeInput.dataset.genBtn = '1';
+        addGenButton(orderCodeInput, () => {
+          if(typeof genOrderCode === 'function'){
+            const newCode = genOrderCode();
+            orderCodeInput.value = newCode;
+            if(typeof toast === 'function') toast('تم توليد رمز طلب: ' + newCode, 'success');
+          }
+        }, 'توليد رمز طلب');
+      }
+      // زر توليد كود الإحالة
+      const refInput = $('ef_referral_code');
+      if(refInput && !refInput.dataset.genBtn){
+        refInput.dataset.genBtn = '1';
+        addGenButton(refInput, () => {
+          const name = $('ef_customer_name')?.value || '';
+          const newCode = generateReferralCodeSmart(name);
+          refInput.value = newCode;
+          if(typeof toast === 'function') toast('تم توليد كود إحالة: ' + newCode, 'success');
+        }, 'توليد كود إحالة');
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  function addGenButton(input, onClick, title){
+    const parent = input.parentElement;
+    if(!parent || parent.querySelector('.gen-btn')) return;
+    // غلف الحقل والزر في flex
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'display:flex;gap:4px;align-items:center;';
+    parent.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+    input.style.flex = '1';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'gen-btn';
+    btn.title = title;
+    btn.style.cssText = 'padding:8px 8px;border:1px solid var(--line);background:var(--paper);border-radius:8px;cursor:pointer;color:var(--red);flex-shrink:0;';
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>';
+    btn.addEventListener('click', onClick);
+    wrapper.appendChild(btn);
+  }
+
+  function generateReferralCodeSmart(name){
+    const cleanName = String(name || '').replace(/[^\u0600-\u06FFa-zA-Z]/g, '');
+    let letters = '';
+    if(/[\u0600-\u06FF]/.test(cleanName)){
+      const map = {'ا':'A','ب':'B','ت':'T','ث':'S','ج':'J','ح':'H','خ':'K','د':'D','ذ':'Z','ر':'R','ز':'Z','س':'S','ش':'X','ص':'C','ض':'D','ط':'T','ظ':'Z','ع':'A','غ':'G','ف':'F','ق':'Q','ك':'K','ل':'L','م':'M','ن':'N','ه':'H','و':'W','ي':'Y','ى':'Y','ء':'A','أ':'A','إ':'I','آ':'A','ؤ':'W','ئ':'Y','ة':'T'};
+      const chars = cleanName.split('').filter(c => map[c]);
+      letters = (map[chars[0]] || 'X') + (map[chars[1]] || 'X') + (map[chars[2]] || 'X');
+    } else {
+      letters = cleanName.substring(0, 3).toUpperCase().padEnd(3, 'X');
+    }
+    const digits = String(Math.floor(100 + Math.random() * 900));
+    return letters.toUpperCase() + digits;
+  }
+
+  // ════════════════════════════════════════════════════════════════
   //  1) قوالب الباقات — تعبئة تلقائية بضغطة زر
   // ════════════════════════════════════════════════════════════════
   const PACKAGE_TEMPLATES = {
@@ -728,6 +803,7 @@ ${c.referral_code ? '🎁 كود الإحالة الخاص بك: ' + c.referral_
   //  12) ربط الكل بعد تحميل الصفحة
   // ════════════════════════════════════════════════════════════════
   function init(){
+    injectAutoGenerateButtons();
     injectPackageTemplates();
     injectActionTemplates();
     setupAutoCalcTotal();
