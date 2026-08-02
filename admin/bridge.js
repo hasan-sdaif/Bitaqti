@@ -68,7 +68,14 @@
         emit('customers:synced', state.customers);
         return state.customers;
       }
-    } catch(e) {}
+      // 401 = كلمة المرور خاطئة — لا نمسح الجلسة هنا، silentRevalidate يكفي
+      // 500/502 = خطأ مؤقت — نتجاهل بصمت
+      if(res.status === 401){
+        console.warn('[Bridge] customers sync: 401 (will retry later)');
+      }
+    } catch(e) {
+      console.warn('[Bridge] customers sync network error:', e.message);
+    }
     return state.customers;
   }
 
