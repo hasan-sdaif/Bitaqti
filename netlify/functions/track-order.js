@@ -20,7 +20,9 @@ const crypto = require('crypto');
 // ─────────────────────────────────────────────────────────────
 function getSupabaseConfig(){
   const url = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
-  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || '').trim();
+  // ندعم المفاتيح الجديدة (sb_secret_xxx) والقديمة (eyJ... أو service_role)
+  // SUPABASE_SERVICE_KEY هو المتغير الأساسي، لكن ندعم أيضاً SUPABASE_SECRET_KEY كبديل
+  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
   if(!url || !serviceKey){
     const err = new Error('SUPABASE_URL أو SUPABASE_SERVICE_KEY غير مضبوطين في Netlify.');
     err.code = 'server_not_configured';
@@ -30,6 +32,13 @@ function getSupabaseConfig(){
   // تحقق من صحة الرابط — يجب أن يبدأ بـ https:// وينتهي بـ .supabase.co
   if(!/^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url)){
     const err = new Error('SUPABASE_URL يجب أن يكون بالصيغة https://xxxxx.supabase.co — راجع SETUP_GUIDE.md');
+    err.code = 'server_not_configured';
+    err.name = 'ConfigError';
+    throw err;
+  }
+  // تحقق من صحة شكل المفتاح (sb_secret_ أو eyJ أو أي سلسلة طويلة)
+  if(serviceKey.length < 30){
+    const err = new Error('SUPABASE_SERVICE_KEY يبدو قصيراً جداً — تأكد من نسخ المفتاح كاملاً (sb_secret_xxx أو eyJ...).');
     err.code = 'server_not_configured';
     err.name = 'ConfigError';
     throw err;
