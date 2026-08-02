@@ -296,6 +296,28 @@
   .total-row.discount .val{color:var(--green);}
   .total-row.vat .val{color:var(--amber);}
 
+  /* Status pills for payment status — أنماط مخصصة لحالات الدفع */
+  .status-pill.pay-pending{background:var(--amber-tint);color:var(--amber);}
+  .status-pill.pay-paid{background:var(--green-tint);color:var(--green);}
+  .status-pill.pay-unpaid{background:var(--red-tint);color:var(--red-deep);}
+  .status-pill.pay-partial{background:var(--amber-tint);color:var(--amber);}
+  .status-pill.pay-refunded{background:#E5E7EB;color:#374151;}
+  /* Quick pay-status switcher in history rows */
+  .pay-status-switcher{
+    display:inline-flex;align-items:center;gap:3px;background:var(--paper);
+    border:1px solid var(--line);border-radius:8px;padding:2px;
+  }
+  .pay-status-switcher select{
+    border:none;background:transparent;font-size:11px;font-weight:700;
+    color:var(--ink);padding:3px 6px;cursor:pointer;outline:none;
+    appearance:none;-webkit-appearance:none;
+  }
+  .pay-status-switcher.pay-pending select{color:var(--amber);}
+  .pay-status-switcher.pay-paid select{color:var(--green);}
+  .pay-status-switcher.pay-unpaid select{color:var(--red-deep);}
+  .pay-status-switcher.pay-partial select{color:var(--amber);}
+  .pay-status-switcher.pay-refunded select{color:#374151;}
+
   /* Status & payment */
   .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .status-pill{
@@ -824,6 +846,65 @@
   .doc-type-pill.active.credit{background:var(--gold);border-color:var(--gold);}
   .doc-type-pill svg{width:13px;height:13px;}
 
+  /* ═══ قوالب جاهزة (Preset Templates) ═══ */
+  .preset-templates-wrap{
+    background:var(--paper);border:1px solid var(--line);border-radius:12px;
+    padding:14px;margin-top:8px;
+  }
+  .preset-tabs{
+    display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;border-bottom:1px solid var(--line);
+    padding-bottom:10px;
+  }
+  .preset-tab{
+    padding:8px 14px;border:1.5px solid var(--line);background:var(--surface);
+    color:var(--ink-soft);border-radius:10px;font-size:12px;font-weight:700;
+    cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:5px;
+  }
+  .preset-tab:hover{border-color:var(--red);color:var(--red);}
+  .preset-tab.active{background:var(--red);color:#fff;border-color:var(--red);}
+  .preset-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;
+  }
+  .preset-card{
+    background:var(--surface);border:1.5px solid var(--line);border-radius:10px;
+    padding:12px;cursor:pointer;transition:all .15s;position:relative;overflow:hidden;
+  }
+  .preset-card:hover{border-color:var(--red);transform:translateY(-2px);box-shadow:0 6px 16px rgba(23,24,28,.08);}
+  .preset-card .pc-name{
+    font-size:13px;font-weight:700;color:var(--ink);margin-bottom:4px;line-height:1.4;
+  }
+  .preset-card .pc-desc{
+    font-size:11px;color:var(--ink-soft);margin-bottom:8px;line-height:1.5;
+    overflow:hidden;text-overflow:ellipsis;display:-webkit-box;
+    -webkit-line-clamp:2;-webkit-box-orient:vertical;
+  }
+  .preset-card .pc-price{
+    font-family:'IBM Plex Mono',monospace;font-size:15px;font-weight:700;
+    color:var(--red-deep);direction:ltr;display:flex;align-items:center;gap:6px;
+  }
+  .preset-card .pc-original{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-faint);
+    text-decoration:line-through;direction:ltr;
+  }
+  .preset-card .pc-discount{
+    display:inline-block;padding:2px 8px;background:var(--green-tint);color:var(--green);
+    border-radius:8px;font-size:10px;font-weight:700;margin-right:5px;
+  }
+  .preset-card .pc-badge{
+    position:absolute;top:8px;left:8px;padding:2px 8px;border-radius:8px;
+    font-size:9.5px;font-weight:700;color:#fff;
+  }
+  .preset-card .pc-badge.gift{background:var(--green);}
+  .preset-card .pc-badge.discount{background:var(--gold);}
+  .preset-card .pc-badge.service{background:var(--blue);}
+  .preset-edit-hint{
+    margin-top:10px;padding:8px 12px;background:var(--blue-tint);border-radius:8px;
+    font-size:11px;color:#1E3A8A;line-height:1.6;
+  }
+  @media print{
+    .preset-templates-wrap,.preset-tabs,.preset-grid,.preset-edit-hint{display:none !important;}
+  }
+
   /* إحصائيات متقدمة */
   .advanced-stats-grid{
     display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;
@@ -1240,7 +1321,7 @@
                 <input type="date" class="form-control" id="fDueDate">
               </div>
               <div class="form-group">
-                <label>الحالة</label>
+                <label>حالة الفاتورة</label>
                 <select class="form-control" id="fStatus">
                   <option value="draft">مسودة</option>
                   <option value="sent">مُرسلة</option>
@@ -1256,7 +1337,28 @@
                   <option value="bank">تحويل بنكي</option>
                   <option value="online">دفع إلكتروني</option>
                   <option value="card">بطاقة</option>
+                  <option value="benfitpay">بنفت باي (BenefitPay)</option>
                 </select>
+              </div>
+            </div>
+            <div class="form-row cols-3 admin-only-screen">
+              <div class="form-group">
+                <label>حالة الدفع <span class="hint" style="color:var(--red);">(تظهر في الطباعة)</span></label>
+                <select class="form-control" id="fPayStatus">
+                  <option value="pending">بانتظار الدفع</option>
+                  <option value="paid">مدفوع</option>
+                  <option value="unpaid">غير مدفوع</option>
+                  <option value="partial">مدفوع جزئياً</option>
+                  <option value="refunded">مسترجع</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>تاريخ الدفع</label>
+                <input type="date" class="form-control" id="fPayDate">
+              </div>
+              <div class="form-group">
+                <label>مرجع الدفع <span class="hint">(رقم مرجعي)</span></label>
+                <input type="text" class="form-control mono" id="fPayRef" dir="ltr" placeholder="INV-REF-001">
               </div>
             </div>
             <div class="form-row cols-2 admin-only-screen">
@@ -1289,18 +1391,14 @@
                 <input type="text" class="form-control mono" id="fCvLink" dir="ltr" placeholder="username">
               </div>
             </div>
-            <div class="form-row cols-3 admin-only-screen">
-              <div class="form-group">
-                <label>الرقم الضريبي <span class="hint">(VAT)</span></label>
-                <input type="text" class="form-control mono" id="fCustVat" dir="ltr" placeholder="BH00000000000">
-              </div>
-              <div class="form-group">
-                <label>السجل التجاري <span class="hint">(CR)</span></label>
-                <input type="text" class="form-control mono" id="fCustCr" dir="ltr" placeholder="CR-000000">
-              </div>
+            <div class="form-row cols-2 admin-only-screen">
               <div class="form-group">
                 <label>البريد الإلكتروني</label>
                 <input type="email" class="form-control mono" id="fCustEmail" dir="ltr" placeholder="customer@example.com">
+              </div>
+              <div class="form-group">
+                <label>الدولة</label>
+                <input type="text" class="form-control" id="fCustCountry" placeholder="مملكة البحرين">
               </div>
             </div>
 
@@ -1432,6 +1530,27 @@
               </div>
             </div>
 
+            <!-- ═══ قوالب جاهزة (Preset Templates) — admin only ═══ -->
+            <div class="form-section-title admin-only-screen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              قوالب جاهزة للإضافة السريعة
+            </div>
+            <div class="admin-only-screen preset-templates-wrap" id="presetTemplatesWrap">
+              <div class="preset-tabs" id="presetTabs">
+                <button type="button" class="preset-tab active" data-preset-tab="packages">🏷️ الباقات بعرض الافتتاح (مع خصم)</button>
+                <button type="button" class="preset-tab" data-preset-tab="cards">💳 الباقات بالأسعار الأصلية (بدون خصم)</button>
+                <button type="button" class="preset-tab" data-preset-tab="services">🛠️ خدمات إضافية</button>
+                <button type="button" class="preset-tab" data-preset-tab="gifts">🎁 هدايا</button>
+              </div>
+              <div class="preset-grid" id="presetPackages"></div>
+              <div class="preset-grid" id="presetCards" style="display:none;"></div>
+              <div class="preset-grid" id="presetServices" style="display:none;"></div>
+              <div class="preset-grid" id="presetGifts" style="display:none;"></div>
+              <div class="preset-edit-hint">
+                💡 اضغط على أي قالب لإضافته. بعدها يمكنك تعديل السعر/الكمية/الخصم مباشرة في جدول البنود.
+              </div>
+            </div>
+
             <!-- ═══ رسوم إضافية (شحن، إكرامية، عربون) — admin only ═══ -->
             <div class="form-section-title admin-only-screen">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
@@ -1450,15 +1569,6 @@
                 <label>عربون / دفعة مقدمة</label>
                 <input type="text" class="form-control mono" id="fDeposit" dir="ltr" placeholder="0.000" inputmode="decimal">
               </div>
-            </div>
-            <div class="form-group admin-only-screen" style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--amber-tint);border-radius:8px;border:1px solid var(--amber);">
-              <input type="checkbox" id="fLateFeeEnabled" style="width:18px;height:18px;cursor:pointer;accent-color:var(--amber);">
-              <label for="fLateFeeEnabled" style="margin:0;cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);">
-                تطبيق غرامة تأخير تلقائية
-                <span style="display:block;font-size:11px;color:#92400E;font-weight:400;margin-top:2px;">
-                  تُحسب الغرامة من تاريخ الاستحقاق: 1% شهرياً على المبالغ غير المدفوعة
-                </span>
-              </label>
             </div>
 
             <!-- ═══ جدول الدفعات (Payment Schedule) — admin only ═══ -->
@@ -1669,6 +1779,7 @@
                   <th data-sort="name">العميل</th>
                   <th data-sort="amount">المبلغ</th>
                   <th>الحالة</th>
+                  <th>حالة الدفع</th>
                   <th class="col-actions">إجراءات</th>
                 </tr>
               </thead>
@@ -1809,12 +1920,6 @@
         <div class="status-breakdown" id="statusBreakdown"></div>
       </div>
 
-      <!-- ═══ تقرير الأعمار (Aging Report) ═══ -->
-      <div class="chart-card admin-only-screen">
-        <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>تقرير الأعمار للفواتير المستحقة (Aging Report)</h3>
-        <div class="aging-grid" id="agingGrid"></div>
-      </div>
-
       <!-- ═══ أعلى البنود والعملاء ═══ -->
       <div class="chart-card admin-only-screen">
         <h3><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>أعلى 5 عملاء</h3>
@@ -1913,10 +2018,6 @@
             <div class="form-group">
               <label>SWIFT / BIC</label>
               <input type="text" class="form-control mono" id="setBankSwift" dir="ltr" placeholder="NBBBBSH0XXX">
-            </div>
-            <div class="form-group">
-              <label>الرقم الضريبي للمنشأة (VAT)</label>
-              <input type="text" class="form-control mono" id="setBizVat" dir="ltr" placeholder="BH000000000">
             </div>
           </div>
           <div class="setting-actions">
@@ -2307,7 +2408,8 @@ function addItem(desc='', qty=1, price=0, opts={}){
     category: opts.category || '',
     unit: opts.unit || 'piece',
     internalNotes: opts.internalNotes || '',
-    cost: opts.cost || 0
+    cost: opts.cost || 0,
+    originalPrice: opts.originalPrice || 0 // جديد: السعر الأصلي للهدية (قبل الإعطاء)
   });
   renderItemsTable();
   updatePreview();
@@ -2345,7 +2447,7 @@ function renderItemsTable(){
   const body = $('itemsBody');
   body.innerHTML = '';
   if(items.length === 0){
-    items.push({description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0});
+    items.push({description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0, originalPrice:0});
   }
   items.forEach((item, i) => {
     const tr = document.createElement('tr');
@@ -2361,6 +2463,7 @@ function renderItemsTable(){
     const totalDisplay = iType === 'gift' ? '0.000' : (iType === 'discount' ? `-${Math.abs(total).toFixed(3)}` : total.toFixed(3));
     const unitVal = item.unit || 'piece';
     const costVal = item.cost || 0;
+    const originalPriceVal = item.originalPrice || 0;
 
     tr.innerHTML = `
       <td style="position:relative;">
@@ -2368,7 +2471,14 @@ function renderItemsTable(){
         ${item.sku ? `<div style="font-size:9.5px;color:var(--ink-faint);margin-top:2px;font-family:'IBM Plex Mono',monospace;direction:ltr;">SKU: ${escapeHtml(item.sku)}</div>` : ''}
       </td>
       <td><input type="number" class="col-qty-input" placeholder="1" value="${item.qty}" min="0" step="1" data-idx="${i}" data-field="qty" ${iType==='gift'||iType==='discount'?'disabled':''}></td>
-      <td><input type="text" class="col-price-input" placeholder="0.000" value="${item.unitPrice}" data-idx="${i}" data-field="unitPrice" inputmode="decimal" ${iType==='gift'?'disabled':''}></td>
+      <td>
+        ${iType === 'gift' ? `
+          <input type="text" class="col-price-input" placeholder="0.000" value="${originalPriceVal}" data-idx="${i}" data-field="originalPrice" inputmode="decimal" style="border-color:#0C9A63;background:#E8F7F0;color:#0C9A63;" title="السعر الأصلي للهدية قبل الإعطاء">
+          <div style="font-size:9.5px;color:#0C9A63;margin-top:2px;text-align:center;font-weight:700;">السعر الأصلي</div>
+        ` : `
+          <input type="text" class="col-price-input" placeholder="0.000" value="${item.unitPrice}" data-idx="${i}" data-field="unitPrice" inputmode="decimal">
+        `}
+      </td>
       <td>
         <select class="item-disc-select" data-idx="${i}" data-field="discountType">
           <option value="none" ${dType==='none'?'selected':''}>بدون</option>
@@ -2436,6 +2546,12 @@ function renderItemsTable(){
             <label>التكلفة الداخلية <span style="color:var(--ink-faint);">(للربح)</span></label>
             <input type="text" class="item-cost-input mono" placeholder="0.000" value="${costVal}" data-idx="${i}" data-field="cost" inputmode="decimal" dir="ltr">
           </div>
+          ${iType === 'gift' ? `
+          <div class="form-group" style="grid-column:span 2;">
+            <label>السعر الأصلي للهدية <span style="color:#0C9A63;font-weight:700;">(يظهر في الفاتورة)</span></label>
+            <input type="text" class="item-original-price-input mono" placeholder="0.000" value="${originalPriceVal}" data-idx="${i}" data-field="originalPrice" inputmode="decimal" dir="ltr" style="border-color:#0C9A63;background:#E8F7F0;color:#0C9A63;font-weight:700;">
+          </div>
+          ` : ''}
           <input type="text" class="item-internal-notes" placeholder="ملاحظات داخلية (لا تظهر في الفاتورة المطبوعة)..." value="${escapeHtml(item.internalNotes||'')}" data-idx="${i}" data-field="internalNotes" style="grid-column:1/-1;padding:8px 12px;border:1px solid var(--line);border-radius:7px;background:var(--surface);font-size:12px;min-height:36px;">
         </div>
       </td>
@@ -2448,7 +2564,7 @@ function renderItemsTable(){
     inp.addEventListener('input', (e) => {
       const idx = parseInt(e.target.dataset.idx);
       const field = e.target.dataset.field;
-      if(field === 'qty' || field === 'unitPrice' || field === 'discountValue' || field === 'cost'){
+      if(field === 'qty' || field === 'unitPrice' || field === 'discountValue' || field === 'cost' || field === 'originalPrice'){
         if(field === 'discountValue'){
           items[idx].discount = {...items[idx].discount, value: parseFloat(e.target.value) || 0};
         } else {
@@ -2624,32 +2740,11 @@ function calculateTotals(){
   }
   let grand = vatIncluded ? baseForVat : (baseForVat + vat);
 
-  // ═══ جديد: غرامة تأخير (Late Fee) ═══
-  let lateFee = 0;
-  const lateFeeEnabled = $('fLateFeeEnabled')?.checked || false;
-  const dueDate = $('fDueDate')?.value;
-  const invStatus = $('fStatus')?.value || 'draft';
-  if(lateFeeEnabled && dueDate){
-    const due = new Date(dueDate);
-    const today = new Date();
-    today.setHours(0,0,0,0);
-    due.setHours(0,0,0,0);
-    if(today > due && invStatus !== 'paid' && invStatus !== 'cancelled'){
-      const daysOverdue = Math.floor((today - due) / (1000*60*60*24));
-      const monthsOverdue = Math.ceil(daysOverdue / 30);
-      if(monthsOverdue > 0){
-        // 1% شهرياً على المبلغ غير المدفوع
-        lateFee = grand * 0.01 * monthsOverdue;
-        grand += lateFee;
-      }
-    }
-  }
-
-  // ═══ جديد: عربون / دفعة مقدمة ═══
+  // ═══ عربون / دفعة مقدمة ═══
   const deposit = parseFloat($('fDeposit')?.value) || 0;
   const balanceDue = grand - deposit;
 
-  // ═══ جديد: الدفعات المسجلة في جدول الدفعات ═══
+  // ═══ الدفعات المسجلة في جدول الدفعات ═══
   const totalPaidViaSchedule = payments
     .filter(p => p.status === 'paid')
     .reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
@@ -2657,7 +2752,7 @@ function calculateTotals(){
     .reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
   const balanceAfterSchedule = grand - totalPaidViaSchedule;
 
-  // ═══ جديد: حساب الربح ═══
+  // ═══ حساب الربح ═══
   const profit = grand - itemsCost - (vatIncluded ? 0 : vat);
   const profitMargin = grand > 0 ? (profit / grand * 100) : 0;
 
@@ -2670,22 +2765,20 @@ function calculateTotals(){
     totalDiscount: itemsDiscountSum + invoiceDiscount, // إجمالي الخصومات
     giftsCount,
     afterDiscount,
-    shipping,                                  // ═══ جديد ═══
-    tip,                                       // ═══ جديد ═══
-    extraFees,                                 // ═══ جديد ═══
+    shipping,
+    tip,
+    extraFees,
     taxableBase,                              // المبلغ الخاضع للضريبة
     vat, vatRate, vatIncluded,
     grand, discType, discVal,
-    lateFee,                                   // ═══ جديد ═══
-    lateFeeEnabled,                            // ═══ جديد ═══
-    deposit,                                   // ═══ جديد ═══
-    balanceDue,                                // ═══ جديد: الإجمالي بعد العربون ═══
-    totalPaidViaSchedule,                      // ═══ جديد: المدفوع عبر الجدول ═══
-    totalScheduled,                            // ═══ جديد: إجمالي الدفعات المجدولة ═══
-    balanceAfterSchedule,                      // ═══ جديد: المتبقي بعد الدفعات ═══
-    itemsCost,                                 // ═══ جديد: تكلفة البنود ═══
-    profit,                                    // ═══ جديد: صافي الربح ═══
-    profitMargin                               // ═══ جديد: هامش الربح % ═══
+    deposit,
+    balanceDue,                               // الإجمالي بعد العربون
+    totalPaidViaSchedule,
+    totalScheduled,
+    balanceAfterSchedule,
+    itemsCost,
+    profit,
+    profitMargin
   };
 }
 
@@ -2759,13 +2852,33 @@ function updatePreview(){
       rowStyle = 'style="color:#9C7A3C;"';
     }else if(dAmount > 0 && showItemDiscount){
       // إظهار تفاصيل الخصم داخل الوصف إذا كانت مفعّلة
-      const discNote = d.type === 'percent' ? ` (خصم ${d.value}%)` : ` (خصم ${d.value.toFixed(3)})`;
-      descDisplay += `<span style="color:#9C7A3C;font-size:10.5px;">${discNote}</span>`;
+      const discNote = d.type === 'percent'
+        ? ` (وفّر ${d.value}% = ${dAmount.toFixed(3)})`
+        : ` (وفّر ${d.value.toFixed(3)})`;
+      descDisplay += `<br><span style="color:#9C7A3C;font-size:10.5px;">${discNote}</span>`;
     }
     const tr = document.createElement('tr');
     tr.setAttribute('style', rowStyle);
-    // عرض السعر/الإجمالي: الهدية = "مجاني"، الخصم = سالب
-    const priceDisplay = iType === 'gift' ? 'مجاني' : Number(item.unitPrice).toFixed(3);
+    // عرض السعر/الإجمالي: 
+    // - الهدية = السعر الأصلي مشطوب + "مجاني"
+    // - الباقة مع خصم = السعر الأصلي مشطوب + السعر بعد الخصم
+    // - البند العادي = السعر
+    let priceDisplay;
+    if(iType === 'gift'){
+      const origPrice = Number(item.originalPrice) || 0;
+      if(origPrice > 0){
+        // عرض السعر الأصلي مشطوباً ثم "مجاني"
+        priceDisplay = `<span style="text-decoration:line-through;color:var(--ink-faint);font-size:10.5px;">${origPrice.toFixed(3)}</span><br><span style="color:#0C9A63;font-weight:700;">مجاني</span>`;
+      }else{
+        priceDisplay = '<span style="color:#0C9A63;font-weight:700;">مجاني</span>';
+      }
+    }else if(dAmount > 0 && iType === 'regular' && showItemDiscount){
+      // بند عادي مع خصم: السعر الأصلي مشطوب + السعر بعد الخصم
+      const finalUnitPrice = Number(item.unitPrice) - (dAmount / Number(item.qty || 1));
+      priceDisplay = `<span style="text-decoration:line-through;color:var(--ink-faint);font-size:10.5px;">${Number(item.unitPrice).toFixed(3)}</span><br><span style="color:var(--red-deep);font-weight:700;">${finalUnitPrice.toFixed(3)}</span>`;
+    }else{
+      priceDisplay = Number(item.unitPrice).toFixed(3);
+    }
     const totalDisplay = iType === 'gift' ? '0.000' : (iType === 'discount' ? `-${Math.abs(total).toFixed(3)}` : total.toFixed(3));
     tr.innerHTML = `
       <td class="col-num">${i + 1}</td>
@@ -2800,7 +2913,7 @@ function updatePreview(){
   if(t.itemsDiscount > 0 || t.invoiceDiscount > 0){
     totalsHtml += `<div class="total-row"><span class="lbl">بعد الخصم</span><span class="val">${t.afterDiscount.toFixed(3)} ${cur}</span></div>`;
   }
-  // ═══ جديد: رسوم إضافية (شحن، إكرامية) ═══
+  // رسوم إضافية (شحن، إكرامية)
   if(t.shipping > 0){
     totalsHtml += `<div class="total-row"><span class="lbl">الشحن / التوصيل</span><span class="val">+${t.shipping.toFixed(3)} ${cur}</span></div>`;
   }
@@ -2818,17 +2931,13 @@ function updatePreview(){
       : `ضريبة القيمة المضافة (${t.vatRate}%)`;
     totalsHtml += `<div class="total-row vat"><span class="lbl">${vatLabel}</span><span class="val">${t.vat.toFixed(3)} ${cur}</span></div>`;
   }
-  // ═══ جديد: غرامة تأخير ═══
-  if(t.lateFee > 0){
-    totalsHtml += `<div class="total-row" style="color:var(--amber);"><span class="lbl">غرامة تأخير</span><span class="val">+${t.lateFee.toFixed(3)} ${cur}</span></div>`;
-  }
   totalsHtml += `<div class="total-row grand"><span class="lbl">${t.vatIncluded ? 'الإجمالي شامل الضريبة' : 'الإجمالي النهائي'}</span><span class="val">${t.grand.toFixed(3)} ${cur}</span></div>`;
-  // ═══ جديد: عربون / دفعة مقدمة ═══
+  // عربون / دفعة مقدمة
   if(t.deposit > 0){
     totalsHtml += `<div class="total-row" style="color:var(--green);"><span class="lbl">عربون / دفعة مقدمة</span><span class="val">-${t.deposit.toFixed(3)} ${cur}</span></div>`;
     totalsHtml += `<div class="total-row grand" style="border-top:1.5px solid var(--line);margin-top:6px;padding-top:10px;"><span class="lbl">المتبقي للسداد</span><span class="val" style="color:var(--red-deep);">${t.balanceDue.toFixed(3)} ${cur}</span></div>`;
   }
-  // ═══ جديد: المدفوع عبر جدول الدفعات ═══
+  // المدفوع عبر جدول الدفعات
   if(t.totalPaidViaSchedule > 0){
     totalsHtml += `<div class="total-row" style="color:var(--green);"><span class="lbl">مدفوع (من الجدول)</span><span class="val">-${t.totalPaidViaSchedule.toFixed(3)} ${cur}</span></div>`;
     if(t.balanceAfterSchedule > 0){
@@ -2866,13 +2975,32 @@ function updatePreview(){
   $('pNotesWrap').style.display = notes ? 'block' : 'none';
   $('pNotes').textContent = notes;
 
-  // Payment info
+  // Payment info — استخدام حقل "حالة الدفع" المنفصل (fPayStatus)
   const payMethod = $('fPayment').value;
-  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة'};
+  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة', benfitpay:'بنفت باي (BenefitPay)'};
+  // ═══ حالة الدفع منفصلة عن حالة الفاتورة — يمكن تغييرها بحرية ═══
+  const payStatusVal = $('fPayStatus')?.value || 'pending';
+  const payStatusLabels = {
+    pending: 'بانتظار الدفع',
+    paid: 'مدفوع',
+    unpaid: 'غير مدفوع',
+    partial: 'مدفوع جزئياً',
+    refunded: 'مسترجع'
+  };
+  const payStatusColors = {
+    pending: '#D97706',
+    paid: '#0C9A63',
+    unpaid: '#CE1126',
+    partial: '#D97706',
+    refunded: '#53565C'
+  };
   if(payMethod || statusVal !== 'draft'){
     $('pPaymentWrap').style.display = 'flex';
     $('pPayment').textContent = payLabels[payMethod] || '—';
-    $('pPayStatus').textContent = statusVal === 'paid' ? 'مدفوع' : (statusVal === 'cancelled' ? 'ملغى' : (statusVal === 'sent' ? 'بانتظار الدفع' : '—'));
+    // عرض حالة الدفع المختارة من الحقل المنفصل
+    const payStatusText = payStatusLabels[payStatusVal] || 'بانتظار الدفع';
+    const payStatusColor = payStatusColors[payStatusVal] || '#53565C';
+    $('pPayStatus').innerHTML = `<span style="color:${payStatusColor};font-weight:700;">${payStatusText}</span>`;
   }else{
     $('pPaymentWrap').style.display = 'none';
   }
@@ -2924,13 +3052,16 @@ function collectInvoiceData(){
     docType: currentDocType || 'invoice',
     status: $('fStatus').value,
     paymentMethod: $('fPayment').value,
+    // ═══ حالة الدفع المنفصلة + بيانات الدفع ═══
+    payStatus: $('fPayStatus')?.value || 'pending',
+    payDate: $('fPayDate')?.value || '',
+    payRef: $('fPayRef')?.value.trim() || '',
     customer: {
       name: $('fName').value.trim(),
       phone: $('fPhone').value.trim(),
       cvLink: $('fCvLink').value.trim(),
-      vat: $('fCustVat')?.value.trim() || '',
-      cr: $('fCustCr')?.value.trim() || '',
-      email: $('fCustEmail')?.value.trim() || ''
+      email: $('fCustEmail')?.value.trim() || '',
+      country: $('fCustCountry')?.value.trim() || ''
     },
     items: items.filter(it => it.description || it.unitPrice > 0 || it.itemType === 'gift').map(it => ({
       description: it.description,
@@ -2942,7 +3073,8 @@ function collectInvoiceData(){
       category: it.category || '',
       unit: it.unit || 'piece',
       internalNotes: it.internalNotes || '',
-      cost: Number(it.cost) || 0
+      cost: Number(it.cost) || 0,
+      originalPrice: Number(it.originalPrice) || 0
     })),
     discount: {type: $('fDiscountType').value, value: parseFloat($('fDiscountValue').value) || 0},
     vatRate: parseFloat($('fVatRate').value) || 0,
@@ -2951,7 +3083,6 @@ function collectInvoiceData(){
     shipping: parseFloat($('fShipping')?.value) || 0,
     tip: parseFloat($('fTip')?.value) || 0,
     deposit: parseFloat($('fDeposit')?.value) || 0,
-    lateFeeEnabled: $('fLateFeeEnabled')?.checked || false,
     payments: [...payments],
     customFields: [...customFields],
     recurring: {
@@ -3011,12 +3142,15 @@ function loadInvoice(id){
   $('fProject').value = inv.project || '';
   $('fStatus').value = inv.status;
   $('fPayment').value = inv.paymentMethod || '';
+  // ═══ استرجاع حالة الدفع المنفصلة + بيانات الدفع ═══
+  if($('fPayStatus')) $('fPayStatus').value = inv.payStatus || 'pending';
+  if($('fPayDate')) $('fPayDate').value = inv.payDate || '';
+  if($('fPayRef')) $('fPayRef').value = inv.payRef || '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
-  $('fCustVat').value = inv.customer?.vat || '';
-  $('fCustCr').value = inv.customer?.cr || '';
-  $('fCustEmail').value = inv.customer?.email || '';
+  if($('fCustEmail')) $('fCustEmail').value = inv.customer?.email || '';
+  if($('fCustCountry')) $('fCustCountry').value = inv.customer?.country || '';
   // نوع المستند
   currentDocType = inv.docType || 'invoice';
   updateDocTypePills();
@@ -3031,25 +3165,21 @@ function loadInvoice(id){
     category: it.category || '',
     unit: it.unit || 'piece',
     internalNotes: it.internalNotes || '',
-    cost: Number(it.cost) || 0
-  })) : [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0}];
+    cost: Number(it.cost) || 0,
+    originalPrice: Number(it.originalPrice) || 0
+  })) : [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0, originalPrice:0}];
   $('fDiscountType').value = inv.discount.type;
   $('fDiscountValue').value = inv.discount.value;
   $('fVatRate').value = inv.vatRate;
-  // استرجاع خيار "الأسعار شاملة الضريبة" (افتراضي false للفواتير القديمة)
   const vatIncEl = $('fVatIncluded');
   if(vatIncEl) vatIncEl.checked = inv.vatIncluded || false;
   const showItemDiscEl = $('fShowItemDiscount');
-  if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false; // افتراضي true
-  // ═══ جديد: استرجاع الحقول المتقدمة ═══
+  if(showItemDiscEl) showItemDiscEl.checked = inv.showItemDiscount !== false;
   $('fShipping').value = inv.shipping || '';
   $('fTip').value = inv.tip || '';
   $('fDeposit').value = inv.deposit || '';
-  $('fLateFeeEnabled').checked = inv.lateFeeEnabled || false;
-  // ═══ جديد: استرجاع جدول الدفعات والحقول المخصصة ═══
   payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
   customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
-  // ═══ جديد: استرجاع إعدادات التكرار ═══
   $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
   $('fRecurringFreq').value = inv.recurring?.freq || 'monthly';
   $('fRecurringNext').value = inv.recurring?.next || '';
@@ -3073,12 +3203,15 @@ function duplicateInvoice(id){
   $('fProject').value = inv.project || '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
+  // ═══ إعادة تعيين حالة الدفع للنسخة الجديدة ═══
+  if($('fPayStatus')) $('fPayStatus').value = 'pending';
+  if($('fPayDate')) $('fPayDate').value = '';
+  if($('fPayRef')) $('fPayRef').value = '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
-  $('fCustVat').value = inv.customer?.vat || '';
-  $('fCustCr').value = inv.customer?.cr || '';
-  $('fCustEmail').value = inv.customer?.email || '';
+  if($('fCustEmail')) $('fCustEmail').value = inv.customer?.email || '';
+  if($('fCustCountry')) $('fCustCountry').value = inv.customer?.country || '';
   currentDocType = inv.docType || 'invoice';
   updateDocTypePills();
   // نسخ البنود مع الحقول الجديدة (مع التوافق مع القديمة)
@@ -3092,7 +3225,8 @@ function duplicateInvoice(id){
     category: it.category || '',
     unit: it.unit || 'piece',
     internalNotes: it.internalNotes || '',
-    cost: Number(it.cost) || 0
+    cost: Number(it.cost) || 0,
+    originalPrice: Number(it.originalPrice) || 0
   }));
   $('fDiscountType').value = inv.discount.type;
   $('fDiscountValue').value = inv.discount.value;
@@ -3104,7 +3238,6 @@ function duplicateInvoice(id){
   $('fShipping').value = inv.shipping || '';
   $('fTip').value = inv.tip || '';
   $('fDeposit').value = inv.deposit || '';
-  $('fLateFeeEnabled').checked = inv.lateFeeEnabled || false;
   payments = Array.isArray(inv.payments) ? [...inv.payments] : [];
   customFields = Array.isArray(inv.customFields) ? [...inv.customFields] : [];
   $('fRecurringEnabled').checked = inv.recurring?.enabled || false;
@@ -3140,11 +3273,38 @@ function markAsPaid(id){
   const idx = invoices.findIndex(i => i.id === id);
   if(idx < 0) return;
   invoices[idx].status = 'paid';
+  // ═══ تحديث حالة الدفع تلقائياً عند التعليم كمدفوعة ═══
+  invoices[idx].payStatus = 'paid';
+  if(!invoices[idx].payDate) invoices[idx].payDate = todayISO();
   invoices[idx].updatedAt = Date.now();
-  addAuditEntry(id, 'تعليم كمدفوعة', `المبلغ: ${invoices[idx].totals.grand.toFixed(3)}`);
+  addAuditEntry(id, 'تعليم كمدفوعة', `المبلغ: ${invoices[idx].totals.grand.toFixed(3)} د.ب`);
   saveInvoices();
   renderHistory();
   toast('تم تعليم الفاتورة كمدفوعة', 'success');
+}
+
+// ═══ جديد: تغيير حالة الدفع مباشرة من السجل (بدون فتح الفاتورة) ═══
+function setPayStatus(id, newStatus){
+  const idx = invoices.findIndex(i => i.id === id);
+  if(idx < 0) return;
+  const oldStatus = invoices[idx].payStatus || 'pending';
+  invoices[idx].payStatus = newStatus;
+  // مزامنة حالة الفاتورة تلقائياً عند تغيير حالة الدفع
+  if(newStatus === 'paid'){
+    invoices[idx].status = 'paid';
+    if(!invoices[idx].payDate) invoices[idx].payDate = todayISO();
+  }else if(newStatus === 'unpaid' || newStatus === 'pending'){
+    // العودة إلى "مُرسلة" بدل "مدفوعة"
+    if(invoices[idx].status === 'paid') invoices[idx].status = 'sent';
+  }else if(newStatus === 'refunded'){
+    invoices[idx].status = 'cancelled';
+  }
+  invoices[idx].updatedAt = Date.now();
+  const labels = {pending:'بانتظار الدفع', paid:'مدفوع', unpaid:'غير مدفوع', partial:'مدفوع جزئياً', refunded:'مسترجع'};
+  addAuditEntry(id, 'تغيير حالة الدفع', `${labels[oldStatus]||'—'} ← ${labels[newStatus]||'—'}`);
+  saveInvoices();
+  renderHistory();
+  toast(`حالة الدفع: ${labels[newStatus]}`, 'success');
 }
 
 function duplicateLastInvoice(){
@@ -3165,15 +3325,18 @@ function resetForm(){
   $('fProject').value = '';
   $('fStatus').value = 'draft';
   $('fPayment').value = '';
+  // ═══ إعادة تعيين حالة الدفع ═══
+  if($('fPayStatus')) $('fPayStatus').value = 'pending';
+  if($('fPayDate')) $('fPayDate').value = '';
+  if($('fPayRef')) $('fPayRef').value = '';
   $('fName').value = '';
   $('fPhone').value = '';
   $('fCvLink').value = '';
-  $('fCustVat').value = '';
-  $('fCustCr').value = '';
-  $('fCustEmail').value = '';
+  if($('fCustEmail')) $('fCustEmail').value = '';
+  if($('fCustCountry')) $('fCustCountry').value = 'مملكة البحرين';
   currentDocType = 'invoice';
   updateDocTypePills();
-  items = [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0}];
+  items = [{description:'', qty:1, unitPrice:0, itemType:'regular', discount:{type:'none', value:0}, sku:'', category:'', unit:'piece', internalNotes:'', cost:0, originalPrice:0}];
   $('fDiscountType').value = 'none';
   $('fDiscountValue').value = '';
   $('fDiscountValue').disabled = true;
@@ -3185,7 +3348,6 @@ function resetForm(){
   $('fShipping').value = '';
   $('fTip').value = '';
   $('fDeposit').value = '';
-  $('fLateFeeEnabled').checked = false;
   payments = [];
   customFields = [];
   $('fRecurringEnabled').checked = false;
@@ -3349,11 +3511,298 @@ function applyTemplate(idx){
     category: it.category || '',
     unit: it.unit || 'piece',
     internalNotes: it.internalNotes || '',
-    cost: Number(it.cost) || 0
+    cost: Number(it.cost) || 0,
+    originalPrice: Number(it.originalPrice) || 0
   }));
   renderItemsTable();
   updatePreview();
   toast(`تم تطبيق القالب: ${t.name}`, 'success');
+}
+
+// ════════════════════════════════════════════════════════════════
+//  جديد: قوالب الباقات الجاهزة (Preset Templates)
+//  قوالب مُعدّة مسبقاً للباقات والبطاقات والخدمات والهدايا
+//  يمكن تعديلها عند الإضافة أو بعدها في جدول البنود
+// ════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
+//  قوالب الباقات الجاهزة — مطابقة لأسعار الصفحة الرئيسية
+//  الأسعار شاملة الضريبة (VAT) لأن العرض الافتتاحي يشمل كل شيء
+//  المصدر: index.html — قسم pricing و addons و corporate
+// ════════════════════════════════════════════════════════════════
+const PRESET_TEMPLATES = {
+  // ═══ (1) الباقات بأسعار العرض الافتتاحي (مع الخصومات) ═══
+  packages: [
+    {
+      name:'باقة الأساسية — عرض الافتتاح',
+      desc:'بطاقة رقمية تعريفية ورقية · تصميم أحادي اللغة · رابط QR · صفحة واحدة',
+      price: 5.000,
+      originalPrice: 7.000,
+      discount:{type:'fixed', value:2.000},
+      unit:'piece', category:'design', badge:'discount',
+      launchOffer: true
+    },
+    {
+      name:'باقة القياسية — عرض الافتتاح',
+      desc:'بطاقة مطلية بالذهب · ثنائية اللغة · وضع فاتح/داكن · شهادات · معاينة حية',
+      price: 8.000,
+      originalPrice: 10.000,
+      discount:{type:'fixed', value:2.000},
+      unit:'piece', category:'design', badge:'discount',
+      launchOffer: true
+    },
+    {
+      name:'باقة المميزة — عرض الافتتاح',
+      desc:'بطاقة نيلي ملكي · كل ميزات القياسية + صفحات فرعية + PWA + أولوية تسليم + شهادات PDF',
+      price: 12.000,
+      originalPrice: 15.000,
+      discount:{type:'fixed', value:3.000},
+      unit:'piece', category:'design', badge:'discount',
+      launchOffer: true
+    },
+    {
+      name:'باقة المؤسسات — القياسية (10 بطاقات)',
+      desc:'10 بطاقات رقمية لموظفي الشركة بتصميم موحّد · القياسية · شعار الشركة وألوانها · تسليم خلال أسبوع',
+      price: 70.000,
+      originalPrice: 100.000,
+      discount:{type:'fixed', value:30.000},
+      unit:'piece', category:'design', badge:'discount',
+      launchOffer: true,
+      perUnitNote: '7.000 د.ب لكل بطاقة'
+    },
+    {
+      name:'باقة المؤسسات — المميزة (10 بطاقات)',
+      desc:'10 بطاقات رقمية لموظفي الشركة بتصميم موحّد · المميزة · صفحات فرعية + PWA + أولوية تسليم',
+      price: 100.000,
+      originalPrice: 150.000,
+      discount:{type:'fixed', value:50.000},
+      unit:'piece', category:'design', badge:'discount',
+      launchOffer: true,
+      perUnitNote: '10.000 د.ب لكل بطاقة'
+    },
+  ],
+
+  // ═══ (2) الباقات بالأسعار الأصلية (بدون خصومات) ═══
+  cards: [
+    {
+      name:'باقة الأساسية — السعر الأصلي',
+      desc:'بطاقة رقمية تعريفية ورقية · تصميم أحادي اللغة · رابط QR · صفحة واحدة',
+      price: 7.000,
+      discount:{type:'none', value:0},
+      unit:'piece', category:'design'
+    },
+    {
+      name:'باقة القياسية — السعر الأصلي',
+      desc:'بطاقة مطلية بالذهب · ثنائية اللغة · وضع فاتح/داكن · شهادات · معاينة حية',
+      price: 10.000,
+      discount:{type:'none', value:0},
+      unit:'piece', category:'design'
+    },
+    {
+      name:'باقة المميزة — السعر الأصلي',
+      desc:'بطاقة نيلي ملكي · كل ميزات القياسية + صفحات فرعية + PWA + أولوية تسليم + شهادات PDF',
+      price: 15.000,
+      discount:{type:'none', value:0},
+      unit:'piece', category:'design'
+    },
+    {
+      name:'باقة المؤسسات — القياسية (10 بطاقات) — السعر الأصلي',
+      desc:'10 بطاقات رقمية لموظفي الشركة بتصميم موحّد · القياسية · شعار الشركة وألوانها · تسليم خلال أسبوع',
+      price: 100.000,
+      discount:{type:'none', value:0},
+      unit:'piece', category:'design',
+      perUnitNote: '10.000 د.ب لكل بطاقة'
+    },
+    {
+      name:'باقة المؤسسات — المميزة (10 بطاقات) — السعر الأصلي',
+      desc:'10 بطاقات رقمية لموظفي الشركة بتصميم موحّد · المميزة · صفحات فرعية + PWA + أولوية تسليم',
+      price: 150.000,
+      discount:{type:'none', value:0},
+      unit:'piece', category:'design',
+      perUnitNote: '15.000 د.ب لكل بطاقة'
+    },
+  ],
+
+  // ═══ (3) الخدمات الإضافية (مطابقة لقسم Add-ons في الصفحة الرئيسية) ═══
+  services: [
+    {
+      name:'ترجمة إلى لغة ثالثة',
+      desc:'بطاقتك أصلاً بالعربي أو ثنائية اللغة؟ أضف لغة ثالثة (مثل الإنجليزية أو غيرها) كزر تبديل إضافي على نفس البطاقة.',
+      price: 2.000,
+      unit:'service', category:'service'
+    },
+    {
+      name:'جولة تعديل إضافية',
+      desc:'تجاوزت الجولتين المجانيتين وتحتاج تعديلاً إضافياً على نص أو ترتيب أو روابط بطاقتك الحالية؟',
+      price: 1.000,
+      unit:'service', category:'service'
+    },
+    {
+      name:'شهادة إضافية بعد التسليم',
+      desc:'طلبت الباقة القياسية أو المميزة ولديك شهادة جديدة تريد إضافتها لاحقاً بعد التسليم الأول؟ (حتى 3 ميجابايت)',
+      price: 0.500,
+      unit:'piece', category:'service',
+      perUnitNote: 'لكل شهادة'
+    },
+    {
+      name:'تحديث سنوي كامل',
+      desc:'مضى عام على بطاقتك وتريد تحديثها بالكامل (خبرة جديدة، تنسيق جديد) بدل الاكتفاء بتعديل بسيط؟',
+      price: 3.000,
+      unit:'service', category:'service'
+    },
+  ],
+
+  // ═══ (4) الهدايا (مع الأسعار الأصلية قبل الإعطاء) ═══
+  gifts: [
+    {
+      name:'🎁 هدية — باقة الأساسية مجاناً',
+      desc:'بطاقة رقمية تعريفية كاملة (الباقة الأساسية) كهدية للعميل — السعر الأصلي 7.000 د.ب',
+      price: 0,
+      originalPrice: 7.000,
+      unit:'piece', category:'design', itemType:'gift'
+    },
+    {
+      name:'🎁 هدية — باقة القياسية مجاناً',
+      desc:'بطاقة رقمية تعريفية كاملة (الباقة القياسية) كهدية للعميل — السعر الأصلي 10.000 د.ب',
+      price: 0,
+      originalPrice: 10.000,
+      unit:'piece', category:'design', itemType:'gift'
+    },
+    {
+      name:'🎁 هدية — باقة المميزة مجاناً',
+      desc:'بطاقة رقمية تعريفية كاملة (الباقة المميزة) كهدية للعميل — السعر الأصلي 15.000 د.ب',
+      price: 0,
+      originalPrice: 15.000,
+      unit:'piece', category:'design', itemType:'gift'
+    },
+    {
+      name:'🎁 هدية — ترجمة إلى لغة ثالثة مجاناً',
+      desc:'إضافة لغة ثالثة للبطاقة كهدية — السعر الأصلي 2.000 د.ب',
+      price: 0,
+      originalPrice: 2.000,
+      unit:'service', category:'service', itemType:'gift'
+    },
+    {
+      name:'🎁 هدية — جولة تعديل إضافية مجاناً',
+      desc:'جولة تعديل إضافية على البطاقة كهدية — السعر الأصلي 1.000 د.ب',
+      price: 0,
+      originalPrice: 1.000,
+      unit:'service', category:'service', itemType:'gift'
+    },
+    {
+      name:'🎁 هدية — شهادة إضافية مجاناً',
+      desc:'شهادة إضافية بعد التسليم كهدية — السعر الأصلي 0.500 د.ب للشهادة',
+      price: 0,
+      originalPrice: 0.500,
+      unit:'piece', category:'service', itemType:'gift',
+      perUnitNote: 'لكل شهادة'
+    },
+    {
+      name:'🎁 هدية — تحديث سنوي كامل مجاناً',
+      desc:'تحديث سنوي كامل للبطاقة كهدية — السعر الأصلي 3.000 د.ب',
+      price: 0,
+      originalPrice: 3.000,
+      unit:'service', category:'service', itemType:'gift'
+    },
+  ]
+};
+
+function renderPresetTab(tabName){
+  const containers = {packages:'presetPackages', cards:'presetCards', services:'presetServices', gifts:'presetGifts'};
+  Object.values(containers).forEach(id => {
+    const el = $(id);
+    if(el) el.style.display = 'none';
+  });
+  const target = $(containers[tabName]);
+  if(!target) return;
+  target.style.display = 'grid';
+  const presets = PRESET_TEMPLATES[tabName] || [];
+  target.innerHTML = presets.map((p, i) => {
+    const isGift = p.itemType === 'gift' || tabName === 'gifts';
+    const hasDiscount = p.discount && p.discount.type !== 'none' && p.discount.value > 0;
+    const hasOriginalPrice = Number(p.originalPrice) > 0 && !isGift;
+    let priceHtml = '';
+    if(isGift){
+      const origPrice = p.originalPrice || p.price || 0;
+      priceHtml = `<div class="pc-price" style="color:#0C9A63;">
+        <span class="pc-original">${origPrice.toFixed(3)} ${settings.currency}</span>
+        <span style="color:#0C9A63;">مجاني</span>
+      </div>`;
+    } else if(hasDiscount){
+      // عرض السعر الأصلي مشطوباً + السعر بعد الخصم
+      const finalPrice = p.discount.type === 'percent'
+        ? p.price * (1 - p.discount.value / 100)
+        : p.price - p.discount.value;
+      const showOriginal = p.originalPrice && p.originalPrice > 0;
+      const origToShow = showOriginal ? p.originalPrice : p.price;
+      priceHtml = `<div class="pc-price">
+        <span class="pc-original">${origToShow.toFixed(3)} ${settings.currency}</span>
+        <span>${finalPrice.toFixed(3)} ${settings.currency}</span>
+      </div>
+      <span class="pc-discount">وفّر ${(origToShow - finalPrice).toFixed(3)} ${settings.currency}</span>`;
+    } else {
+      priceHtml = `<div class="pc-price">${p.price.toFixed(3)} ${settings.currency}</div>`;
+    }
+    // ملاحظة "لكل وحدة" (مثال: لكل بطاقة، لكل شهادة)
+    if(p.perUnitNote){
+      priceHtml += `<div style="font-size:10px;color:var(--ink-faint);margin-top:4px;font-family:'IBM Plex Mono',monospace;direction:ltr;">${escapeHtml(p.perUnitNote)}</div>`;
+    }
+    // شارة "عرض الافتتاح"
+    let badgeHtml = '';
+    if(isGift) badgeHtml = '<span class="pc-badge gift">هدية</span>';
+    else if(hasDiscount && p.launchOffer) badgeHtml = '<span class="pc-badge discount">عرض الافتتاح</span>';
+    else if(hasDiscount) badgeHtml = '<span class="pc-badge discount">خصم</span>';
+    else if(tabName === 'services') badgeHtml = '<span class="pc-badge service">خدمة</span>';
+    return `<div class="preset-card" data-preset-tab="${tabName}" data-preset-idx="${i}">
+      ${badgeHtml}
+      <div class="pc-name">${escapeHtml(p.name)}</div>
+      <div class="pc-desc">${escapeHtml(p.desc)}</div>
+      ${priceHtml}
+    </div>`;
+  }).join('');
+  // ربط النقر على كل قالب لإضافته
+  target.querySelectorAll('.preset-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const tab = card.dataset.presetTab;
+      const idx = parseInt(card.dataset.presetIdx);
+      addPresetItem(tab, idx);
+    });
+  });
+}
+
+function addPresetItem(tabName, idx){
+  const p = PRESET_TEMPLATES[tabName][idx];
+  if(!p) return;
+  const isGift = p.itemType === 'gift' || tabName === 'gifts';
+  const opts = {
+    unit: p.unit || 'piece',
+    category: p.category || '',
+    discount: p.discount || {type:'none', value:0}
+  };
+  if(isGift){
+    opts.itemType = 'gift';
+    opts.originalPrice = p.originalPrice || p.price || 0;
+    // الهدية: السعر = 0، لكن نحتفظ بالسعر الأصلي للعرض
+    addItem(p.name, 1, 0, opts);
+    toast(`تمت إضافة الهدية: ${p.name} 🎁`, 'success');
+  } else if(p.discount && p.discount.type !== 'none' && p.discount.value > 0){
+    // ═══ باقة بخصم: نضيفها بالسعر الأصلي ونطبّق الخصم كخصم على البند ═══
+    // هذا يضمن ظهور السعر الأصلي والسعر بعد الخصم في الفاتورة المطبوعة
+    const basePrice = p.originalPrice || p.price;
+    opts.originalPrice = 0; // originalPrice للهدايا فقط
+    addItem(p.name, 1, basePrice, opts);
+    // تعديل الخصم على البند المُضاف
+    const lastIdx = items.length - 1;
+    if(lastIdx >= 0){
+      items[lastIdx].discount = {type: p.discount.type, value: p.discount.value};
+    }
+    const savingNote = p.originalPrice
+      ? ` (السعر الأصلي ${p.originalPrice.toFixed(3)}، وفّر ${p.discount.value.toFixed(3)})`
+      : ` (مع خصم ${p.discount.value}${p.discount.type==='percent'?'%':''})`;
+    toast(`تمت إضافة: ${p.name}${savingNote}`, 'success');
+  } else {
+    addItem(p.name, 1, p.price, opts);
+    toast(`تمت إضافة: ${p.name}`, 'success');
+  }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -3862,9 +4311,11 @@ function renderHistory(){
   $('historyEmpty').style.display = 'none';
   $('historyTable').style.display = '';
   const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
+  const payStatusLabels = {pending:'بانتظار الدفع', paid:'مدفوع', unpaid:'غير مدفوع', partial:'مدفوع جزئياً', refunded:'مسترجع'};
   filtered.forEach(inv => {
     const tr = document.createElement('tr');
     const isChecked = selectedIds.has(inv.id) ? 'checked' : '';
+    const payStatus = inv.payStatus || 'pending';
     tr.innerHTML = `
       <td><input type="checkbox" class="row-check" data-id="${inv.id}" ${isChecked}></td>
       <td class="col-code">${escapeHtml(inv.code)}</td>
@@ -3872,10 +4323,21 @@ function renderHistory(){
       <td class="col-name">${escapeHtml(inv.customer.name)}</td>
       <td class="col-amount">${inv.totals.grand.toFixed(3)} ${settings.currency}</td>
       <td><span class="status-pill status-${inv.status}">${statusLabels[inv.status]}</span></td>
+      <td>
+        <div class="pay-status-switcher pay-${payStatus}" data-id="${inv.id}">
+          <select data-id="${inv.id}" data-field="payStatus" title="تغيير حالة الدفع">
+            <option value="pending" ${payStatus==='pending'?'selected':''}>بانتظار الدفع</option>
+            <option value="paid" ${payStatus==='paid'?'selected':''}>مدفوع</option>
+            <option value="unpaid" ${payStatus==='unpaid'?'selected':''}>غير مدفوع</option>
+            <option value="partial" ${payStatus==='partial'?'selected':''}>مدفوع جزئياً</option>
+            <option value="refunded" ${payStatus==='refunded'?'selected':''}>مسترجع</option>
+          </select>
+        </div>
+      </td>
       <td class="col-actions">
         <button class="row-action view" data-action="view" data-id="${inv.id}" title="عرض/تعديل"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         <button class="row-action duplicate" data-action="duplicate" data-id="${inv.id}" title="تكرار"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button>
-        ${inv.status !== 'paid' ? `<button class="row-action paid" data-action="paid" data-id="${inv.id}" title="تعليم كمدفوعة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg></button>` : ''}
+        <button class="row-action" data-action="print" data-id="${inv.id}" title="طباعة"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
         <button class="row-action" data-action="delete" data-id="${inv.id}" title="حذف"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>
       </td>
     `;
@@ -3888,9 +4350,20 @@ function renderHistory(){
       const id = btn.dataset.id;
       if(action === 'view') loadInvoice(id);
       else if(action === 'duplicate') duplicateInvoice(id);
-      else if(action === 'paid') markAsPaid(id);
+      else if(action === 'paid') setPayStatus(id, 'paid');
+      else if(action === 'print') { loadInvoice(id); setTimeout(() => window.print(), 400); }
       else if(action === 'delete') deleteInvoice(id);
     });
+  });
+  // Bind pay-status switchers
+  body.querySelectorAll('.pay-status-switcher select').forEach(sel => {
+    sel.addEventListener('change', (e) => {
+      const id = e.target.dataset.id;
+      const newStatus = e.target.value;
+      setPayStatus(id, newStatus);
+    });
+    // منع النقر على الـ select من تفعيل row action
+    sel.addEventListener('click', (e) => e.stopPropagation());
   });
   body.querySelectorAll('.row-check').forEach(cb => {
     cb.addEventListener('change', () => {
@@ -4039,7 +4512,7 @@ function saveBankSettings(){
   settings.bank.acctNum = $('setBankAcctNum').value.trim();
   settings.bank.iban = $('setBankIban').value.trim();
   settings.bank.swift = $('setBankSwift').value.trim();
-  settings.bank.vatNumber = $('setBizVat').value.trim();
+  // الرقم الضريبي للمنشأة تم إزالته بناءً على طلب المستخدم
   saveSettings();
   toast('تم حفظ البيانات البنكية', 'success');
   updatePreview();
@@ -4070,9 +4543,10 @@ function exportJSON(){
 
 function exportCSV(){
   if(invoices.length === 0){ toast('لا توجد فواتير للتصدير', 'error'); return; }
-  const rows = [['رقم الفاتورة','نوع المستند','التاريخ','تاريخ الاستحقاق','العميل','الهاتف','البريد','الرقم الضريبي','البطاقة','الحالة','المشروع','مرجع PO','المجموع الفرعي','خصم البنود','خصم الفاتورة','الشحن','الإكرامية','العربون','VAT','شامل الضريبة','عدد الهدايا','غرامة التأخير','الإجمالي','المتبقي','الربح','طريقة الدفع','متكررة','ملاحظات']];
+  const rows = [['رقم الفاتورة','نوع المستند','التاريخ','تاريخ الاستحقاق','العميل','الهاتف','البريد','الدولة','البطاقة','حالة الفاتورة','حالة الدفع','تاريخ الدفع','مرجع الدفع','المشروع','مرجع PO','المجموع الفرعي','خصم البنود','خصم الفاتورة','الشحن','الإكرامية','العربون','VAT','شامل الضريبة','عدد الهدايا','الإجمالي','المتبقي','الربح','طريقة الدفع','متكررة','ملاحظات']];
   const statusLabels = {draft:'مسودة', sent:'مُرسلة', paid:'مدفوعة', cancelled:'ملغاة'};
-  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة'};
+  const payLabels = {cash:'نقداً', bank:'تحويل بنكي', online:'دفع إلكتروني', card:'بطاقة', benfitpay:'بنفت باي'};
+  const payStatusLabels = {pending:'بانتظار الدفع', paid:'مدفوع', unpaid:'غير مدفوع', partial:'مدفوع جزئياً', refunded:'مسترجع'};
   const docTypeLabels = {invoice:'فاتورة', quote:'عرض سعر', credit:'إشعار دائن'};
   invoices.forEach(inv => {
     const t = inv.totals || {};
@@ -4084,9 +4558,12 @@ function exportCSV(){
       inv.customer?.name || '',
       inv.customer?.phone || '',
       inv.customer?.email || '',
-      inv.customer?.vat || '',
+      inv.customer?.country || '',
       inv.customer?.cvLink || '',
       statusLabels[inv.status] || inv.status,
+      payStatusLabels[inv.payStatus] || 'بانتظار الدفع',
+      inv.payDate || '',
+      inv.payRef || '',
       inv.project || '',
       inv.poRef || '',
       (t.itemsGross ?? t.subtotal ?? 0).toFixed(3),
@@ -4098,7 +4575,6 @@ function exportCSV(){
       (t.vat ?? 0).toFixed(3),
       inv.vatIncluded ? 'نعم' : 'لا',
       (t.giftsCount ?? 0),
-      (t.lateFee ?? 0).toFixed(3),
       (t.grand ?? 0).toFixed(3),
       (t.balanceDue ?? t.grand ?? 0).toFixed(3),
       (t.profit ?? 0).toFixed(3),
@@ -4988,9 +5464,9 @@ function initApp(){
 
   // Form events
   ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes',
-   // ═══ جديد: حقول إضافية ═══
-   'fDueDate','fPoRef','fProject','fCustVat','fCustCr','fCustEmail',
-   'fShipping','fTip','fDeposit','fRecurringNext'
+   // ═══ حقول إضافية ═══
+   'fDueDate','fPoRef','fProject','fCustEmail','fCustCountry',
+   'fShipping','fTip','fDeposit','fRecurringNext','fPayDate','fPayRef'
   ].forEach(id => {
     const el = $(id);
     if(el){
@@ -5003,6 +5479,28 @@ function initApp(){
   $('fDiscountType').addEventListener('change', () => {
     $('fDiscountValue').disabled = $('fDiscountType').value === 'none';
     if($('fDiscountType').value === 'none') $('fDiscountValue').value = '';
+    updatePreview();
+  });
+
+  // ═══ ربط تلقائي بين حالة الفاتورة وحالة الدفع ═══
+  // عند تغيير "حالة الفاتورة" إلى مدفوعة → نحدّث "حالة الدفع" إلى مدفوع
+  // عند تغيير "حالة الفاتورة" إلى ملغاة → نحدّث "حالة الدفع" إلى مسترجع
+  // هذا يحل مشكلة "حالة الدفع عالقة على بانتظار الدفع"
+  $('fStatus')?.addEventListener('change', () => {
+    const newStatus = $('fStatus').value;
+    const payStatusEl = $('fPayStatus');
+    if(!payStatusEl) return;
+    if(newStatus === 'paid'){
+      payStatusEl.value = 'paid';
+      if(!$('fPayDate').value) $('fPayDate').value = todayISO();
+      toast('تم تحديث حالة الدفع إلى: مدفوع', 'success');
+    }else if(newStatus === 'cancelled'){
+      payStatusEl.value = 'refunded';
+      toast('تم تحديث حالة الدفع إلى: مسترجع', 'info');
+    }else if(newStatus === 'sent' && payStatusEl.value === 'paid'){
+      // إذا رجعنا إلى "مُرسلة" وكانت "مدفوعة" نعيدها إلى "بانتظار"
+      payStatusEl.value = 'pending';
+    }
     updatePreview();
   });
 
@@ -5021,12 +5519,15 @@ function initApp(){
   $('fVatIncluded')?.addEventListener('change', updatePreview);
   // خيار "إظهار تفاصيل الخصم/الهدية" — تحديث المعاينة عند التغيير
   $('fShowItemDiscount')?.addEventListener('change', updatePreview);
-  // ═══ جديد: خيارات الرسوم والعربون وغرامة التأخير ═══
+  // ═══ خيارات الرسوم والعربون ═══
   $('fShipping')?.addEventListener('input', updatePreview);
   $('fTip')?.addEventListener('input', updatePreview);
   $('fDeposit')?.addEventListener('input', updatePreview);
-  $('fLateFeeEnabled')?.addEventListener('change', updatePreview);
-  // ═══ جديد: خيارات التكرار ═══
+  // ═══ حالة الدفع المنفصلة + بيانات الدفع ═══
+  $('fPayStatus')?.addEventListener('change', updatePreview);
+  $('fPayDate')?.addEventListener('change', updatePreview);
+  $('fPayRef')?.addEventListener('input', updatePreview);
+  // ═══ خيارات التكرار ═══
   $('fRecurringEnabled')?.addEventListener('change', updatePreview);
   $('fRecurringFreq')?.addEventListener('change', updatePreview);
   $('fRecurringNext')?.addEventListener('change', updatePreview);
@@ -5034,7 +5535,7 @@ function initApp(){
   $('fVatRate')?.addEventListener('input', updatePreview);
   $('fDiscountValue')?.addEventListener('input', updatePreview);
 
-  // ═══ جديد: Document Type Pills ═══
+  // ═══ Document Type Pills ═══
   document.querySelectorAll('#docTypePills .doc-type-pill').forEach(p => {
     p.addEventListener('click', () => {
       currentDocType = p.dataset.doctype;
@@ -5044,6 +5545,16 @@ function initApp(){
       toast(`تم التبديل إلى: ${labels[currentDocType]}`, 'info');
     });
   });
+
+  // ═══ قوالب جاهزة (Preset Templates) ═══
+  document.querySelectorAll('#presetTabs .preset-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('#presetTabs .preset-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      renderPresetTab(tab.dataset.presetTab);
+    });
+  });
+  renderPresetTab('packages');
 
   // ═══ جديد: مكتبة البنود (Catalog) ═══
   $('btnToggleCatalog')?.addEventListener('click', () => {
