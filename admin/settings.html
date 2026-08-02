@@ -618,7 +618,7 @@ const BIZ_KEY = 'bitaqti_business_settings';
 const ACTIVITY_KEY = 'bitaqti_activity_log';
 const CURRENCY = 'د.ب';
 
-// ═══ AUTH — بسيط ومباشر (يستخدم localStorage لمنع التعليق) ═══
+// ═══ AUTH — شاشة قفل محفوظة + تحقق localStorage فقط ═══
 const TRACK_ENDPOINT_AUTH = '/.netlify/functions/track-order';
 const SESSION_KEY = 'bitaqti_admin_session';
 const PWD_KEY = 'bitaqti_admin_password';
@@ -656,7 +656,7 @@ function lockApp(){
   if(errEl) errEl.classList.remove('show');
 }
 
-// التحقق التلقائي عند فتح الصفحة
+// التحقق التلقائي — يقرأ localStorage فقط (سريع جداً، بدون اتصال بالخادم)
 (function checkExistingSession(){
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   const session = getSavedSession();
@@ -667,7 +667,7 @@ function lockApp(){
   }
 })();
 
-// إصلاح bfcache
+// bfcache
 window.addEventListener('pageshow', () => {
   const savedPwd = (() => { try { return localStorage.getItem(PWD_KEY); } catch(e) { return null; } })();
   if(savedPwd){
@@ -697,7 +697,6 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.disabled = true; btn.classList.add('loading');
       $('lockError').classList.remove('show');
       try{
-        // التحقق المباشر عبر track-order
         const res = await fetch(TRACK_ENDPOINT_AUTH, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -723,10 +722,10 @@ document.addEventListener('DOMContentLoaded', () => {
           let data = {};
           try { data = await res.json(); } catch(_) {}
           showError(data.error === 'server_not_configured'
-            ? '⚠️ مصدر البيانات غير مُعدّ. اضبط SUPABASE_URL+SUPABASE_SERVICE_KEY أو ORDERS_SHEET_ID في Netlify.'
+            ? '⚠️ مصدر البيانات غير مُعدّ. راجع TROUBLESHOOTING.md.'
             : 'الخدمة غير مُعدّة على الخادم.');
         } else if(res.status === 502){
-          showError('⚠️ تعذّر الوصول إلى مصدر البيانات (502). راجع TROUBLESHOOTING.md.');
+          showError('⚠️ تعذّر الوصول لمصدر البيانات (502).');
         } else {
           showError(`خطأ في الاتصال (${res.status}).`);
         }
