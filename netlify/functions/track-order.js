@@ -342,6 +342,16 @@ async function handleCustomerTrack(body){
       return jsonResponse(404, { error: 'not_found', message: 'لم يتم العثور على طلب برقم الهاتف ورمز التحقق المُدخلين.' }, corsHeaders());
     }
 
+    // ═══ ضمان وجود كود إحالة دائماً حتى لو كان فارغاً في الشيت ═══
+    // (كانت هذه الخطوة تُطبَّق فقط في وضع الأدمن ووضع التحقق من الكود، وليس هنا،
+    //  فكان العميل لا يرى قسم الإحالة أبداً إن كان عمود referral_code فارغاً في صفّه)
+    if (!match.referral_code) {
+      match.referral_code = generateReferralCode(match.customer_name || match.phone || '');
+    }
+    if (match.referral_points === undefined || match.referral_points === '') {
+      match.referral_points = 0;
+    }
+
     // بناء كائن الطلب الآمن
     const safeOrder = {};
     for (const k of SAFE_FIELDS) {
