@@ -13,7 +13,7 @@ const crypto = require('crypto');
 // ─────────────────────────────────────────────────────────────
 function getSupabaseConfig(){
   const url = (process.env.SUPABASE_URL || '').trim().replace(/\/+$/, '');
-  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || '').trim();
+  const serviceKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SECRET_KEY || '').trim();
   if(!url || !serviceKey){
     const err = new Error('SUPABASE_URL أو SUPABASE_SERVICE_KEY غير مضبوطين في Netlify.');
     err.code = 'server_not_configured'; err.name = 'ConfigError';
@@ -21,6 +21,11 @@ function getSupabaseConfig(){
   }
   if(!/^https:\/\/[a-z0-9.-]+\.supabase\.co$/i.test(url)){
     const err = new Error('SUPABASE_URL يجب أن يكون بالصيغة https://xxxxx.supabase.co');
+    err.code = 'server_not_configured'; err.name = 'ConfigError';
+    throw err;
+  }
+  if(serviceKey.length < 30){
+    const err = new Error('SUPABASE_SERVICE_KEY يبدو قصيراً جداً — تأكد من نسخ المفتاح كاملاً.');
     err.code = 'server_not_configured'; err.name = 'ConfigError';
     throw err;
   }
