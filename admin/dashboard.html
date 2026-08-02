@@ -1915,7 +1915,7 @@ function openEditModal(c, isNew = false){
       title: 'ملاحظات وسجلات',
       icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>',
       fields: [
-        ['actions_log','سجل الإجراءات (افصل بـ |)','textarea'],
+        ['actions_log','__TIMELINE_EDITOR__','textarea'],
         ['subpage_content','ملاحظة تظهر للعميل','textarea'],
         ['invoice_notes','ملاحظات داخلية','textarea'],
       ],
@@ -1929,6 +1929,13 @@ function openEditModal(c, isNew = false){
     const val = escapeAttr(c[k] ?? '');
     const isLtr = ltrFields.includes(k);
     const cls = isLtr ? 'mono' : '';
+
+    // محرر سجل الإجراءات (Timeline Editor) — يفصل كل إجراء في صف مستقل
+    // بدلاً من حقل واحد كبير يستخدم | كفاصل
+    if(label === '__TIMELINE_EDITOR__'){
+      return renderTimelineEditor(k, c[k] || '');
+    }
+
     if(type === 'textarea'){
       return `
         <div class="form-group" style="grid-column:1 / -1;">
@@ -1952,6 +1959,115 @@ function openEditModal(c, isNew = false){
         <label>${label}</label>
         <input type="${inputType}" class="form-control ${cls}" id="ef_${k}" value="${val}" placeholder="${placeholder}">
       </div>`;
+  }
+
+  // ═══ محرر سجل الإجراءات — صفوف ديناميكية بدلاً من نص واحد بـ | ═══
+  function renderTimelineEditor(fieldKey, rawValue){
+    // فك السجل الموجود إلى صفوف
+    const entries = parseTimelineEntries(rawValue);
+
+    const rowsHtml = entries.map((entry, idx) => `
+      <div class="timeline-row" data-idx="${idx}" style="display:flex;gap:6px;margin-bottom:6px;align-items:flex-start;flex-wrap:wrap;">
+        <input type="text" class="form-control mono tl-date" value="${escapeAttr(entry.date)}" placeholder="DD/MM/YYYY" style="width:120px;flex-shrink:0;font-size:12px;padding:6px 8px;" dir="ltr">
+        <input type="text" class="form-control tl-desc" value="${escapeAttr(entry.desc)}" placeholder="وصف الإجراء (مثلاً: استلام السيرة والصورة)" style="flex:1;min-width:200px;font-size:12px;padding:6px 8px;">
+        <button type="button" class="btn btn-outline btn-sm tl-remove" style="padding:6px 8px;flex-shrink:0;" title="حذف هذا الإجراء">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        </button>
+      </div>
+    `).join('');
+
+    return `
+      <div class="form-group" style="grid-column:1 / -1;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+          <label style="margin:0;">سجل الإجراءات (كل إجراء في صف مستقل)</label>
+          <button type="button" class="btn btn-blue btn-sm" id="btnAddTimeline" style="padding:5px 10px;font-size:11.5px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:11px;height:11px;"><path d="M12 5v14M5 12h14"/></svg>
+            إضافة إجراء
+          </button>
+        </div>
+        <div id="timelineContainer" style="background:var(--paper);padding:10px;border-radius:8px;border:1px solid var(--line);max-height:280px;overflow-y:auto;">
+          ${rowsHtml || '<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:14px;">لا توجد إجراءات بعد. اضغط «إضافة إجراء» للبدء.</div>'}
+        </div>
+        <div style="font-size:10.5px;color:var(--ink-faint);margin-top:6px;line-height:1.5;">
+          كل صف = إجراء واحد. اكتب التاريخ بصيغة DD/MM/YYYY ووصف الإجراء بوضوح. ستظهر للعميل في صفحة التتبع كـ Timeline مرتب زمنياً.
+        </div>
+        <!-- حقل مخفي يحمل القيمة المُجمَّعة بصيغة | للتوافق مع قاعدة البيانات -->
+        <input type="hidden" id="ef_${fieldKey}" value="${escapeAttr(rawValue)}">
+      </div>
+    `;
+  }
+
+  function parseTimelineEntries(rawValue){
+    if(!rawValue || typeof rawValue !== 'string') return [];
+    return String(rawValue)
+      .split('|')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(step => {
+        const idx = step.indexOf(' - ');
+        if(idx > -1){
+          return { date: step.slice(0, idx).trim(), desc: step.slice(idx + 3).trim() };
+        }
+        return { date: '', desc: step };
+      });
+  }
+
+  function collectTimelineValue(){
+    const container = $('timelineContainer');
+    if(!container) return '';
+    const rows = container.querySelectorAll('.timeline-row');
+    const entries = [];
+    rows.forEach(row => {
+      const date = row.querySelector('.tl-date')?.value.trim() || '';
+      const desc = row.querySelector('.tl-desc')?.value.trim() || '';
+      if(date || desc){
+        if(date) entries.push(`${date} - ${desc}`);
+        else entries.push(desc);
+      }
+    });
+    return entries.join(' | ');
+  }
+
+  function addTimelineRow(date = '', desc = ''){
+    const container = $('timelineContainer');
+    if(!container) return;
+    // إزالة رسالة "لا توجد إجراءات بعد" لو كانت موجودة
+    const emptyMsg = container.querySelector('div[style*="text-align:center"]');
+    if(emptyMsg) emptyMsg.remove();
+
+    const idx = container.querySelectorAll('.timeline-row').length;
+    const row = document.createElement('div');
+    row.className = 'timeline-row';
+    row.dataset.idx = idx;
+    row.style.cssText = 'display:flex;gap:6px;margin-bottom:6px;align-items:flex-start;flex-wrap:wrap;';
+    row.innerHTML = `
+      <input type="text" class="form-control mono tl-date" value="${escapeAttr(date)}" placeholder="DD/MM/YYYY" style="width:120px;flex-shrink:0;font-size:12px;padding:6px 8px;" dir="ltr">
+      <input type="text" class="form-control tl-desc" value="${escapeAttr(desc)}" placeholder="وصف الإجراء" style="flex:1;min-width:200px;font-size:12px;padding:6px 8px;">
+      <button type="button" class="btn btn-outline btn-sm tl-remove" style="padding:6px 8px;flex-shrink:0;" title="حذف">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+      </button>
+    `;
+    container.appendChild(row);
+    // ربط زر الحذف
+    row.querySelector('.tl-remove').addEventListener('click', () => {
+      row.remove();
+      updateTimelineHidden();
+      // لو الحاوية فارغة، أظهر الرسالة
+      if(!container.querySelector('.timeline-row')){
+        container.innerHTML = '<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:14px;">لا توجد إجراءات بعد. اضغط «إضافة إجراء» للبدء.</div>';
+      }
+    });
+    // تحديث الحقل المخفي عند الكتابة
+    row.querySelector('.tl-date').addEventListener('input', updateTimelineHidden);
+    row.querySelector('.tl-desc').addEventListener('input', updateTimelineHidden);
+    // تركيز على حقل الوصف الجديد
+    setTimeout(() => row.querySelector('.tl-desc')?.focus(), 50);
+  }
+
+  function updateTimelineHidden(){
+    // حدّث قيمة الحقل المخفي actions_log
+    const hidden = $('ef_actions_log');
+    if(hidden) hidden.value = collectTimelineValue();
   }
 
   // اجمع كل أسماء الحقول لاستخدامها لاحقاً عند الحفظ
@@ -1983,6 +2099,9 @@ function openEditModal(c, isNew = false){
     cancelText: 'إلغاء',
     autoClose: false,
     onConfirm: async () => {
+      // جمع القيم — نضمن تحديث قيمة سجل الإجراءات من المحرر الديناميكي
+      updateTimelineHidden();
+
       // جمع القيم
       const updated = { ...c };
       allFields.forEach(([k, , type]) => {
@@ -2285,7 +2404,31 @@ function showModal(opts){
   setTimeout(() => {
     const firstInput = bodyEl.querySelector('input, select, textarea');
     if(firstInput) firstInput.focus();
-  }, 200);
+
+    // ربط زر «إضافة إجراء» في محرر سجل الإجراءات (لو موجود)
+    const btnAddTimeline = document.getElementById('btnAddTimeline');
+    if(btnAddTimeline){
+      btnAddTimeline.onclick = () => addTimelineRow();
+    }
+    // ربط أزرار الحذف والحقول للصفوف الموجودة
+    document.querySelectorAll('.timeline-row').forEach(row => {
+      const removeBtn = row.querySelector('.tl-remove');
+      if(removeBtn){
+        removeBtn.onclick = () => {
+          row.remove();
+          updateTimelineHidden();
+          const container = $('timelineContainer');
+          if(container && !container.querySelector('.timeline-row')){
+            container.innerHTML = '<div style="text-align:center;color:var(--ink-faint);font-size:12px;padding:14px;">لا توجد إجراءات بعد. اضغط «إضافة إجراء» للبدء.</div>';
+          }
+        };
+      }
+      const dateInput = row.querySelector('.tl-date');
+      const descInput = row.querySelector('.tl-desc');
+      if(dateInput) dateInput.oninput = updateTimelineHidden;
+      if(descInput) descInput.oninput = updateTimelineHidden;
+    });
+  }, 250);
 }
 
 function closeModal(){
