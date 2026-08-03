@@ -7,24 +7,41 @@ const CONTENT_TYPES = {
   gif: 'image/gif',
 };
 
-const PREFIX = '/.netlify/functions/asset-proxy/';
+function extractUserAndFile(event) {
+  const rawPath = event.path || '';
+  const marker = 'asset-proxy/';
+  const idx = rawPath.indexOf(marker);
+  let rest = idx !== -1 ? rawPath.slice(idx + marker.length) : rawPath.replace(/^\//, '');
+  rest = decodeURIComponent(rest);
+  const parts = rest.split('/').filter(Boolean);
+  if (parts.length < 2 || parts.some((p) => p === '..')) {
+    return null;
+  }
+  return { user: parts[0], file: parts.slice(1).join('/') };
+}
 
 exports.handler = async (event) => {
   try {
-    const rawPath = event.path || '';
-    if (!rawPath.startsWith(PREFIX)) {
-      return { statusCode: 400, body: 'Bad request' };
+    const result = extractUserAndFile(event);
+
+    if (!result) {
+      // وضع تشخيص مؤقت: يعرض ما استقبلته الدالة فعليًا من نتليفاي
+      return {
+        statusCode: 400,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: 'Missing user or file parameter',
+          debug: {
+            path: event.path,
+            rawUrl: event.rawUrl,
+            httpMethod: event.httpMethod,
+            queryStringParameters: event.queryStringParameters,
+          },
+        }, null, 2),
+      };
     }
 
-    const rest = decodeURIComponent(rawPath.slice(PREFIX.length));
-    const parts = rest.split('/').filter(Boolean);
-
-    if (parts.length < 2 || parts.some((p) => p === '..')) {
-      return { statusCode: 400, body: 'Missing user or file parameter' };
-    }
-
-    const user = parts[0];
-    const file = parts.slice(1).join('/');
+    const { user, file } = result;
 
     const owner  = process.env.ASSETS_GITHUB_OWNER;
     const repo   = process.env.ASSETS_GITHUB_REPO;
@@ -47,10 +64,10 @@ exports.handler = async (event) => {
     });
 
     if (ghRes.status === 404) {
-      return { statusCode: 404, body: 'File not found' };
+      return { statusCode: 404, body: `File not found: ${ghPath}` };
     }
     if (!ghRes.ok) {
-      return { statusCode: 502, body: 'Upstream storage error' };
+      return { statusCode: 502, body: `Upstream storage error: ${ghRes.status}` };
     }
 
     const buffer = Buffer.from(await ghRes.arrayBuffer());
@@ -69,6 +86,6 @@ exports.handler = async (event) => {
       isBase64Encoded: true,
     };
   } catch (err) {
-    return { statusCode: 500, body: 'Server error' };
+    return { statusCode: 500, body: 'Server error: ' + err.message };
   }
 };
