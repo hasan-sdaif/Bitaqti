@@ -1,0 +1,261 @@
+/* admin/reviews-tab.css — تنسيقات تبويب التقييمات المدمج في لوحة التحكم */
+/* يستخدم نفس متغيرات لوحة التحكم (لا يُعيد تعريفها) */
+
+/* ═══ تبويب التقييمات ═══ */
+.reviews-dashboard{
+  display:grid;
+  grid-template-columns: 280px 1fr;
+  gap:18px;
+  align-items:flex-start;
+}
+@media(max-width:1024px){.reviews-dashboard{grid-template-columns:1fr;}}
+
+/* الشريط الجانبي للإحصائيات */
+.reviews-sidebar{
+  display:flex;flex-direction:column;gap:14px;
+  position:sticky;top:130px;
+}
+@media(max-width:1024px){.reviews-sidebar{position:static;}}
+
+.review-stat-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:14px 16px;box-shadow:var(--shadow-sm);
+}
+.review-stat-card .label{
+  font-size:10.5px;font-weight:700;color:var(--ink-faint);
+  text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;
+  display:flex;align-items:center;gap:6px;
+}
+.review-stat-card .label svg{width:13px;height:13px;}
+.review-stat-card .value{
+  font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:700;color:var(--ink);direction:ltr;
+}
+.review-stat-card .sub{font-size:10.5px;color:var(--ink-faint);margin-top:3px;}
+.review-stat-card.danger .value{color:var(--red);}
+.review-stat-card.success .value{color:var(--green);}
+.review-stat-card.warn .value{color:var(--amber);}
+.review-stat-card.info .value{color:var(--blue);}
+.review-stat-card.gold .value{color:var(--gold);}
+
+/* توزيع النجوم */
+.rating-dist{display:flex;flex-direction:column;gap:5px;margin-top:6px;}
+.rating-dist-row{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--ink-soft);}
+.rating-dist-row .lbl{min-width:30px;font-family:'IBM Plex Mono',monospace;font-weight:700;}
+.rating-dist-row .bar{flex:1;height:6px;background:var(--paper);border-radius:3px;overflow:hidden;}
+.rating-dist-row .bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--red));border-radius:3px;transition:width .5s;}
+.rating-dist-row .cnt{min-width:24px;text-align:left;font-family:'IBM Plex Mono',monospace;font-weight:700;color:var(--ink);}
+
+/* المنطقة الرئيسية */
+.reviews-main{display:flex;flex-direction:column;gap:14px;min-width:0;}
+
+/* شريط الأدوات */
+.reviews-toolbar{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  padding:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;box-shadow:var(--shadow-sm);
+}
+.reviews-toolbar .search-wrap{position:relative;flex:1;min-width:200px;}
+.reviews-toolbar .search-wrap svg{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--ink-faint);}
+.reviews-toolbar .search-wrap input{
+  width:100%;padding:8px 32px 8px 12px;border:1px solid var(--line);border-radius:8px;
+  font-family:inherit;font-size:13px;background:var(--paper);color:var(--ink);
+}
+.reviews-toolbar .search-wrap input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+.reviews-toolbar select{
+  padding:8px 12px;border:1px solid var(--line);border-radius:8px;
+  font-family:inherit;font-size:12.5px;background:var(--paper);color:var(--ink);cursor:pointer;
+}
+.reviews-toolbar .btn-sm{padding:8px 14px;font-size:12px;}
+
+/* تبويبات فرعية */
+.reviews-subtabs{
+  display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);
+  border-radius:10px;padding:3px;
+}
+.reviews-subtab{
+  padding:7px 14px;border:none;background:none;cursor:pointer;
+  font-size:12px;font-weight:700;color:var(--ink-soft);border-radius:7px;
+  display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .15s;font-family:inherit;
+}
+.reviews-subtab:hover{color:var(--ink);background:var(--paper);}
+.reviews-subtab.active{background:var(--ink);color:#fff;}
+.reviews-subtab .badge{background:var(--red);color:#fff;font-size:9.5px;padding:1px 6px;border-radius:8px;}
+.reviews-subtab.active .badge{background:#fff;color:var(--ink);}
+
+/* قائمة التقييمات */
+.reviews-list{display:flex;flex-direction:column;gap:10px;}
+
+.admin-review-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:14px;box-shadow:var(--shadow-sm);transition:border-color .15s;
+}
+.admin-review-card:hover{border-color:var(--ink-faint);}
+.admin-review-card.hidden{opacity:.65;border-style:dashed;}
+.admin-review-card.flagged{border-color:var(--amber);border-width:1.5px;}
+.admin-review-card.featured{border-color:var(--gold);border-width:1.5px;}
+.admin-review-card.pinned{border-color:var(--ink);border-width:1.5px;}
+
+.admin-review-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+.admin-review-head .name{font-size:13.5px;font-weight:700;color:var(--ink);}
+.admin-review-head .meta{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:3px;}
+.admin-review-head .date{font-size:10.5px;color:var(--ink-faint);}
+.admin-review-head .code{font-size:10px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;background:var(--paper);padding:1px 6px;border-radius:5px;}
+
+.admin-badges{display:flex;gap:4px;flex-wrap:wrap;}
+.admin-badge{
+  display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:8px;
+  font-size:10px;font-weight:700;
+}
+.admin-badge.verified{background:var(--green-tint);color:var(--green);}
+.admin-badge.visitor{background:var(--paper);color:var(--ink-faint);border:1px solid var(--line);}
+.admin-badge.featured{background:var(--gold-tint);color:var(--gold);}
+.admin-badge.pinned{background:var(--ink);color:#fff;}
+.admin-badge.hidden{background:var(--red-tint);color:var(--red);}
+.admin-badge.flagged{background:var(--amber-tint);color:var(--amber);}
+.admin-badge.private{background:var(--blue-tint);color:var(--blue);}
+.admin-badge.anon{background:var(--line);color:var(--ink-faint);}
+
+.admin-review-title{font-size:13.5px;font-weight:700;margin-bottom:4px;font-family:'El Messiri',sans-serif;}
+.admin-review-body{
+  font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:8px;
+  max-height:160px;overflow-y:auto;background:var(--paper);padding:8px 10px;border-radius:8px;
+  white-space:pre-wrap;word-wrap:break-word;
+}
+.admin-review-ratings{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:10.5px;color:var(--ink-faint);}
+.admin-review-ratings .r{display:inline-flex;align-items:center;gap:3px;background:var(--paper);padding:2px 7px;border-radius:6px;}
+.admin-review-ratings .r .stars{color:var(--gold);letter-spacing:1px;}
+
+.admin-review-extras{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:11px;}
+.admin-review-extras .ex{background:var(--paper);padding:4px 8px;border-radius:6px;color:var(--ink-soft);}
+.admin-review-extras .ex strong{color:var(--ink);font-weight:700;}
+
+.admin-review-actions{display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:10px;margin-top:6px;}
+.admin-action-btn{
+  display:inline-flex;align-items:center;gap:4px;background:var(--surface);border:1px solid var(--line);
+  color:var(--ink-soft);font-size:11.5px;font-weight:700;padding:6px 11px;border-radius:7px;cursor:pointer;
+  transition:all .15s;font-family:inherit;
+}
+.admin-action-btn:hover{border-color:var(--ink);color:var(--ink);}
+.admin-action-btn svg{width:13px;height:13px;}
+.admin-action-btn.danger{color:var(--red);}
+.admin-action-btn.danger:hover{background:var(--red-tint);border-color:var(--red);}
+.admin-action-btn.success{color:var(--green);}
+.admin-action-btn.success:hover{background:var(--green-tint);border-color:var(--green);}
+.admin-action-btn.gold{color:var(--gold);}
+.admin-action-btn.gold:hover{background:var(--gold-tint);border-color:var(--gold);}
+.admin-action-btn.blue{color:var(--blue);}
+.admin-action-btn.blue:hover{background:var(--blue-tint);border-color:var(--blue);}
+.admin-action-btn.amber{color:var(--amber);}
+.admin-action-btn.amber:hover{background:var(--amber-tint);border-color:var(--amber);}
+
+/* خانة الاختيار */
+.review-checkbox{
+  width:18px;height:18px;cursor:pointer;margin-top:2px;
+  accent-color:var(--red);
+}
+
+/* شريط الإجراءات الجماعي */
+.bulk-actions-bar{
+  background:var(--ink);color:#fff;border-radius:10px;padding:10px 14px;
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;
+}
+.bulk-actions-bar .label{font-size:12.5px;font-weight:700;margin-left:auto;}
+.bulk-actions-bar button{
+  background:rgba(255,255,255,.1);color:#fff;border:none;padding:6px 12px;border-radius:7px;
+  font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:4px;
+}
+.bulk-actions-bar button:hover{background:rgba(255,255,255,.2);}
+.bulk-actions-bar button.danger{background:var(--red);}
+.bulk-actions-bar button.danger:hover{background:var(--red-deep);}
+
+/* لوحة الفرز/التصدير */
+.reviews-utility-bar{
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+}
+
+/* نافذة منبثقة للرد */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9998;
+  display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.show{display:flex;}
+.modal-card{
+  background:var(--surface);border-radius:14px;padding:24px;max-width:560px;width:100%;
+  box-shadow:0 24px 60px rgba(0,0,0,.3);max-height:90vh;overflow-y:auto;
+}
+.modal-card h3{font-size:17px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.modal-card h3 svg{width:18px;height:18px;color:var(--red);}
+.modal-card .form-group{margin-bottom:12px;}
+.modal-card .form-group label{font-size:12.5px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:5px;}
+.modal-card .form-control{
+  width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;
+  font-family:inherit;font-size:13.5px;background:var(--paper);color:var(--ink);
+}
+.modal-card .form-control:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+.modal-card textarea.form-control{resize:vertical;min-height:90px;}
+.modal-card .btn-row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px;}
+
+/* تفاصيل التقييم الكاملة في النافذة */
+.review-detail-meta{
+  background:var(--paper);border-radius:10px;padding:12px;margin-bottom:12px;
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11.5px;
+}
+.review-detail-meta .item{display:flex;flex-direction:column;}
+.review-detail-meta .item .lbl{color:var(--ink-faint);font-size:10px;font-weight:700;text-transform:uppercase;}
+.review-detail-meta .item .val{color:var(--ink);font-weight:600;}
+
+/* قائمة التعليقات في لوحة التحكم */
+.admin-comment-item{
+  padding:8px 10px;background:var(--paper);border-radius:8px;margin-bottom:6px;font-size:12px;
+}
+.admin-comment-item.hidden{opacity:.6;border-right:3px solid var(--red);}
+.admin-comment-item .head{display:flex;gap:6px;align-items:center;margin-bottom:3px;flex-wrap:wrap;}
+.admin-comment-item .author{font-weight:700;font-size:11.5px;}
+.admin-comment-item .date{font-size:10px;color:var(--ink-faint);}
+.admin-comment-item .body{color:var(--ink-soft);line-height:1.6;}
+.admin-comment-item .actions{display:flex;gap:5px;margin-top:5px;}
+
+/* قائمة الاقتراحات */
+.admin-suggestion-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:10px;
+  padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);
+}
+.admin-suggestion-head{display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap;}
+.admin-suggestion-title{font-size:14px;font-weight:700;margin-bottom:4px;font-family:'El Messiri',sans-serif;}
+.admin-suggestion-body{font-size:12.5px;color:var(--ink-soft);line-height:1.7;margin-bottom:8px;}
+.admin-suggestion-meta{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--ink-faint);}
+.admin-suggestion-actions{display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:8px;margin-top:8px;}
+
+/* فراغ */
+.admin-empty{text-align:center;padding:40px 20px;color:var(--ink-faint);font-size:13px;}
+.admin-empty svg{width:40px;height:40px;margin:0 auto 10px;opacity:.5;}
+
+/* تحميل */
+.admin-loading{text-align:center;padding:30px;color:var(--ink-faint);font-size:13px;}
+
+/* إعدادات */
+.settings-card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;
+  box-shadow:var(--shadow-sm);margin-bottom:14px;
+}
+.settings-card h4{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--ink);display:flex;align-items:center;gap:6px;}
+.settings-card h4 svg{width:15px;height:15px;color:var(--red);}
+.settings-card .setting-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:12.5px;}
+.settings-card .setting-row:last-child{border-bottom:none;}
+.settings-card .setting-row .lbl{font-weight:700;color:var(--ink-soft);}
+.settings-card .setting-row .desc{font-size:10.5px;color:var(--ink-faint);font-weight:400;display:block;margin-top:2px;}
+
+/* switch */
+.switch{position:relative;display:inline-block;width:38px;height:22px;}
+.switch input{opacity:0;width:0;height:0;}
+.switch .slider{position:absolute;cursor:pointer;inset:0;background:var(--line);transition:.2s;border-radius:22px;}
+.switch .slider::before{content:'';position:absolute;height:18px;width:18px;right:2px;top:2px;background:#fff;transition:.2s;border-radius:50%;}
+.switch input:checked + .slider{background:var(--green);}
+.switch input:checked + .slider::before{transform:translateX(-16px);}
+
+/* responsive */
+@media(max-width:768px){
+  .reviews-toolbar{padding:8px;}
+  .reviews-toolbar .search-wrap{min-width:100%;}
+  .admin-review-card{padding:12px;}
+  .modal-card{padding:18px;}
+}
