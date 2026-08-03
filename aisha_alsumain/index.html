@@ -547,6 +547,16 @@
   }
   html[lang="ar"] .edu-honor{font-family:'Tajawal',sans-serif;}
   .edu-honor svg{width:11px;height:11px;}
+  .edu-link{
+    display:flex;align-items:center;gap:6px;margin-top:12px;
+    font-size:12px;font-weight:700;color:var(--teal);
+    font-family:'IBM Plex Mono',monospace;transition:transform .2s ease,color .2s ease;
+    padding-top:10px;border-top:1px dashed var(--line-soft);
+  }
+  html[lang="ar"] .edu-link{font-family:'Tajawal',sans-serif;font-weight:700;}
+  .edu-link:hover{color:var(--gold-bright);transform:translateX(-3px);}
+  html[dir="ltr"] .edu-link:hover{transform:translateX(3px);}
+  .edu-link svg{width:14px;height:14px;flex-shrink:0;}
 
   /* ═══════ TRAINING ═══════ */
   .train-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
@@ -591,12 +601,13 @@
   html[lang="ar"] .lang-lvl{font-family:'Tajawal',sans-serif;font-weight:700;}
 
   /* ═══════ CONTACT ═══════ */
-  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
   .contact-card{
     background:var(--surface);border:1px solid var(--line-soft);
     border-radius:12px;padding:24px 16px;text-align:center;
     transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
   }
+  button.contact-card{appearance:none;-webkit-appearance:none;width:100%;cursor:pointer;font:inherit;}
   .contact-card:hover{transform:translateY(-4px);border-color:var(--line);box-shadow:var(--shadow-gold);}
   .contact-ic{
     width:48px;height:48px;border-radius:50%;
@@ -883,7 +894,7 @@
         <span data-i18n="hero.role3">Rehabilitation Program Lead</span>
       </div>
       <p class="hero-p" data-i18n="hero.bio">
-        Public sector leader with over a decade of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Holds a Master of Laws (LL.M.) with Distinction in Human Rights and Justice, combining legal expertise with operational leadership to drive evidence-based rehabilitation and positive social impact.
+        Public sector leader with over 15 years of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Holds a Master of Laws (LL.M.) with Distinction in Human Rights and Justice, combining legal expertise with operational leadership to drive evidence-based rehabilitation and positive social impact.
       </p>
       <div class="cta-row cta-primary">
         <a class="btn btn-ghost" href="tel:+97336228228">
@@ -917,7 +928,7 @@
 <div class="stats">
   <div class="container">
     <div class="stat">
-      <b data-i18n="stat.exp">+10</b>
+      <b data-i18n="stat.exp">15+</b>
       <span data-i18n="stat.expL">Years Experience</span>
     </div>
     <div class="stat">
@@ -949,7 +960,7 @@
     <div class="about-grid">
       <div class="card about-card reveal">
         <p data-i18n="about.p1">
-          Public sector leader with over a decade of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Currently serving as an <span class="hl">Inmates Welfare Officer (Captain)</span>, leading rehabilitation programmes, multidisciplinary teams, and cross-sector partnerships that support evidence-based rehabilitation and social reintegration.
+          Public sector leader with over 15 years of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Currently serving as an <span class="hl">Inmates Welfare Officer (Captain)</span>, leading rehabilitation programmes, multidisciplinary teams, and cross-sector partnerships that support evidence-based rehabilitation and social reintegration.
         </p>
         <p data-i18n="about.p2">
           Holds a <span class="hl">Master of Laws (LL.M.) with Distinction in Human Rights and Justice</span>, combining legal expertise with operational leadership to drive innovative public service initiatives, strengthen institutional performance, and deliver positive social impact across the Kingdom of Bahrain.
@@ -963,7 +974,7 @@
         <ul class="info-list">
           <li><span class="lbl" data-i18n="info.rank">rank</span><span class="val" data-i18n="info.rankV">Captain</span></li>
           <li><span class="lbl" data-i18n="info.role">role</span><span class="val" data-i18n="info.roleV">Welfare Officer</span></li>
-          <li><span class="lbl" data-i18n="info.exp">experience</span><span class="val" data-i18n="info.expV">10+ years</span></li>
+          <li><span class="lbl" data-i18n="info.exp">experience</span><span class="val" data-i18n="info.expV">15+ years</span></li>
           <li><span class="lbl" data-i18n="info.org">organization</span><span class="val" data-i18n="info.orgV">Ministry of Interior</span></li>
           <li><span class="lbl" data-i18n="info.loc">location</span><span class="val" data-i18n="info.locV">Bahrain</span></li>
           <li><span class="lbl" data-i18n="info.lang">languages</span><span class="val" data-i18n="info.langV">AR · EN</span></li>
@@ -1171,16 +1182,24 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
           <span data-i18n="edu.1.h">Distinction</span>
         </span>
+        <a class="edu-link" href="certs/llm-huddersfield.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.1.link">View Certificate (PDF)</span>
+        </a>
       </div>
       <div class="edu-card reveal">
-        <div class="degree" data-i18n="edu.2.t">Diploma in Criminology and Police Science</div>
+        <div class="degree" data-i18n="edu.2.t">Diploma in Criminology and Police Sciences</div>
         <div class="school" data-i18n="edu.2.s">Royal Academy of Police, Bahrain</div>
         <div class="date" data-i18n="edu.2.d">Sep 2016 — Apr 2018</div>
         <div class="desc" data-i18n="edu.2.desc">Specialised diploma covering criminological theory, police science, and operational practice within Bahrain's law enforcement ecosystem.</div>
         <span class="edu-honor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
-          <span data-i18n="edu.2.h">Merit — Pass 3/3</span>
+          <span data-i18n="edu.2.h">GPA 4.00 / 4.00</span>
         </span>
+        <a class="edu-link" href="certs/police-diploma.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.2.link">View Certificate (PDF)</span>
+        </a>
       </div>
       <div class="edu-card reveal">
         <div class="degree" data-i18n="edu.3.t">Bachelor of Science, Business Informatics</div>
@@ -1189,14 +1208,26 @@
         <div class="desc" data-i18n="edu.3.desc">Interdisciplinary programme bridging business administration and information systems, with a focus on technology-enabled organisational improvement.</div>
         <span class="edu-honor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
-          <span data-i18n="edu.3.h">GPA 4.00 / 4.00</span>
+          <span data-i18n="edu.3.h">CGPA 2.25 (B-)</span>
         </span>
+        <a class="edu-link" href="certs/bachelor-business-informatics.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.3.link">View Certificate (PDF)</span>
+        </a>
       </div>
       <div class="edu-card reveal">
-        <div class="degree" data-i18n="edu.4.t">Extended Diploma in Graphic Design</div>
+        <div class="degree" data-i18n="edu.4.t">Extended Diploma in Art and Design (Graphic Design)</div>
         <div class="school" data-i18n="edu.4.s">Bahrain Training Institute</div>
-        <div class="date" data-i18n="edu.4.d">Sep 2012 — Feb 2014</div>
+        <div class="date" data-i18n="edu.4.d">Sep 2012 — Dec 2014</div>
         <div class="desc" data-i18n="edu.4.desc">Vocational diploma in visual communication, design principles, and digital media production — complementing later work in educational technology.</div>
+        <span class="edu-honor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="edu.4.h">Triple Grade: Merit · Pass · Pass</span>
+        </span>
+        <a class="edu-link" href="certs/graphic-design-diploma.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.4.link">View Certificate (PDF)</span>
+        </a>
       </div>
     </div>
   </div>
@@ -1325,6 +1356,11 @@
         <div class="lbl" data-i18n="contact.loc">Location</div>
         <div class="val" data-i18n="contact.locV">Khalefa Town, Bahrain</div>
       </a>
+      <button class="contact-card" id="certsCard" type="button">
+        <div class="contact-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
+        <div class="lbl" data-i18n="contact.certs">Certificates</div>
+        <div class="val" data-i18n="contact.certsV">View 4 documents</div>
+      </button>
     </div>
   </div>
 </section>
@@ -1398,19 +1434,19 @@ const I18N = {
     "hero.open":"متاحة للتعاون",
     "hero.name":"عائشة حسن السميم",
     "hero.role1":"النقيب","hero.role2":"ضابطة رعاية نزيلات","hero.role3":"مسؤولة برنامج التأهيل",
-    "hero.bio":"قائدة في القطاع العام تمتلك خبرة تتجاوز عشر سنوات في تقنيات التعليم وعدالة السجناء ورعاية النزيلات ضمن القطاع الحكومي في مملكة البحرين. تحمل درجة الماجستير في القانون (LL.M) مع مرتبة الامتياز في حقوق الإنسان والعدالة، وتجمع بين الخبرة القانونية والقيادة التشغيلية لقيادة برامج تأهيل مبنية على الأدلة وتحقيق أثر اجتماعي إيجابي.",
+    "hero.bio":"قائدة في القطاع العام تمتلك خبرة تتجاوز 15 عاماً في تقنيات التعليم وعدالة السجناء ورعاية النزيلات ضمن القطاع الحكومي في مملكة البحرين. تحمل درجة الماجستير في القانون (LL.M) مع مرتبة الامتياز في حقوق الإنسان والعدالة، وتجمع بين الخبرة القانونية والقيادة التشغيلية لقيادة برامج تأهيل مبنية على الأدلة وتحقيق أثر اجتماعي إيجابي.",
     "hero.btnWa":"واتساب","hero.btnMail":"بريد","hero.btnCall":"اتصال","hero.btnPaper":"السيرة الورقية","hero.btnPortfolio":"ملف الأعمال",
-    "stat.exp":"+10","stat.expL":"سنوات خبرة",
+    "stat.exp":"+15","stat.expL":"سنوات خبرة",
     "stat.prog":"1","stat.progL":"برنامج رائد",
     "stat.inmates":"+20","stat.inmatesL":"نزيلة مستفيدة",
     "stat.rate":"+80%","stat.rateL":"معدل الحضور",
     "sec.about":"الملف التنفيذي",
-    "about.p1":"قائدة في القطاع العام بخبرة تتجاوز عشر سنوات في مجالات تقنيات التعليم وعدالة السجناء ورعاية النزيلات ضمن القطاع الحكومي في مملكة البحرين. تشغل حالياً منصب <span class='hl-ar'>ضابطة رعاية نزيلات (النقيب)</span>، وتقود برامج التأهيل والفرق متعددة التخصصات وشراكات القطاعات لدعم التأهيل المبني على الأدلة وإعادة الإدماج الاجتماعي.",
+    "about.p1":"قائدة في القطاع العام بخبرة تتجاوز 15 عاماً في مجالات تقنيات التعليم وعدالة السجناء ورعاية النزيلات ضمن القطاع الحكومي في مملكة البحرين. تشغل حالياً منصب <span class='hl-ar'>ضابطة رعاية نزيلات (النقيب)</span>، وتقود برامج التأهيل والفرق متعددة التخصصات وشراكات القطاعات لدعم التأهيل المبني على الأدلة وإعادة الإدماج الاجتماعي.",
     "about.p2":"تحمل <span class='hl-ar'>درجة الماجستير في القانون (LL.M) مع مرتبة الامتياز في حقوق الإنسان والعدالة</span>، وتجمع بين الخبرة القانونية والقيادة التشغيلية لقيادة مبادرات الخدمة العامة المبتكرة وتعزيز أداء المؤسسات وتحقيق أثر اجتماعي إيجابي في مملكة البحرين.",
     "about.info":"معلومات سريعة",
     "info.rank":"الرتبة","info.rankV":"النقيب",
     "info.role":"المنصب","info.roleV":"ضابطة رعاية",
-    "info.exp":"الخبرة","info.expV":"+10 سنوات",
+    "info.exp":"الخبرة","info.expV":"+15 سنة",
     "info.org":"الجهة","info.orgV":"وزارة الداخلية",
     "info.loc":"الموقع","info.locV":"البحرين",
     "info.lang":"اللغات","info.langV":"عربي · إنجليزي",
@@ -1455,18 +1491,19 @@ const I18N = {
     "edu.1.t":"ماجستير القانون (LLM) مع مرتبة الامتياز — حقوق الإنسان والعدالة",
     "edu.1.s":"جامعة هدرسفيلد، المملكة المتحدة","edu.1.d":"أكتوبر 2023",
     "edu.1.desc":"دراسة قانونية متقدمة تركّز على أطر حقوق الإنسان وأنظمة العدالة، أُنجزت بمرتبة الامتياز تقديراً للأداء الأكاديمي الاستثنائي.",
-    "edu.1.h":"امتياز",
+    "edu.1.h":"امتياز","edu.1.link":"عرض الشهادة (PDF)",
     "edu.2.t":"دبلوم في علم الجريمة وعلوم الشرطة",
     "edu.2.s":"الأكاديمية الملكية للشرطة، البحرين","edu.2.d":"سبتمبر 2016 — أبريل 2018",
     "edu.2.desc":"دبلوم متخصص يغطي نظريات علم الجريمة وعلوم الشرطة والممارسة التشغيلية ضمن منظومة إنفاذ القانون في البحرين.",
-    "edu.2.h":"جيد — اجتياز 3/3",
+    "edu.2.h":"معدل تراكمي 4.00 / 4.00","edu.2.link":"عرض الشهادة (PDF)",
     "edu.3.t":"بكالوريوس علوم، المعلوماتية الإدارية",
     "edu.3.s":"الجامعة الدولية للبحرين","edu.3.d":"سبتمبر 2009 — أبريل 2016",
     "edu.3.desc":"برنامج متعدد التخصصات يربط بين إدارة الأعمال ونظم المعلومات، مع التركيز على تحسين المؤسسات المدعوم بالتقنية.",
-    "edu.3.h":"معدل تراكمي 4.00 / 4.00",
-    "edu.4.t":"دبلوم ممتد في التصميم الجرافيكي",
-    "edu.4.s":"معهد البحرين للتدريب","edu.4.d":"سبتمبر 2012 — فبراير 2014",
+    "edu.3.h":"معدل تراكمي 2.25 (B-)","edu.3.link":"عرض الشهادة (PDF)",
+    "edu.4.t":"دبلوم ممتد في الفنون والتصميم (التصميم الجرافيكي)",
+    "edu.4.s":"معهد البحرين للتدريب","edu.4.d":"سبتمبر 2012 — ديسمبر 2014",
     "edu.4.desc":"دبلوم مهني في الاتصال البصري ومبادئ التصميم وإنتاج الوسائط الرقمية — يكمل العمل لاحقاً في تقنيات التعليم.",
+    "edu.4.h":"الدرجة الثلاثية: جيد جداً · مقبول · مقبول","edu.4.link":"عرض الشهادة (PDF)",
     "sec.train":"التدريب والتطوير المهني",
     "train.1.t":"دورة الفروسية التأسيسية","train.1.o":"وزارة الداخلية",
     "train.2.t":"مخاطر الأمن السيبراني والوقاية","train.2.o":"الأكاديمية الملكية للشرطة",
@@ -1480,12 +1517,16 @@ const I18N = {
     "lang.en.name":"الإنجليزية","lang.en.lvl":"إجادة مهنية في العمل",
     "sec.contact":"تواصل",
     "contact.phoneWa":"هاتف · واتساب","contact.email":"بريد","contact.loc":"الموقع","contact.locV":"مدينة خليفة، البحرين",
+    "contact.certs":"الشهادات","contact.certsV":"عرض 4 مستندات",
     "foot.brand":"عائشة حسن السميم","foot.tagline":"خدمة عامة · تأهيل · عدالة",
     "foot.rights":"جميع الحقوق محفوظة","foot.tier":"سيرة رقمية",
     "fab.wa":"واتساب","fab.email":"بريد","fab.call":"اتصال","fab.paper":"السيرة",
     "pwa.title":"تثبيت هذه السيرة","pwa.sub":"وصول سريع · جاهزة دون اتصال","pwa.install":"تثبيت",
     "paper.title":"السيرة الذاتية الورقية","paper.open":"عرض / تحميل PDF","paper.close":"إغلاق","paper.fallback":"سيتم رفع ملف السيرة الورقية (PDF) قريباً.",
-    "footer.install":"تثبيت التطبيق"
+    "footer.install":"تثبيت التطبيق",
+    "certs.title":"الشهادات الأكاديمية",
+    "certs.sub":"اضغطي على أي شهادة لعرض أو تحميل الملف الكامل بصيغة PDF.",
+    "certs.viewPdf":"عرض الملف الكامل","certs.close":"إغلاق"
   },
   en: {
     "brand.name":"Aisha Alsumaim",
@@ -1498,19 +1539,19 @@ const I18N = {
     "hero.open":"Available for Collaboration",
     "hero.name":"Aisha Hassan Alsumaim",
     "hero.role1":"Captain","hero.role2":"Inmates Welfare Officer","hero.role3":"Rehabilitation Program Lead",
-    "hero.bio":"Public sector leader with over a decade of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Holds a Master of Laws (LL.M.) with Distinction in Human Rights and Justice, combining legal expertise with operational leadership to drive evidence-based rehabilitation and positive social impact.",
+    "hero.bio":"Public sector leader with over 15 years of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Holds a Master of Laws (LL.M.) with Distinction in Human Rights and Justice, combining legal expertise with operational leadership to drive evidence-based rehabilitation and positive social impact.",
     "hero.btnWa":"WhatsApp","hero.btnMail":"Email","hero.btnCall":"Call","hero.btnPaper":"Paper CV","hero.btnPortfolio":"Portfolio",
-    "stat.exp":"+10","stat.expL":"Years Experience",
+    "stat.exp":"15+","stat.expL":"Years Experience",
     "stat.prog":"1","stat.progL":"Flagship Programme",
     "stat.inmates":"+20","stat.inmatesL":"Inmates Supported",
     "stat.rate":"+80%","stat.rateL":"Attendance Rate",
     "sec.about":"Executive Profile",
-    "about.p1":"Public sector leader with over a decade of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Currently serving as an <span class='hl'>Inmates Welfare Officer (Captain)</span>, leading rehabilitation programmes, multidisciplinary teams, and cross-sector partnerships that support evidence-based rehabilitation and social reintegration.",
+    "about.p1":"Public sector leader with over 15 years of experience spanning education technology, criminal justice, and inmate welfare within Bahrain's government sector. Currently serving as an <span class='hl'>Inmates Welfare Officer (Captain)</span>, leading rehabilitation programmes, multidisciplinary teams, and cross-sector partnerships that support evidence-based rehabilitation and social reintegration.",
     "about.p2":"Holds a <span class='hl'>Master of Laws (LL.M.) with Distinction in Human Rights and Justice</span>, combining legal expertise with operational leadership to drive innovative public service initiatives, strengthen institutional performance, and deliver positive social impact across the Kingdom of Bahrain.",
     "about.info":"Quick Info",
     "info.rank":"rank","info.rankV":"Captain",
     "info.role":"role","info.roleV":"Welfare Officer",
-    "info.exp":"experience","info.expV":"10+ years",
+    "info.exp":"experience","info.expV":"15+ years",
     "info.org":"organization","info.orgV":"Ministry of Interior",
     "info.loc":"location","info.locV":"Bahrain",
     "info.lang":"languages","info.langV":"AR · EN",
@@ -1555,18 +1596,19 @@ const I18N = {
     "edu.1.t":"Master of Laws (LLM) with Distinction — Human Rights and Justice",
     "edu.1.s":"University of Huddersfield, United Kingdom","edu.1.d":"October 2023",
     "edu.1.desc":"Advanced legal study focused on human rights frameworks and justice systems, completed with Distinction recognising exceptional academic performance.",
-    "edu.1.h":"Distinction",
-    "edu.2.t":"Diploma in Criminology and Police Science",
+    "edu.1.h":"Distinction","edu.1.link":"View Certificate (PDF)",
+    "edu.2.t":"Diploma in Criminology and Police Sciences",
     "edu.2.s":"Royal Academy of Police, Bahrain","edu.2.d":"Sep 2016 — Apr 2018",
     "edu.2.desc":"Specialised diploma covering criminological theory, police science, and operational practice within Bahrain's law enforcement ecosystem.",
-    "edu.2.h":"Merit — Pass 3/3",
+    "edu.2.h":"GPA 4.00 / 4.00","edu.2.link":"View Certificate (PDF)",
     "edu.3.t":"Bachelor of Science, Business Informatics",
     "edu.3.s":"AMA International University, Bahrain","edu.3.d":"Sep 2009 — Apr 2016",
     "edu.3.desc":"Interdisciplinary programme bridging business administration and information systems, with a focus on technology-enabled organisational improvement.",
-    "edu.3.h":"GPA 4.00 / 4.00",
-    "edu.4.t":"Extended Diploma in Graphic Design",
-    "edu.4.s":"Bahrain Training Institute","edu.4.d":"Sep 2012 — Feb 2014",
+    "edu.3.h":"CGPA 2.25 (B-)","edu.3.link":"View Certificate (PDF)",
+    "edu.4.t":"Extended Diploma in Art and Design (Graphic Design)",
+    "edu.4.s":"Bahrain Training Institute","edu.4.d":"Sep 2012 — Dec 2014",
     "edu.4.desc":"Vocational diploma in visual communication, design principles, and digital media production — complementing later work in educational technology.",
+    "edu.4.h":"Triple Grade: Merit · Pass · Pass","edu.4.link":"View Certificate (PDF)",
     "sec.train":"Training & Professional Development",
     "train.1.t":"Foundation Equestrian Course","train.1.o":"Ministry of Interior",
     "train.2.t":"Cyber Security Risk & Prevention","train.2.o":"Royal Police Academy",
@@ -1580,12 +1622,16 @@ const I18N = {
     "lang.en.name":"English","lang.en.lvl":"Professional Working Proficiency",
     "sec.contact":"Contact",
     "contact.phoneWa":"Phone · WhatsApp","contact.email":"Email","contact.loc":"Location","contact.locV":"Khalefa Town, Bahrain",
+    "contact.certs":"Certificates","contact.certsV":"View 4 documents",
     "foot.brand":"Aisha Hassan Alsumaim","foot.tagline":"Public Service · Rehabilitation · Justice",
     "foot.rights":"All rights reserved","foot.tier":"Digital CV",
     "fab.wa":"WhatsApp","fab.email":"Email","fab.call":"Call","fab.paper":"CV",
     "pwa.title":"Install this CV","pwa.sub":"Quick access · offline ready","pwa.install":"Install",
     "paper.title":"Paper CV","paper.open":"View / Download PDF","paper.close":"Close","paper.fallback":"Paper CV (PDF) will be uploaded soon.",
-    "footer.install":"Install App"
+    "footer.install":"Install App",
+    "certs.title":"Academic Certificates",
+    "certs.sub":"Tap any certificate to view or download the full PDF file.",
+    "certs.viewPdf":"View full PDF","certs.close":"Close"
   }
 };
 
@@ -1730,6 +1776,47 @@ function openPaperCV(){
   const el = document.getElementById(id);
   if(el) el.addEventListener('click', openPaperCV);
 });
+
+/* ═══ Certificates modal (4 academic documents) ═══ */
+const CERTS = [
+  {pdf:'certs/llm-huddersfield.pdf', nameKey:'edu.1.t', orgKey:'edu.1.s'},
+  {pdf:'certs/police-diploma.pdf', nameKey:'edu.2.t', orgKey:'edu.2.s'},
+  {pdf:'certs/bachelor-business-informatics.pdf', nameKey:'edu.3.t', orgKey:'edu.3.s'},
+  {pdf:'certs/graphic-design-diploma.pdf', nameKey:'edu.4.t', orgKey:'edu.4.s'}
+];
+function openCertificatesModal(){
+  const dict = I18N[document.documentElement.lang] || I18N.ar;
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  const cardsHtml = CERTS.map(c => `
+        <a href="${c.pdf}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;transition:transform .2s ease,border-color .2s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--gold)';" onmouseout="this.style.transform='none';this.style.borderColor='var(--line)';">
+          <span style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:var(--gold-dim);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold-bright);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          </span>
+          <span style="flex:1;min-width:0;">
+            <span style="display:block;font-family:'Lora',serif;font-size:13px;font-weight:700;color:var(--text);line-height:1.4;">${dict[c.nameKey]}</span>
+            <span style="display:block;font-size:11px;color:var(--soft);margin-top:2px;">${dict[c.orgKey]}</span>
+          </span>
+          <span style="flex-shrink:0;font-size:10.5px;font-weight:700;color:var(--gold-bright);font-family:'IBM Plex Mono',monospace;display:flex;align-items:center;gap:4px;">
+            ${dict['certs.viewPdf']}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </span>
+        </a>`).join('');
+  modal.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:var(--shadow);">
+      <h3 style="font-family:'Lora',serif;font-size:20px;color:var(--text);margin-bottom:6px;">${dict['certs.title']}</h3>
+      <p style="font-size:13px;color:var(--mid);line-height:1.6;margin-bottom:18px;">${dict['certs.sub']}</p>
+      <div style="display:flex;flex-direction:column;gap:10px;">${cardsHtml}</div>
+      <div style="text-align:center;margin-top:22px;">
+        <button id="closeCertsModal" style="background:transparent;color:var(--mid);border:1px solid var(--line);font-size:13px;font-weight:700;font-family:'IBM Plex Mono',monospace;padding:10px 18px;border-radius:9px;cursor:pointer;">${dict['certs.close']}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.querySelector('#closeCertsModal').addEventListener('click', ()=>modal.remove());
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.remove(); });
+}
+const certsCard = document.getElementById('certsCard');
+if(certsCard) certsCard.addEventListener('click', openCertificatesModal);
 
 /* ═══ PWA: register service worker ═══ */
 if('serviceWorker' in navigator){
