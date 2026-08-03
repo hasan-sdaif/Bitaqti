@@ -991,6 +991,7 @@
     #sheet .inv-brand{display:flex !important;}
     #sheet .inv-customer{display:flex !important;}
     #sheet .inv-qr{display:flex !important;}
+    /* pReferralCode يحترم display:inline — يظهر فقط لو فيه كود */
     #sheet .inv-payment-info{display:flex !important;}
     #sheet .inv-footer .contact-info{display:flex !important;}
     /* الـ watermark: نضمن انحصارها صراحة داخل حدود الورقة (inset:0 بشكل صريح) بدل الاعتماد
@@ -1740,10 +1741,12 @@
               <div class="inv-qr" id="pQrWrap" style="display:none;">
                 <canvas id="pQrCanvas"></canvas>
                 <span>امسح للوصول للبطاقة</span>
-                <div id="pReferralCode" style="display:none;margin-top:6px;padding:4px 8px;background:#F3ECDD;border-radius:6px;text-align:center;">
-                  <div style="font-size:9px;color:#9C7A3C;font-weight:700;">كود الإحالة</div>
-                  <div id="pReferralCodeText" style="font-size:13px;font-weight:700;color:#17181C;font-family:'IBM Plex Mono',monospace;direction:ltr;letter-spacing:1px;"></div>
-                </div>
+              </div>
+              <!-- كود الإحالة — مستقل عن QR، يظهر دائماً عند الطباعة لو وُجد الكود -->
+              <div id="pReferralCode" style="display:none;margin-top:6px;padding:6px 10px;background:#F3ECDD;border:1px solid #D4B66A;border-radius:8px;text-align:center;flex-shrink:0;">
+                <div style="font-size:9px;color:#9C7A3C;font-weight:700;margin-bottom:2px;">🎁 كود الإحالة الخاص بك</div>
+                <div id="pReferralCodeText" style="font-size:15px;font-weight:700;color:#17181C;font-family:'IBM Plex Mono',monospace;direction:ltr;letter-spacing:1.5px;"></div>
+                <div style="font-size:8px;color:#9C7A3C;margin-top:2px;">شاركه مع أصدقائك — خصم 20% لهم و100 نقطة لك</div>
               </div>
             </div>
             <table class="inv-items-table" id="pItemsTable">
