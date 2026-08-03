@@ -1,7 +1,3 @@
-exports.config = {
-  path: '/.netlify/functions/asset-proxy/*',
-};
-
 const CONTENT_TYPES = {
   pdf: 'application/pdf',
   jpg: 'image/jpeg',
