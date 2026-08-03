@@ -1,3 +1,24 @@
 [build]
   functions = "netlify/functions"
   publish = "."
+
+# ════════════════════════════════════════════════════════════════
+#  توجيه ملفات الشهادات (certs) لكل مستخدم عبر دالة asset-proxy
+#  مثال: /Username/certs/police-diploma.pdf
+# ════════════════════════════════════════════════════════════════
+[[redirects]]
+  from = "/:user/certs/*"
+  to = "/.netlify/functions/asset-proxy?user=:user&file=certs/:splat"
+  status = 200
+
+# ════════════════════════════════════════════════════════════════
+#  توجيه أي ملف مباشر داخل مجلد المستخدم (PDF أو صورة) عبر asset-proxy
+#  مثال: /Username/paper-cv.pdf أو /Username/photo.jpg
+#  ملاحظة: لن يؤثر هذا على index.html أو portfolio.html أو sw.js لأنها
+#  موجودة فعليًا كملفات ثابتة، ونتليفاي لا "يُظلّل" ملفًا موجودًا فعلًا
+#  إلا إذا أضفنا force = true (وهو ما لم نفعله هنا عمدًا).
+# ════════════════════════════════════════════════════════════════
+[[redirects]]
+  from = "/:user/:file"
+  to = "/.netlify/functions/asset-proxy?user=:user&file=:file"
+  status = 200
