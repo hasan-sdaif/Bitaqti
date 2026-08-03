@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>إدارة التقييمات — بطاقتي</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9; --red:#CE1126; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --green:#0C9A63; --green-tint:#E7F6EE;
+    --blue:#2563EB; --blue-tint:#DBEAFE;
+    --amber:#D97706; --amber-tint:#FEF3C7;
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+    --safe-top:env(safe-area-inset-top,0px);
+  }
+  body{font-family:'IBM Plex Sans Arabic',sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'El Messiri',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  button,input,select,textarea{font-family:inherit;font-size:16px;}
+
+  /* LOCK SCREEN */
+  .lock-screen{position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,var(--ink) 0%,#0a0a0f 100%);display:flex;align-items:center;justify-content:center;padding:20px;}
+  .lock-card{background:var(--surface);border-radius:20px;padding:36px 32px;max-width:400px;width:100%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4);}
+  .lock-card h1{font-size:22px;font-weight:700;margin-bottom:6px;}
+  .lock-card p{font-size:13px;color:var(--ink-soft);margin-bottom:22px;}
+  .lock-input{width:100%;padding:14px 16px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);font-size:16px;text-align:center;letter-spacing:2px;direction:ltr;}
+  .lock-input:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .lock-btn{width:100%;padding:14px;border:none;border-radius:10px;background:var(--ink);color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-top:14px;}
+  .lock-btn:disabled{opacity:.6;}
+  .lock-error{margin-top:14px;padding:10px 14px;background:var(--red-tint);color:var(--red);border-radius:8px;font-size:12.5px;font-weight:600;display:none;}
+  .lock-error.show{display:block;}
+  .lock-remember{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:14px;font-size:12.5px;color:var(--ink-soft);cursor:pointer;}
+
+  .app{display:none;}
+  .app.unlocked{display:block;}
+
+  /* TABS */
+  .tabs{display:flex;background:var(--surface);border-bottom:1px solid var(--line);padding:4px;gap:2px;position:sticky;top:0;z-index:50;}
+  .tab{padding:8px 14px;border:none;background:none;cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-soft);border-radius:8px;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+  .tab svg{width:14px;height:14px;}
+  .tab.active{background:var(--red);color:#fff;}
+  .tab-panel{display:none;padding:16px;max-width:1200px;margin:0 auto;}
+  .tab-panel.active{display:block;}
+
+  /* CARD */
+  .review-card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow-sm);}
+  .review-header{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;flex-wrap:wrap;}
+  .review-name{font-size:13px;font-weight:700;}
+  .review-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:8px;font-size:10px;font-weight:700;margin-right:4px;}
+  .badge-verified{background:var(--green-tint);color:var(--green);}
+  .badge-anon{background:var(--line);color:var(--ink-faint);}
+  .badge-featured{background:var(--gold-tint);color:var(--gold);}
+  .badge-pending{background:var(--amber-tint);color:var(--amber);}
+  .badge-approved{background:var(--green-tint);color:var(--green);}
+  .review-date{font-size:10px;color:var(--ink-faint);}
+  .review-body{font-size:12px;color:var(--ink-soft);line-height:1.6;margin-bottom:8px;}
+  .review-actions{display:flex;gap:6px;flex-wrap:wrap;}
+  .btn-sm{padding:5px 10px;border:none;border-radius:6px;cursor:pointer;font-size:11px;font-weight:700;}
+  .btn-green{background:var(--green);color:#fff;}
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-gold{background:var(--gold);color:#fff;}
+  .btn-outline{background:var(--surface);color:var(--ink-soft);border:1px solid var(--line);}
+  .btn-blue{background:var(--blue);color:#fff;}
+
+  .empty{text-align:center;padding:40px;color:var(--ink-faint);font-size:13px;}
+
+  /* TOAST */
+  .toast-container{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;max-width:360px;}
+  .toast{background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:13px;font-weight:600;box-shadow:0 12px 28px rgba(0,0,0,.25);transform:translateY(20px);opacity:0;transition:all .25s;}
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+
+  @media(max-width:768px){.tabs{overflow-x:auto;}.tab{flex-shrink:0;}.tab-panel{padding:10px;}}
+  @media(max-width:480px){.toast-container{left:16px;right:16px;max-width:none;}}
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card">
+    <h1>إدارة التقييمات</h1>
+    <p>أدخل رمز الأمان للمتابعة.</p>
+    <form id="lockForm">
+      <input type="password" class="lock-input mono" id="lockPassword" placeholder="••••••••" required>
+      <label class="lock-remember">
+        <input type="checkbox" id="lockRememberChk" style="width:16px;height:16px;cursor:pointer;">
+        <span>تذكّرني 30 يوماً</span>
+      </label>
+      <button type="submit" class="lock-btn" id="lockSubmitBtn">متابعة</button>
+    </form>
+    <div class="lock-error" id="lockError"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="tabs">
+    <button class="tab active" data-tab="pending">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      بانتظار الموافقة <span id="badgePending" style="background:var(--amber);color:#fff;padding:1px 5px;border-radius:8px;font-size:10px;display:none;"></span>
+    </button>
+    <button class="tab" data-tab="approved">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+      موافق عليها
+    </button>
+    <button class="tab" data-tab="suggestions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+      الاقتراحات
+    </button>
+  </div>
+
+  <div class="tab-panel active" id="panel-pending"><div class="empty">جارٍ التحميل...</div></div>
+  <div class="tab-panel" id="panel-approved"><div class="empty">جارٍ التحميل...</div></div>
+  <div class="tab-panel" id="panel-suggestions"><div class="empty">جارٍ التحميل...</div></div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const PWD_KEY = 'bitaqti_admin_password';
+const SESSION_KEY = 'bitaqti_admin_session';
+const ENDPOINT = '/.netlify/functions/reviews-manage';
+
+function getSavedSession(){
+  try{const r=localStorage.getItem(SESSION_KEY);if(!r)return null;const p=JSON.parse(r);if(!p.expiresAt||Date.now()>p.expiresAt){localStorage.removeItem(SESSION_KEY);localStorage.removeItem(PWD_KEY);return null;}return p;}catch(e){return null;}
+}
+function unlockApp(){$('lockScreen').style.display='none';$('app').classList.add('unlocked');loadAll();}
+function lockApp(){try{localStorage.removeItem(SESSION_KEY);}catch(e){}try{localStorage.removeItem(PWD_KEY);}catch(e){}$('lockScreen').style.display='flex';$('app').classList.remove('unlocked');}
+
+(function(){const p=localStorage.getItem(PWD_KEY);const s=getSavedSession();if(p&&s)unlockApp();})();
+
+$('lockForm').addEventListener('submit', async (e)=>{
+  e.preventDefault();
+  const pwd=$('lockPassword').value;if(!pwd)return;
+  const btn=$('lockSubmitBtn');btn.disabled=true;
+  try{
+    const res=await fetch('/.netlify/functions/track-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({admin_password:pwd,mode:'sync'})});
+    if(res.status===200){try{const ttl=$('lockRememberChk').checked?(30*24*60*60*1000):(12*60*60*1000);localStorage.setItem(PWD_KEY,pwd);localStorage.setItem(SESSION_KEY,JSON.stringify({expiresAt:Date.now()+ttl}));}catch(e){}unlockApp();}
+    else{$('lockError').textContent=res.status===401?'رمز غير صحيح.':'خطأ ('+res.status+').';$('lockError').classList.add('show');}
+  }catch(err){$('lockError').textContent='تعذّر الاتصال.';$('lockError').classList.add('show');}
+  finally{btn.disabled=false;}
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));$('panel-'+t.dataset.tab).classList.add('active');}));
+
+function toast(msg,type='info'){const c=$('toastContainer');const el=document.createElement('div');el.className='toast '+type;el.textContent=msg;c.appendChild(el);requestAnimationFrame(()=>el.classList.add('show'));setTimeout(()=>{el.classList.remove('show');setTimeout(()=>el.remove(),300);},3000);}
+
+let adminPwd='';
+try{adminPwd=localStorage.getItem(PWD_KEY)||'';}catch(e){}
+
+async function api(action, extra={}){
+  const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action,password:adminPwd,...extra})});
+  return await res.json();
+}
+
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function loadAll(){
+  loadReviews('pending');
+  loadReviews('approved');
+  loadSuggestions();
+}
+
+async function loadReviews(type){
+  const panel=$('panel-'+type);
+  try{
+    const data=await api(type==='pending'?'list_all':'list_approved');
+    if(data.ok&&data.reviews){
+      const filtered=type==='pending'?data.reviews.filter(r=>!r.is_approved):data.reviews.filter(r=>r.is_approved);
+      if(type==='pending'){const b=$('badgePending');if(filtered.length){b.style.display='';b.textContent=filtered.length;}else{b.style.display='none';}}
+      if(!filtered.length){panel.innerHTML='<div class="empty">لا توجد تقييمات.</div>';return;}
+      panel.innerHTML=filtered.map(r=>{
+        const stars=f=>'★'.repeat(r[f]||5)+'☆'.repeat(5-(r[f]||5));
+        const date=new Date(r.created_at).toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric'});
+        return `<div class="review-card">
+          <div class="review-header">
+            <div>
+              <span class="review-name">${escapeHtml(r.customer_name||'زائر')}</span>
+              ${r.is_verified_customer?'<span class="review-badge badge-verified">✓ موثّق</span>':'<span class="review-badge badge-anon">زائر</span>'}
+              ${r.is_featured?'<span class="review-badge badge-featured">★ مميز</span>':''}
+              ${!r.is_approved?'<span class="review-badge badge-pending">بانتظار</span>':'<span class="review-badge badge-approved">موافق</span>'}
+              <span class="review-date">${date}</span>
+            </div>
+          </div>
+          ${r.title?`<div style="font-size:13px;font-weight:700;margin-bottom:4px;">${escapeHtml(r.title)}</div>`:''}
+          <div class="review-body">${escapeHtml(r.body)}</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;font-size:10px;color:var(--ink-faint);margin-bottom:8px;">
+            <span>عام:${stars('rating_overall')}</span>
+            <span>تصميم:${stars('rating_design')}</span>
+            <span>سرعة:${stars('rating_speed')}</span>
+            <span>دعم:${stars('rating_support')}</span>
+            <span>قيمة:${stars('rating_value')}</span>
+            <span>سهولة:${stars('rating_ease')}</span>
+          </div>
+          ${r.pros?`<div style="background:var(--green-tint);padding:6px 8px;border-radius:6px;font-size:11px;color:var(--green);margin-bottom:4px;"><strong>إيجابيات:</strong> ${escapeHtml(r.pros)}</div>`:''}
+          ${r.cons?`<div style="background:var(--amber-tint);padding:6px 8px;border-radius:6px;font-size:11px;color:var(--amber);margin-bottom:4px;"><strong>سلبيات:</strong> ${escapeHtml(r.cons)}</div>`:''}
+          <div class="review-actions">
+            ${!r.is_approved?`<button class="btn-sm btn-green" onclick="moderateReview(${r.id},'approve')">✓ موافقة</button>`:''}
+            ${r.is_approved?`<button class="btn-sm btn-outline" onclick="moderateReview(${r.id},'unapprove')">إلغاء الموافقة</button>`:''}
+            <button class="btn-sm btn-gold" onclick="moderateReview(${r.id},'feature')">${r.is_featured?'إلغاء التمييز':'★ تمييز'}</button>
+            <button class="btn-sm btn-red" onclick="moderateReview(${r.id},'delete')">🗑 حذف</button>
+          </div>
+        </div>`;
+      }).join('');
+    } else { panel.innerHTML='<div class="empty">تعذّر التحميل.</div>'; }
+  }catch(e){panel.innerHTML='<div class="empty">تعذّر التحميل.</div>';}
+}
+
+async function loadSuggestions(){
+  const panel=$('panel-suggestions');
+  try{
+    const data=await api('list_suggestions');
+    if(data.ok&&data.suggestions){
+      if(!data.suggestions.length){panel.innerHTML='<div class="empty">لا توجد اقتراحات.</div>';return;}
+      const catLabels={general:'عام',feature:'ميزة',bug:'مشكلة',improvement:'تحسين',other:'أخرى'};
+      const statusLabels={new:'جديد',reviewing:'قيد المراجعة',accepted:'مقبول',rejected:'مرفوض',implemented:'منفذ'};
+      panel.innerHTML=data.suggestions.map(s=>`
+        <div class="review-card">
+          <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;flex-wrap:wrap;">
+            <span style="padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;background:var(--blue-tint);color:var(--blue);">${catLabels[s.category]||s.category}</span>
+            ${s.is_customer?'<span class="review-badge badge-verified">✓ عميل</span>':''}
+            <span style="font-size:10px;color:var(--ink-faint);">${new Date(s.created_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}</span>
+            <select onchange="updateSuggestion(${s.id},this.value)" style="font-size:10px;padding:2px 4px;border:1px solid var(--line);border-radius:4px;">
+              <option value="new" ${s.status==='new'?'selected':''}>جديد</option>
+              <option value="reviewing" ${s.status==='reviewing'?'selected':''}>قيد المراجعة</option>
+              <option value="accepted" ${s.status==='accepted'?'selected':''}>مقبول</option>
+              <option value="rejected" ${s.status==='rejected'?'selected':''}>مرفوض</option>
+              <option value="implemented" ${s.status==='implemented'?'selected':''}>منفذ</option>
+            </select>
+          </div>
+          <div style="font-size:13px;font-weight:700;margin-bottom:4px;">${escapeHtml(s.title)}</div>
+          <div class="review-body">${escapeHtml(s.body)}</div>
+          <div style="font-size:10px;color:var(--ink-faint);">بواسطة: ${escapeHtml(s.author_name)} ${s.phone?'· '+escapeHtml(s.phone):''}</div>
+        </div>
+      `).join('');
+    } else { panel.innerHTML='<div class="empty">تعذّر التحميل.</div>'; }
+  }catch(e){panel.innerHTML='<div class="empty">تعذّر التحميل.</div>';}
+}
+
+async function moderateReview(id,action){
+  const extra={review_id:id};
+  if(action==='approve')extra.approve=true;
+  if(action==='unapprove')extra.approve=false;
+  if(action==='feature')extra.featured=true;
+  if(action==='delete')extra.delete=true;
+  if(action==='delete'&&!confirm('حذف هذا التقييم نهائياً؟'))return;
+  try{
+    const data=await api('moderate',extra);
+    if(data.ok){toast('تم التحديث','success');loadAll();}
+    else toast('تعذّر التحديث','error');
+  }catch(e){toast('تعذّر الاتصال','error');}
+}
+window.moderateReview=moderateReview;
+
+async function updateSuggestion(id,status){
+  try{
+    const data=await api('update_suggestion',{suggestion_id:id,status});
+    if(data.ok)toast('تم التحديث','success');
+    else toast('تعذّر','error');
+  }catch(e){toast('تعذّر','error');}
+}
+window.updateSuggestion=updateSuggestion;
+</script>
+</body>
+</html>
