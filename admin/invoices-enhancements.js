@@ -1,16 +1,3 @@
-// admin/invoices-enhancements.js — تحسينات صفحة الفواتير v2
-// ════════════════════════════════════════════════════════════════
-//  تحسينات:
-//  1. التعرّف التلقائي على العميل عند إدخال الهاتف (من السجل المحلي + Supabase)
-//  2. قائمة منسدلة لنوع الطلب (جديد / تجديد / إضافة خدمة)
-//  3. تعبئة تلقائية لبنود الفاتورة عند التجديد
-//  4. توليد ذكي لأرقام الفواتير مع كشف التسلسل
-//  5. كود الإحالة في الفاتورة المطبوعة
-//  6. تحسينات التجاوب للجوال العمودي
-//
-//  هذا الملف يُحمّل بعد السكربت الرئيسي في invoices.html.
-//  كل الدوال defensive: لو فشل تحميل الملف، الصفحة تعمل بدونها.
-// ════════════════════════════════════════════════════════════════
 
 (function(){
   'use strict';
@@ -31,7 +18,12 @@
   const SYNC_CACHE_TTL = 5 * 60 * 1000; // 5 دقائق
 
   async function syncCustomersFromSupabase(){
-    const pwd = (window.BitaqtiAuth && BitaqtiAuth.getSavedPassword()) || '';
+    // اقرأ كلمة المرور من localStorage مباشرة (بدون اعتماد على BitaqtiAuth)
+    let pwd = '';
+    try { pwd = localStorage.getItem('bitaqti_admin_password') || ''; } catch(e) {}
+    if(!pwd && window.BitaqtiAuth){
+      try { pwd = BitaqtiAuth.getSavedPassword() || ''; } catch(e) {}
+    }
     if(!pwd) return [];
     // تجنّب المزامنة المتكررة خلال 5 دقائق
     if(Date.now() - lastSyncTime < SYNC_CACHE_TTL) return supabaseCustomersCache;
@@ -307,14 +299,45 @@
   //  5) كود الإحالة في الفاتورة المطبوعة
   // ════════════════════════════════════════════════════════════════
   function injectReferralIntoPreview(){
-    // ابحث عن كود الإحالة من العميل الحالي
-    const phone = $('fPhone')?.value.trim() || '';
-    const match = phone ? findCustomerByPhone(phone) : null;
-    let referralCode = '';
-    if(match && match.customer && match.customer.referral_code){
-      referralCode = match.customer.referral_code;
+    // الأولوية: حقل fCustomerReferralCode في الفاتورة (يدوي)
+    let referralCode = $('fCustomerReferralCode')?.value.trim() || '';
+    // لو لم يوجد، ابحث عن العميل في قاعدة البيانات
+    if(!referralCode){
+      const phone = $('fPhone')?.value.trim() || '';
+      const match = phone ? findCustomerByPhone(phone) : null;
+      if(match && match.customer){
+        // ابحث عن referral_code في أي مكان في كائن العميل
+        referralCode = match.customer.referral_code || match.customer.referralCode || '';
+        if(referralCode){
+          // املأ الحقل تلقائياً
+          if($('fCustomerReferralCode') && !$('fCustomerReferralCode').value){
+            $('fCustomerReferralCode').value = referralCode;
+          }
+        }
+      }
+      // لو الكاش فارغ والعميل غير موجود → شغّل مزامنة غير متزامنة
+      if(!referralCode && phone && phone.length >= 6 && supabaseCustomersCache.length === 0){
+        syncCustomersFromSupabase().then(() => {
+          // بعد المزامنة، ابحث مرة أخرى
+          const m2 = findCustomerByPhone(phone);
+          if(m2 && m2.customer){
+            const rc = m2.customer.referral_code || m2.customer.referralCode || '';
+            if(rc){
+              if($('fCustomerReferralCode') && !$('fCustomerReferralCode').value){
+                $('fCustomerReferralCode').value = rc;
+              }
+              const rb = $('pReferralCode');
+              const rt = $('pReferralCodeText');
+              if(rb && rt){
+                rt.textContent = rc;
+                rb.style.display = 'block';
+              }
+            }
+          }
+        });
+      }
     }
-    // استخدم العنصر الجديد أسفل QR مباشرة
+    // استخدم العنصر المستقل (خارج QR)
     const refBox = $('pReferralCode');
     const refText = $('pReferralCodeText');
     if(!refBox || !refText) return;
