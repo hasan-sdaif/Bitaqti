@@ -23,24 +23,9 @@ function extractUserAndFile(event) {
 exports.handler = async (event) => {
   try {
     const result = extractUserAndFile(event);
-
     if (!result) {
-      // وضع تشخيص مؤقت: يعرض ما استقبلته الدالة فعليًا من نتليفاي
-      return {
-        statusCode: 400,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          error: 'Missing user or file parameter',
-          debug: {
-            path: event.path,
-            rawUrl: event.rawUrl,
-            httpMethod: event.httpMethod,
-            queryStringParameters: event.queryStringParameters,
-          },
-        }, null, 2),
-      };
+      return { statusCode: 400, body: 'Bad request' };
     }
-
     const { user, file } = result;
 
     const owner  = process.env.ASSETS_GITHUB_OWNER;
@@ -64,10 +49,10 @@ exports.handler = async (event) => {
     });
 
     if (ghRes.status === 404) {
-      return { statusCode: 404, body: `File not found: ${ghPath}` };
+      return { statusCode: 404, body: 'File not found' };
     }
     if (!ghRes.ok) {
-      return { statusCode: 502, body: `Upstream storage error: ${ghRes.status}` };
+      return { statusCode: 502, body: 'Upstream storage error' };
     }
 
     const buffer = Buffer.from(await ghRes.arrayBuffer());
@@ -86,6 +71,6 @@ exports.handler = async (event) => {
       isBase64Encoded: true,
     };
   } catch (err) {
-    return { statusCode: 500, body: 'Server error: ' + err.message };
+    return { statusCode: 500, body: 'Server error' };
   }
 };
