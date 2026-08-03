@@ -1403,6 +1403,30 @@
               </div>
             </div>
 
+            <!-- ═══ نظام الإحالة ═══ -->
+            <div style="background:linear-gradient(135deg,#F3ECDD,#FBF8F0);border:1.5px solid var(--gold);border-radius:10px;padding:12px;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" style="width:16px;height:16px;flex-shrink:0;"><path d="M20 12V8H6a2 2 0 01-2-2c0-1.1.9-2 2-2h12v4M4 6v12c0 1.1.9 2 2 2h14v-4M18 12a2 2 0 000 4h4v-4z"/></svg>
+                <strong style="font-size:12px;color:var(--gold);">نظام الإحالة</strong>
+                <span style="font-size:10px;color:var(--ink-faint);">— هل استخدم العميل كود إحالة من صديق؟</span>
+              </div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;">
+                <div class="form-group" style="flex:1;min-width:150px;margin:0;">
+                  <label style="font-size:11px;">كود الإحالة المستخدم</label>
+                  <input type="text" class="form-control mono" id="fReferralCode" dir="ltr" placeholder="HAS104" style="font-size:13px;">
+                </div>
+                <button type="button" id="btnValidateReferral" style="padding:8px 12px;border:1px solid var(--gold);background:var(--gold-tint);color:var(--gold);border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;flex-shrink:0;white-space:nowrap;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;display:inline;vertical-align:middle;margin-left:3px;"><path d="M20 6L9 17l-5-5"/></svg>
+                  تحقق
+                </button>
+                <div class="form-group" style="flex:1;min-width:120px;margin:0;">
+                  <label style="font-size:11px;">أُحيل بواسطة (اسم الصديق)</label>
+                  <input type="text" class="form-control" id="fReferredBy" placeholder="يُملأ تلقائياً" style="font-size:13px;" readonly>
+                </div>
+              </div>
+              <div id="referralMsg" style="margin-top:6px;font-size:11px;"></div>
+            </div>
+
             <div class="form-section-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
               البنود (Items)
@@ -3121,6 +3145,8 @@ function collectInvoiceData(){
     payStatus: $('fPayStatus')?.value || 'pending',
     payDate: $('fPayDate')?.value || '',
     payRef: $('fPayRef')?.value.trim() || '',
+    referralCode: $('fReferralCode')?.value.trim() || '',
+    referredBy: $('fReferredBy')?.value.trim() || '',
     customer: {
       name: $('fName').value.trim(),
       phone: $('fPhone').value.trim(),
@@ -3211,6 +3237,8 @@ function loadInvoice(id){
   if($('fPayStatus')) $('fPayStatus').value = inv.payStatus || 'pending';
   if($('fPayDate')) $('fPayDate').value = inv.payDate || '';
   if($('fPayRef')) $('fPayRef').value = inv.payRef || '';
+  if($('fReferralCode')) $('fReferralCode').value = inv.referralCode || '';
+  if($('fReferredBy')) $('fReferredBy').value = inv.referredBy || '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
@@ -3272,6 +3300,9 @@ function duplicateInvoice(id){
   if($('fPayStatus')) $('fPayStatus').value = 'pending';
   if($('fPayDate')) $('fPayDate').value = '';
   if($('fPayRef')) $('fPayRef').value = '';
+  if($('fReferralCode')) $('fReferralCode').value = '';
+  if($('fReferredBy')) $('fReferredBy').value = '';
+  if($('referralMsg')) $('referralMsg').innerHTML = '';
   $('fName').value = inv.customer.name;
   $('fPhone').value = inv.customer.phone;
   $('fCvLink').value = inv.customer.cvLink;
@@ -3394,6 +3425,9 @@ function resetForm(){
   if($('fPayStatus')) $('fPayStatus').value = 'pending';
   if($('fPayDate')) $('fPayDate').value = '';
   if($('fPayRef')) $('fPayRef').value = '';
+  if($('fReferralCode')) $('fReferralCode').value = '';
+  if($('fReferredBy')) $('fReferredBy').value = '';
+  if($('referralMsg')) $('referralMsg').innerHTML = '';
   $('fName').value = '';
   $('fPhone').value = '';
   $('fCvLink').value = '';
@@ -5681,13 +5715,16 @@ $('btnValidateReferral')?.addEventListener('click', async () => {
     const data = await res.json();
     if(data.valid){
       if(msgEl) msgEl.innerHTML = '<span style="color:#0C9A63;font-weight:700;">✓ كود صحيح! خصم ' + data.discount_percent + '% — بواسطة: ' + (data.referrer_name || 'غير معروف') + '</span>';
-      // تطبيق خصم 20% تلقائياً
+      // املأ حقل "أُحيل بواسطة" تلقائياً
+      if($('fReferredBy')) $('fReferredBy').value = data.referrer_name || '';
+      // تطبيق خصم تلقائياً
       if($('fDiscountType')) $('fDiscountType').value = 'percent';
-      if($('fDiscountValue')) { if($('fDiscountValue')) $('fDiscountValue').value = data.discount_percent; if($('fDiscountValue')) $('fDiscountValue').disabled = false; }
+      if($('fDiscountValue')) { $('fDiscountValue').value = data.discount_percent; $('fDiscountValue').disabled = false; }
       updatePreview();
       toast('تم تطبيق خصم ' + data.discount_percent + '% بنجاح', 'success');
     } else {
       if(msgEl) msgEl.innerHTML = '<span style="color:var(--red);font-weight:700;">✗ ' + (data.message || 'كود غير صحيح') + '</span>';
+      if($('fReferredBy')) $('fReferredBy').value = '';
     }
   } catch(e) {
     if(msgEl) msgEl.innerHTML = '<span style="color:var(--red);">تعذّر التحقق — تحقق من الإنترنت.</span>';
@@ -5718,7 +5755,8 @@ function initApp(){
   // Form events
   ['fCode','fDate','fStatus','fPayment','fName','fPhone','fCvLink','fDiscountType','fDiscountValue','fVatRate','fNotes',
    'fDueDate','fProject','fCustEmail','fCustCountry',
-   'fShipping','fTip','fDeposit','fRecurringNext','fPayDate'
+   'fShipping','fTip','fDeposit','fRecurringNext','fPayDate',
+   'fReferralCode','fReferredBy'
   ].forEach(id => {
     const el = $(id);
     if(el){
