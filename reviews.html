@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="index, follow">
+<title>تقييمات بطاقتي (Bitaqti) — آراء عملائنا</title>
+<meta name="description" content="اقرأ تقييمات عملاء بطاقتي وشارك تجربتك. نظام تقييم شفاف لعملائنا المسجلين.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect x='10' y='24' width='80' height='52' rx='10' fill='%2317181C'/%3E%3Crect x='18' y='34' width='20' height='20' rx='4' fill='%23F4F3EF'/%3E%3Crect x='44' y='36' width='38' height='5' rx='2.5' fill='%23CE1126'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  :root{
+    --paper:#F4F3EF; --surface:#FFFFFF;
+    --ink:#17181C; --ink-soft:#53565C; --ink-faint:#8A8D93;
+    --line:#E3E1D9;
+    --red:#CE1126; --red-deep:#9C0E1E; --red-tint:#FBE9EA;
+    --gold:#9C7A3C; --gold-tint:#F3ECDD;
+    --green:#0C9A63; --green-tint:#E7F6EE;
+    --blue:#2563EB; --blue-tint:#DBEAFE;
+    --amber:#D97706; --amber-tint:#FEF3C7;
+    --shadow:0 16px 38px rgba(23,24,28,.10);
+    --shadow-sm:0 8px 20px rgba(23,24,28,.08);
+    --radius:14px;
+    --safe-top:env(safe-area-inset-top,0px);
+    --safe-bottom:env(safe-area-inset-bottom,0px);
+  }
+  body{
+    font-family:'IBM Plex Sans Arabic',sans-serif;
+    background:var(--paper);color:var(--ink);
+    line-height:1.75;-webkit-font-smoothing:antialiased;
+    padding-bottom:calc(80px + var(--safe-bottom));
+  }
+  h1,h2,h3,h4,.disp{font-family:'El Messiri',Arial,sans-serif;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img,canvas,svg,table{max-width:100%;}
+  .container{max-width:1080px;margin:0 auto;padding:0 20px;}
+
+  /* SERRATED DIVIDER */
+  .serrate{
+    height:12px;width:100%;
+    background-image:linear-gradient(135deg,var(--paper) 50%,transparent 50%),
+                      linear-gradient(-135deg,var(--paper) 50%,transparent 50%);
+    background-size:16px 16px;background-position:top left,top right;
+    background-repeat:repeat-x;background-color:var(--surface);
+  }
+
+  /* HEADER */
+  .page-header{
+    background:var(--ink);color:#fff;
+    padding:calc(40px + var(--safe-top)) 20px 40px;text-align:center;
+  }
+  .page-header h1{font-size:28px;margin-bottom:8px;}
+  .page-header p{font-size:14px;color:rgba(255,255,255,.7);max-width:600px;margin:0 auto;}
+  .page-header .logo{
+    width:48px;height:32px;border-radius:8px;background:var(--ink);
+    position:relative;margin:0 auto 16px;
+    border:2px solid rgba(255,255,255,.15);
+  }
+  .page-header .logo::before{content:'';position:absolute;right:6px;top:7px;width:14px;height:14px;border-radius:3px;background:var(--paper);}
+  .page-header .logo::after{content:'';position:absolute;left:6px;top:8px;width:20px;height:4px;border-radius:2px;background:var(--red);box-shadow:0 6px 0 rgba(255,255,255,.3);}
+
+  /* STATS BAR */
+  .stats-bar{
+    display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+    margin-top:20px;padding:16px;background:rgba(255,255,255,.08);border-radius:12px;
+    max-width:600px;margin-left:auto;margin-right:auto;
+  }
+  .stat-item{text-align:center;min-width:80px;}
+  .stat-item .num{font-size:24px;font-weight:700;color:#fff;font-family:'El Messiri',sans-serif;}
+  .stat-item .label{font-size:10px;color:rgba(255,255,255,.5);}
+  .stat-item .stars{font-size:14px;color:var(--gold);}
+
+  /* TABS */
+  .tabs-bar{
+    display:flex;gap:4px;padding:8px;background:var(--surface);
+    border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;
+    box-shadow:0 2px 8px rgba(23,24,28,.04);
+  }
+  .tab-btn{
+    padding:10px 16px;border:none;background:none;cursor:pointer;
+    font-size:13px;font-weight:700;color:var(--ink-soft);border-radius:8px;
+    display:flex;align-items:center;gap:5px;white-space:nowrap;transition:all .15s;
+  }
+  .tab-btn svg{width:14px;height:14px;}
+  .tab-btn:hover{background:var(--paper);color:var(--ink);}
+  .tab-btn.active{background:var(--red);color:#fff;}
+
+  /* CONTENT */
+  .tab-panel{display:none;padding:20px 0;}
+  .tab-panel.active{display:block;}
+
+  /* REVIEW CARD */
+  .review-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;margin-bottom:16px;box-shadow:var(--shadow-sm);
+  }
+  .review-card.featured{border-color:var(--gold);box-shadow:0 8px 24px rgba(156,122,60,.12);}
+  .review-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap;}
+  .review-avatar{
+    width:42px;height:42px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-size:18px;font-weight:700;font-family:'El Messiri',sans-serif;
+  }
+  .review-meta{flex:1;min-width:0;}
+  .review-name{font-size:14px;font-weight:700;color:var(--ink);}
+  .review-badge{
+    display:inline-flex;align-items:center;gap:3px;
+    padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+    margin-right:6px;
+  }
+  .badge-verified{background:var(--green-tint);color:var(--green);}
+  .badge-anon{background:var(--line);color:var(--ink-faint);}
+  .badge-featured{background:var(--gold-tint);color:var(--gold);}
+  .review-date{font-size:11px;color:var(--ink-faint);margin-top:2px;}
+  .review-title{font-size:15px;font-weight:700;margin-bottom:6px;font-family:'El Messiri',sans-serif;}
+  .review-body{font-size:13px;color:var(--ink-soft);line-height:1.7;margin-bottom:10px;}
+  .review-ratings{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin-bottom:10px;}
+  .rating-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--ink-soft);}
+  .rating-item .label{white-space:nowrap;}
+  .rating-item .stars{color:var(--gold);font-size:12px;letter-spacing:1px;}
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;}
+  @media(max-width:480px){.pros-cons{grid-template-columns:1fr;}}
+  .pros{background:var(--green-tint);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--green);}
+  .cons{background:var(--amber-tint);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--amber);}
+  .pros strong,.cons strong{display:block;margin-bottom:3px;font-size:11px;}
+
+  /* COMMENTS */
+  .comments-section{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;}
+  .comments-toggle{
+    background:none;border:none;color:var(--blue);cursor:pointer;
+    font-size:12px;font-weight:700;display:flex;align-items:center;gap:4px;
+  }
+  .comment-list{margin-top:10px;display:none;}
+  .comment-list.show{display:block;}
+  .comment-item{padding:8px 0;border-bottom:1px dashed var(--line);}
+  .comment-item:last-child{border-bottom:none;}
+  .comment-author{font-size:12px;font-weight:700;color:var(--ink);}
+  .comment-date{font-size:10px;color:var(--ink-faint);margin-right:6px;}
+  .comment-body{font-size:12px;color:var(--ink-soft);margin-top:3px;}
+  .comment-form{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .comment-form input,.comment-form textarea{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;
+    font-family:inherit;font-size:13px;background:var(--paper);
+  }
+  .comment-form textarea{resize:vertical;min-height:50px;}
+  .comment-form button{
+    align-self:flex-start;padding:6px 14px;background:var(--blue);color:#fff;
+    border:none;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;
+  }
+
+  /* FORM */
+  .form-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px;box-shadow:var(--shadow-sm);max-width:680px;margin:0 auto;
+  }
+  .form-section-title{
+    font-size:14px;font-weight:700;color:var(--ink);margin:20px 0 10px;
+    display:flex;align-items:center;gap:6px;padding-bottom:6px;border-bottom:1px solid var(--line);
+  }
+  .form-section-title svg{width:16px;height:16px;color:var(--red);}
+  .form-section-title:first-child{margin-top:0;}
+  .form-group{margin-bottom:12px;}
+  .form-group label{font-size:12px;font-weight:700;color:var(--ink-soft);display:block;margin-bottom:4px;}
+  .form-group .hint{font-size:10px;color:var(--ink-faint);font-weight:400;margin-right:4px;}
+  .form-control{
+    width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:8px;
+    font-family:inherit;font-size:14px;background:var(--paper);transition:border-color .15s;
+  }
+  .form-control:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  textarea.form-control{resize:vertical;min-height:80px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  @media(max-width:600px){.form-row{grid-template-columns:1fr;}}
+  .form-check{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-soft);cursor:pointer;}
+  .form-check input{width:16px;height:16px;cursor:pointer;}
+
+  /* STAR RATING */
+  .star-rating{display:flex;gap:2px;}
+  .star-rating .star{
+    font-size:24px;color:var(--line);cursor:pointer;transition:color .1s;
+    -webkit-user-select:none;user-select:none;
+  }
+  .star-rating .star.active,.star-rating .star:hover,.star-rating .star:hover ~ .star{
+    color:var(--gold);
+  }
+  .star-rating .star:hover ~ .star{color:var(--line);}
+  .rating-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .rating-row label{font-size:12px;font-weight:700;color:var(--ink-soft);min-width:100px;}
+
+  /* BUTTONS */
+  .btn{
+    padding:12px 24px;border:none;border-radius:10px;cursor:pointer;
+    font-size:14px;font-weight:700;font-family:inherit;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    transition:all .15s;
+  }
+  .btn-red{background:var(--red);color:#fff;}
+  .btn-red:hover{background:var(--red-deep);}
+  .btn-outline{background:var(--surface);color:var(--ink);border:1.5px solid var(--line);}
+  .btn-outline:hover{border-color:var(--red);color:var(--red);}
+  .btn-blue{background:var(--blue);color:#fff;}
+  .btn-blue:hover{background:#1d4ed8;}
+  .btn:disabled{opacity:.6;cursor:not-allowed;}
+  .btn .spinner{
+    width:14px;height:14px;border:2px solid rgba(255,255,255,.3);
+    border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none;
+  }
+  .btn.loading .spinner{display:block;}
+  .btn.loading .btn-text{display:none;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  /* TOAST */
+  .toast-container{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:8px;max-width:360px;}
+  @media(max-width:480px){.toast-container{left:16px;right:16px;max-width:none;}}
+  .toast{
+    background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;
+    font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;
+    box-shadow:0 12px 28px rgba(0,0,0,.25);transform:translateY(20px);opacity:0;
+    transition:all .25s;
+  }
+  .toast.show{transform:translateY(0);opacity:1;}
+  .toast.success{background:var(--green);}
+  .toast.error{background:var(--red);}
+  .toast.info{background:var(--blue);}
+
+  /* ALERTS */
+  .alert{padding:12px 14px;border-radius:8px;font-size:12.5px;margin-bottom:14px;display:flex;gap:8px;align-items:flex-start;}
+  .alert svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;}
+  .alert-info{background:var(--blue-tint);color:#1E40AF;}
+  .alert-warning{background:var(--amber-tint);color:var(--amber);}
+  .alert-success{background:var(--green-tint);color:var(--green);}
+
+  /* EMPTY STATE */
+  .empty{text-align:center;padding:40px 20px;color:var(--ink-faint);}
+  .empty svg{width:48px;height:48px;margin-bottom:10px;opacity:.4;}
+  .empty h3{font-size:16px;color:var(--ink-soft);margin-bottom:6px;}
+  .empty p{font-size:13px;}
+
+  /* SUGGESTION CARD */
+  .sug-card{
+    background:var(--surface);border:1px solid var(--line);border-radius:10px;
+    padding:16px;margin-bottom:12px;
+  }
+  .sug-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;}
+  .sug-category{
+    padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;
+  }
+  .cat-feature{background:var(--blue-tint);color:var(--blue);}
+  .cat-bug{background:var(--red-tint);color:var(--red);}
+  .cat-improvement{background:var(--green-tint);color:var(--green);}
+  .cat-general{background:var(--gold-tint);color:var(--gold);}
+  .cat-other{background:var(--line);color:var(--ink-soft);}
+  .sug-status{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;}
+  .status-new{background:var(--blue-tint);color:var(--blue);}
+  .status-reviewing{background:var(--amber-tint);color:var(--amber);}
+  .status-accepted{background:var(--green-tint);color:var(--green);}
+  .status-rejected{background:var(--red-tint);color:var(--red);}
+  .status-implemented{background:var(--green);color:#fff;}
+  .sug-title{font-size:14px;font-weight:700;margin-bottom:4px;}
+  .sug-body{font-size:12px;color:var(--ink-soft);line-height:1.6;}
+  .sug-admin-response{margin-top:8px;padding:8px 10px;background:var(--blue-tint);border-radius:6px;font-size:11px;color:var(--blue);}
+
+  /* RESPONSIVE */
+  @media(max-width:768px){
+    .page-header h1{font-size:22px;}
+    .stats-bar{flex-wrap:wrap;gap:8px;}
+    .stat-item{min-width:60px;}
+    .stat-item .num{font-size:18px;}
+    .tab-btn{font-size:11px;padding:8px 10px;}
+    .review-card{padding:14px;}
+    .form-card{padding:16px;}
+  }
+  @media(max-width:480px){
+    .page-header{padding:calc(30px + var(--safe-top)) 16px 30px;}
+    .page-header h1{font-size:18px;}
+    .review-ratings{grid-template-columns:1fr 1fr;}
+    .rating-row label{min-width:70px;font-size:11px;}
+    .star-rating .star{font-size:20px;}
+    .tabs-bar{overflow-x:auto;flex-wrap:nowrap;}
+    .tab-btn{flex-shrink:0;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="page-header">
+  <div class="logo"></div>
+  <h1>تقييمات بطاقتي</h1>
+  <p>آراء عملائنا بكل شفافية. كل تقييم من عميل فعلي مسجّل لدينا.</p>
+  <div class="stats-bar" id="statsBar" style="display:none;">
+    <div class="stat-item">
+      <div class="num" id="statTotal">0</div>
+      <div class="label">تقييم</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statAvg">0.0</div>
+      <div class="stars" id="statStars">★★★★★</div>
+      <div class="label">المتوسط</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statDesign">0.0</div>
+      <div class="label">التصميم</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statSpeed">0.0</div>
+      <div class="label">السرعة</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statSupport">0.0</div>
+      <div class="label">الدعم</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="statValue">0.0</div>
+      <div class="label">القيمة</div>
+    </div>
+  </div>
+</div>
+<div class="serrate"></div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="container" style="display:flex;gap:4px;overflow-x:auto;">
+    <button class="tab-btn active" data-tab="reviews">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+      التقييمات
+    </button>
+    <button class="tab-btn" data-tab="add">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+      أضف تقييمك
+    </button>
+    <button class="tab-btn" data-tab="suggest">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/><path d="M16 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+      اقتراحات
+    </button>
+  </div>
+</div>
+
+<!-- CONTENT -->
+<div class="container">
+
+  <!-- ═══ TAB: REVIEWS ═══ -->
+  <div class="tab-panel active" id="panel-reviews">
+    <div id="reviewsList">
+      <div class="empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        <h3>جارٍ تحميل التقييمات...</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB: ADD REVIEW ═══ -->
+  <div class="tab-panel" id="panel-add">
+    <div class="form-card">
+      <div class="alert alert-info">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <div>
+          <strong>للعملاء المسجلين:</strong> أدخل رقم هاتفك + رمز التحقق (نفس نظام تتبع الطلب) للحصول على شارة "عميل موثّق".<br>
+          <strong>للزوار:</strong> يمكنك التقييم بدون تسجيل — لن تظهر شارة "عميل موثّق" على تقييمك. كل الحقول اختيارية ما عدا نص التقييم.
+        </div>
+      </div>
+
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        بيانات العميل (اختياري — للت Verify)
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>رقم الهاتف <span class="hint">(اختياري — للعملاء)</span></label>
+          <input type="tel" class="form-control mono" id="rPhone" dir="ltr" placeholder="3XXX XXXX">
+        </div>
+        <div class="form-group">
+          <label>رمز التحقق <span class="hint">(اختياري — نفس تتبع الطلب)</span></label>
+          <input type="text" class="form-control mono" id="rVerificationCode" dir="ltr" placeholder="XXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>اسمك <span class="hint">(اختياري — يظهر بدلاً من "زائر")</span></label>
+        <input type="text" class="form-control" id="rName" placeholder="اسمك (اختياري)" maxlength="100">
+      </div>
+
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+        التقييم (نجوم)
+      </div>
+      <div id="ratingContainer">
+        <!-- يتم توليدها بـ JS -->
+      </div>
+
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+        نص التقييم
+      </div>
+      <div class="form-group">
+        <label>عنوان مختصر <span class="hint">(اختياري)</span></label>
+        <input type="text" class="form-control" id="rTitle" placeholder="مثال: تجربة رائعة من البداية للنهاية" maxlength="200">
+      </div>
+      <div class="form-group">
+        <label>تفاصيل التقييم <span class="hint">(اختياري)</span></label>
+        <textarea class="form-control" id="rBody" placeholder="شاركنا تجربتك مع بطاقتي بالتفصيل..." maxlength="8000"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>إيجابيات <span class="hint">(اختياري)</span></label>
+          <textarea class="form-control" id="rPros" placeholder="ما أعجبك أكثر؟" maxlength="500" style="min-height:50px;"></textarea>
+        </div>
+        <div class="form-group">
+          <label>سلبيات <span class="hint">(اختياري)</span></label>
+          <textarea class="form-control" id="rCons" placeholder="ما يمكن تحسينه؟" maxlength="500" style="min-height:50px;"></textarea>
+        </div>
+      </div>
+
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+        الخصوصية
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <label class="form-check">
+          <input type="checkbox" id="rAnonymous">
+          <span>تقييم مجهول (يخفي اسمي)</span>
+        </label>
+        <label class="form-check">
+          <input type="checkbox" id="rPublic" checked>
+          <span>ظاهر للعامة (إذا لا، سيصل للمسؤول فقط)</span>
+        </label>
+      </div>
+
+      <div style="margin-top:20px;">
+        <button class="btn btn-red" id="btnSubmitReview">
+          <span class="spinner"></span>
+          <span class="btn-text">إرسال التقييم</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ TAB: SUGGESTIONS ═══ -->
+  <div class="tab-panel" id="panel-suggest">
+    <div class="form-card" style="margin-bottom:20px;">
+      <div class="form-section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+        اقتراح أو فكرة جديدة
+      </div>
+      <div class="form-group">
+        <label>اسمك <span style="color:var(--red);">*</span></label>
+        <input type="text" class="form-control" id="sName" placeholder="اسمك الكامل" maxlength="100">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>البريد الإلكتروني <span class="hint">(اختياري)</span></label>
+          <input type="email" class="form-control mono" id="sEmail" dir="ltr" placeholder="you@example.com" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف <span class="hint">(اختياري — للعملاء)</span></label>
+          <input type="tel" class="form-control mono" id="sPhone" dir="ltr" placeholder="+973 XXXXXXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>التصنيف <span class="hint">(اختياري)</span></label>
+        <select class="form-control" id="sCategory">
+          <option value="general">اقتراح عام</option>
+          <option value="feature">طلب ميزة جديدة</option>
+          <option value="bug">إبلاغ عن مشكلة</option>
+          <option value="improvement">اقتراح تحسين</option>
+          <option value="other">أمر آخر</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>عنوان الاقتراح <span style="color:var(--red);">*</span></label>
+        <input type="text" class="form-control" id="sTitle" placeholder="مثال: إضافة دعم اللغة الإنجليزية" maxlength="200">
+      </div>
+      <div class="form-group">
+        <label>التفاصيل <span style="color:var(--red);">*</span></label>
+        <textarea class="form-control" id="sBody" placeholder="اشرح فكرتك بالتفصيل..." maxlength="3000" style="min-height:100px;"></textarea>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+        <label class="form-check">
+          <input type="checkbox" id="sPublic">
+          <span>عرض هذا الاقتراح للعامة (إذا لا، سيصل للمسؤول فقط)</span>
+        </label>
+      </div>
+      <button class="btn btn-blue" id="btnSubmitSuggestion">
+        <span class="spinner"></span>
+        <span class="btn-text">إرسال الاقتراح</span>
+      </button>
+    </div>
+
+    <div class="form-section-title" style="margin-bottom:14px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+      الاقتراحات العلنية
+    </div>
+    <div id="suggestionsList">
+      <div class="empty"><p>جارٍ التحميل...</p></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const REVIEWS_ENDPOINT = '/.netlify/functions/reviews-manage';
+
+// ═══ Toast ═══
+function toast(msg, type='info'){
+  const c = $('toastContainer');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  const icons = {
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6L6 18M6 6l12 12"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>',
+  };
+  el.innerHTML = (icons[type]||icons.info) + '<span>'+msg+'</span>';
+  c.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 4000);
+}
+
+// ═══ Tabs ═══
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    $('panel-' + btn.dataset.tab).classList.add('active');
+    if(btn.dataset.tab === 'reviews') loadReviews();
+    if(btn.dataset.tab === 'suggest') loadSuggestions();
+  });
+});
+
+// ═══ Star Rating Component ═══
+const RATING_FIELDS = [
+  { id: 'rating_overall', label: 'التقييم العام', default: 5 },
+  { id: 'rating_design', label: 'جودة التصميم', default: 5 },
+  { id: 'rating_speed', label: 'سرعة التنفيذ', default: 5 },
+  { id: 'rating_support', label: 'الدعم والتعامل', default: 5 },
+  { id: 'rating_value', label: 'القيمة مقابل السعر', default: 5 },
+  { id: 'rating_ease', label: 'سهولة الاستخدام', default: 5 },
+];
+const ratingValues = {};
+
+function renderStarRatings(){
+  const container = $('ratingContainer');
+  container.innerHTML = '';
+  RATING_FIELDS.forEach(field => {
+    ratingValues[field.id] = field.default;
+    const row = document.createElement('div');
+    row.className = 'rating-row';
+    row.innerHTML = `<label>${field.label}</label>`;
+    const stars = document.createElement('div');
+    stars.className = 'star-rating';
+    stars.dataset.field = field.id;
+    for(let i = 1; i <= 5; i++){
+      const star = document.createElement('span');
+      star.className = 'star' + (i <= field.default ? ' active' : '');
+      star.textContent = '★';
+      star.dataset.val = i;
+      star.addEventListener('click', () => {
+        ratingValues[field.id] = i;
+        stars.querySelectorAll('.star').forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.val) <= i);
+        });
+      });
+      star.addEventListener('mouseenter', () => {
+        stars.querySelectorAll('.star').forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.val) <= i);
+        });
+      });
+      star.addEventListener('mouseleave', () => {
+        stars.querySelectorAll('.star').forEach(s => {
+          s.classList.toggle('active', parseInt(s.dataset.val) <= ratingValues[field.id]);
+        });
+      });
+      stars.appendChild(star);
+    }
+    row.appendChild(stars);
+    container.appendChild(row);
+  });
+}
+
+// ═══ Load Reviews ═══
+async function loadReviews(){
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'list_approved', limit: 50 }),
+    });
+    const data = await res.json();
+    if(data.ok && data.reviews){
+      renderReviews(data.reviews);
+    } else {
+      $('reviewsList').innerHTML = '<div class="empty"><h3>لا توجد تقييمات بعد</h3><p>كن أول من يقيّم بطاقتي!</p></div>';
+    }
+  } catch(e){
+    $('reviewsList').innerHTML = '<div class="empty"><h3>تعذّر تحميل التقييمات</h3><p>تحقق من الإنترنت وحاول لاحقاً.</p></div>';
+  }
+}
+
+function renderReviews(reviews){
+  const list = $('reviewsList');
+  if(!reviews || !reviews.length){
+    list.innerHTML = '<div class="empty"><h3>لا توجد تقييمات بعد</h3><p>كن أول من يقيّم بطاقتي!</p></div>';
+    return;
+  }
+  list.innerHTML = reviews.map(r => {
+    const avatarColors = ['#FBE9EA','#DBEAFE','#E7F6EE','#F3ECDD','#FEF3C7'];
+    const color = avatarColors[(r.id || 0) % avatarColors.length];
+    const initial = (r.customer_name || 'م')[0];
+    const name = r.is_anonymous ? 'عميل مجهول' : (r.customer_name || 'عميل بطاقتي');
+    const date = new Date(r.created_at).toLocaleDateString('ar-EG', {year:'numeric',month:'long',day:'numeric'});
+    const stars = (field) => '★'.repeat(r[field]||5) + '☆'.repeat(5-(r[field]||5));
+    return `
+      <div class="review-card${r.is_featured ? ' featured' : ''}">
+        <div class="review-header">
+          <div class="review-avatar" style="background:${color};color:var(--ink);">${escapeHtml(initial)}</div>
+          <div class="review-meta">
+            <div class="review-name">
+              ${escapeHtml(name)}
+              ${r.is_verified_customer ? '<span class="review-badge badge-verified">✓ عميل موثّق</span>' : '<span class="review-badge badge-anon">زائر</span>'}
+              ${r.is_anonymous ? '<span class="review-badge badge-anon">مجهول</span>' : ''}
+              ${r.is_featured ? '<span class="review-badge badge-featured">★ مميز</span>' : ''}
+              ${r.package ? `<span style="font-size:10px;color:var(--ink-faint);">· ${escapeHtml(r.package)}</span>` : ''}
+            </div>
+            <div class="review-date">${date}</div>
+          </div>
+        </div>
+        ${r.title ? `<div class="review-title">${escapeHtml(r.title)}</div>` : ''}
+        <div class="review-body">${escapeHtml(r.body)}</div>
+        <div class="review-ratings">
+          <div class="rating-item"><span class="label">عام</span><span class="stars">${stars('rating_overall')}</span></div>
+          <div class="rating-item"><span class="label">تصميم</span><span class="stars">${stars('rating_design')}</span></div>
+          <div class="rating-item"><span class="label">سرعة</span><span class="stars">${stars('rating_speed')}</span></div>
+          <div class="rating-item"><span class="label">دعم</span><span class="stars">${stars('rating_support')}</span></div>
+          <div class="rating-item"><span class="label">قيمة</span><span class="stars">${stars('rating_value')}</span></div>
+          <div class="rating-item"><span class="label">سهولة</span><span class="stars">${stars('rating_ease')}</span></div>
+        </div>
+        ${r.pros || r.cons ? `
+        <div class="pros-cons">
+          ${r.pros ? `<div class="pros"><strong>✓ إيجابيات</strong>${escapeHtml(r.pros)}</div>` : '<div></div>'}
+          ${r.cons ? `<div class="cons"><strong>✗ سلبيات</strong>${escapeHtml(r.cons)}</div>` : '<div></div>'}
+        </div>` : ''}
+        <div class="comments-section">
+          <button class="comments-toggle" data-review-id="${r.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            <span>التعليقات</span>
+          </button>
+          <div class="comment-list" id="comments-${r.id}"></div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Bind comment toggles
+  list.querySelectorAll('.comments-toggle').forEach(btn => {
+    let loaded = false;
+    btn.addEventListener('click', async () => {
+      const reviewId = btn.dataset.reviewId;
+      const cl = $('comments-' + reviewId);
+      if(cl.classList.contains('show')){
+        cl.classList.remove('show');
+        return;
+      }
+      if(!loaded){
+        await loadComments(reviewId);
+        loaded = true;
+      }
+      cl.classList.add('show');
+    });
+  });
+}
+
+// ═══ Load Comments ═══
+async function loadComments(reviewId){
+  const cl = $('comments-' + reviewId);
+  if(!cl) return;
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'list_comments', review_id: parseInt(reviewId) }),
+    });
+    const data = await res.json();
+    let html = '';
+    if(data.ok && data.comments && data.comments.length){
+      html = data.comments.map(c => {
+        const date = new Date(c.created_at).toLocaleDateString('ar-EG', {month:'short',day:'numeric'});
+        return `<div class="comment-item">
+          <span class="comment-author">${escapeHtml(c.author_name)}${c.is_admin ? ' · <span style="color:var(--red);">إدارة</span>' : ''}</span>
+          <span class="comment-date">${date}</span>
+          <div class="comment-body">${escapeHtml(c.body)}</div>
+        </div>`;
+      }).join('');
+    }
+    // Comment form
+    html += `
+      <div class="comment-form">
+        <input type="text" id="cName-${reviewId}" placeholder="اسمك" maxlength="100" style="font-size:13px;">
+        <textarea id="cBody-${reviewId}" placeholder="اكتب تعليقاً..." maxlength="1000" style="font-size:13px;"></textarea>
+        <button onclick="submitComment(${reviewId})">نشر</button>
+      </div>
+    `;
+    cl.innerHTML = html;
+  } catch(e){
+    cl.innerHTML = '<div style="font-size:11px;color:var(--ink-faint);">تعذّر تحميل التعليقات.</div>';
+  }
+}
+
+// ═══ Submit Comment ═══
+async function submitComment(reviewId){
+  const name = $('cName-' + reviewId)?.value.trim();
+  const body = $('cBody-' + reviewId)?.value.trim();
+  if(!name || name.length < 2){ toast('يرجى إدخال اسمك', 'error'); return; }
+  if(!body || body.length < 3){ toast('التعليق قصير جداً', 'error'); return; }
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'add_comment', review_id: reviewId, author_name: name, body }),
+    });
+    const data = await res.json();
+    if(data.ok){
+      toast('تم نشر تعليقك', 'success');
+      $('cBody-' + reviewId).value = '';
+      loadComments(reviewId);
+    } else {
+      toast(data.message || 'تعذّر نشر التعليق', 'error');
+    }
+  } catch(e){
+    toast('تعذّر الاتصال', 'error');
+  }
+}
+window.submitComment = submitComment;
+
+// ═══ Load Stats ═══
+async function loadStats(){
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'stats' }),
+    });
+    const data = await res.json();
+    if(data.ok && data.stats && data.stats.total_reviews > 0){
+      $('statsBar').style.display = 'flex';
+      $('statTotal').textContent = data.stats.total_reviews;
+      $('statAvg').textContent = Number(data.stats.avg_overall || 0).toFixed(1);
+      $('statStars').textContent = '★'.repeat(Math.round(data.stats.avg_overall||0)) + '☆'.repeat(5 - Math.round(data.stats.avg_overall||0));
+      $('statDesign').textContent = Number(data.stats.avg_design || 0).toFixed(1);
+      $('statSpeed').textContent = Number(data.stats.avg_speed || 0).toFixed(1);
+      $('statSupport').textContent = Number(data.stats.avg_support || 0).toFixed(1);
+      $('statValue').textContent = Number(data.stats.avg_value || 0).toFixed(1);
+    }
+  } catch(e) {}
+}
+
+// ═══ Submit Review ═══
+$('btnSubmitReview').addEventListener('click', async () => {
+  const phone = $('rPhone').value.trim();
+  const verificationCode = $('rVerificationCode').value.trim();
+  const name = $('rName').value.trim();
+  const body = $('rBody').value.trim();
+  // التقييم العام إجباري — كل شيء آخر اختياري
+  if(!ratingValues.rating_overall || ratingValues.rating_overall < 1){
+    toast('يرجى تقييم التقييم العام على الأقل', 'error');
+    return;
+  }
+
+  const btn = $('btnSubmitReview');
+  btn.disabled = true; btn.classList.add('loading');
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'add_review',
+        phone: phone || undefined,
+        verification_code: verificationCode || undefined,
+        name: name || undefined,
+        title: $('rTitle').value.trim() || undefined,
+        body,
+        pros: $('rPros').value.trim() || undefined,
+        cons: $('rCons').value.trim() || undefined,
+        is_anonymous: $('rAnonymous').checked,
+        is_public: $('rPublic').checked,
+        rating_overall: ratingValues.rating_overall,
+        rating_design: ratingValues.rating_design,
+        rating_speed: ratingValues.rating_speed,
+        rating_support: ratingValues.rating_support,
+        rating_value: ratingValues.rating_value,
+        rating_ease: ratingValues.rating_ease,
+      }),
+    });
+    const data = await res.json();
+    if(data.ok){
+      toast(data.message || 'تم استلام تقييمك! سيظهر بعد مراجعته من الإدارة.', 'success');
+      // Reset form
+      $('rPhone').value = ''; $('rVerificationCode').value = ''; $('rName').value = '';
+      $('rTitle').value = ''; $('rBody').value = '';
+      $('rPros').value = ''; $('rCons').value = '';
+      $('rAnonymous').checked = false;
+      renderStarRatings();
+      // Switch to reviews tab
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-tab="reviews"]').classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      $('panel-reviews').classList.add('active');
+    } else if(res.status === 409){
+      toast(data.message || 'لقد قمت بالتقييم مسبقاً', 'info');
+    } else {
+      toast(data.message || 'تعذّر إرسال التقييم', 'error');
+    }
+  } catch(e){
+    toast('تعذّر الاتصال', 'error');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+});
+
+// ═══ Submit Suggestion ═══
+$('btnSubmitSuggestion').addEventListener('click', async () => {
+  const name = $('sName').value.trim();
+  const title = $('sTitle').value.trim();
+  const body = $('sBody').value.trim();
+  if(!name || name.length < 2){ toast('يرجى إدخال اسمك', 'error'); return; }
+  if(!title || title.length < 3){ toast('يرجى إدخال عنوان الاقتراح', 'error'); return; }
+  if(!body || body.length < 10){ toast('يرجى كتابة تفاصيل أكثر', 'error'); return; }
+
+  const btn = $('btnSubmitSuggestion');
+  btn.disabled = true; btn.classList.add('loading');
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        action: 'add_suggestion',
+        author_name: name,
+        author_email: $('sEmail').value.trim() || undefined,
+        phone: $('sPhone').value.trim() || undefined,
+        category: $('sCategory').value,
+        title, body,
+        is_public: $('sPublic').checked,
+      }),
+    });
+    const data = await res.json();
+    if(data.ok){
+      toast(data.message || 'تم إرسال اقتراحك بنجاح', 'success');
+      $('sName').value = ''; $('sEmail').value = ''; $('sPhone').value = '';
+      $('sTitle').value = ''; $('sBody').value = '';
+      $('sPublic').checked = false;
+      loadSuggestions();
+    } else {
+      toast(data.message || 'تعذّر إرسال الاقتراح', 'error');
+    }
+  } catch(e){
+    toast('تعذّر الاتصال', 'error');
+  } finally {
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+});
+
+// ═══ Load Suggestions ═══
+async function loadSuggestions(){
+  try {
+    const res = await fetch(REVIEWS_ENDPOINT, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ action: 'list_suggestions' }),
+    });
+    const data = await res.json();
+    if(data.ok && data.suggestions && data.suggestions.length){
+      renderSuggestions(data.suggestions);
+    } else {
+      $('suggestionsList').innerHTML = '<div class="empty"><p>لا توجد اقتراحات علنية بعد.</p></div>';
+    }
+  } catch(e){
+    $('suggestionsList').innerHTML = '<div class="empty"><p>تعذّر تحميل الاقتراحات.</p></div>';
+  }
+}
+
+function renderSuggestions(items){
+  const catLabels = {general:'عام',feature:'ميزة',bug:'مشكلة',improvement:'تحسين',other:'أخرى'};
+  const statusLabels = {new:'جديد',reviewing:'قيد المراجعة',accepted:'مقبول',rejected:'مرفوض',implemented:'منفذ'};
+  $('suggestionsList').innerHTML = items.map(s => `
+    <div class="sug-card">
+      <div class="sug-header">
+        <span class="sug-category cat-${s.category||'general'}">${catLabels[s.category]||'عام'}</span>
+        ${s.is_customer ? '<span class="review-badge badge-verified">✓ عميل</span>' : ''}
+        ${s.status && s.status !== 'new' ? `<span class="sug-status status-${s.status}">${statusLabels[s.status]||s.status}</span>` : ''}
+        <span style="font-size:10px;color:var(--ink-faint);margin-right:auto;">${new Date(s.created_at).toLocaleDateString('ar-EG',{month:'short',day:'numeric'})}</span>
+      </div>
+      <div class="sug-title">${escapeHtml(s.title)}</div>
+      <div class="sug-body">${escapeHtml(s.body)}</div>
+      <div style="font-size:10px;color:var(--ink-faint);margin-top:6px;">بواسطة: ${escapeHtml(s.author_name)}</div>
+      ${s.admin_response ? `<div class="sug-admin-response"><strong>رد الإدارة:</strong> ${escapeHtml(s.admin_response)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ═══ Utils ═══
+function escapeHtml(s){
+  return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ═══ Init ═══
+renderStarRatings();
+loadReviews();
+loadStats();
+</script>
+</body>
+</html>
