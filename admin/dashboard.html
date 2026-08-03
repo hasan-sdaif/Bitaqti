@@ -11,6 +11,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- ═══ نظام التقييمات المدمج ═══ -->
+<link rel="stylesheet" href="reviews-tab.css">
 <style>
   :root{
     --paper:#F4F3EF; --surface:#FFFFFF;
@@ -725,6 +727,11 @@
           <span>الإحالات</span>
           <span class="badge" id="referralsBadge" style="display:none">0</span>
         </button>
+        <button class="tab" data-tab="reviews">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+          <span>التقييمات</span>
+          <span class="badge" id="reviewsBadge" style="display:none">0</span>
+        </button>
         <button class="tab" data-tab="settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
           <span>الإعدادات</span>
@@ -782,6 +789,40 @@
               <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18M7 14l4-4 4 4 5-5"/></svg></div>
               <div class="stat-label">متوسط القيمة</div>
               <div class="stat-value" id="statAvg">0.000</div>
+            </div>
+          </div>
+
+          <!-- ═══ ملخص نظام التقييمات ═══ -->
+          <h3 style="font-size:14px;font-weight:700;margin:18px 0 12px;display:flex;align-items:center;gap:7px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--gold);"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg>
+            ملخص التقييمات
+            <button class="btn btn-outline btn-sm" style="margin-right:auto;padding:4px 10px;font-size:11px;" onclick="switchTab('reviews')">عرض الكل</button>
+          </h3>
+          <div class="stats-grid" id="reviewsMiniStats" style="grid-template-columns:repeat(5,1fr);">
+            <div class="stat-card avg">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4-6 4 1.5-7.5L2 9h7z"/></svg></div>
+              <div class="stat-label">إجمالي التقييمات</div>
+              <div class="stat-value" id="miniReviewsTotal">0</div>
+            </div>
+            <div class="stat-card avg">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg></div>
+              <div class="stat-label">متوسط التقييم</div>
+              <div class="stat-value" id="miniReviewsAvg">0.0</div>
+            </div>
+            <div class="stat-card customers">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+              <div class="stat-label">عملاء موثّقون</div>
+              <div class="stat-value" id="miniReviewsVerified">0</div>
+            </div>
+            <div class="stat-card pending">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg></div>
+              <div class="stat-label">موسومة كسبام</div>
+              <div class="stat-value" id="miniReviewsFlagged">0</div>
+            </div>
+            <div class="stat-card revenue">
+              <div class="stat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg></div>
+              <div class="stat-label">نسبة التوصية</div>
+              <div class="stat-value" id="miniReviewsRecommend">0%</div>
             </div>
           </div>
 
@@ -1085,6 +1126,15 @@
             </table>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- ══════ TAB: REVIEWS (نظام التقييمات — مدمج) ══════ -->
+    <div class="tab-panel" id="tab-reviews">
+      <!-- يُملأ ديناميكياً بواسطة admin/reviews-tab.js -->
+      <div style="padding:40px;text-align:center;color:var(--ink-faint);font-size:13px;">
+        <span class="spinner" style="display:inline-block;width:22px;height:22px;border:2.5px solid var(--line);border-top-color:var(--red);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-left:8px;"></span>
+        جارٍ تحميل نظام التقييمات...
       </div>
     </div>
 
@@ -2806,6 +2856,10 @@ function switchTab(name){
   if(name === 'referrals')  renderReferrals();
   if(name === 'dashboard')  renderRecentCustomers();
   if(name === 'settings')   checkConnection();
+  // ═══ تبويب التقييمات — يُفعّل بواسطة reviews-tab.js ═══
+  if(name === 'reviews' && window.BitaqtiReviewsTab){
+    BitaqtiReviewsTab.init();
+  }
 }
 
 function initApp(){
@@ -2817,6 +2871,7 @@ function initApp(){
 
   displayAppsScriptCode();
   loadExpenses();
+  loadReviewsMiniStats(); // ═══ تحميل ملخص التقييمات في الصفحة الرئيسية ═══
 
   // Tabs
   document.querySelectorAll('.tab').forEach(t => {
@@ -2875,6 +2930,50 @@ function initApp(){
   // (تم إزالة المستمع المكرر — المستمع في قسم AUTH يستخدم localStorage مباشرة)
 
 
+// ════════════════════════════════════════════════════════════════
+//  ملخص التقييمات في الصفحة الرئيسية
+// ════════════════════════════════════════════════════════════════
+async function loadReviewsMiniStats(){
+  try {
+    const pwd = (window.BitaqtiAuth && BitaqtiAuth.getSavedPassword)
+      ? BitaqtiAuth.getSavedPassword()
+      : (localStorage.getItem('bitaqti_admin_password') || '');
+    const res = await fetch('/.netlify/functions/reviews-manage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'get_dashboard', password: pwd }),
+    });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(!data.ok || !data.stats) return;
+    const s = data.stats;
+    const set = (id, v) => { const el = document.getElementById(id); if(el) el.textContent = v; };
+    set('miniReviewsTotal', s.total_reviews || 0);
+    set('miniReviewsAvg', parseFloat(s.avg_overall || 0).toFixed(1));
+    set('miniReviewsVerified', s.total_verified || 0);
+    set('miniReviewsFlagged', (data.flagged_reviews || []).length);
+    set('miniReviewsRecommend', (s.recommend_rate || 0) + '%');
+    // عرض شارة التقييمات الجديدة
+    const badge = document.getElementById('reviewsBadge');
+    if(badge){
+      const flaggedCount = (data.flagged_reviews || []).length;
+      if(flaggedCount > 0){
+        badge.textContent = flaggedCount;
+        badge.style.display = '';
+      } else {
+        badge.style.display = 'none';
+      }
+    }
+  } catch(e) {
+    // صامت — لا نُظهر خطأ في الصفحة الرئيسية
+  }
+}
+window.loadReviewsMiniStats = loadReviewsMiniStats;
+
+
 </script>
+
+<!-- ═══ نظام التقييمات المدمج ═══ -->
+<script src="reviews-tab.js"></script>
 </body>
 </html>
