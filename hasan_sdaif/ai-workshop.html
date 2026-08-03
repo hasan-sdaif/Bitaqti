@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0d5c6e">
+<title>ورشة الذكاء الاصطناعي | أ. حسن سديف</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* ===== VARIABLES ===== */
+:root{
+  --pr:#0d5c6e;--pr2:#1a7a91;--pr3:#083d4a;
+  --go:#c9952a;--go2:#e8b84b;--go3:#a07020;
+  --ac:#2ecc8a;
+  --bg:#f5f2eb;--bg2:#eae6db;--bg3:#e0dbd0;
+  --sf:#ffffff;--sf2:#f0ece0;
+  --tx:#1a1208;--tx2:#4a3f2f;--tx3:#7a6f5f;
+  --bd:#d4c9ae;
+  --sh:rgba(13,92,110,.12);--shl:rgba(13,92,110,.22);
+  --rd:16px;--rd2:8px;
+  --tr:all .35s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="dark"]{
+  --pr:#1a9ab8;--pr2:#25bad8;--pr3:#0d7a96;
+  --go:#e8b84b;--go2:#f5cc6a;--go3:#c9952a;
+  --bg:#0c1520;--bg2:#111d2b;--bg3:#162032;
+  --sf:#162032;--sf2:#1e2d40;
+  --tx:#f0ece0;--tx2:#b8c8d8;--tx3:#7a9ab0;
+  --bd:#2a3d50;
+  --sh:rgba(0,0,0,.3);--shl:rgba(0,0,0,.5);
+}
+
+/* ===== RESET ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);line-height:1.75;min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s}
+::-webkit-scrollbar{width:7px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--pr);border-radius:4px}
+
+/* ===== TOP NAV ===== */
+#topNav{position:fixed;top:0;left:0;right:0;z-index:1000;background:rgba(245,242,235,.93);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--bd);padding:0 clamp(12px,4vw,20px);height:62px;display:flex;align-items:center;justify-content:space-between;transition:var(--tr);gap:8px}
+[data-theme="dark"] #topNav{background:rgba(12,21,32,.93)}
+.nav-brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:clamp(.82rem,3.5vw,1rem);color:var(--pr);text-decoration:none;min-width:0;flex:1}
+.brand-ico{width:36px;height:36px;background:linear-gradient(135deg,var(--pr),var(--go));border-radius:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:.95rem}
+.nav-acts{display:flex;align-items:center;gap:10px}
+.nav-btn{background:none;border:1.5px solid var(--bd);color:var(--tx2);border-radius:9px;padding:6px 14px;font-family:'Tajawal',sans-serif;font-size:.82rem;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:6px}
+.nav-btn:hover{background:var(--pr);color:#fff;border-color:var(--pr)}
+#themeBtn{width:38px;height:38px;border-radius:50%;border:1.5px solid var(--bd);background:none;color:var(--tx2);cursor:pointer;font-size:.95rem;transition:var(--tr)}
+#themeBtn:hover{background:var(--go);color:#fff;border-color:var(--go)}
+
+/* ===== PROGRESS ===== */
+#progBar{position:fixed;top:62px;left:0;right:0;z-index:999;height:3px;background:var(--bg2)}
+#progFill{height:100%;background:linear-gradient(90deg,var(--pr),var(--go));transition:width .4s ease;width:0%}
+
+/* ===== SIDEBAR ===== */
+#sidebar{position:fixed;top:65px;right:0;width:min(275px,85vw);height:calc(100vh - 65px);background:var(--sf);border-left:1px solid var(--bd);z-index:900;overflow-y:auto;transform:translateX(100%);transition:transform .35s ease;padding:16px 0;box-shadow:-4px 0 24px var(--sh)}
+#sidebar.open{transform:translateX(0)}
+.sb-title{font-size:.75rem;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:1px;padding:0 18px 10px;border-bottom:1px solid var(--bd);margin-bottom:6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:10px 18px;cursor:pointer;transition:var(--tr);color:var(--tx2);font-size:.85rem;border-right:3px solid transparent}
+.sb-item:hover{background:var(--bg2);color:var(--pr)}
+.sb-item.active{background:linear-gradient(to left,rgba(13,92,110,.08),transparent);color:var(--pr);border-right-color:var(--pr);font-weight:700}
+.sb-num{width:22px;height:22px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:var(--tx3);flex-shrink:0}
+	.sb-item.active .sb-num{background:var(--pr);color:#fff}
+	.sb-num{font-family:'Tajawal',sans-serif}
+	.sb-cat{font-size:.68rem;font-weight:700;color:var(--go);text-transform:uppercase;padding:10px 18px 4px;letter-spacing:.5px}
+
+/* ===== OVERLAY ===== */
+#overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:850;display:none;backdrop-filter:blur(2px)}
+#overlay.show{display:block}
+
+/* ===== MAIN ===== */
+#main{margin-top:65px;min-height:calc(100vh - 65px)}
+
+/* ===== SECTION ===== */
+.section{display:none;padding:clamp(28px,5vw,50px) clamp(14px,4vw,20px) 100px;min-height:calc(100vh - 65px);animation:secIn .45s ease}
+.section.active{display:block}
+.sec-inner{max-width:920px;margin:0 auto}
+.sec-hdr{text-align:center;margin-bottom:44px}
+.sec-tag{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,rgba(13,92,110,.1),rgba(201,149,42,.1));color:var(--pr);padding:5px 14px;border-radius:50px;font-size:.78rem;font-weight:700;margin-bottom:14px;border:1px solid rgba(13,92,110,.2)}
+.sec-title{font-size:clamp(1.5rem,4vw,2.3rem);font-weight:900;margin-bottom:12px}
+.sec-title span{color:var(--pr)}
+.sec-sub{color:var(--tx2);font-size:.95rem;max-width:580px;margin:0 auto}
+
+/* ===== HERO ===== */
+.hero-wrap{min-height:calc(100vh - 130px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px;position:relative;overflow:hidden}
+.hero-pat{position:absolute;inset:0;opacity:.03;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='%230d5c6e'/%3E%3C/svg%3E");background-size:60px 60px;pointer-events:none}
+.hero-wrap::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(13,92,110,.12) 0%,transparent 70%),radial-gradient(ellipse 50% 40% at 80% 80%,rgba(201,149,42,.08) 0%,transparent 60%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;padding:6px 16px;border-radius:50px;font-size:.82rem;font-weight:700;margin-bottom:22px;animation:fadeDown .6s ease}
+.hero-h1{font-size:clamp(1.9rem,5vw,3.2rem);font-weight:900;line-height:1.2;margin-bottom:18px;animation:fadeUp .7s ease}
+.hero-h1 span{color:var(--go)}
+.hero-p{font-size:1.02rem;color:var(--tx2);max-width:580px;margin:0 auto 30px;animation:fadeUp .8s ease}
+.stats-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:32px;animation:fadeUp .85s ease}
+.stat-c{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rd);padding:16px 22px;text-align:center;box-shadow:0 4px 14px var(--sh)}
+.stat-n{font-size:1.8rem;font-weight:900;color:var(--pr)}
+.stat-l{font-size:.78rem;color:var(--tx3);margin-top:3px}
+.cta-row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;animation:fadeUp .95s ease}
+
+/* ===== BUTTONS ===== */
+.btn-p{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border:none;padding:13px 28px;border-radius:11px;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:8px;box-shadow:0 4px 18px rgba(13,92,110,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(13,92,110,.4)}
+.btn-o{background:transparent;color:var(--pr);border:2px solid var(--pr);padding:11px 24px;border-radius:11px;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:8px}
+.btn-o:hover{background:var(--pr);color:#fff}
+
+/* ===== CARDS ===== */
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));margin-bottom:24px}
+.grid-2{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(280px,100%),1fr));margin-bottom:24px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rd);padding:22px;transition:var(--tr);position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;right:0;width:55px;height:55px;background:linear-gradient(135deg,var(--pr),transparent);opacity:.05;border-radius:0 var(--rd) 0 55px}
+.card:hover{transform:translateY(-3px);box-shadow:0 12px 34px var(--shl);border-color:var(--pr)}
+.c-ico{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:14px}
+.ic-b{background:linear-gradient(135deg,#0d5c6e22,#1a9ab822);color:var(--pr)}
+.ic-g{background:linear-gradient(135deg,#c9952a22,#e8b84b22);color:var(--go)}
+.ic-gr{background:linear-gradient(135deg,#2ecc8a22,#27ae6022);color:#27ae60}
+.ic-r{background:linear-gradient(135deg,#e74c3c22,#c0392b22);color:#e74c3c}
+.ic-p{background:linear-gradient(135deg,#9b59b622,#8e44ad22);color:#8e44ad}
+.c-title{font-size:1rem;font-weight:800;margin-bottom:7px;color:var(--tx)}
+.c-desc{font-size:.87rem;color:var(--tx2);line-height:1.7}
+.c-link{display:inline-flex;align-items:center;gap:5px;color:var(--pr);font-size:.82rem;font-weight:700;margin-top:10px;text-decoration:none;transition:var(--tr)}
+.c-link:hover{color:var(--go)}
+.badge{display:inline-block;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:700;margin-top:6px}
+.b-free{background:#2ecc8a22;color:#27ae60}
+.b-paid{background:#e74c3c22;color:#c0392b}
+.b-lim{background:#f39c1222;color:#d68910}
+.b-new{background:rgba(13,92,110,.15);color:var(--pr)}
+
+/* ===== HIGHLIGHT ===== */
+.hl{background:linear-gradient(135deg,rgba(13,92,110,.06),rgba(201,149,42,.06));border:1px solid rgba(13,92,110,.2);border-radius:var(--rd);padding:22px;margin:22px 0;position:relative;overflow:hidden}
+.hl::before{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:linear-gradient(to bottom,var(--pr),var(--go))}
+.hl-title{font-weight:800;color:var(--pr);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+
+/* ===== COMPARE ===== */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:22px 0}
+@media(max-width:580px){.cmp{grid-template-columns:1fr}}
+.cmp-b{border-radius:var(--rd);padding:18px}
+.cmp-bad{background:#e74c3c0d;border:1px solid #e74c3c30}
+.cmp-good{background:#2ecc8a0d;border:1px solid #2ecc8a30}
+.cmp-lbl{font-weight:800;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.cmp-bad .cmp-lbl{color:#e74c3c}
+.cmp-good .cmp-lbl{color:#27ae60}
+.cmp-code{font-family:'Courier New',monospace;font-size:.82rem;color:var(--tx2);background:var(--bg2);padding:11px;border-radius:7px;line-height:1.7}
+
+/* ===== STEPS ===== */
+.steps{display:flex;flex-direction:column;gap:14px;margin:22px 0}
+.step{display:flex;gap:18px;align-items:flex-start}
+.step-n{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.95rem;flex-shrink:0;box-shadow:0 4px 12px rgba(13,92,110,.3)}
+.step-c{flex:1;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px}
+.step-t{font-weight:800;color:var(--tx);margin-bottom:5px}
+.step-d{color:var(--tx2);font-size:.87rem}
+
+/* ===== TABLE ===== */
+.tbl{overflow-x:auto;margin:22px 0;border-radius:var(--rd);border:1px solid var(--bd)}
+table{width:100%;border-collapse:collapse}
+th{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;padding:13px 14px;font-weight:700;font-size:.87rem;text-align:right}
+td{padding:11px 14px;border-bottom:1px solid var(--bd);color:var(--tx2);font-size:.85rem}
+tr:last-child td{border-bottom:none}
+tr:nth-child(even) td{background:var(--bg2)}
+tr:hover td{background:rgba(13,92,110,.04)}
+.stars{color:var(--go)}
+
+/* ===== CODE ===== */
+.code-box{background:#0c1a24;border-radius:var(--rd);padding:18px 22px;margin:14px 0;position:relative;border:1px solid #1a3040}
+.code-box pre{color:#a8d8ea;font-family:'Courier New',monospace;font-size:.82rem;line-height:1.8;white-space:pre-wrap;word-break:break-word}
+.kw{color:#f39c12}
+.str{color:#2ecc71}
+.cm{color:#636e72;font-style:italic}
+.cp-btn{position:absolute;top:10px;left:10px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;padding:4px 11px;border-radius:5px;font-size:.72rem;cursor:pointer;transition:var(--tr);font-family:'Tajawal',sans-serif}
+.cp-btn:hover{background:var(--pr)}
+
+/* ===== MAGIC ===== */
+.magic{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(160px,100%),1fr));gap:10px;margin:20px 0}
+.mag-c{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:16px;text-align:center;transition:var(--tr);cursor:default}
+.mag-c:hover{border-color:var(--go);transform:translateY(-2px);box-shadow:0 6px 18px var(--sh)}
+.mag-e{font-size:1.6rem;margin-bottom:8px}
+.mag-p{font-weight:800;color:var(--pr);font-size:.87rem;margin-bottom:5px}
+.mag-d{font-size:.77rem;color:var(--tx3)}
+
+/* ===== ALERTS ===== */
+.al{border-radius:11px;padding:14px 18px;margin:18px 0;display:flex;gap:12px;align-items:flex-start}
+.al-i{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+.al-go{background:rgba(201,149,42,.1);border:1px solid rgba(201,149,42,.3);color:var(--tx2)}
+.al-go .al-i{color:var(--go)}
+.al-bl{background:rgba(13,92,110,.08);border:1px solid rgba(13,92,110,.2);color:var(--tx2)}
+.al-bl .al-i{color:var(--pr)}
+.al-rd{background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.2);color:var(--tx2)}
+.al-rd .al-i{color:#e74c3c}
+.al-gr{background:rgba(46,204,138,.08);border:1px solid rgba(46,204,138,.2);color:var(--tx2)}
+.al-gr .al-i{color:var(--ac)}
+.al strong{color:var(--tx)}
+
+/* ===== WORKFLOW ===== */
+.wf{display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;margin:22px 0}
+.wf-item{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px}
+.wf-ico{width:52px;height:52px;border-radius:13px;background:var(--sf);border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:var(--tr)}
+.wf-item:hover .wf-ico{border-color:var(--pr);background:var(--pr);color:#fff}
+.wf-lbl{font-size:.74rem;font-weight:700;color:var(--tx2);max-width:65px}
+.wf-arr{font-size:1.1rem;color:var(--bd);padding:0 5px;flex-shrink:0}
+
+/* ===== BOTTOM NAV ===== */
+	#botNav{position:fixed;bottom:0;left:0;right:0;z-index:800;background:var(--sf);border-top:1px solid var(--bd);padding:8px 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 -4px 20px var(--sh); height:auto; min-height:85px; gap:8px;}
+	.bot-row-top{display:flex;align-items:center;justify-content:center;width:100%;gap:15px;}
+	.bot-row-bottom{display:flex;align-items:center;justify-content:space-between;width:100%;gap:10px;}
+	.sec-label-wrap{background:var(--bg2); border:1px solid var(--bd); border-radius:12px; padding:6px 14px; font-size:.85rem; color:var(--tx2); font-weight:700; text-align:center; flex:1; max-width:400px; box-shadow:inset 0 2px 4px rgba(0,0,0,0.03);}
+	.sec-label-wrap span{color:var(--pr); font-weight:900;}
+	.nav-btns{display:flex;gap:8px;align-items:center; flex-shrink:0;}
+.arr-btn{background:var(--pr);color:#fff;border:none;border-radius:9px;padding:9px 18px;font-family:'Tajawal',sans-serif;font-size:.87rem;font-weight:700;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:7px}
+.arr-btn:hover{background:var(--pr3);transform:translateY(-1px)}
+.arr-btn:disabled{background:var(--bg2);color:var(--tx3);cursor:not-allowed;transform:none}
+.arr-btn.go-btn{background:linear-gradient(135deg,var(--go),var(--go2))}
+.arr-btn.go-btn:hover{background:linear-gradient(135deg,var(--go3),var(--go))}
+
+		/* ===== DOTS ENHANCED (2 ROWS ONLY) ===== */
+		.dots-row{display:grid; grid-template-columns: repeat(8, 1fr); gap:10px 12px; align-items:center; justify-items:center; width:100%; max-width:320px; flex-shrink:0; transition: var(--tr); margin-bottom:5px;}
+		.dot{width:8px; height:8px; border-radius:50%; background:var(--bd); cursor:pointer; transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position:relative;}
+		.dot.active{background:var(--pr); transform:scale(1.6); box-shadow: 0 0 10px var(--pr);}
+		.dot.active::after{content:''; position:absolute; inset:-4px; border:1.5px solid var(--pr); border-radius:50%; animation: pulse 2s infinite;}
+		.dot:hover{background:var(--go); transform:scale(1.4);}
+		@keyframes pulse { 0% {transform:scale(1); opacity:1;} 100% {transform:scale(2); opacity:0;} }
+		@media(max-width:520px){ .dots-row{grid-template-columns: repeat(8, 1fr); max-width:280px; gap:8px 10px;} .dot{width:7px; height:7px;} }
+
+/* ===== GDSA MARKDOWN VIEWER ===== */
+.gdsa-viewer {
+  direction: rtl;
+  text-align: right;
+  font-family: 'Tajawal', sans-serif;
+  color: var(--tx);
+}
+.gdsa-viewer h1, .gdsa-viewer h2, .gdsa-viewer h3 {
+  color: var(--pr);
+  margin: 1.5rem 0 1rem;
+  border-bottom: 2px solid var(--bd);
+  padding-bottom: 8px;
+}
+.gdsa-viewer p { margin-bottom: 1rem; line-height: 1.8; }
+.gdsa-viewer ul, .gdsa-viewer ol { padding-right: 25px; margin-bottom: 1rem; }
+.gdsa-viewer li { margin-bottom: 8px; }
+.gdsa-viewer code {
+  background: var(--bg2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  color: var(--go3);
+  font-size: 0.9em;
+}
+.gdsa-viewer pre {
+  background: #0c1a24;
+  color: #a8d8ea;
+  padding: 15px;
+  border-radius: 8px;
+  overflow-x: auto;
+  margin: 1rem 0;
+  direction: ltr;
+  text-align: left;
+  border: 1px solid #1a3040;
+}
+.gdsa-viewer pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+  font-size: 0.85rem;
+}
+.gdsa-viewer blockquote {
+  border-right: 4px solid var(--go);
+  background: var(--bg2);
+  padding: 10px 20px;
+  margin: 1rem 0;
+  font-style: italic;
+}
+.gdsa-viewer table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+.gdsa-viewer th, .gdsa-viewer td {
+  border: 1px solid var(--bd);
+  padding: 10px;
+  text-align: right;
+}
+.gdsa-viewer th { background: var(--bg3); }
+
+/* ===== PROMPT BOX ===== */
+.pb{background:#0c1a24;border-radius:var(--rd);margin:18px 0;overflow:hidden;border:1px solid #1a3040}
+.pb-hdr{background:linear-gradient(135deg,var(--pr),var(--pr3));padding:11px 18px;display:flex;align-items:center;justify-content:space-between;color:#fff}
+.pb-title{font-weight:700;font-size:.87rem}
+.pb-body{padding:18px;color:#c8e6f0;font-size:.85rem;line-height:1.95;white-space:pre-wrap}
+.ph{color:#f39c12;font-weight:700}
+.pn{color:#7f8c8d;font-style:italic;font-size:.79rem}
+
+/* ===== GS GRID ===== */
+.gs{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:22px 0}
+@media(max-width:580px){.gs{grid-template-columns:repeat(2,1fr)}}
+.gs-i{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px;text-align:center;transition:var(--tr)}
+.gs-i:hover{border-color:var(--pr);transform:translateY(-2px)}
+.gs-ico{font-size:1.5rem;margin-bottom:7px}
+.gs-l{font-size:.78rem;font-weight:700;color:var(--tx);margin-bottom:3px}
+.gs-s{font-size:.7rem;color:var(--tx3)}
+
+/* ===== QUOTE ===== */
+.bq{background:linear-gradient(135deg,rgba(201,149,42,.06),rgba(13,92,110,.06));border-right:4px solid var(--go);border-radius:0 var(--rd) var(--rd) 0;padding:18px 22px;margin:22px 0;font-family:'Amiri',serif;font-size:1.05rem;color:var(--tx2);line-height:1.9;font-style:italic}
+.bq cite{display:block;margin-top:9px;font-size:.79rem;color:var(--go);font-style:normal;font-family:'Tajawal',sans-serif;font-weight:700}
+
+/* ===== ACCORDION ===== */
+.acc{margin:14px 0}
+.acc-item{background:var(--sf);border:1px solid var(--bd);border-radius:11px;margin-bottom:7px;overflow:hidden}
+.acc-hdr{padding:14px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:700;color:var(--tx);transition:var(--tr)}
+.acc-hdr:hover{background:var(--bg2);color:var(--pr)}
+.acc-arr{transition:transform .3s;color:var(--tx3)}
+.acc-item.open .acc-arr{transform:rotate(90deg);color:var(--pr)}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 18px;color:var(--tx2);font-size:.87rem;line-height:1.8}
+.acc-item.open .acc-body{max-height:1200px;padding:0 18px 14px}
+
+/* ===== TAG ===== */
+.tag{display:inline-block;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:700;background:rgba(13,92,110,.1);color:var(--pr);border:1px solid rgba(13,92,110,.2);margin:2px}
+
+/* ===== AGENT DIAGRAM ===== */
+.agent-row{display:flex;flex-direction:column;gap:14px;margin:22px 0}
+.agent-card{border-radius:var(--rd);padding:18px 22px;border:2px solid var(--bd);background:var(--sf);transition:var(--tr)}
+.agent-card:hover{border-color:var(--pr);box-shadow:0 6px 22px var(--sh)}
+.agent-hdr{display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.agent-ico{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.agent-t{font-size:1rem;font-weight:800;color:var(--tx)}
+.agent-sub{font-size:.78rem;font-weight:600;color:var(--tx3)}
+.agent-body{font-size:.87rem;color:var(--tx2);line-height:1.75}
+.agent-ex{margin-top:10px;background:var(--bg2);border-radius:7px;padding:10px 14px;font-size:.82rem;color:var(--tx3)}
+
+/* ===== TOOL COMPARE CARDS ===== */
+.tc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tc-card{background:var(--sf);border:2px solid var(--bd);border-radius:var(--rd);padding:16px;text-align:center;transition:var(--tr);position:relative;overflow:hidden}
+.tc-card.best{border-color:var(--go);background:linear-gradient(135deg,rgba(201,149,42,.04),transparent)}
+.tc-card.best::after{content:'الأفضل';position:absolute;top:8px;left:8px;background:var(--go);color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:50px}
+.tc-name{font-weight:800;font-size:.95rem;margin-bottom:6px}
+.tc-bar{height:7px;background:var(--bg2);border-radius:4px;overflow:hidden;margin:4px 0 2px}
+.tc-fill{height:100%;background:linear-gradient(90deg,var(--pr),var(--go));border-radius:4px;transition:width 1s ease}
+.tc-lbl{font-size:.7rem;color:var(--tx3);text-align:right}
+
+/* ===== CHECKLIST ===== */
+.chk-list{list-style:none;padding:0;margin:14px 0}
+.chk-list li{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);color:var(--tx2);font-size:.88rem;line-height:1.7}
+.chk-list li:last-child{border-bottom:none}
+.chk-list li .chk-ico{color:var(--ac);flex-shrink:0;margin-top:3px}
+
+/* ===== PWA / TIPS MINI ===== */
+.tip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:22px 0}
+.tip-c{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:16px;transition:var(--tr)}
+.tip-c:hover{border-color:var(--pr);transform:translateY(-2px)}
+.tip-num{font-size:1.5rem;font-weight:900;color:var(--pr);opacity:.3;line-height:1}
+.tip-t{font-weight:800;font-size:.88rem;color:var(--tx);margin:4px 0}
+.tip-d{font-size:.8rem;color:var(--tx2);line-height:1.65}
+
+/* ===== PROJECT CARDS ===== */
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:22px 0}
+.proj-c{background:var(--sf);border:1px solid var(--bd);border-radius:var(--rd);padding:20px;transition:var(--tr);position:relative;overflow:hidden}
+.proj-c::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--pr),var(--go))}
+.proj-c:hover{transform:translateY(-3px);box-shadow:0 10px 28px var(--shl)}
+.proj-e{font-size:2rem;margin-bottom:10px}
+.proj-t{font-weight:800;font-size:.95rem;margin-bottom:6px}
+.proj-d{font-size:.83rem;color:var(--tx2);line-height:1.7}
+.proj-tags{margin-top:10px;display:flex;flex-wrap:wrap;gap:4px}
+
+/* ===== DIFFICULTY ===== */
+.diff{display:inline-flex;align-items:center;gap:4px;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:50px}
+.diff-easy{background:#2ecc8a22;color:#27ae60}
+.diff-med{background:#f39c1222;color:#d68910}
+.diff-hard{background:#e74c3c22;color:#c0392b}
+
+/* ===== NUMBER HIGHLIGHT ===== */
+.n-hl{display:inline-block;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border-radius:7px;padding:2px 10px;font-weight:800;font-size:.9rem;margin-left:6px}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes secIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== MISC ===== */
+h2{font-size:1.35rem;font-weight:800;color:var(--tx);margin:26px 0 12px;padding-bottom:8px;border-bottom:2px solid var(--bg2)}
+h3{font-size:1.05rem;font-weight:700;color:var(--pr);margin:18px 0 9px}
+p{color:var(--tx2);margin-bottom:11px;line-height:1.8}
+ul,ol{padding-right:20px;color:var(--tx2)}
+li{margin-bottom:5px;line-height:1.7}
+strong{color:var(--tx)}
+hr{border:none;border-top:1px solid var(--bd);margin:26px 0}
+code{background:var(--bg2);padding:2px 7px;border-radius:5px;font-family:'Courier New',monospace;font-size:.85rem;color:var(--pr)}
+
+/* ===== MOBILE RESPONSIVE ===== */
+/* Make grids stack on phones */
+@media(max-width:520px){
+  /* grids: single column on small phones */
+  .grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .magic{grid-template-columns:1fr 1fr}
+  .tc-grid{grid-template-columns:1fr}
+  /* hero */
+  .hero-h1{font-size:1.65rem}
+  .stats-row{gap:8px}
+  .stat-c{padding:10px 13px;min-width:62px}
+  .stat-n{font-size:1.4rem}
+  .stat-l{font-size:.65rem}
+  /* section */
+  .section{padding:28px 12px 90px}
+  /* cards */
+  .card{padding:16px}
+  /* nav */
+  #botNav{padding:8px 10px;gap:6px}
+  .arr-btn{padding:7px 12px;font-size:.78rem}
+	/* bottom nav label */
+		  #secLbl{display:flex;font-size:.7rem;max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+	  #secLbl span{font-family:'Tajawal',sans-serif}
+	  /* table horizontal scroll */
+	  .tbl{font-size:.8rem}
+	  th,td{padding:8px 10px}
+	  /* code */
+	  .code-box{padding:13px 14px}
+	  .code-box pre{font-size:.75rem}
+	  /* pb */
+	  .pb-body{font-size:.8rem;padding:13px}
+	  /* sec title */
+	  .sec-title{font-size:1.4rem}
+	  /* top nav brand text max-width */
+	  .nav-brand span:last-child{max-width:calc(100vw - 130px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block}
+	}
+	/* dots: limit width on mobile to prevent overflow */
+					@media(max-width:420px){
+					  .sec-label-wrap{font-size:.75rem; padding:5px 10px;}
+					  .dots-row{grid-template-columns: repeat(8, 1fr); max-width: 240px; gap:6px 8px;}
+					  .dot{width:6px; height:6px;}
+					  #botNav{min-height:100px; padding:12px 10px;}
+					}
+@media(max-width:620px){
+  .hero-h1{font-size:1.75rem}
+  .stats-row{gap:10px}
+  .stat-c{padding:12px 16px}
+  #botNav{padding:9px 14px}
+  .arr-btn{padding:8px 14px;font-size:.8rem}
+  .section{padding:36px 14px 90px}
+}
+
+/* ===== TECH CONCEPTS ===== */
+.tc-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.tc-tab{background:var(--sf);border:1.5px solid var(--bd);border-radius:9px;padding:8px 16px;font-family:'Tajawal',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--tx2);transition:var(--tr)}
+.tc-tab.active,.tc-tab:hover{background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border-color:var(--pr)}
+.tc-panel{display:none}
+.tc-panel.active{display:block;animation:secIn .25s ease}
+.tc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:14px;margin:16px 0}
+.tc-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:18px;transition:var(--tr);position:relative}
+.tc-card:hover{border-color:var(--pr);transform:translateY(-2px);box-shadow:0 8px 24px var(--sh)}
+.tc-num{position:absolute;top:14px;left:14px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;border-radius:7px;padding:2px 9px;font-size:.72rem;font-weight:800}
+.tc-icon{font-size:1.5rem;margin-bottom:10px}
+.tc-title{font-weight:800;font-size:.95rem;color:var(--tx);margin-bottom:5px}
+.tc-sub{font-size:.78rem;color:var(--pr);font-weight:700;margin-bottom:6px}
+.tc-desc{font-size:.83rem;color:var(--tx2);line-height:1.7}
+.tc-tip{background:var(--bg2);border-right:3px solid var(--go);border-radius:0 7px 7px 0;padding:8px 12px;font-size:.8rem;color:var(--tx2);margin-top:10px}
+.tc-tip strong{color:var(--go)}
+
+/* ===== PROJ CARDS ENHANCED ===== */
+.proj-en{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px;margin:16px 0}
+.pe-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:20px;transition:var(--tr);position:relative;overflow:hidden}
+.pe-card::before{content:'';position:absolute;top:0;right:0;left:0;height:3px;background:linear-gradient(90deg,var(--pr),var(--go))}
+.pe-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px var(--shl)}
+.pe-icon{font-size:2.2rem;margin-bottom:12px;display:block}
+.pe-title{font-weight:800;font-size:.97rem;color:var(--tx);margin-bottom:6px}
+.pe-desc{font-size:.83rem;color:var(--tx2);line-height:1.7;margin-bottom:12px}
+.pe-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.tech-tag{background:rgba(13,92,110,.1);color:var(--pr);border:1px solid rgba(13,92,110,.2);padding:2px 9px;border-radius:50px;font-size:.7rem;font-weight:700}
+
+/* ===== EXTRA TOOLS ===== */
+.xt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin:16px 0}
+.xt-card{background:var(--sf);border:1px solid var(--bd);border-radius:14px;padding:20px;display:flex;gap:14px;align-items:flex-start;transition:var(--tr)}
+.xt-card:hover{border-color:var(--pr);box-shadow:0 6px 20px var(--sh)}
+.xt-logo{width:48px;height:48px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;background:linear-gradient(135deg,var(--pr),var(--go));color:#fff}
+.xt-body h3{font-size:.95rem;font-weight:800;color:var(--tx);margin-bottom:5px}
+.xt-body p{font-size:.83rem;color:var(--tx2);line-height:1.65;margin:0}
+.xt-meta{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;align-items:center}
+
+/* ===== INTRO CARDS ===== */
+.intro-box{background:linear-gradient(135deg,rgba(13,92,110,.06),rgba(201,149,42,.06));border:1px solid rgba(13,92,110,.2);border-radius:var(--rd);padding:26px;margin:24px 0;text-align:center}
+.intro-box h2{border:none;margin-bottom:10px;font-size:1.3rem}
+.intro-box p{max-width:580px;margin:0 auto 18px;font-size:.93rem}
+.intro-path{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:16px}
+.ip-step{background:var(--sf);border:1.5px solid var(--bd);border-radius:9px;padding:7px 14px;font-size:.8rem;font-weight:700;color:var(--tx2);display:flex;align-items:center;gap:5px}
+.ip-arrow{color:var(--bd);font-size:.9rem}
+
+/* ===== CONCEPTS BIG GRID ===== */
+.con-full{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}
+@media(max-width:640px){.con-full{grid-template-columns:1fr}}
+.cf-item{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:15px 18px;transition:var(--tr);display:flex;gap:12px;align-items:flex-start}
+.cf-item:hover{border-color:var(--pr)}
+.cf-badge{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--go));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.8rem;flex-shrink:0}
+.cf-content h4{font-size:.88rem;font-weight:800;color:var(--tx);margin-bottom:3px}
+.cf-content p{font-size:.8rem;color:var(--tx2);line-height:1.6;margin:0}
+
+/* ===== FINAL SECTION ===== */
+.fin-hero{text-align:center;padding:40px 20px;background:linear-gradient(135deg,rgba(13,92,110,.06),rgba(201,149,42,.08));border-radius:var(--rd);border:1px solid var(--bd);margin-bottom:28px}
+.fin-hero .f-icon{font-size:3rem;margin-bottom:14px;display:block}
+.fin-checklist{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:20px 0}
+.fc-item{background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px;display:flex;gap:10px;align-items:center}
+.fc-ico{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.85rem}
+.fc-item span{font-size:.85rem;font-weight:700;color:var(--tx)}
+
+/* ===== SHORTCUT BOX ===== */
+.shortcut-box{background:var(--bg2);border-radius:10px;padding:14px 18px;display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--tx2);margin-top:14px}
+.shortcut-box kbd{background:var(--sf);border:1.5px solid var(--bd);border-radius:5px;padding:2px 8px;font-family:monospace;font-size:.78rem;color:var(--pr)}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<nav id="topNav">
+  <div class="nav-brand">
+    <div class="brand-ico"><i class="fas fa-robot"></i></div>
+    <span>ورشة الذكاء الاصطناعي</span>
+  </div>
+  <div class="nav-acts">
+    <button class="nav-btn" onclick="toggleSB()"><i class="fas fa-bars"></i> المحاور</button>
+    <button id="themeBtn" onclick="toggleTheme()" title="تغيير المظهر"><i class="fas fa-moon"></i></button>
+  </div>
+</nav>
+<div id="progBar"><div id="progFill"></div></div>
+
+<!-- SIDEBAR -->
+<div id="sidebar"><div class="sb-title"><i class="fas fa-list-ul"></i> محاور الورشة</div></div>
+<div id="overlay" onclick="toggleSB()"></div>
+
+<!-- MAIN -->
+<div id="main">
+
+<!-- ====== S0: HERO ====== -->
+<div class="section active" id="s0" style="padding:0; overflow-x:hidden;">
+<div class="hero-wrap" style="width:100%; margin:0; padding: clamp(60px, 10vh, 100px) 20px; box-sizing: border-box;">
+  <div class="hero-pat"></div>
+  <div style="position:relative;z-index:1;max-width:800px;width:100%;margin:0 auto;display:flex;flex-direction:column;align-items:center;">
+    <div class="hero-badge"><i class="fas fa-star"></i> دليل معلمي التعليم الديني</div>
+    <div style="background:var(--sf); border:1.5px solid var(--bd); border-radius:12px; padding:6px 16px; font-size:.85rem; font-weight:700; color:var(--pr); margin-bottom:15px; box-shadow:0 2px 8px var(--sh); display:inline-flex; align-items:center; gap:8px;">
+      <i class="fas fa-user-edit" style="color:var(--go);"></i> إعداد: أ. حسن سديف
+    </div>
+    <h1 class="hero-h1" style="margin-top:5px;">صنع المواقع والدروس والألعاب<br><span>بالذكاء الاصطناعي</span></h1>
+    <p class="hero-p" style="font-size:1.1rem; line-height:1.6; margin-bottom:30px;">من فكرة مبسطة إلى موقع تعليمي حي يصله طلابك من أي هاتف — في ساعة واحدة، بصفر تكلفة، بدون خبرة برمجية. أوامر جاهزة وخطوات مفصّلة لكل مرحلة.</p>
+    
+    <div style="background:linear-gradient(135deg,rgba(13,92,110,.08),rgba(201,149,42,.06)); border:1.5px solid rgba(13,92,110,.15); border-radius:16px; padding:18px 24px; margin-bottom:32px; font-size:.95rem; color:var(--tx2); display:flex; align-items:center; gap:15px; text-align:right; width:100%; max-width:650px; box-shadow:0 4px 15px var(--sh);">
+      <span style="font-size:1.8rem; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.1));">🎯</span>
+      <span><strong style="color:var(--pr); font-size:1.05rem; display:block; margin-bottom:2px;">الهدف من الورشة:</strong> ستتمكن من بناء ونشر درس تفاعلي أو لعبة تعليمية كاملة على الإنترنت — بدون خبرة برمجية مسبقة</span>
+    </div>
+
+    <div class="stats-row" style="width:100%;">
+      <div class="stat-c"><div class="stat-n">١٤</div><div class="stat-l">محوراً رئيسياً</div></div>
+      <div class="stat-c"><div class="stat-n">٣٠+</div><div class="stat-l">أداة ذكاء اصطناعي</div></div>
+      <div class="stat-c"><div class="stat-n">$٠</div><div class="stat-l">تكلفة شهرية</div></div>
+      <div class="stat-c"><div class="stat-n">٦٠+</div><div class="stat-l">فكرة ومشروع</div></div>
+    </div>
+
+    <div class="cta-row">
+      <button class="btn-p" onclick="goTo(1)" style="padding:15px 35px; font-size:1.05rem;"><i class="fas fa-play-circle"></i> ابدأ الورشة الآن</button>
+      <button class="btn-o" onclick="goTo(8)" style="padding:14px 30px;"><i class="fas fa-terminal"></i> نماذج الأوامر</button>
+    </div>
+
+    <div class="intro-path" style="margin-top:40px; background:rgba(255,255,255,0.4); padding:15px; border-radius:50px; border:1px solid var(--bd); backdrop-filter:blur(5px);">
+      <div class="ip-step"><span>💡</span> فكرة</div><div class="ip-arrow">←</div>
+      <div class="ip-step"><span>💬</span> أمر</div><div class="ip-arrow">←</div>
+      <div class="ip-step"><span>📄</span> كود</div><div class="ip-arrow">←</div>
+      <div class="ip-step"><span>🚀</span> نشر</div><div class="ip-arrow">←</div>
+      <div class="ip-step"><span>🔗</span> رابط حي</div>
+    </div>
+
+    <div class="shortcut-box" style="justify-content:center; margin-top:25px; background:none; border:none; color:var(--tx3);">
+      <i class="fas fa-mouse-pointer" style="color:var(--pr); margin-left:8px;"></i>
+      تنقّل بالأسهم <kbd>→</kbd> <kbd>←</kbd> أو عبر شريط التنقل بالأسفل
+    </div>
+
+    <p style="margin-top:35px; font-size:.85rem; color:var(--tx3); font-weight:500; border-top:1px solid var(--bd); padding-top:15px; width:100%; max-width:400px;">لجميع معلمي ومراكز التعليم الديني والكوادر التعليمية</p>
+  </div>
+</div>
+</div>
+
+<!-- ====== S1: أساسيات البرمجة ====== -->
+<div class="section" id="s1">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-code"></i> المحور الأول</div>
+    <h1 class="sec-title">أساسيات <span>البرمجة للمواقع</span></h1>
+    <p class="sec-sub">لا تحتاج لحفظ شيء — الذكاء الاصطناعي يكتب كل هذا نيابةً عنك. فقط افهم المفهوم!</p>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <div class="c-ico ic-b"><i class="fas fa-sitemap"></i></div>
+      <div class="c-title">HTML — هيكل الصفحة</div>
+      <div class="c-desc">مثل <strong>عظام الجسم</strong> — يحدد ماذا يوجد في الصفحة: عناوين، فقرات، صور، جداول، أزرار. هو الأساس والإطار الذي يحتوي كل شيء.</div>
+      <span class="badge b-new">البنية والمحتوى</span>
+    </div>
+    <div class="card">
+      <div class="c-ico ic-g"><i class="fas fa-paint-brush"></i></div>
+      <div class="c-title">CSS — مظهر الصفحة</div>
+      <div class="c-desc">مثل <strong>الملابس والزينة</strong> — يحدد كيف تبدو الأشياء: ألوان، خطوط، مسافات، تحريكات وتأثيرات جمالية رائعة. يُكتب داخل الملف نفسه.</div>
+      <span class="badge b-lim">التصميم والجمالية</span>
+    </div>
+    <div class="card">
+      <div class="c-ico ic-gr"><i class="fas fa-bolt"></i></div>
+      <div class="c-title">JavaScript — سلوك الصفحة</div>
+      <div class="c-desc">مثل <strong>عضلات الجسم</strong> — يحدد ماذا تفعل الصفحة: نقر الأزرار، البحث، التنقل، جلب البيانات من الإنترنت تلقائياً عبر API.</div>
+      <span class="badge b-paid">التفاعل والوظائف</span>
+    </div>
+  </div>
+
+  <div class="al al-go"><div class="al-i"><i class="fas fa-lightbulb"></i></div>
+  <div><strong>المهم في عمل المعلم:</strong><br>الذكاء الاصطناعي يكتب كل هذا الكود نيابةً عنك! مهمتك أن تعرف كيف <strong>تطلب منه بالأسلوب الصحيح</strong>، وأين تضع الكود الناتج. هذه الورشة تعلّمك ذلك بالضبط.</div></div>
+
+  <h2>هيكل الملف الواحد الكامل</h2>
+  <div class="code-box">
+    <button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button>
+    <pre><span class="cm">&lt;!-- ملف index.html — الثلاثة داخل ملف واحد --&gt;</span>
+&lt;!DOCTYPE <span class="kw">html</span>&gt;
+&lt;<span class="kw">html</span> lang=<span class="str">"ar"</span> dir=<span class="str">"rtl"</span>&gt;
+  &lt;<span class="kw">head</span>&gt;
+    &lt;<span class="kw">meta</span> charset=<span class="str">"UTF-8"</span>&gt;
+    &lt;<span class="kw">title</span>&gt;<span class="str">عنوان الدرس</span>&lt;/<span class="kw">title</span>&gt;
+    &lt;<span class="kw">style</span>&gt;
+      <span class="cm">/* هنا يوضع CSS — كل ألوان وتصميم الصفحة */</span>
+      body { font-family: 'Tajawal', sans-serif; }
+    &lt;/<span class="kw">style</span>&gt;
+  &lt;/<span class="kw">head</span>&gt;
+  &lt;<span class="kw">body</span>&gt;
+    <span class="cm">&lt;!-- هنا يوضع HTML — محتوى الصفحة المرئي --&gt;</span>
+    &lt;<span class="kw">h1</span>&gt;<span class="str">عنوان الدرس</span>&lt;/<span class="kw">h1</span>&gt;
+    &lt;<span class="kw">p</span>&gt;<span class="str">محتوى الدرس هنا...</span>&lt;/<span class="kw">p</span>&gt;
+    &lt;<span class="kw">script</span>&gt;
+      <span class="cm">// هنا يوضع JavaScript — كل التفاعل والوظائف</span>
+      console.log(<span class="str">'الدرس يعمل!'</span>);
+    &lt;/<span class="kw">script</span>&gt;
+  &lt;/<span class="kw">body</span>&gt;
+&lt;/<span class="kw">html</span>&gt;</pre>
+  </div>
+
+  <h2>ماذا يمكن للمعلم أن يصنع؟</h2>
+  <div class="grid">
+    <div class="card" style="border-right:3px solid var(--pr)"><div style="font-size:1.5rem;margin-bottom:8px">📖</div><div class="c-title">دروس تفاعلية كاملة</div><div class="c-desc">درس مصوّر بالعناوين والجداول والخرائط الذهنية والأسئلة التقييمية — كل ذلك في ملف واحد.</div></div>
+    <div class="card" style="border-right:3px solid var(--go)"><div style="font-size:1.5rem;margin-bottom:8px">🎮</div><div class="c-title">ألعاب تعليمية</div><div class="c-desc">لعبة أسئلة وأجوبة مع نقاط ومستويات وعجلة حظ وشاشة نتائج — جذابة للطلاب.</div></div>
+    <div class="card" style="border-right:3px solid #27ae60"><div style="font-size:1.5rem;margin-bottom:8px">📊</div><div class="c-title">عروض تقديمية</div><div class="c-desc">سلايدات تفاعلية بتنقل جميل وتحريكات وخرائط ذهنية بديلاً عن PowerPoint التقليدي.</div></div>
+    <div class="card" style="border-right:3px solid #8e44ad"><div style="font-size:1.5rem;margin-bottom:8px">🌐</div><div class="c-title">مواقع كاملة</div><div class="c-desc">موقع تعليمي ديني متكامل بصفحات متعددة ومكتبة كتب وأقسام للدروس والألعاب.</div></div>
+    <div class="card" style="border-right:3px solid #e74c3c"><div style="font-size:1.5rem;margin-bottom:8px">🧮</div><div class="c-title">آلات حاسبة فقهية</div><div class="c-desc">حاسبة الخمس، الزكاة، المواريث، المواقيت — برمجة معادلات شرعية تفاعلية.</div></div>
+    <div class="card" style="border-right:3px solid #1abc9c"><div style="font-size:1.5rem;margin-bottom:8px">🗓️</div><div class="c-title">متتبعات العبادة</div><div class="c-desc">تتبع الصلوات اليومية، الأذكار، تقدم الحفظ — أدوات تربوية رقمية.</div></div>
+  </div>
+
+  <div class="bq">الفرق بين معلم يقضي أسبوعاً لإنتاج درس واحد، ومعلم يقضي ساعة لإنتاج عشرة دروس تفاعلية كاملة — هو معرفة كيف تتحدث مع الذكاء الاصطناعي.<cite>— رسالة هذه الورشة</cite></div>
+</div>
+</div>
+
+<!-- ====== S2: أنواع الذكاء الاصطناعي ====== -->
+<div class="section" id="s2">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-brain"></i> المحور الثاني</div>
+    <h1 class="sec-title">أنواع <span>الذكاء الاصطناعي</span></h1>
+    <p class="sec-sub">افهم الفرق بين أنواع أنظمة الذكاء الاصطناعي لتختار الأنسب لكل مهمة</p>
+  </div>
+
+  <div class="agent-row">
+    <div class="agent-card">
+      <div class="agent-hdr">
+        <div class="agent-ico" style="background:linear-gradient(135deg,#4285f422,#0f9d5822);color:#4285f4;">💬</div>
+        <div><div class="agent-t">الذكاء الاصطناعي التوليدي (المحادثة)</div><div class="agent-sub">Generative AI / Chatbot</div></div>
+      </div>
+      <div class="agent-body">هو النوع الأكثر شيوعاً — يستقبل سؤالاً ويُعطيك إجابة مباشرة. لا يتذكر المحادثات القديمة بين الجلسات ولا يقوم بخطوات متعددة تلقائياً. تتحدث معه وينتج كوداً أو نصاً أو صورة.</div>
+      <div class="agent-ex">
+        <strong>أمثلة:</strong> Claude، ChatGPT، Gemini، Kimi، z.ai<br>
+        <strong>الأنسب لـ:</strong> كتابة الكود، إنتاج المحتوى، الإجابة عن الأسئلة، التلخيص
+      </div>
+      <span class="diff diff-easy">مبتدئ — سهل الاستخدام</span>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-hdr">
+        <div class="agent-ico" style="background:linear-gradient(135deg,#e74c3c22,#c0392b22);color:#e74c3c;">🤖</div>
+        <div><div class="agent-t">وكيل الذكاء الاصطناعي (الوكيل / الأيجنت)</div><div class="agent-sub">AI Agent</div></div>
+      </div>
+      <div class="agent-body">نوع متقدم يستطيع التخطيط وتنفيذ مهام متعددة بشكل مستقل. يتصفح الإنترنت، يكتب الكود، يختبره، يُصلح الأخطاء، ويُنهي المشروع — كل ذلك دون تدخل منك في كل خطوة. يعمل مثل موظف مستقل يُعطى مهمة وينجزها.</div>
+      <div class="agent-ex">
+        <strong>أمثلة:</strong> Manus AI، Cursor AI، Devin AI<br>
+        <strong>الأنسب لـ:</strong> المشاريع الكاملة التلقائية، التصحيح التلقائي، البحث وإنجاز المهام المركّبة
+      </div>
+      <span class="diff diff-hard">متقدم — يعمل باستقلالية</span>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-hdr">
+        <div class="agent-ico" style="background:linear-gradient(135deg,#9b59b622,#8e44ad22);color:#8e44ad;">🖼️</div>
+        <div><div class="agent-t">الذكاء الاصطناعي متعدد الوسائط</div><div class="agent-sub">Multimodal AI</div></div>
+      </div>
+      <div class="agent-body">يفهم ويُنتج أنواعاً متعددة من المحتوى في آنٍ واحد: النص + الصورة + الصوت + الفيديو. يمكنك رفع صورة كتاب وطلب تلخيصه، أو رفع صورة مسألة فقهية وطلب شرحها.</div>
+      <div class="agent-ex">
+        <strong>أمثلة:</strong> Gemini Ultra (يفهم الصور والفيديو)، Claude (يفهم الصور والمستندات)<br>
+        <strong>الأنسب لـ:</strong> تحليل الصور، استخراج نص من الكتب المصورة، شرح الرسوم البيانية
+      </div>
+      <span class="diff diff-med">متوسط — متعدد القدرات</span>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-hdr">
+        <div class="agent-ico" style="background:linear-gradient(135deg,#2ecc8a22,#27ae6022);color:#27ae60;">🎨</div>
+        <div><div class="agent-t">الذكاء الاصطناعي التوليد المتخصص</div><div class="agent-sub">Specialized Generative AI</div></div>
+      </div>
+      <div class="agent-body">أنظمة متخصصة في توليد نوع محدد من المحتوى بجودة عالية: توليد الصور (Midjourney, DALL·E)، توليد الصوت والموسيقى، تحويل النص لفيديو، أو توليد كود برمجي متخصص.</div>
+      <div class="agent-ex">
+        <strong>أمثلة الصور:</strong> Bing Creator، Adobe Firefly، نانو بنانا<br><strong>تفريغ صوتي:</strong> TurboScribe (تحويل المحاضرات لنص بدقة عالية جداً)<br>
+        <strong>الأنسب لـ:</strong> إنشاء صور للدروس، تصميم شعارات، إنتاج محتوى بصري إسلامي
+      </div>
+      <span class="diff diff-easy">سهل — لكل مهمة نموذجها</span>
+    </div>
+  </div>
+
+  <h2>متى تستخدم أياً منهم؟</h2>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>المهمة</th><th>النوع المناسب</th><th>المثال</th></tr></thead>
+      <tbody>
+        <tr><td>كتابة درس تفاعلي HTML</td><td>محادثة (Chatbot)</td><td>Claude / Gemini</td></tr>
+        <tr><td>بناء موقع كامل تلقائياً</td><td>وكيل (Agent)</td><td>Manus AI</td></tr>
+        <tr><td>تلخيص كتاب مرفوع كصورة</td><td>متعدد الوسائط</td><td>Gemini + رفع الملف</td></tr>
+        <tr><td>تصميم صور إسلامية للدرس</td><td>توليد الصور</td><td>Bing Creator / نانو بنانا</td></tr>
+        <tr><td>تحويل الكتاب لبودكاست وأسئلة</td><td>متخصص</td><td>NoteBookLM</td></tr>
+        <tr><td>كتابة محتوى يومي متعدد الصيغ</td><td>محادثة سخية</td><td>Gemini (مجاني)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="al al-bl"><div class="al-i"><i class="fas fa-info-circle"></i></div>
+  <div><strong>مصطلح مهم — هلوسة الذكاء الاصطناعي (AI Hallucination):</strong><br>
+  عندما يخترع الذكاء الاصطناعي معلومات غير صحيحة بثقة كاملة. <strong>الحل:</strong> دائماً أعطه النص الأصلي من الكتاب ولا تطلب منه "تذكّر" المعلومات الشرعية من تلقاء نفسه. قل له: "النص الأصلي هو: [الصق النص هنا]" ثم اطلب التحليل.</div></div>
+</div>
+</div>
+
+<!-- ====== S3: أدوات الذكاء الاصطناعي ====== -->
+<div class="section" id="s3">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-tools"></i> المحور الثالث</div>
+    <h1 class="sec-title">أدوات <span>الذكاء الاصطناعي</span></h1>
+    <p class="sec-sub">دليل شامل لأكثر من ٣٠ أداة — لكل مرحلة من مراحل إنتاج المحتوى التعليمي</p>
+  </div>
+
+  <h2>🆕 أدوات جديدة مهمة يجب معرفتها</h2>
+  <div class="grid-2" style="margin-bottom:26px">
+    <div class="card" style="position:relative;border-right:3px solid #6c5ce7">
+      <div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#6c5ce7,#a29bfe);color:#fff;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:50px">جديد ⚡</div>
+      <div class="c-ico" style="background:linear-gradient(135deg,#6c5ce722,#a29bfe22);color:#6c5ce7"><i class="fas fa-bolt"></i></div>
+      <div class="c-title">z.ai — مجاني وقوي</div>
+      <div class="c-desc">نموذج ذكاء اصطناعي جديد ومجاني بجودة عالية في الكود العربي. بديل ممتاز حين ينتهي حد Claude المجاني اليومي.</div>
+      <a href="https://chat.z.ai" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> chat.z.ai</a>
+      <span class="badge b-free">مجاني</span>
+    </div>
+    <div class="card" style="position:relative;border-right:3px solid #00b894">
+      <div style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#00b894,#00cec9);color:#fff;font-size:.62rem;font-weight:800;padding:2px 8px;border-radius:50px">مهم جداً</div>
+      <div class="c-ico" style="background:linear-gradient(135deg,#00b89422,#00cec922);color:#00b894"><i class="fas fa-microphone-alt"></i></div>
+      <div class="c-title">TurboScribe — تفريغ صوتي عربي</div>
+      <div class="c-desc">يحوّل أي تسجيل صوتي أو فيديو لنص عربي مكتوب بدقة استثنائية. مثالي لتفريغ دروس الشيوخ ثم تحويلها لصفحة HTML.</div>
+      <a href="https://turboscribe.ai/ar/dashboard" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> turboscribe.ai/ar</a>
+      <span class="badge b-lim">جزئياً مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #fd79a8">
+      <div class="c-ico" style="background:linear-gradient(135deg,#fd79a822,#e8437022);color:#e84370"><i class="fas fa-volume-up"></i></div>
+      <div class="c-title">ElevenLabs — صوت عربي احترافي</div>
+      <div class="c-desc">يُوّلد صوتاً بشرياً بالعربية الفصحى بنبرة احترافية. اكتب نص المتن واحصل على قراءة صوتية جاهزة لموقعك.</div>
+      <a href="https://elevenlabs.io" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> elevenlabs.io</a>
+      <span class="badge b-lim">جزئياً مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #f39c12">
+      <div class="c-ico" style="background:linear-gradient(135deg,#f39c1222,#f1c40f22);color:#f39c12"><i class="fas fa-project-diagram"></i></div>
+      <div class="c-title">Napkin.ai — رسوم توضيحية تلقائية</div>
+      <div class="c-desc">الصق أي نص فقهي فيتحوّل تلقائياً إلى مخطط انسيابي أو رسم توضيحي. مثالي لتصوير التشجيرات والعلاقات الفقهية.</div>
+      <a href="https://napkin.ai" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> napkin.ai</a>
+      <span class="badge b-free">مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #0984e3">
+      <div class="c-ico" style="background:linear-gradient(135deg,#0984e322,#74b9ff22);color:#0984e3"><i class="fas fa-search"></i></div>
+      <div class="c-title">Perplexity.ai — بحث موثوق</div>
+      <div class="c-desc">محرك بحث بالذكاء الاصطناعي يُلخص المصادر ويرفق روابطها. استخدمه للتحقق من المعلومات الدينية والبحث في المراجع.</div>
+      <a href="https://perplexity.ai" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> perplexity.ai</a>
+      <span class="badge b-free">مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #6c5ce7">
+      <div class="c-ico" style="background:linear-gradient(135deg,#6c5ce722,#a29bfe22);color:#6c5ce7"><i class="fas fa-layer-group"></i></div>
+      <div class="c-title">Poe.com — كل النماذج بمكان واحد</div>
+      <div class="c-desc">منصة تجمع Claude وGPT وGemini في واجهة واحدة. جرّب نفس الأمر على كل النماذج وقارن النتائج بثوانٍ.</div>
+      <a href="https://poe.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> poe.com</a>
+      <span class="badge b-free">مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #27ae60">
+      <div class="c-ico" style="background:linear-gradient(135deg,#27ae6022,#2ecc7122);color:#27ae60"><i class="fas fa-sitemap"></i></div>
+      <div class="c-title">Mermaid Live Editor — خرائط ذهنية</div>
+      <div class="c-desc">اطلب من الذكاء الاصطناعي كود Mermaid للتشجير ثم الصقه هنا لتظهر خريطة ذهنية مصوّرة جميلة قابلة للتصدير.</div>
+      <a href="https://mermaid.live" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> mermaid.live</a>
+      <span class="badge b-free">مجاني</span>
+    </div>
+    <div class="card" style="border-right:3px solid #e17055">
+      <div class="c-ico" style="background:linear-gradient(135deg,#e1705522,#fd7e1422);color:#e17055"><i class="fas fa-magic"></i></div>
+      <div class="c-title">v0.dev — مواقع بالوصف النصي</div>
+      <div class="c-desc">صِف موقعك بالعربية واحصل على كود HTML/CSS/JS كامل فوراً. مثالي حين تريد موقعاً جاهزاً بدون كتابة أمر مفصّل.</div>
+      <a href="https://v0.dev" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> v0.dev</a>
+      <span class="badge b-lim">جزئياً مجاني</span>
+    </div>
+  </div>
+
+
+  <h2>🧑‍💻 أدوات توليد الكود والمحتوى</h2>
+  <div class="grid">
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">🔮</div>
+      <div class="c-title">Google Gemini</div>
+      <div class="c-desc">من أقوى النماذج المجانية. ممتاز للاستخدام اليومي ومتكامل مع Google Workspace. يدعم اللغة العربية احترافياً ويتيح رفع الملفات والكتب.</div>
+      <a href="https://gemini.google.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> gemini.google.com</a>
+      <br><span class="badge b-free">مجاني سخي</span>
+    </div>
+    <div class="card" style="border-color:var(--pr)">
+      <div style="font-size:1.6rem;margin-bottom:10px">🧠</div>
+      <div class="c-title">Claude (Anthropic) ⭐</div>
+      <div class="c-desc">الأفضل في كتابة الكود الطويل والمعقد والمفصّل. يعطي كوداً منظماً ومكتملاً دون اختصار. مثالي لبناء الدروس التفاعلية الكاملة.</div>
+      <a href="https://claude.ai" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> claude.ai</a>
+      <br><span class="badge b-lim">محدود مجاناً</span>
+      <span class="tag">الأنسب: كود طويل معقد</span>
+    </div>
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">✨</div>
+      <div class="c-title">ChatGPT (OpenAI)</div>
+      <div class="c-desc">الأكثر شهرة. ممتاز لتوليد المحتوى التعليمي والأسئلة وشرح المفاهيم الدينية بأساليب متعددة.</div>
+      <a href="https://chatgpt.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> chatgpt.com</a>
+      <br><span class="badge b-lim">محدود مجاناً</span>
+    </div>
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">🌙</div>
+      <div class="c-title">Kimi AI <span class="badge b-new">جديد</span></div>
+      <div class="c-desc">نموذج صيني متقدم من شركة Moonshot AI. يتميز بنافذة سياق ضخمة جداً (يقرأ آلاف الصفحات دفعة واحدة) وهو مجاني ومميز في العربية والكود.</div>
+      <a href="https://www.kimi.com/" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> kimi.com</a>
+      <br><span class="badge b-free">مجاني سخي</span>
+    </div>
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">⚡</div>
+      <div class="c-title">Z.ai Chat <span class="badge b-new">جديد</span></div>
+      <div class="c-desc">نموذج صيني متقدم من شركة Zhipu AI يجمع أقوى النماذج في منصة واحدة سريعة ومجانية. يتميز بكتابة الكود العربي والمحتوى التعليمي بجودة عالية. بديل مثالي حين ينتهي حد Claude أو Gemini. يدعم رفع الصور والمستندات وتحليلها.</div>
+      <a href="https://chat.z.ai" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> chat.z.ai</a>
+      <br><span class="badge b-free">مجاني بالكامل</span>
+      <span class="tag">بديل ممتاز مجاني</span>
+    </div>
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">🤖</div>
+      <div class="c-title">Manus AI</div>
+      <div class="c-desc">وكيل ذكاء اصطناعي يتصفح الإنترنت وينجز مهام متعددة تلقائياً. يبني مشاريع كاملة من وصف نصي بسيط بشكل مستقل تماماً.</div>
+      <a href="https://manus.im" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> manus.im</a>
+      <br><span class="badge b-paid">مدفوع</span>
+    </div>
+    <div class="card">
+      <div style="font-size:1.6rem;margin-bottom:10px">🔬</div>
+      <div class="c-title">Google AI Studio <span class="badge b-new">متقدم</span></div>
+      <div class="c-desc">بيئة تجريب مباشرة لنماذج Gemini من Google. تتيح ضبط النماذج، اختبار الأوامر، الحصول على مفاتيح API مجانية، وبناء تطبيقات.</div>
+      <a href="https://aistudio.google.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> aistudio.google.com</a>
+      <br><span class="badge b-free">مجاني للمطورين</span>
+    </div>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>الأداة</th><th>جودة الكود</th><th>طول الكود</th><th>دعم العربية</th><th>السياق</th><th>التكلفة</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Claude</strong></td><td><span class="stars">★★★★★</span></td><td>طويل جداً</td><td>ممتاز</td><td>200K رمز</td><td><span class="badge b-lim">محدود</span></td></tr>
+        <tr><td><strong>Gemini</strong></td><td><span class="stars">★★★★☆</span></td><td>متوسط</td><td>ممتاز</td><td>1M رمز</td><td><span class="badge b-free">مجاني</span></td></tr>
+        <tr><td><strong>Kimi</strong></td><td><span class="stars">★★★★☆</span></td><td>طويل</td><td>جيد جداً</td><td>128K رمز</td><td><span class="badge b-free">مجاني</span></td></tr>
+        <tr><td><strong>Z.ai</strong></td><td><span class="stars">★★★★☆</span></td><td>طويل جيد</td><td>ممتاز</td><td>128K+ رمز</td><td><span class="badge b-free">مجاني</span></td></tr>
+        <tr><td><strong>ChatGPT</strong></td><td><span class="stars">★★★★☆</span></td><td>متوسط</td><td>جيد</td><td>128K رمز</td><td><span class="badge b-lim">محدود</span></td></tr>
+        <tr><td><strong>Manus</strong></td><td><span class="stars">★★★★★</span></td><td>مشاريع كاملة</td><td>جيد</td><td>وكيل</td><td><span class="badge b-paid">مدفوع</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>🖼️ أدوات توليد الصور</h2>
+  <div class="grid">
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">🖼️</div><div class="c-title">Bing Image Creator</div><div class="c-desc">مجاني تماماً بنموذج DALL·E 3. مناسب للصور الإسلامية والتعليمية.</div><a href="https://bing.com/create" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> bing.com/create</a><br><span class="badge b-free">مجاني</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">🍌</div><div class="c-title">نانو بنانا برو</div><div class="c-desc">منصة متخصصة بنماذج متنوعة لتوليد الصور. تخصيص دقيق للأسلوب.</div><a href="https://nanobanana.pro" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> nanobanana.pro</a><br><span class="badge b-lim">جزئياً مجاني</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">🎨</div><div class="c-title">Adobe Firefly</div><div class="c-desc">صور مُرخّصة تجارياً. مثالي للمطبوعات التعليمية.</div><a href="https://firefly.adobe.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> firefly.adobe.com</a><br><span class="badge b-lim">محدود مجاناً</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">🧪</div><div class="c-title">Google Labs أدوات AI <span class="badge b-new">جديد</span></div><div class="c-desc">مختبر تجريبي من Google يضم أدوات ذكاء اصطناعي متقدمة للصور والتحرير والتصميم ومعالجة الصوت. تجريبية مجانية.</div><a href="https://labs.google/fx/ar/tools" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> labs.google/fx/ar/tools</a><br><span class="badge b-free">مجاني تجريبي</span></div>
+  </div>
+
+  <h2>📊 أدوات الدروس والعروض والإدارة</h2>
+  <div class="grid">
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">📓</div><div class="c-title">Google NoteBookLM</div><div class="c-desc">الأداة الأقوى لتحويل الكتب والمقررات إلى ملخصات ذكية وأسئلة وبودكاست صوتي. ارفع الكتاب وانتهى!</div><a href="https://notebooklm.google.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> notebooklm.google.com</a><br><span class="badge b-free">مجاني</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">🎯</div><div class="c-title">Gamma.app</div><div class="c-desc">تحويل النصوص إلى سلايدات جميلة في ثوانٍ. يدعم العربية.</div><a href="https://gamma.app" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> gamma.app</a><br><span class="badge b-lim">جزئياً مجاني</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">📱</div><div class="c-title">Canva AI</div><div class="c-desc">تصميم سلايدات ومنشورات بمساعدة الذكاء الاصطناعي. قوالب إسلامية جاهزة.</div><a href="https://canva.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> canva.com</a><br><span class="badge b-lim">جزئياً مجاني</span></div>
+    <div class="card"><div style="font-size:1.5rem;margin-bottom:10px">☁️</div><div class="c-title">Google Cloud Console (APIs) <span class="badge b-new">متقدم</span></div><div class="c-desc">المنصة الرسمية للحصول على مفاتيح API لجميع خدمات Google. ضروري لتفعيل Google Drive API في نظام GlideStack.</div><a href="https://console.cloud.google.com/apis" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> console.cloud.google.com</a><br><span class="badge b-free">مجاني بحدود</span></div>
+  </div>
+
+  <div class="hl">
+    <div class="hl-title"><i class="fas fa-route"></i> سير عمل المعلم خطوة بخطوة</div>
+    <div class="steps" style="margin-top:14px">
+      <div class="step"><div class="step-n">١</div><div class="step-c"><div class="step-t">ارفع الكتاب في NoteBookLM</div><div class="step-d">أنتج ملخصات وأسئلة وبودكاست صوتي للمادة الدراسية تلقائياً</div></div></div>
+      <div class="step"><div class="step-n">٢</div><div class="step-c"><div class="step-t">أعطِ الأسئلة لـ Claude</div><div class="step-d">قل: "اجعلها لعبة تفاعلية HTML بأقصى إمكانياتك"</div></div></div>
+      <div class="step"><div class="step-n">٣</div><div class="step-c"><div class="step-t">ارفع الكود في GitHub</div><div class="step-d">احفظ الملف في مستودع جديد باسم إنجليزي</div></div></div>
+      <div class="step"><div class="step-n">٤</div><div class="step-c"><div class="step-t">انشر على Netlify</div><div class="step-d">بضغطة واحدة يصبح موقعك حياً على الإنترنت</div></div></div>
+      <div class="step"><div class="step-n">٥</div><div class="step-c"><div class="step-t">أرسل الرابط للطلاب</div><div class="step-d">عبر واتساب أو تيليجرام — الوقت الكلي: أقل من ساعة!</div></div></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ====== S4: هندسة الأوامر ====== -->
+<div class="section" id="s4">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-terminal"></i> المحور الرابع</div>
+    <h1 class="sec-title">هندسة <span>الأوامر</span></h1>
+    <p class="sec-sub">الفرق بين أمر يعطيك ٢٠٠ سطر وأمر يعطيك ١٨٠٠ سطر — تعلّم كيف تصيغ الأمر المناسب</p>
+  </div>
+
+  <div class="cmp">
+    <div class="cmp-b cmp-bad"><div class="cmp-lbl"><i class="fas fa-times-circle"></i> أمر ضعيف</div><div class="cmp-code">اشرح دعاء عرفة في html فيه css</div><div style="margin-top:8px;font-size:.78rem;color:#e74c3c">⚠️ كود قصير ~٢٠٠ سطر — تصميم عادي — محتوى مختصر</div></div>
+    <div class="cmp-b cmp-good"><div class="cmp-lbl"><i class="fas fa-check-circle"></i> أمر احترافي</div><div class="cmp-code">اشرح دعاء عرفة بشكل أكاديمي، في كود html فيه css، <strong>بأقصى إمكانياتك وقدراتك التصميمية البرمجية</strong>، <strong>وبأطول ما يمكنك كتابته</strong>، حول درس أخلاقي عن تواضع الإنسان، <strong>ولا تهمل أي تفصيل</strong></div><div style="margin-top:8px;font-size:.78rem;color:#27ae60">✅ كود ١٨٠٠+ سطر — تصميم احترافي — محتوى شامل</div></div>
+  </div>
+
+  <h2>الجمل السحرية الخمس</h2>
+  <div class="magic">
+    <div class="mag-c"><div class="mag-e">🎯</div><div class="mag-p">بأقصى إمكانياتك وقدراتك</div><div class="mag-d">تُخبره بعدم التقصير والبذل بكل طاقته</div></div>
+    <div class="mag-c"><div class="mag-e">📏</div><div class="mag-p">بأطول ما يمكنك كتابته</div><div class="mag-d">يمنع الاختصار ويُوسّع كل نقطة</div></div>
+    <div class="mag-c"><div class="mag-e">🧪</div><div class="mag-p">وفكر طويلاً للغاية</div><div class="mag-d">يُخطط قبل الكتابة ولا يندفع</div></div>
+    <div class="mag-c"><div class="mag-e">🔍</div><div class="mag-p">ولا تهمل أي شيء أبداً</div><div class="mag-d">يمنعه من حذف التفريعات والملحقات</div></div>
+    <div class="mag-c"><div class="mag-e">📐</div><div class="mag-p">التنسيقية البرمجية التصميمية</div><div class="mag-d">يُوسّع تفكيره للجماليات والتفاعلية</div></div>
+  </div>
+
+  <h2>أسلوب تبادل الأدوار (Role Prompting)</h2>
+  <div class="hl">
+    <div class="hl-title"><i class="fas fa-theater-masks"></i> أجعله يتصرف كخبير</div>
+    <p style="margin-top:10px">أخبر الذكاء الاصطناعي بالدور الذي تريده أن يتبناه قبل طلبك — هذا يُغير كامل طريقة تفكيره وإجابته.</p>
+    <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button>
+<pre><span class="cm">// الأسلوب: أعطه هوية خبير قبل طلبك</span>
+<span class="str">تصرّف كمعلم حوزوي خبير متخصص في تدريس الفقه للمبتدئين، 
+يستخدم أساليب تبسيطية حديثة مع الحفاظ على دقة المتن العلمي.
+الآن: أكتب لي درس تفاعلي عن [الموضوع]...</span></pre>
+    </div>
+    <p><strong>أمثلة لأدوار مفيدة للمعلم:</strong></p>
+    <ul>
+      <li>"تصرّف كمصمم واجهات تعليمية متخصص في المحتوى الإسلامي"</li>
+      <li>"تصرّف كمطور ألعاب تعليمية للأطفال بأسلوب جذاب وبسيط"</li>
+      <li>"تصرّف كمحرر علمي حوزوي يُراجع دقة المتون الفقهية"</li>
+    </ul>
+  </div>
+
+  <h2>التلقين التدريجي بالأمثلة (Few-Shot Prompting)</h2>
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">📖 أمر تقسيم المسائل الفقهية بالمثال</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أريدك أن تقسّم المسائل الفقهية التالية وفق هذا النمط تماماً:
+
+<span class="ph">مثال على النمط المطلوب:</span>
+النص: "السابع: أن يصل إلى حدّ الترخّص فلا يجوز التقصير قبله..."
+التقسيم:
+- <span class="ph">الموضوع:</span> أن يصل إلى حدّ الترخّص
+- <span class="ph">الحكم:</span> لا يجوز التقصير قبله
+- <span class="ph">التعريف:</span> المكان الذي يتوارى فيه المسافر...
+- <span class="ph">العلامة:</span> تواريهم عن نظره (علاقة تلازمية)
+- <span class="ph">الاستثناء:</span> محلّ الإقامة والمكان الذي بقي فيه...
+- <span class="ph">الاحتياط الاستحبابي:</span> الجمع بين القصر والتمام...
+
+<span class="ph">الآن طبّق هذا النمط بالضبط على المسائل التالية:</span>
+<span class="ph">[ألصق هنا نصوص المسائل من الكتاب]</span>
+
+<span class="pn">⚠️ لا تُضف معلومات ليست في النص ولا تختصر المتن الأصلي</span></div>
+  </div>
+
+  <h2>استخراج بنك أسئلة بصيغة JSON</h2>
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">❓ أمر استخراج أسئلة بصيغة برمجية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">اقرأ النص الديني التالي واستخرج منه <span class="ph">١٥ سؤالاً</span> لاختبار اختيار متعدد.
+
+النص: <span class="ph">[ألصق النص هنا]</span>
+
+أخرج الأسئلة بصيغة JSON فقط (بدون أي كلام إضافي) بهذا الشكل:
+<span class="str">[
+  {
+    "سؤال": "ما هو حدّ الترخّص؟",
+    "خيارات": ["الجواب أ", "الجواب ب", "الجواب ج", "الجواب د"],
+    "صحيح": 0,
+    "تفسير": "لأن..."
+  }
+]</span>
+
+<span class="pn">// يمكن إدراج هذا JSON مباشرة في كود لعبة HTML تفاعلية</span></div>
+  </div>
+
+  <h2>🧩 تقنيات هندسة الأوامر المتقدمة</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🔗 التفكير المتسلسل — Chain of Thought</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>بدل أن تطلب الإجابة مباشرة، اجعل الذكاء الاصطناعي يفكك المسألة خطوةً بخطوة قبل الكتابة. النتيجة أعمق وأدق بكثير خصوصاً في المسائل الفقهية المعقدة.</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر Chain-of-Thought للمسائل الفقهية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">قبل أن تكتب الكود، فكّر بصوت عالٍ في:
+١. ما هي الأقسام الرئيسية التي تحتوي عليها هذه المسألة؟
+٢. ما هي العلاقات المنطقية بين هذه الأقسام؟
+٣. ما هي أفضل طريقة لعرض المعلومات تصميمياً وبصرياً؟
+٤. هل هناك استثناءات أو ملاحظات يجب إبرازها؟
+بعد هذا التحليل، ابدأ بكتابة الكود الكامل.
+
+الموضوع: <span class="ph">[اسم الدرس]</span>
+النص: <span class="ph">[ألصق نص الدرس هنا]</span></div></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🛡️ حماية دقة النصوص الدينية — Text Lock</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>أقوى تقنية لضمان عدم تغيير الذكاء الاصطناعي لكلمة واحدة في المتن — ضرورية للمتون الفقهية والأدعية والزيارات:</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر قفل النص الأصلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">⚠️ النص التالي <span class="ph">محمي ومقفل لا يُمسّ</span>:
+«<span class="ph">[ألصق المتن الأصلي حرفياً هنا]</span>»
+
+قواعد صارمة:
+١. اكتب هذا النص بالضبط كما هو — لا تغيّر كلمة أو حرف أو تشكيل
+٢. ضعه داخل قسم "المتن الأصلي" مظلّلاً بلون مميز
+٣. ضع شرحك وتقسيمك في أقسام منفصلة بعده
+٤. في حال الاقتباس من المتن، اكتبه حرفياً بالضبط</div></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>📊 استخراج JSON للألعاب — Local Database</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>بدل كتابة الأسئلة مباشرة في HTML، اطلب أن تُخزّن كـ JSON متغير داخل الكود — هذا يجعل تعديل الأسئلة لاحقاً أسهل بكثير:</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر بناء قاعدة أسئلة JSON</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">من النص التالي، اصنع قاعدة أسئلة بصيغة JSON واحفظها كـ const داخل JavaScript:
+<span class="ph">[ألصق النص هنا]</span>
+
+الصيغة المطلوبة بالضبط:
+<span class="str">const QUESTIONS = [
+  {
+    q: "نص السؤال هنا",
+    opts: ["خيار أ", "خيار ب", "خيار ج", "خيار د"],
+    correct: 0,
+    explain: "لأن..."
+  }
+];</span>
+
+<span class="pn">// بعد الإنشاء، يمكنني تعديل الأسئلة بدون لمس بقية الكود</span></div></div>
+    </div></div>
+  </div>
+
+  <h2>أسرار الحصول على نتيجة مناسبة</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span><i class="fas fa-paste" style="margin-left:7px;color:var(--pr)"></i> ألصق النص الكامل دائماً</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">لا تقل "درس المفاعيل" — ألصق النص من الكتاب مباشرة. الدقة تأتي من المصدر الأصلي. كلما كان النص أكثر تفصيلاً، كانت النتيجة أدق وأكمل وأقل احتمالاً للهلوسة أو الاختراع.</div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span><i class="fas fa-list-ol" style="margin-left:7px;color:var(--pr)"></i> رقّم طلباتك دائماً</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">أولاً، ثانياً، ثالثاً... هذا يمنع الذكاء الاصطناعي من نسيان أي طلب وينظّم تفكيره. الأوامر المرقّمة تحصل على نتائج أكثر اكتمالاً.</div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span><i class="fas fa-ban" style="margin-left:7px;color:var(--pr)"></i> قل له ما لا تريده</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">"لا تغير أي شيء آخر" + "لا تقصّر الكود" + "أعطني الملف كاملاً" + "لا تحذف أي ميزة موجودة" — هذه تمنع الاختصار غير المطلوب.</div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span><i class="fas fa-sync" style="margin-left:7px;color:var(--pr)"></i> جرّب أكثر من نموذج</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">إذا لم تعجبك النتيجة من أداة، جرّب نفس الأمر في أداة أخرى. Gemini للسرعة، Claude للتفصيل والكود الطويل، Kimi للنصوص الطويلة.</div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span><i class="fas fa-question-circle" style="margin-left:7px;color:var(--pr)"></i> اطلب منه شرح كوده</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">إذا أنتج كوداً لا تفهمه قل: "اشرح لي هذا الكود بلغة بسيطة كأنني لا أعرف البرمجة. ماذا يفعل كل جزء؟" — هذا يُعلّمك تدريجياً.</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ====== S5: GitHub والنشر ====== -->
+<div class="section" id="s5">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fab fa-github"></i> المحور الخامس</div>
+    <h1 class="sec-title">GitHub <span>و Netlify</span></h1>
+    <p class="sec-sub">من الكود على جهازك إلى رابط قابل للمشاركة مع الجميع — في دقائق لا ساعات، مجاناً تماماً</p>
+  </div>
+
+  <div class="wf">
+    <div class="wf-item"><div class="wf-ico">🤖</div><div class="wf-lbl">الذكاء الاصطناعي يكتب</div></div>
+    <div class="wf-arr">←</div>
+    <div class="wf-item"><div class="wf-ico">📄</div><div class="wf-lbl">ملف HTML تحفظه</div></div>
+    <div class="wf-arr">←</div>
+    <div class="wf-item"><div class="wf-ico">🐙</div><div class="wf-lbl">ترفعه GitHub</div></div>
+    <div class="wf-arr">←</div>
+    <div class="wf-item"><div class="wf-ico">🚀</div><div class="wf-lbl">Netlify ينشره</div></div>
+    <div class="wf-arr">←</div>
+    <div class="wf-item"><div class="wf-ico">🔗</div><div class="wf-lbl">رابط حي للجميع</div></div>
+  </div>
+
+  <h2>🐙 الخطوة الأولى: GitHub</h2>
+  <div class="steps">
+    <div class="step"><div class="step-n">١</div><div class="step-c"><div class="step-t">إنشاء حساب GitHub</div><div class="step-d">ادخل على <strong>github.com</strong> وسجّل حساباً مجانياً. هذا هو "خزنة الكود" التي ستحفظ فيها جميع ملفاتك.</div></div></div>
+    <div class="step"><div class="step-n">٢</div><div class="step-c"><div class="step-t">إنشاء مستودع جديد (Repository)</div><div class="step-d">اضغط الزر الأخضر <strong>New</strong> — اختر اسماً بالإنجليزي مثل: <code>my-lesson</code> — اجعله <strong>Public</strong> — اضغط "Create repository"</div></div></div>
+    <div class="step"><div class="step-n">٣</div><div class="step-c"><div class="step-t">رفع ملف الكود — اسم الملف مهم!</div><div class="step-d">اضغط <strong>Add file ← Create new file</strong> ثم الصق الكود<br><div style="margin-top:8px;background:var(--bg2);padding:10px;border-radius:7px;font-family:monospace;font-size:.8rem;color:var(--tx2)"><strong>index.html</strong> ← الصفحة الرئيسية: darsi.netlify.app/<br><strong>fiqh.html</strong> ← صفحة فرعية: darsi.netlify.app/fiqh/<br><strong>quiz.html</strong> ← صفحة أخرى: darsi.netlify.app/quiz/</div></div></div></div>
+    <div class="step"><div class="step-n">٤</div><div class="step-c"><div class="step-t">حفظ التغييرات (Commit)</div><div class="step-d">انزل لأسفل — اضغط <strong>Commit changes</strong> — الملف محفوظ الآن!</div></div></div>
+  </div>
+
+  <h2>🚀 الخطوة الثانية: Netlify</h2>
+  <div class="steps">
+    <div class="step"><div class="step-n">١</div><div class="step-c"><div class="step-t">سجّل الدخول بحساب GitHub</div><div class="step-d">ادخل على <strong>netlify.com</strong> — اختر "GitHub" للتسجيل.</div></div></div>
+    <div class="step"><div class="step-n">٢</div><div class="step-c"><div class="step-t">أنشئ مشروعاً جديداً</div><div class="step-d"><strong>Add new site ← Import an existing project ← GitHub ←</strong> اختر المستودع</div></div></div>
+    <div class="step"><div class="step-n">٣</div><div class="step-c"><div class="step-t">اختر اسم الموقع</div><div class="step-d">في <strong>Site name</strong> اكتب: <code>darsi-arabi</code> — سيكون: <strong>darsi-arabi.netlify.app</strong></div></div></div>
+    <div class="step"><div class="step-n">٤</div><div class="step-c"><div class="step-t">✅ Deploy — انتهى!</div><div class="step-d">بعد 30 ثانية موقعك حي! أي تعديل في GitHub ينعكس خلال دقيقة تلقائياً.</div></div></div>
+  </div>
+
+  <h2>📁 التنظيم المناسب للمستودع</h2>
+  <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button>
+<pre><span class="cm">// هيكل مستودع منظّم للمعلم</span>
+my-website/
+├── <span class="kw">index.html</span>       <span class="cm">← الصفحة الرئيسية</span>
+├── <span class="kw">fiqh.html</span>        <span class="cm">← صفحة الفقه</span>
+├── <span class="kw">quiz.html</span>        <span class="cm">← صفحة المسابقات</span>
+├── <span class="kw">images/</span>          <span class="cm">← مجلد الصور</span>
+│   ├── logo.png
+│   └── banner.jpg
+├── <span class="kw">audio/</span>           <span class="cm">← مجلد الصوتيات</span>
+│   └── tilawa.mp3
+└── <span class="kw">README.md</span>        <span class="cm">← وصف المشروع</span></pre>
+  </div>
+
+  <div class="al al-bl"><div class="al-i"><i class="fas fa-info-circle"></i></div><div><strong>ملاحظة الرابط المجاني:</strong><br>الرابط المجاني ينتهي بـ <code>.netlify.app</code> ولا يمكن إزالته في الخطة المجانية. للاستخدام التعليمي غير الرسمي هو يكفي تماماً.</div></div>
+</div>
+</div>
+
+<!-- ====== S6: التعامل مع أخطاء الذكاء الاصطناعي ====== -->
+<div class="section" id="s6">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-bug"></i> المحور السادس</div>
+    <h1 class="sec-title">التعامل مع <span>أخطاء الذكاء الاصطناعي</span></h1>
+    <p class="sec-sub">مشاكل شائعة يواجهها كل معلم — وحلول عملية جاهزة للتطبيق الفوري</p>
+  </div>
+
+  <h2>🚨 المشاكل الشائعة وحلولها</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>⚡ انقطاع الكود في المنتصف</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p><strong>المشكلة:</strong> الذكاء الاصطناعي يتوقف عن الكتابة في المنتصف لأن الكود أكبر من حد الرد.</p>
+      <p><strong>الحل:</strong> اكتب فوراً:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="str">أكمل من حيث توقفت بالضبط — لا تُعيد ما كتبته، فقط أكمل باقي الكود من آخر سطر توقفت عنده</span></pre></div>
+      <p>إذا احتجت الملف كاملاً في آخر المطاف، قل:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="str">الآن أعطني الملف بالكامل من البداية مدمجاً في رد واحد، دون اختصار أي سطر</span></pre></div>
+    </div></div>
+
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🎭 هلوسة النصوص الدينية (اختراع المعلومات)</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p><strong>المشكلة:</strong> الذكاء الاصطناعي يخترع نصوصاً فقهية أو يُغيّر المتن الأصلي.</p>
+      <p><strong>الحل:</strong> أعطه النص الأصلي ومنعه صراحةً:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="str">النص الأصلي من الكتاب هو بالضبط: "[ألصق النص]"
+التزم بهذا النص حرفياً. لا تُغيّر كلمة واحدة ولا تُضف من عندك.
+عند الاقتباس اكتب بالضبط ما كتبه المصنف ولا تُفسّر أو تُعدّل.</span></pre></div>
+    </div></div>
+
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🧠 تراجع الذاكرة في المحادثات الطويلة</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p><strong>المشكلة:</strong> بعد عشرات الرسائل يبدأ الذكاء الاصطناعي "بالنسيان" أو يُقصّر.</p>
+      <p><strong>الحل:</strong></p>
+      <ul>
+        <li>افتح محادثة جديدة بعد كل درس كامل</li>
+        <li>في المحادثة الجديدة: ابدأ بلصق كودك الحالي كاملاً قبل طلبك</li>
+        <li>أو أضف ملخصاً في بداية الرسالة: "هذا الكود الحالي للدرس: [الصق الكود]"</li>
+      </ul>
+      <div class="al al-go"><div class="al-i"><i class="fas fa-lightbulb"></i></div><div>إشارات تُخبرك بأن الذاكرة تراجعت: ردود أقصر من المعتاد، كود يتكرر، يُجيب بمعلومات متناقضة.</div></div>
+    </div></div>
+
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>✂️ الردود القصيرة والاختصار الزائد</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p><strong>المشكلة:</strong> يُعطيك كوداً قصيراً رغم طلبك التفصيل.</p>
+      <p><strong>الحل — تقسيم طلبات الموقع الكبير:</strong></p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">// بدلاً من طلب الكل دفعة واحدة، قسّم:</span>
+<span class="str">رسالة ١: "أكتب لي فقط القسم الأول من الدرس: العنوان والمقدمة والمتن الأصلي بأقصى إمكانياتك"
+رسالة ٢: "أضف الآن قسم التقسيم الهرمي والشجرة التفاعلية للكود السابق"
+رسالة ٣: "أضف جدول الملخص والأمثلة والأسئلة التقييمية"
+رسالة ٤: "أعطني الملف الكامل مدمجاً"</span></pre></div>
+    </div></div>
+
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🔍 التصحيح الذاتي (مراجعة الذكاء الاصطناعي لنفسه)</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p>إذا شككت في صحة الكود أو المحتوى، اطلب منه مراجعة ذاته:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="str">راجع الكود الذي كتبته للتو بعناية واكتشف:
+١. هل هناك أخطاء برمجية؟
+٢. هل هناك معلومات دينية اخترعتها غير موجودة في النص الأصلي؟
+٣. هل كل الميزات المطلوبة موجودة؟
+ثم أعطني النسخة المُصحّحة الكاملة.</span></pre></div>
+    </div></div>
+
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🧩 الكود يعمل جزئياً أو يُعطي أخطاء</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p>افتح صفحة الكود في المتصفح، اضغط F12 لفتح أدوات المطور، انسخ رسالة الخطأ الحمراء، ثم قل:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="str">الكود يُعطي هذا الخطأ: [الصق رسالة الخطأ]
+هذا هو الكود الكامل: [الصق الكود]
+أصلح الخطأ فقط ولا تُغيّر بقية الكود وأعطني الملف كاملاً</span></pre></div>
+    </div></div>
+  </div>
+
+  <h2>🔁 متى تفتح محادثة جديدة؟</h2>
+  <div class="tip-grid">
+    <div class="tip-c"><div class="tip-num">✓</div><div class="tip-t">بعد إنهاء درس كامل</div><div class="tip-d">كل درس جديد = محادثة جديدة للحصول على تركيز كامل</div></div>
+    <div class="tip-c"><div class="tip-num">✓</div><div class="tip-t">عند تراجع جودة الردود</div><div class="tip-d">إذا بدأت الردود تقصر وتُكرر — افتح محادثة جديدة</div></div>
+    <div class="tip-c"><div class="tip-num">✓</div><div class="tip-t">عند الانتقال لموضوع مختلف</div><div class="tip-d">كل موضوع جديد يستحق محادثة نظيفة بدون تأثير السياق القديم</div></div>
+    <div class="tip-c"><div class="tip-num">✓</div><div class="tip-t">بعد أكثر من ١٥-٢٠ رسالة</div><div class="tip-d">النماذج تبدأ تُقصّر بعد محادثات طويلة جداً</div></div>
+  </div>
+</div>
+</div>
+
+<!-- ====== S7: مفاهيم متقدمة GlideStack ====== -->
+<div class="section" id="s7">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-server"></i> المحور السابع</div>
+    <h1 class="sec-title">المفاهيم <span>المتقدمة</span></h1>
+    <p class="sec-sub">API ونظام GlideStack الذي يُحوّل المواقع الثابتة إلى ديناميكية بصفر تكلفة</p>
+  </div>
+
+  <h2>ما هو API؟</h2>
+  <div class="hl"><div class="hl-title"><i class="fas fa-concierge-bell"></i> تخيّل API كنادل في مطعم</div><p style="margin-top:9px">موقعك (الزبون) يطلب بيانات ← API (النادل) يذهب للخادم ويجلبها ← موقعك يعرضها للزائر.<br>بدون API موقعك الثابت لا يستطيع جلب بيانات جديدة — البيانات مجمّدة في الكود. مع API موقعك "حي" يتحدث مع الإنترنت.</p></div>
+
+  <h2>المواقع الثابتة مقابل الديناميكية</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>المعيار</th><th>🧱 موقع ثابت</th><th>⚡ موقع ديناميكي</th><th>✨ GlideStack</th></tr></thead>
+    <tbody>
+      <tr><td><strong>التكلفة الشهرية</strong></td><td>$0</td><td>$5 - $100+</td><td style="color:var(--ac);font-weight:800">$0</td></tr>
+      <tr><td><strong>تحديث البيانات</strong></td><td>يحتاج تعديل الكود</td><td>فوري من لوحة تحكم</td><td>من Google Drive مباشرة</td></tr>
+      <tr><td><strong>الاستضافة</strong></td><td>GitHub/Netlify مجاناً</td><td>سيرفر مدفوع</td><td>GitHub/Netlify مجاناً</td></tr>
+      <tr><td><strong>قاعدة البيانات</strong></td><td>لا توجد</td><td>MySQL/MongoDB مدفوعة</td><td>Google Drive مجاناً</td></tr>
+      <tr><td><strong>المناسب لـ</strong></td><td>دروس، ألعاب</td><td>منصات كبيرة</td><td>مكتبات، دروس، متاجر</td></tr>
+    </tbody>
+  </table></div>
+
+  <h2>✨ نظام GlideStack / GDSA</h2>
+
+  <div class="al al-bl"><div class="al-i"><i class="fas fa-info-circle"></i></div>
+  <div><strong>GDSA = Google Drive as Static Architecture</strong> — معمارية ثورية تحوّل Google Drive إلى قاعدة بيانات حية كاملة بصفر تكلفة. التكلفة الشهرية للمعمارية التقليدية: $20-$500، تكلفة GDSA: <strong style="color:var(--ac)">$0</strong>.</div></div>
+
+  <div style="display:flex; justify-content:center; gap:12px; margin:20px 0;">
+    <button class="btn-p" onclick="loadGDSA()"><i class="fas fa-file-import"></i> قراءة نظام GDSA</button>
+    <a href="GlideStack_GDSA.md" download class="btn-o" style="text-decoration:none"><i class="fas fa-download"></i> تحميل GDSA.md</a>
+  </div>
+  <div id="gdsa-content" style="display:none; margin:20px 0; text-align:right; background:var(--sf); border:1px solid var(--bd); border-radius:var(--rd); padding:20px; max-height:400px; overflow-y:auto; font-size:0.9rem; line-height:1.6; position:relative; box-shadow:0 4px 12px var(--sh);">
+    <button onclick="this.parentElement.style.display='none'" style="position:absolute; top:10px; left:10px; background:none; border:none; color:var(--tx3); cursor:pointer; font-size:1.2rem;"><i class="fas fa-times"></i></button>
+    <div id="gdsa-text" class="gdsa-viewer"></div>
+  </div>
+
+  <h3>لماذا هذه المعمارية ثورية للمعلم؟</h3>
+  <div class="grid">
+    <div class="card" style="border-top:3px solid var(--pr)">
+      <div style="font-size:1.4rem;margin-bottom:10px">🗄️</div>
+      <div class="c-title">Drive = قاعدة بيانات مرئية</div>
+      <div class="c-desc">أضف كتاباً = ارفع ملف PDF في المجلد المناسب. أضف تصنيفاً = أنشئ مجلداً جديداً. لا SQL ولا خوادم ولا تعلّم تقني.</div>
+    </div>
+    <div class="card" style="border-top:3px solid var(--go)">
+      <div style="font-size:1.4rem;margin-bottom:10px">⚡</div>
+      <div class="c-title">تحديثات من الهاتف مباشرة</div>
+      <div class="c-desc">ارفع صورة في Drive → تظهر في الموقع فوراً. عدّل خلية في Sheets → يتحدث الموقع. لا تحتاج لمطور للتحديث اليومي.</div>
+    </div>
+    <div class="card" style="border-top:3px solid #27ae60">
+      <div style="font-size:1.4rem;margin-bottom:10px">🛡️</div>
+      <div class="c-title">موثوقية Google التحتية</div>
+      <div class="c-desc">Google Drive Uptime 99.9%+. بنية تحتية تخدم مليارات المستخدمين — أكثر موثوقية من أي خادم شخصي مدفوع.</div>
+    </div>
+  </div>
+
+  <h3>كيف يعمل GDSA خطوة بخطوة؟</h3>
+  <div class="steps">
+    <div class="step"><div class="step-n">١</div><div class="step-c">
+      <div class="step-t">احصل على مفتاح API من Google Cloud</div>
+      <div class="step-d">اذهب إلى <a href="https://console.cloud.google.com/apis" target="_blank" style="color:var(--pr)">console.cloud.google.com</a> ← أنشئ مشروعاً ← فعّل Google Drive API ← أنشئ API Key. قيّد المفتاح بنطاق موقعك للأمان.</div>
+    </div></div>
+    <div class="step"><div class="step-n">٢</div><div class="step-c">
+      <div class="step-t">نظّم مجلداتك في Google Drive</div>
+      <div class="step-d">أنشئ مجلداً جذراً لموقعك. أضف مجلدات فرعية لكل تصنيف (كتب فقه، دروس عقائد...). اجعل المجلد الجذر عاماً "Anyone with the link can view".</div>
+    </div></div>
+    <div class="step"><div class="step-n">٣</div><div class="step-c">
+      <div class="step-t">أعطِ Claude الأمر مع مفتاحك ومعرّف مجلدك</div>
+      <div class="step-d">قل: "أريد موقع مكتبة دينية يجلب من Drive API باستخدام مفتاح [KEY] ومجلد [FOLDER_ID]. اكتبه بـ HTML+CSS+JS كاملاً بأقصى إمكانياتك."</div>
+    </div></div>
+    <div class="step"><div class="step-n">٤</div><div class="step-c">
+      <div class="step-t">انشر الملف على Netlify</div>
+      <div class="step-d">ملف HTML واحد فقط = اسحب وأفلت. الموقع يجلب بياناته من Drive تلقائياً عند كل زيارة.</div>
+    </div></div>
+    <div class="step"><div class="step-n">٥</div><div class="step-c">
+      <div class="step-t">أدِر موقعك من هاتفك — لا من الكود!</div>
+      <div class="step-d">كل التحديثات عبر Drive مباشرة. أضف ملفاً، أنشئ مجلداً، عدّل في Sheets — الموقع يتحدث تلقائياً خلال دقيقة.</div>
+    </div></div>
+  </div>
+
+  <h3>📋 أمثلة تطبيقية لمعلمي التعليم الديني</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>المشروع</th><th>هيكل Drive</th><th>ما يظهر في الموقع</th></tr></thead>
+    <tbody>
+      <tr><td><strong>مكتبة الكتب الدينية</strong></td><td>📁 فقه / 📁 عقائد / 📁 أدعية → 📄 كتاب.pdf</td><td>مكتبة قابلة للبحث والتحميل</td></tr>
+      <tr><td><strong>أرشيف دروس المعلم</strong></td><td>📁 الفصل الأول / 📁 الثاني → 📄 درس.pdf</td><td>أرشيف منظم مع بحث</td></tr>
+      <tr><td><strong>بنك أسئلة الاختبارات</strong></td><td>📊 Sheets: السؤال، الخيارات، الجواب</td><td>اختبار تفاعلي يجلب الأسئلة تلقائياً</td></tr>
+      <tr><td><strong>قاعدة الأدعية والزيارات</strong></td><td>📁 يومية / 📁 زيارات / 📁 تعقيبات</td><td>موقع دعاء مصنّف قابل للبحث</td></tr>
+      <tr><td><strong>صور الفعاليات</strong></td><td>📁 2024 / 📁 2025 → 🖼️ صور</td><td>معرض صور منظم بالسنة</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🗺️ أمر بناء موقع GDSA كامل</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أكتب لي موقع <span class="ph">[مكتبة دينية / أرشيف دروس / معرض صور]</span> ديناميكي كامل باستخدام Google Drive API (نظام GlideStack/GDSA) في ملف HTML واحد.
+
+الإعدادات:
+✦ مفتاح API: <span class="ph">[API_KEY من Google Cloud Console]</span>
+✦ معرف المجلد الجذر: <span class="ph">[FOLDER_ID من رابط Drive]</span>
+
+المطلوب:
+✦ يجلب الملفات والمجلدات من Drive تلقائياً
+✦ بحث وفلترة وترتيب
+✦ كاش ذكي 5 دقائق لتقليل استدعاءات API
+✦ وضع Loading أنيق أثناء جلب البيانات
+✦ وضع فاتح وداكن ومتوافق مع الهواتف
+✦ تصميم إسلامي احترافي
+
+بأقصى إمكانياتك وقدراتك وبأطول ما يمكنك كتابته</div></div>
+
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin:18px 0;text-align:center">
+    <div style="background:linear-gradient(135deg,var(--pr),var(--pr3));color:#fff;border-radius:11px;padding:14px"><div style="font-size:1.4rem;font-weight:900">$0</div><div style="font-size:.77rem;opacity:.9">تكلفة شهرية</div></div>
+    <div style="background:linear-gradient(135deg,var(--go),var(--go2));color:#fff;border-radius:11px;padding:14px"><div style="font-size:1.4rem;font-weight:900">1M</div><div style="font-size:.77rem;opacity:.9">طلب يومياً مجاناً</div></div>
+    <div style="background:linear-gradient(135deg,#27ae60,#2ecc71);color:#fff;border-radius:11px;padding:14px"><div style="font-size:1.4rem;font-weight:900">15GB</div><div style="font-size:.77rem;opacity:.9">تخزين مجاني</div></div>
+  </div>
+  <div class="gs">
+    <div class="gs-i"><div class="gs-ico">📄</div><div class="gs-l">Frontend</div><div class="gs-s">ملف HTML واحد</div></div>
+    <div class="gs-i"><div class="gs-ico">☁️</div><div class="gs-l">Backend</div><div class="gs-s">Google Drive API</div></div>
+    <div class="gs-i"><div class="gs-ico">🗄️</div><div class="gs-l">Database</div><div class="gs-s">مجلدات Drive</div></div>
+    <div class="gs-i"><div class="gs-ico">📊</div><div class="gs-l">Relations</div><div class="gs-s">Google Sheets</div></div>
+    <div class="gs-i"><div class="gs-ico">🖥️</div><div class="gs-l">CMS</div><div class="gs-s">واجهة Drive</div></div>
+    <div class="gs-i"><div class="gs-ico">🚀</div><div class="gs-l">Hosting</div><div class="gs-s">Netlify مجاناً</div></div>
+  </div>
+
+  <h2>🔧 تقنيات متقدمة مفيدة للمعلم</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>⏱️ مؤقتات التفاعل — Timer API</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>أضف عداداً تنازلياً لمسابقاتك أو اختباراتك. ينتهي تلقائياً وينتقل للسؤال التالي:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">// عداد تنازلي - أضفه في أمرك للذكاء الاصطناعي</span>
+<span class="kw">let</span> timeLeft = 60;
+<span class="kw">const</span> timer = setInterval(() => {
+  timeLeft--;
+  document.getElementById(<span class="str">'timer'</span>).textContent = timeLeft;
+  <span class="kw">if</span> (timeLeft <= 0) { clearInterval(timer); nextQuestion(); }
+}, 1000);</pre></div>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر إضافة عداد تنازلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">أضف عداداً تنازلياً من ٦٠ ثانية لكل سؤال في هذه اللعبة:
+✦ ينتقل للسؤال التالي تلقائياً عند انتهاء الوقت
+✦ يتحوّل للأحمر عند بقاء ١٠ ثوانٍ
+✦ صوت تنبيه عند الانتهاء
+✦ لا تغير بقية الكود
+<span class="ph">[الصق كودك هنا]</span></div></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🎨 زخارف إسلامية بـ SVG — بدون صور</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>الذكاء الاصطناعي يكتب أكواد SVG ترسم أقواساً وزخارف إسلامية مباشرة في HTML — بدون أي صور خارجية، وخفيفة الحجم:</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر إضافة زخارف إسلامية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">أضف لهذا الموقع زخارف هندسية إسلامية باستخدام SVG:
+✦ نمط هندسي إسلامي خفيف كخلفية شبه شفافة للرأس
+✦ إطار مزخرف للبطاقات بأقواس عربية أنيقة
+✦ خط فاصل زخرفي بين الأقسام
+✦ الألوان: ذهبي وأزرق داكن يتناسب مع التصميم
+✦ اجعل الزخارف خفيفة لا تُثقل الصفحة
+<span class="ph">[الصق كودك هنا]</span></div></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>📡 APIs مجانية للمواقع الدينية</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>هذه الـ APIs مجانية بالكامل ويمكن إضافتها لأي درس:</p>
+      <div class="tbl"><table>
+        <thead><tr><th>الخدمة</th><th>الرابط</th><th>ما تجلبه</th></tr></thead>
+        <tbody>
+          <tr><td>أوقات الصلاة</td><td><code>api.aladhan.com</code></td><td>مواقيت الصلوات الخمس</td></tr>
+          <tr><td>التاريخ الهجري</td><td><code>api.aladhan.com/v1/gToH</code></td><td>تحويل الميلادي للهجري</td></tr>
+          <tr><td>آية قرآنية يومية</td><td><code>api.alquran.cloud</code></td><td>آيات + ترجمات + تلاوات</td></tr>
+          <tr><td>أسماء الله الحسنى</td><td><code>api.aladhan.com/v1/asmaAlHusna</code></td><td>الأسماء + المعاني</td></tr>
+        </tbody>
+      </table></div>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">// مثال: جلب أوقات الصلاة في البحرين</span>
+fetch(<span class="str">'https://api.aladhan.com/v1/timingsByCity?city=Manama&country=BH&method=8'</span>)
+  .then(r => r.json())
+  .then(data => {
+    <span class="kw">const</span> times = data.data.timings;
+    document.getElementById(<span class="str">'fajr'</span>).textContent = times.Fajr;
+    document.getElementById(<span class="str">'dhuhr'</span>).textContent = times.Dhuhr;
+  });</pre></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>📲 الوضع الأوفلاين — Service Worker</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>جزء من تقنية PWA — يحفظ الصفحة في ذاكرة الهاتف لتعمل بدون إنترنت. مثالي لمكتبات الأدعية والدروس التي يحتاجها الطالب في أي وقت:</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر تحويل الدرس للعمل أوفلاين</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">أضف لهذا الدرس قدرة العمل بدون إنترنت:
+✦ أنشئ ملف sw.js (Service Worker) يحفظ الملفات في الكاش
+✦ أنشئ ملف manifest.json لإمكانية التثبيت على الهاتف
+✦ أضف زر "تثبيت التطبيق" إذا أمكن
+✦ أعطني الملفات الثلاثة منفصلة مع تعليمات الرفع على GitHub
+<span class="ph">[الصق كودك هنا]</span></div></div>
+    </div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>✂️ تقسيم الكود لملفات منفصلة</span><i class="fas fa-chevron-left acc-arr"></i></div><div class="acc-body">
+      <p>حين يصبح الكود ضخماً جداً (أكثر من ٢٠٠٠ سطر)، يمكن تقسيمه:</p>
+      <div class="pb"><div class="pb-hdr"><div class="pb-title">أمر تقسيم الكود</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+      <div class="pb-body">قسّم هذا الكود إلى ثلاثة ملفات منفصلة:
+١. <span class="ph">index.html</span> — الهيكل فقط مع روابط للملفات الأخرى
+٢. <span class="ph">style.css</span> — كل التصميم والألوان
+٣. <span class="ph">script.js</span> — كل التفاعل والوظائف
+أعطني كل ملف على حدة مع كيفية ربطها معاً
+<span class="ph">[الصق كودك هنا]</span></div></div>
+    </div></div>
+  </div>
+
+  <div class="al al-rd"><div class="al-i"><i class="fas fa-exclamation-triangle"></i></div><div><strong>تنبيه مهم:</strong> نظام GlideStack معقد ويحتاج مفتاح API من <a href="https://console.cloud.google.com/apis" target="_blank" style="color:var(--pr)">Google Cloud Console</a> وإعداد المجلدات بشكل صحيح. يُنصح بإتقان المواقع الثابتة أولاً.</div></div>
+</div>
+</div>
+
+<!-- ====== S8: نماذج الأوامر ====== -->
+<div class="section" id="s8">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-copy"></i> المحور الثامن</div>
+    <h1 class="sec-title">مكتبة <span>الأوامر الجاهزة</span></h1>
+    <p class="sec-sub">أوامر جاهزة بالعربية للنسخ والاستخدام الفوري — خصّصها بموضوعك وانتهيت في دقائق</p>
+
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">📖 أمر درس ديني / فقهي شامل</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أكتب لي درس كامل عن <span class="ph">[موضوع الدرس]</span> من كتاب <span class="ph">[اسم الكتاب]</span> للصف <span class="ph">[الصف]</span>، وهذا النص الكامل للدرس:
+<span class="ph">[ألصق هنا نص الدرس من الكتاب كاملاً]</span>
+
+اكتب الكود في صفحة html داخله css وjavascript
+✦ بأقصى إمكانياتك وقدراتك التنسيقية البرمجية التصميمية
+✦ بأطول ما يمكنك كتابته بشكل مفصّل ودقيق للغاية
+✦ ولا تهمل أي شيء فيه أبداً
+✦ وفكر طويلاً للغاية قبل الكتابة
+
+يجب أن يحتوي على:
+✦ نص المتن الأصلي مظلّلاً بلون مميز
+✦ تقسيم هرمي للمحتوى (موضوع، حكم، تعريف، علامة، استثناء)
+✦ شجرة تفاعلية للمحتوى
+✦ جدول ملخص شامل
+✦ الأمثلة والتطبيقات الحياتية
+✦ أسئلة تقييم تفاعلية مع الإجابات
+✦ خريطة ذهنية بصرية
+✦ وضع فاتح وداكن
+
+<span class="pn">⚠️ لا تُغيّر أي كلمة في المتن الأصلي — التزم بالنص الحرفي تماماً</span></div>
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">🎮 أمر لعبة تعليمية تفاعلية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أكتب لي لعبة تعليمية تفاعلية في html+css+js عن موضوع <span class="ph">[الموضوع]</span>.
+
+اللعبة تحتوي على:
+✦ أسئلة اختيار متعدد (١٠ أسئلة على الأقل)
+✦ عداد نقاط ومؤقت زمني
+✦ تأثيرات بصرية عند الإجابة الصحيحة والخطأ (مكافآت بصرية)
+✦ مستويات صعوبة (سهل، متوسط، صعب)
+✦ شاشة نهاية مع النتيجة وشهادة يُدخل فيها الطالب اسمه
+✦ إمكانية إعادة اللعب
+✦ عجلة حظ عشوائية لاختيار الطلاب بإمكانية إدخال أسمائهم
+✦ وضع فاتح وداكن
+✦ حفظ أعلى نتيجة في المتصفح
+
+بأقصى إمكانياتك وقدراتك التصميمية البرمجية، بأطول ما يمكنك كتابته، واجعله جذاباً لطلاب <span class="ph">[الفئة العمرية]</span></div>
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">📊 أمر عرض تقديمي تفاعلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أكتب لي عرض تقديمي تفاعلي في html+css+js عن موضوع <span class="ph">[الموضوع]</span>.
+
+العرض يحتوي على:
+✦ ١٢ شريحة على الأقل
+✦ شريحة عنوان جذابة مع صورة خلفية
+✦ شرائح محتوى مع تحريكات عند الانتقال
+✦ جداول ورسوم بيانية حيث يناسب
+✦ خريطة ذهنية تلخيصية
+✦ شريحة أسئلة تفاعلية
+✦ تنقل بالأزرار (التالي / السابق) وبلوحة المفاتيح
+✦ شريط تقدم يوضح الشريحة الحالية
+✦ وضع فاتح وداكن وزر طباعة
+
+بأقصى إمكانياتك وقدراتك التصميمية، تصميم احترافي إسلامي أنيق، بأطول ما يمكنك كتابته</div>
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">🧮 أمر آلة حاسبة فقهية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أكتب لي آلة حاسبة فقهية تفاعلية في html+css+js لحساب <span class="ph">[الخمس / الزكاة / المواريث]</span>.
+
+تحتوي على:
+✦ حقول إدخال واضحة باللغة العربية
+✦ شرح لكل حقل ومصطلح
+✦ حساب فوري مع إظهار الخطوات
+✦ جدول نتائج مفصّل
+✦ إمكانية الطباعة
+✦ أمثلة توضيحية جاهزة
+
+بأقصى إمكانياتك وقدراتك التصميمية البرمجية وبأطول ما يمكنك كتابته
+<span class="pn">⚠️ استند للنصوص المرجعية التالية في الحساب: [ألصق النص]</span></div>
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">✏️ أمر تعديل كود موجود</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">هذا ملف الكود الخاص بـ <span class="ph">[اسم الموقع]</span>، أريدك أن تحرره وتعدل الأمور التي أطلبها فقط:
+
+أولاً: <span class="ph">[التعديل الأول بالتفصيل]</span>
+ثانياً: <span class="ph">[التعديل الثاني بالتفصيل]</span>
+ثالثاً: <span class="ph">[التعديل الثالث بالتفصيل]</span>
+
+<span class="ph">[ألصق هنا الكود الحالي كاملاً]</span>
+
+<span class="pn">⚠️ مهم جداً:
+✦ لا تغير أي شيء آخر في الكود
+✦ لا تحذف أي ميزة موجودة
+✦ أعطني الملف كاملاً بعد التعديل
+✦ لا تختصر أو تقول "باقي الكود كما هو"</span></div>
+  </div>
+
+  <div class="pb">
+    <div class="pb-hdr"><div class="pb-title">🌲 أمر شجرة نسب أو تسلسل تاريخي تفاعلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+    <div class="pb-body">أكتب لي شجرة <span class="ph">[نسب الأئمة / تسلسل تاريخي]</span> تفاعلية بصرية في html+css+js تحتوي على:
+
+✦ رسم بياني للشجرة بتصميم عربي أصيل
+✦ عند النقر على كل شخصية تظهر معلومات تفصيلية عنها
+✦ خط زمني تفاعلي للأحداث المهمة
+✦ ألوان مميزة لكل فرع أو حقبة
+✦ إمكانية التكبير والتصغير
+✦ تصميم متوافق مع الهواتف
+
+البيانات: <span class="ph">[ألصق المعلومات المطلوبة]</span>
+بأقصى إمكانياتك وقدراتك التصميمية وبأطول ما يمكنك كتابته</div>
+  </div>
+</div>
+</div>
+
+<!-- ====== S9: إضافات تفاعلية للدروس ====== -->
+<div class="section" id="s9">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-magic"></i> المحور التاسع</div>
+    <h1 class="sec-title">إضافات <span>تفاعلية للدروس</span></h1>
+    <p class="sec-sub">ميزات احترافية تُضاف لأي درس أو لعبة لتُحسّن تجربة الطالب</p>
+  </div>
+
+  <h2>💾 حفظ تقدم الطالب (Local Storage)</h2>
+  <div class="hl"><div class="hl-title"><i class="fas fa-save"></i> لا قاعدة بيانات — حفظ في المتصفح مباشرة!</div>
+  <p style="margin-top:9px">يمكن حفظ تقدم الطالب ونتائجه في متصفحه دون أي سيرفر. البيانات تبقى حتى بعد إغلاق الصفحة.</p>
+  <div class="pb" style="margin-top:12px"><div class="pb-hdr"><div class="pb-title">💾 أمر إضافة نظام الحفظ التلقائي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود نظام حفظ تقدم الطالب تلقائياً باستخدام localStorage في المتصفح بحيث:
+✦ يحفظ تلقائياً كل إجابة ونتيجة ووقت التقدم
+✦ يُذكّر الطالب بتقدمه عند عودته للصفحة
+✦ يعرض لوحة إنجازات تُظهر المستوى والنقاط المتراكمة
+✦ زر لمسح البيانات والبدء من جديد
+✦ بدون تغيير أي شيء آخر في الكود
+<span class="ph">[الصق كودك هنا]</span></div></div></div>
+
+  <h2>🖨️ زر الطباعة بتنسيق الورق (Print CSS)</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🖨️ أمر إضافة زر طباعة احترافية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود:
+✦ زر "طباعة الدرس" بتصميم جميل
+✦ عند الطباعة: يختفي شريط التنقل والأزرار ويبقى المحتوى فقط
+✦ تنسيق خاص للورق يُظهر عنوان الدرس والتاريخ والصفحة بشكل مُرتّب
+✦ خطوط مناسبة للطباعة وألوان مناسبة للورق الأبيض
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>🎓 نظام الشهادات التلقائية</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🎓 أمر إضافة شهادة تفاعلية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">بعد انتهاء التقييم في هذا الكود أضف:
+✦ حقل لإدخال اسم الطالب قبل البدء
+✦ عند الانتهاء بنجاح (أكثر من ٧٠٪): تظهر شهادة جميلة مُصمّمة بالتصميم الإسلامي
+✦ الشهادة تحتوي: اسم الطالب، اسم الدرس، النتيجة، التاريخ
+✦ زر "طباعة الشهادة" يطبعها كاملة
+✦ زر "حفظ الشهادة كصورة"
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>🎊 تأثيرات المكافآت البصرية</h2>
+  <div class="grid">
+    <div class="card"><div class="c-ico ic-gr"><i class="fas fa-star"></i></div><div class="c-title">مطر النجوم والكونفيتي</div><div class="c-desc">تأثيرات رسوم متحركة جميلة عند الإجابة الصحيحة أو إنهاء الدرس. تضاف بجملة واحدة في الأمر.</div></div>
+    <div class="card"><div class="c-ico ic-g"><i class="fas fa-fire"></i></div><div class="c-title">نظام التتابع (Streak)</div><div class="c-desc">إحصاء الإجابات الصحيحة المتتالية مع مكافأة بصرية خاصة عند وصول عدد معين.</div></div>
+    <div class="card"><div class="c-ico ic-b"><i class="fas fa-trophy"></i></div><div class="c-title">ألقاب الطالب</div><div class="c-desc">منح الطالب لقباً حسب نتيجته: "متقدم — جيد — ممتاز" مع أيقونة مميزة لكل مستوى.</div></div>
+  </div>
+
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🎊 أمر إضافة مكافآت بصرية</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود مكافآت بصرية احترافية:
+✦ مطر كونفيتي ملوّن عند كل إجابة صحيحة
+✦ رسالة تشجيع عشوائية ("أحسنت! رائع! ممتاز!") مع كل إجابة صحيحة
+✦ تأثير اهتزاز خفيف للكرت عند الإجابة الخاطئة
+✦ عداد تتابع يُظهر عدد الإجابات الصحيحة المتتالية
+✦ احتفال كبير (نجوم + رسالة) عند الانتهاء بنجاح
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>🔊 دمج الصوتيات والتلاوات</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🔊 أمر إضافة مشغّل صوتي تفاعلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود مشغّل صوتي إسلامي يحتوي على:
+✦ أزرار تشغيل/إيقاف لكل مقطع صوتي
+✦ شريط تقدم للصوت مع عرض الوقت
+✦ إمكانية إضافة روابط ملفات صوتية (MP3) من Google Drive
+✦ تصميم يتلاءم مع القرآن والأدعية (خلفية داكنة أنيقة)
+✦ يعمل على الهاتف والكمبيوتر
+
+روابط الملفات الصوتية: <span class="ph">[ضع روابط Google Drive للصوتيات]</span>
+<span class="pn">// روابط Drive: انسخ رابط الملف ثم غيّر "view" إلى "uc?export=download"</span></div></div>
+
+  <h2>🔎 البحث الداخلي في الدرس</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🔎 أمر إضافة بحث داخلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود مربع بحث داخلي:
+✦ مربع بحث في أعلى الصفحة
+✦ يُضيء (يُبرز) كلمات البحث في النص بلون أصفر
+✦ يُظهر عدد النتائج
+✦ أزرار للانتقال بين النتائج (السابق / التالي)
+✦ مسح البحث بضغطة واحدة
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>🪟 نوافذ شرح المصطلحات (Modals)</h2>
+  <div class="hl">
+    <div class="hl-title"><i class="fas fa-info-circle"></i> عند النقر على كلمة تظهر بطاقة شرح — بدون مغادرة الصفحة!</div>
+    <p style="margin-top:9px">مثالية لشرح غريب الألفاظ والمصطلحات الفقهية. الطالب ينقر على "الترخّص" أو "السهو" فتظهر له بطاقة تعريف أنيقة دون أن يغادر الدرس.</p>
+  </div>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🪟 أمر إضافة نوافذ المصطلحات</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الدرس نظام نوافذ منبثقة لشرح المصطلحات:
+✦ كل مصطلح فقهي يصبح قابلاً للنقر (مُسطّر بشكل خفيف)
+✦ عند النقر تظهر بطاقة منبثقة أنيقة تحتوي: المصطلح + التعريف + مثال
+✦ إغلاق البطاقة بالنقر خارجها أو على زر X
+✦ تصميم يتناسب مع المحتوى الديني الأنيق
+قائمة المصطلحات وتعريفاتها:
+<span class="ph">[اكتب هنا: المصطلح: تعريفه، على كل سطر]</span>
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>🎯 وضع التركيز — Focus Mode</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🎯 أمر إضافة وضع التركيز</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الدرس زر "وضع التركيز":
+✦ يخفي كل شيء (القوائم، الأزرار، الزخارف) ويبقي فقط المتن الأصلي
+✦ خط أكبر (1.3rem) وتباعد سطور أرحب (2.4) ومتن يمتد بعرض مريح
+✦ خلفية كريمية هادئة لا تُجهد العين
+✦ زر صغير ثابت للخروج من وضع التركيز
+✦ يحفظ التفضيل في المتصفح
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>↕️ التمرير السلس بين الأقسام — Smooth Scroll</h2>
+  <div class="hl">
+    <div class="hl-title"><i class="fas fa-arrows-alt-v"></i> تنقّل أنيق بين فقرات الدرس الطويل</div>
+    <div class="code-box" style="margin-top:12px"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">/* أضف في CSS الخاص بدرسك */</span>
+html { scroll-behavior: smooth; }
+
+<span class="cm">/* وفي JavaScript للتنقل إلى قسم معين */</span>
+document.getElementById(<span class="str">'section-3'</span>)
+  .scrollIntoView({ behavior: <span class="str">'smooth'</span>, block: <span class="str">'start'</span> });</pre></div>
+    <p style="margin-top:8px;font-size:.85rem;color:var(--tx2)">في أمرك للذكاء الاصطناعي: <strong>"أضف تمريراً سلساً بين الأقسام عند الضغط على أي رابط في الفهرس"</strong></p>
+  </div>
+
+</div>
+</div>
+
+<!-- ====== S10: إدارة الملفات والاستضافة ====== -->
+<div class="section" id="s10">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-server"></i> المحور العاشر</div>
+    <h1 class="sec-title">إدارة الملفات <span>والاستضافة</span></h1>
+    <p class="sec-sub">تقنيات لإدارة مشاريعك بشكل أفضل وتجنب المشاكل الشائعة</p>
+  </div>
+
+  <h2>🔄 حل مشكلة الكاش (Cache)</h2>
+  <div class="hl"><div class="hl-title"><i class="fas fa-history"></i> عندما لا تظهر التحديثات للطلاب</div>
+  <p style="margin-top:9px"><strong>المشكلة:</strong> حدّثت الموقع في GitHub لكن الطلاب يرون النسخة القديمة.</p>
+  <p><strong>الحل للطلاب:</strong> Ctrl+Shift+R (أو Cmd+Shift+R في Mac) لتحديث الصفحة مع تجاهل الكاش.</p>
+  <p><strong>الحل البرمجي:</strong> أضف رقم إصدار لروابط CSS/JS في الكود:</p>
+  <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">&lt;!-- غيّر الرقم في كل مرة تحدّث الكود --&gt;</span>
+&lt;<span class="kw">link</span> rel=<span class="str">"stylesheet"</span> href=<span class="str">"style.css?v=1.5"</span>&gt;
+&lt;<span class="kw">script</span> src=<span class="str">"app.js?v=1.5"</span>&gt;&lt;/<span class="kw">script</span>&gt;</pre></div></div>
+
+  <h2>↩️ التراجع عن خطأ نُشر بالخطأ (GitHub Version Control)</h2>
+  <div class="steps">
+    <div class="step"><div class="step-n">١</div><div class="step-c"><div class="step-t">اذهب للمستودع في GitHub</div><div class="step-d">ادخل على المستودع واضغط على اسم الملف الذي تريد التراجع عنه</div></div></div>
+    <div class="step"><div class="step-n">٢</div><div class="step-c"><div class="step-t">اضغط History</div><div class="step-d">ستجد قائمة بكل التعديلات السابقة مع تاريخها</div></div></div>
+    <div class="step"><div class="step-n">٣</div><div class="step-c"><div class="step-t">اختر النسخة القديمة</div><div class="step-d">اضغط على التعديل الذي تريد العودة إليه وانسخ الكود القديم</div></div></div>
+    <div class="step"><div class="step-n">٤</div><div class="step-c"><div class="step-t">الصق الكود القديم وأحفظه</div><div class="step-d">افتح الملف الحالي، احذف الكود الجديد الخاطئ، الصق القديم، اضغط Commit</div></div></div>
+  </div>
+
+  <h2>📲 تحويل الموقع لتطبيق هاتف (PWA)</h2>
+  <div class="hl"><div class="hl-title"><i class="fas fa-mobile-alt"></i> التطبيق التدريجي (Progressive Web App)</div>
+  <p style="margin-top:9px">يمكن تحويل موقعك الثابت لـ"تطبيق" يمكن للطالب تثبيته على هاتفه بدون متجر التطبيقات — يعمل أوفلاين!</p>
+  <div class="pb" style="margin-top:12px"><div class="pb-hdr"><div class="pb-title">📲 أمر تحويل الموقع لـ PWA</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">حوّل هذا الكود لتطبيق Progressive Web App (PWA) يمكن تثبيته على الهاتف:
+✦ أضف ملف manifest.json بالعربية
+✦ أضف Service Worker للعمل أوفلاين
+✦ أضف أيقونة للتطبيق
+✦ أضف شاشة تحميل (Splash Screen)
+✦ أعطني الملفات كلها منفصلة مع تعليمات رفعها على GitHub
+<span class="ph">[الصق كودك هنا]</span></div></div></div>
+
+  <h2>🖼️ بدائل رفع الصور بدون GitHub</h2>
+  <div class="grid">
+    <div class="card"><div class="c-ico ic-b"><i class="fas fa-cloud-upload-alt"></i></div><div class="c-title">Imgbb.com</div><div class="c-desc">ارفع الصورة واحصل على رابط مباشر في ثوانٍ. مجاني تماماً ومثالي للصور الصغيرة.</div><a href="https://imgbb.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> imgbb.com</a></div>
+    <div class="card"><div class="c-ico ic-gr"><i class="fas fa-images"></i></div><div class="c-title">Google Drive (مباشر)</div><div class="c-desc">ارفع الصورة في Drive، اجعلها عامة، غيّر الرابط: أبدل "view" بـ "uc?export=view" للحصول على رابط مباشر.</div></div>
+    <div class="card"><div class="c-ico ic-g"><i class="fas fa-photo-video"></i></div><div class="c-title">Cloudinary.com</div><div class="c-desc">منصة متقدمة لرفع وضغط الصور. تُصغّر حجم الصور تلقائياً لتسريع الموقع.</div><a href="https://cloudinary.com" target="_blank" class="c-link"><i class="fas fa-external-link-alt"></i> cloudinary.com</a><span class="badge b-free">مجاني بحدود</span></div>
+  </div>
+
+  <h2>📊 مراقبة الزيارات والاستهلاك</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>الخدمة</th><th>الحد المجاني</th><th>ماذا يحدث عند التجاوز</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Netlify Bandwidth</strong></td><td>100 GB شهرياً</td><td>يتوقف الموقع — يُمكن الترقية أو الانتظار للشهر الجديد</td></tr>
+      <tr><td><strong>GitHub Storage</strong></td><td>1 GB للمستودع</td><td>تُرفض الملفات الجديدة — يجب حذف ملفات قديمة</td></tr>
+      <tr><td><strong>Google Drive API</strong></td><td>1,000,000 طلب يومياً</td><td>نادراً ما يُتجاوز في المواقع التعليمية</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="al al-gr"><div class="al-i"><i class="fas fa-check-circle"></i></div><div><strong>نصيحة:</strong> لموقع تعليمي بمئات الطلاب يومياً، الحد المجاني من Netlify يكفي لسنوات. المشكلة تحدث فقط عند رفع ملفات فيديو ضخمة مباشرة في GitHub.</div></div>
+</div>
+</div>
+
+<!-- ====== S11: تجربة المستخدم والجانب التربوي ====== -->
+<div class="section" id="s11">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-user-graduate"></i> المحور الحادي عشر</div>
+    <h1 class="sec-title">تجربة المستخدم <span>والجانب التربوي</span></h1>
+    <p class="sec-sub">اجعل دروسك سهلة الاستخدام على الهاتف ومُريحة للعين ومُراعية للجميع</p>
+  </div>
+
+  <h2>📱 التوافق مع الهواتف (Mobile First)</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">📱 أمر جعل الدرس متوافقاً مع الهاتف</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">اجعل هذا الكود متوافقاً تماماً مع الهواتف المحمولة:
+✦ تصميم يتأقلم مع الشاشات الصغيرة (Responsive Design)
+✦ الأزرار كبيرة بما يكفي للنقر بالإبهام (٤٤px على الأقل)
+✦ الخطوط قابلة للقراءة على الهاتف (١٦px كحد أدنى)
+✦ لا يوجد تمرير أفقي
+✦ القوائم تتكيّف مع الشاشة الصغيرة
+✦ الصور لا تتجاوز عرض الشاشة
+<span class="ph">[الصق كودك هنا]</span>
+<span class="pn">لا تغير التصميم الأساسي — فقط اجعله متوافقاً</span></div></div>
+
+  <h2>🔤 الخطوط العربية الاحترافية</h2>
+  <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button>
+<pre><span class="cm">/* إضافة خطوط Google Fonts العربية */</span>
+&lt;<span class="kw">link</span> href=<span class="str">"https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Amiri:wght@400;700&display=swap"</span> rel=<span class="str">"stylesheet"</span>&gt;
+
+<span class="cm">/* في CSS */</span>
+body {
+  font-family: <span class="str">'Tajawal'</span>, sans-serif; <span class="cm">/* للنصوص العادية */</span>
+}
+.quran, .hadith {
+  font-family: <span class="str">'Amiri'</span>, serif; <span class="cm">/* للنصوص الدينية */</span>
+  font-size: <span class="str">1.2rem</span>;
+  line-height: <span class="str">2.2</span>;
+}</pre>
+  </div>
+
+  <h2>🌙 الوضع الفاتح والداكن</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">🌙 أمر إضافة وضع ليلي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الكود وضعاً ليلياً احترافياً:
+✦ زر تبديل بين الوضع الفاتح والداكن
+✦ يحفظ اختيار المستخدم في المتصفح
+✦ ألوان الوضع الداكن مريحة للعين (ليست سوداء قاتمة)
+✦ انتقال سلس بين الوضعين
+✦ الوضع الفاتح هو الافتراضي
+<span class="ph">[الصق كودك هنا]</span></div></div>
+
+  <h2>♿ إمكانية الوصول (Accessibility)</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>👁️ ضعاف البصر — تكبير الخط</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">أضف في أمرك: "أضف أزرار تكبير وتصغير الخط — ثلاثة أحجام: عادي، كبير، كبير جداً — مع حفظ الاختيار في المتصفح"</div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🎨 ألوان واضحة للجميع</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">في أمرك أضف: "تأكد من أن التباين بين النص والخلفية عالٍ (نسبة ١:٤.٥ على الأقل) لضمان قراءة مريحة لضعاف البصر"</div></div>
+  </div>
+
+  <h2>📑 الفهرس الجانبي العائم</h2>
+  <div class="pb"><div class="pb-hdr"><div class="pb-title">📑 أمر إضافة فهرس جانبي</div><button class="cp-btn" style="position:static" onclick="cpPrm(this)"><i class="fas fa-copy"></i> نسخ</button></div>
+  <div class="pb-body">أضف لهذا الدرس فهرساً جانبياً عائماً:
+✦ يُولّد الفهرس تلقائياً من عناوين الدرس (h2, h3)
+✦ يبقى ظاهراً عند التمرير على الكمبيوتر
+✦ يختفي على الهاتف ويُفتح بزر
+✦ يُضيء العنصر الحالي أثناء التمرير
+✦ عند النقر ينتقل بسلاسة للقسم المطلوب
+<span class="ph">[الصق كودك هنا]</span></div></div>
+</div>
+</div>
+
+<!-- ====== S12: بنية الدرس ====== -->
+<div class="section" id="s12">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-chalkboard-teacher"></i> المحور الثاني عشر</div>
+    <h1 class="sec-title">بنية <span>الدرس المناسب</span></h1>
+    <p class="sec-sub">المكوّنات السبعة التي يجب أن يحتويها أي درس تفاعلي تطلبه من الذكاء الاصطناعي</p>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-n">١</div><div class="step-c"><div class="step-t">رأس الدرس — العنوان والمقدمة</div><div class="step-d">عنوان جذاب، رقم الدرس، الصف الدراسي، اسم المادة. مقدمة قصيرة تشوّق الطالب وتربط بالدروس السابقة.</div></div></div>
+    <div class="step"><div class="step-n">٢</div><div class="step-c"><div class="step-t">نص المصنّف — المتن الأصلي</div><div class="step-d">نص الكتاب المقرر كما هو — مُظلّل بلون مميز ومقسّم بوضوح. يحتفظ بدقة الكتاب المصدر تماماً.</div></div></div>
+    <div class="step"><div class="step-n">٣</div><div class="step-c"><div class="step-t">التشجير والتقسيم الهرمي</div><div class="step-d">تحويل النص لشجرة أقسام: الموضوع ← الحكم ← التعريف ← العلامة ← الاستثناء ← الاحتياط</div></div></div>
+    <div class="step"><div class="step-n">٤</div><div class="step-c"><div class="step-t">جدول الملخص المنظّم</div><div class="step-d">جدول يجمع كل معلومات الدرس: الاسم | التعريف | الحكم | الشرط | المثال. للمراجعة السريعة.</div></div></div>
+    <div class="step"><div class="step-n">٥</div><div class="step-c"><div class="step-t">الأمثلة والشواهد</div><div class="step-d">أمثلة حياتية ملموسة، وشواهد من القرآن والحديث، وتطبيقات عملية من واقع الطالب.</div></div></div>
+    <div class="step"><div class="step-n">٦</div><div class="step-c"><div class="step-t">الخريطة الذهنية التفاعلية</div><div class="step-d">تمثيل بصري للعلاقات بين الأفكار — المركز ثم الفروع ثم التفريعات بألوان مختلفة.</div></div></div>
+    <div class="step"><div class="step-n">٧</div><div class="step-c"><div class="step-t">التقييم الختامي والشهادة</div><div class="step-d">أسئلة اختيار متعدد وصواب/خطأ وتطبيقية — مع شهادة للطالب عند النجاح.</div></div></div>
+  </div>
+
+  <div class="al al-gr"><div class="al-i"><i class="fas fa-check-double"></i></div>
+  <div><strong>قائمة تحقق الدرس المناسب:</strong><br>
+  ✦ نص المتن الأصلي مُظلّل ✦ تقسيم هرمي ✦ شجرة تفاعلية ✦ جدول ملخص ✦ أمثلة حياتية ✦ أسئلة تفاعلية ✦ خريطة ذهنية ✦ وضع ليلي ✦ طباعة ✦ شهادة</div></div>
+</div>
+</div>
+
+<!-- ====== S13: مشاريع مبتكرة ====== -->
+<div class="section" id="s13">
+<div class="sec-inner">
+  <div class="sec-hdr">
+    <div class="sec-tag"><i class="fas fa-lightbulb"></i> المحور الثالث عشر</div>
+    <h1 class="sec-title">أفكار <span>مشاريع مبتكرة</span></h1>
+    <p class="sec-sub">٣٥+ فكرة لمشاريع تعليمية رقمية يمكن بناؤها بالذكاء الاصطناعي في ساعات</p>
+  </div>
+
+  <h2>🛠️ أدوات تربوية يومية</h2>
+  <div class="proj-grid">
+    <div class="proj-c"><div class="proj-e">📿</div><div class="proj-t">عداد التسبيح الرقمي</div><div class="proj-d">عداد رقمي جميل مع اختيار الذكر، صوت النقر، شريط التقدم، وحفظ العدد اليومي.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">HTML</span></div></div>
+    <div class="proj-c"><div class="proj-e">✅</div><div class="proj-t">متتبع الأعمال العبادية</div><div class="proj-d">قائمة مهام يومية للصلوات والأذكار والقرآن تُصفَّر تلقائياً كل منتصف ليل.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">Local Storage</span></div></div>
+    <div class="proj-c"><div class="proj-e">🎡</div><div class="proj-t">عجلة الحظ للطلاب</div><div class="proj-d">عجلة تدور باسم طالب عشوائي من قائمة تُدخلها. مثالية للمشاركة في الفصل.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">JavaScript</span></div></div>
+    <div class="proj-c"><div class="proj-e">🕌</div><div class="proj-t">عرض أوقات الصلاة</div><div class="proj-d">موقع يعرض أوقات الصلاة حسب الموقع الجغرافي باستخدام API مجاني.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">API</span></div></div>
+    <div class="proj-c"><div class="proj-e">📅</div><div class="proj-t">التقويم الهجري</div><div class="proj-d">عرض التاريخ الهجري والمناسبات الإسلامية تلقائياً باستخدام API مجاني.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">API</span></div></div>
+    <div class="proj-c"><div class="proj-e">💬</div><div class="proj-t">زر التواصل الفوري</div><div class="proj-d">زر في كل درس يفتح واتساب أو تيليجرام المعلم مباشرة لطرح الأسئلة.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">HTML</span></div></div>
+  </div>
+
+  <h2>📚 مشاريع تعليمية متوسطة</h2>
+  <div class="proj-grid">
+    <div class="proj-c"><div class="proj-e">🌲</div><div class="proj-t">شجرة نسب الأئمة</div><div class="proj-d">شجرة نسب تفاعلية بصرية عند النقر تظهر معلومات كل شخصية مع خط زمني للأحداث.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">SVG</span></div></div>
+    <div class="proj-c"><div class="proj-e">🧮</div><div class="proj-t">حاسبة الخمس</div><div class="proj-d">آلة حاسبة فقهية تفاعلية لحساب الخمس مع شرح كل خطوة وفق المرجع المختار.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">JavaScript</span></div></div>
+    <div class="proj-c"><div class="proj-e">🗺️</div><div class="proj-t">خريطة رحلات النبي ﷺ</div><div class="proj-d">خريطة تفاعلية تُظهر مسارات السيرة النبوية مع الأحداث والتواريخ.</div><div class="proj-tags"><span class="diff diff-hard">متقدم</span><span class="tag">Maps API</span></div></div>
+    <div class="proj-c"><div class="proj-e">📖</div><div class="proj-t">مكتبة رقمية للكتب</div><div class="proj-d">مكتبة تُعرض الكتب تلقائياً من Google Drive مع البحث والتصنيف والتحميل.</div><div class="proj-tags"><span class="diff diff-hard">متقدم</span><span class="tag">GlideStack</span></div></div>
+    <div class="proj-c"><div class="proj-e">🏆</div><div class="proj-t">منصة مسابقات القرآن</div><div class="proj-d">منصة لمسابقات حفظ القرآن مع نظام نقاط ولوحة شرف وشهادات للفائزين.</div><div class="proj-tags"><span class="diff diff-hard">متقدم</span><span class="tag">Full Platform</span></div></div>
+    <div class="proj-c"><div class="proj-e">📝</div><div class="proj-t">متتبع خطط الحفظ</div><div class="proj-d">لوحة تتبع حفظ القرآن السور والأجزاء مع تقويم إنجاز يومي وتذكيرات.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Local Storage</span></div></div>
+  </div>
+
+  <h2>🎮 ألعاب تعليمية مبتكرة</h2>
+  <div class="proj-grid">
+    <div class="proj-c"><div class="proj-e">🔄</div><div class="proj-t">لعبة تطابق المفاهيم</div><div class="proj-d">يربط الطالب بالسحب والإفلات بين المصطلح الفقهي (السهو، الشك، اليقين) وتعريفه. نقاط وعداد وقت وتأثيرات بصرية.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Drag & Drop</span></div></div>
+    <div class="proj-c"><div class="proj-e">💡</div><div class="proj-t">من سيربح المليون العقائدية</div><div class="proj-d">أسئلة متدرجة الصعوبة بتصميم مُشوّق. ٤ خيارات، مساعدات (٥٠:٥٠ والجمهور)، ومستويات جوائز للحماس في الفصل.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">JSON</span></div></div>
+    <div class="proj-c"><div class="proj-e">🧩</div><div class="proj-t">محاكي الوضوء والصلاة</div><div class="proj-d">شاشات متسلسلة يرتّب فيها الطالب أفعال الوضوء أو الصلاة بالخطوات الصحيحة ويُصحّح الأخطاء تلقائياً.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">Sequential</span></div></div>
+    <div class="proj-c"><div class="proj-e">🔑</div><div class="proj-t">لعبة البحث عن الكنز</div><div class="proj-d">ينتقل الطالب من صفحة لأخرى بحل ألغاز فقهية. كل إجابة صحيحة تفتح رابط الصفحة التالية حتى الوصول لـ"الكنز".</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Multi-page</span></div></div>
+    <div class="proj-c"><div class="proj-e">🎪</div><div class="proj-t">مسابقة التحدي الرمضاني</div><div class="proj-d">٣٠ قفلاً — يفتح كل قفل في يومه من رمضان تلقائياً برمجياً ليعرض سؤالاً جديداً ويحفظ إجابات الطالب.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Date-Based</span></div></div>
+    <div class="proj-c"><div class="proj-e">📜</div><div class="proj-t">دليل أحكام التجويد الملون</div><div class="proj-d">يُلون أحكام التجويد في الآيات برمجياً — الإخفاء بلون، الإدغام بلون، الإظهار بلون. مع أمثلة صوتية عند النقر.</div><div class="proj-tags"><span class="diff diff-hard">متقدم</span><span class="tag">Text Processing</span></div></div>
+  </div>
+
+  <h2>✨ مشاريع خاصة ومبتكرة</h2>
+  <div class="proj-grid">
+    <div class="proj-c"><div class="proj-e">🌿</div><div class="proj-t">يوميات كربلاء — Timeline</div><div class="proj-d">خط زمني تفاعلي يعرض أحداث كربلاء جغرافياً وزمنياً بأسلوب مبسط ومؤثر. النقر على كل حدث يعرض تفاصيله.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">SVG Timeline</span></div></div>
+    <div class="proj-c"><div class="proj-e">🏅</div><div class="proj-t">منصة أهداف حفظ القرآن</div><div class="proj-d">يظلّل الطالب السور التي حفظها ويعرض نسبة مئوية للتقدم الكلي مع تقويم إنجاز يومي وخطة مخصصة.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Progress</span></div></div>
+    <div class="proj-c"><div class="proj-e">📖</div><div class="proj-t">مكتبة المخطوطات المبسّطة</div><div class="proj-d">عرض نصوص تراثية حيث النقر على الكلمة الصعبة يظهر معناها في نافذة أنيقة. مثالي لكتب الأدعية القديمة.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">Modals</span></div></div>
+    <div class="proj-c"><div class="proj-e">🎓</div><div class="proj-t">مولّد الشهادات التلقائي</div><div class="proj-d">الطالب يكتب اسمه بعد اجتياز الدورة فتُولَّد شهادة تقدير جميلة بتصميم إسلامي قابلة للطباعة والتحميل.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">Canvas API</span></div></div>
+    <div class="proj-c"><div class="proj-e">🔗</div><div class="proj-t">دليل حقيبة الحاج والمعتمر</div><div class="proj-d">موقع مصغّر يعمل أوفلاين تماماً يضم خطوات المناسك والأدعية مرتبة حسب المحطات. يُثبَّت على هاتف الحاج.</div><div class="proj-tags"><span class="diff diff-med">متوسط</span><span class="tag">PWA Offline</span></div></div>
+    <div class="proj-c"><div class="proj-e">❓</div><div class="proj-t">موقع أسئلة وأجوبة شائعة (FAQ)</div><div class="proj-d">بطاقات منسدلة Accordion تجمع أبرز الشبهات والأسئلة الشرعية. يرجع إليها الطالب في أي وقت.</div><div class="proj-tags"><span class="diff diff-easy">سهل</span><span class="tag">Accordion</span></div></div>
+  </div>
+
+  <h2>💡 أفكار متقدمة للمعلمين المبدعين</h2>
+  <div class="acc">
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🤝 مكتبة أوامر مشتركة لجميع معلمي المركز</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body"><p>أنشئ ملف Google Doc مشتركاً بين جميع معلمي المركز يحتوي على:</p><ul><li>الأوامر الناجحة التي أنتجت أفضل النتائج</li><li>قوالب الدروس الجاهزة لكل مادة</li><li>قائمة الأخطاء الشائعة وكيف تُتجنب</li><li>روابط أفضل الدروس المُنتجة كأمثلة</li></ul><p>يُحدَّث جماعياً بمشاركة كل معلم لما يتعلمه. هذا يُراكم معرفة المركز ويُوفّر وقت الجميع.</p></div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>🔗 ربط كل الدروس بزر واتساب للمعلم</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body"><div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">&lt;!-- زر واتساب جاهز للنسخ --&gt;</span>
+&lt;<span class="kw">a</span> href=<span class="str">"https://wa.me/97312345678?text=لدي سؤال عن درس [اسم الدرس]"</span>
+   target=<span class="str">"_blank"</span> style=<span class="str">"background:#25D366;color:white;padding:12px 20px;border-radius:10px;text-decoration:none"</span>&gt;
+  📱 تواصل مع المعلم
+&lt;/<span class="kw">a</span>&gt;</pre></div></div></div>
+    <div class="acc-item"><div class="acc-hdr" onclick="togAcc(this)"><span>📡 ربط الدرس بـ API أوقات الصلاة</span><i class="fas fa-chevron-left acc-arr"></i></div>
+    <div class="acc-body">
+      <p>يمكن إضافة عرض وقت الصلاة القادم في أي درس باستخدام API مجاني:</p>
+      <div class="code-box"><button class="cp-btn" onclick="cpCode(this)"><i class="fas fa-copy"></i> نسخ</button><pre><span class="cm">// API مجاني لأوقات الصلاة</span>
+fetch(<span class="str">'https://api.aladhan.com/v1/timingsByCity?city=Manama&country=BH&method=8'</span>)
+  .then(r => r.json())
+  .then(data => {
+    const fajr = data.data.timings.Fajr;
+    document.getElementById(<span class="str">'prayer-time'</span>).textContent = <span class="str">`الفجر: ${fajr}`</span>;
+  });</pre></div>
+    </div></div>
+  </div>
+
+  <h2>📋 مرجع سريع — أدوات الورشة كاملة</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>المهمة</th><th>الأداة</th><th>الرابط</th><th>التكلفة</th></tr></thead>
+    <tbody>
+      <tr><td>كتابة كود HTML طويل</td><td>🧠 Claude</td><td>claude.ai</td><td><span class="badge b-lim">محدود</span></td></tr>
+      <tr><td>كود + محتوى عربي</td><td>🔮 Gemini</td><td>gemini.google.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>نصوص طويلة جداً</td><td>🌙 Kimi</td><td>kimi.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>مشاريع كاملة تلقائية</td><td>🤖 Manus</td><td>manus.im</td><td><span class="badge b-paid">مدفوع</span></td></tr>
+      <tr><td>تجريب نماذج Google</td><td>🔬 AI Studio</td><td>aistudio.google.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>أدوات AI تجريبية</td><td>🧪 Google Labs</td><td>labs.google/fx/ar</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>توليد صور</td><td>🖼️ Bing Create</td><td>bing.com/create</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>صور متخصصة</td><td>🍌 نانو بنانا</td><td>nanobanana.pro</td><td><span class="badge b-lim">جزئياً</span></td></tr>
+      <tr><td>ملخصات + بودكاست</td><td>📓 NoteBookLM</td><td>notebooklm.google.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>سلايدات من نص</td><td>🎯 Gamma</td><td>gamma.app</td><td><span class="badge b-lim">جزئياً</span></td></tr>
+      <tr><td>حفظ الكود</td><td>🐙 GitHub</td><td>github.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>استضافة الموقع</td><td>🚀 Netlify</td><td>netlify.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>مفتاح API</td><td>☁️ Google Cloud</td><td>console.cloud.google.com</td><td><span class="badge b-free">مجاني بحدود</span></td></tr>
+      <tr><td>رفع الصور</td><td>📷 Imgbb</td><td>imgbb.com</td><td><span class="badge b-free">مجاني</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="bq">لا تبنِ خادماً إذا استطعت أن تُحوِّل بنية تحتية موجودة إلى قاعدة بيانات. أعظم الابتكارات لا تخترع شيئاً جديداً، بل تُعيد توظيف ما هو موجود بذكاء أعمق.<cite>— مبدأ GlideStack في صناعة المواقع الذكية</cite></div>
+
+  <div style="text-align:center;padding:30px;background:linear-gradient(135deg,rgba(13,92,110,.06),rgba(201,149,42,.06));border-radius:var(--rd);border:1px solid var(--bd)">
+    <div style="font-size:2rem;margin-bottom:10px">🎓</div>
+    <h2 style="text-align:center;margin:0 0 10px;border:none">انتهت الورشة</h2>
+    <p style="max-width:480px;margin:0 auto 20px">بُنيت هذه الورشة بعناية — استخدمها بحرية كاملة وشاركها مع زملائك المعلمين في جميع مراكز التعليم الديني</p>
+    <div style="font-size:.82rem;color:var(--tx3)">إعداد: أ. حسن سديف | ورشة الذكاء الاصطناعي لمعلمي التعليم الديني</div>
+  </div>
+</div>
+</div>
+
+<!-- ====== S14: الخاتمة والمرجع السريع ====== -->
+<div class="section" id="s14">
+<div class="sec-inner">
+
+  <div style="text-align:center;padding:40px 20px;background:linear-gradient(135deg,rgba(13,92,110,.08),rgba(201,149,42,.1));border-radius:var(--rd);border:1px solid var(--bd);margin-bottom:32px;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;opacity:.04;background-image:url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Cpath d=%22M30 0L60 30L30 60L0 30Z%22 fill=%22%230d5c6e%22/%3E%3C/svg%3E');background-size:60px 60px"></div>
+    <div style="position:relative;z-index:1">
+      <div style="font-size:2.5rem;margin-bottom:14px">🎓</div>
+      <h1 style="font-size:clamp(1.4rem,4vw,2rem);font-weight:900;color:var(--tx);margin-bottom:10px">أنجزت الورشة! ابدأ مشروعك الأول اليوم</h1>
+      <p style="color:var(--tx2);max-width:540px;margin:0 auto 0;font-size:.95rem;line-height:1.85">المعلم الذي يتقن هذه الأدوات لا يوفّر وقته فحسب — بل يرفع من جودة تجربة طلابه ويُحدث أثراً تربوياً أعمق يمتد لأجيال. كل درس رقمي تصنعه هو صدقة جارية.</p>
+    </div>
+  </div>
+
+  <h2>✅ خلاصة الورشة في ١٠ مبادئ لا تنساها</h2>
+  <div style="display:flex;flex-direction:column;gap:10px;margin:18px 0">
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">١</div><div><strong>الجمل السحرية لا تُنسى:</strong> "بأقصى إمكانياتك" + "بأطول ما يمكنك" + "لا تهمل أي شيء" = نتيجة استثنائية دائماً</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٢</div><div><strong>ألصق النص الأصلي دائماً:</strong> لا تكتفِ بذكر اسم المسألة — ألصق نصها الكامل من الكتاب للحصول على دقة كاملة وتجنب الهلوسة</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٣</div><div><strong>رقّم طلباتك:</strong> أولاً، ثانياً، ثالثاً... يمنع نسيان أي طلب وينظّم تفكير الذكاء الاصطناعي وتحصل على نتائج أكمل</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٤</div><div><strong>الكود الكامل دائماً:</strong> اطلب "أعطني الملف كاملاً بعد التعديل" — لا تقبل "باقي الكود كما هو"</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٥</div><div><strong>جرّب أكثر من أداة:</strong> Gemini للسرعة والمجان، Claude للعمق والكود الطويل، Kimi للنصوص الضخمة، <strong>Z.ai كبديل مجاني قوي</strong></div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٦</div><div><strong>محادثة جديدة لكل درس:</strong> بعد كل درس مكتمل افتح محادثة جديدة للحصول على تركيز كامل وجودة أعلى</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٧</div><div><strong>تحقق من النصوص الدينية:</strong> الذكاء الاصطناعي يهلوس أحياناً — تحقق من المتون الفقهية والأحاديث بالمصدر الأصلي دائماً</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٨</div><div><strong>F12 صديقك المبرمج:</strong> عندما لا يعمل الكود: F12 في المتصفح ← انسخ الخطأ الأحمر ← ألصقه للذكاء الاصطناعي</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">٩</div><div><strong>ابنِ وشارك ووسّع:</strong> كل درس تبنيه هو استثمار. شاركه مع زملائك وسيوفر ساعات من عملهم</div></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;background:var(--sf);border:1px solid var(--bd);border-radius:11px;padding:14px 18px"><div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--go),var(--go2));color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.82rem;flex-shrink:0">١٠</div><div><strong>ابدأ الآن:</strong> لا تنتظر الكمال. درس بسيط تنشره اليوم أفضل من موقع مثالي تبنيه في ذهنك شهوراً</div></div>
+  </div>
+
+  <h2>📋 مرجع سريع — أدوات الورشة كاملة</h2>
+  <div class="tbl"><table>
+    <thead><tr><th>المهمة</th><th>الأداة</th><th>الرابط</th><th>التكلفة</th></tr></thead>
+    <tbody>
+      <tr><td>كتابة كود HTML طويل</td><td>🧠 Claude</td><td><a href="https://claude.ai" target="_blank" style="color:var(--pr)">claude.ai</a></td><td><span class="badge b-lim">محدود</span></td></tr>
+      <tr><td>نموذج جديد مجاني قوي</td><td>⚡ z.ai</td><td><a href="https://chat.z.ai" target="_blank" style="color:var(--pr)">chat.z.ai</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>كود + محتوى عربي</td><td>🔮 Gemini</td><td><a href="https://gemini.google.com" target="_blank" style="color:var(--pr)">gemini.google.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>نصوص طويلة جداً</td><td>🌙 Kimi</td><td><a href="https://kimi.com" target="_blank" style="color:var(--pr)">kimi.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>مشاريع كاملة تلقائية</td><td>🤖 Manus</td><td><a href="https://manus.im" target="_blank" style="color:var(--pr)">manus.im</a></td><td><span class="badge b-paid">مدفوع</span></td></tr>
+      <tr><td>ملخصات كتب + بودكاست</td><td>📓 NoteBookLM</td><td><a href="https://notebooklm.google.com" target="_blank" style="color:var(--pr)">notebooklm.google.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>تفريغ صوتي عربي</td><td>🎙️ TurboScribe</td><td><a href="https://turboscribe.ai/ar/dashboard" target="_blank" style="color:var(--pr)">turboscribe.ai</a></td><td><span class="badge b-lim">جزئياً</span></td></tr>
+      <tr><td>توليد صور</td><td>🖼️ Bing Creator</td><td><a href="https://bing.com/create" target="_blank" style="color:var(--pr)">bing.com/create</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>رسوم توضيحية تلقائية</td><td>💡 Napkin.ai</td><td><a href="https://napkin.ai" target="_blank" style="color:var(--pr)">napkin.ai</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>بحث وتوثيق</td><td>🔍 Perplexity</td><td><a href="https://perplexity.ai" target="_blank" style="color:var(--pr)">perplexity.ai</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>سلايدات من نص</td><td>🎯 Gamma</td><td><a href="https://gamma.app" target="_blank" style="color:var(--pr)">gamma.app</a></td><td><span class="badge b-lim">جزئياً</span></td></tr>
+      <tr><td>حفظ الكود</td><td>🐙 GitHub</td><td><a href="https://github.com" target="_blank" style="color:var(--pr)">github.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>استضافة الموقع</td><td>🚀 Netlify</td><td><a href="https://netlify.com" target="_blank" style="color:var(--pr)">netlify.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+      <tr><td>رفع الصور</td><td>📷 Imgbb</td><td><a href="https://imgbb.com" target="_blank" style="color:var(--pr)">imgbb.com</a></td><td><span class="badge b-free">مجاني</span></td></tr>
+    </tbody>
+  </table></div>
+
+
+
+  <h2>📞 تواصل مع المُعدّ</h2>
+  <div style="background:linear-gradient(135deg,rgba(13,92,110,.07),rgba(201,149,42,.09));border:1px solid var(--bd);border-radius:var(--rd);padding:28px;text-align:center;margin:0 0 28px">
+    <div style="font-size:1.15rem;font-weight:900;color:var(--tx);margin-bottom:6px">أ. حسن سديف</div>
+    <p style="font-size:.88rem;color:var(--tx2);margin-bottom:22px">طالب حوزة الغدير للعلوم الإسلامية · مركز المرتضى (ع) معلم · صانع أكواد AI<br>لأي استفسار أو طلب محتوى مخصص أو دعم في الورشة:</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:16px">
+      <a href="https://wa.me/97336166806?text=السلام عليكم، لدي استفسار عن ورشة الذكاء الاصطناعي" target="_blank" style="display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:12px;background:#25D366;color:#fff;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(37,211,102,.4)'" onmouseout="this.style.transform='none';this.style.boxShadow='none'">
+        <i class="fab fa-whatsapp" style="font-size:1.3rem"></i> تواصل عبر واتساب
+      </a>
+      <a href="https://instagram.com/bh_h16" target="_blank" style="display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:12px;background:linear-gradient(135deg,#833ab4,#fd1d1d,#fcb045);color:#fff;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <i class="fab fa-instagram" style="font-size:1.3rem"></i> @bh_h16 إنستقرام
+      </a>
+      <a href="https://h-edu.netlify.app/" target="_blank" style="display:inline-flex;align-items:center;gap:9px;padding:13px 24px;border-radius:12px;background:linear-gradient(135deg,var(--pr),var(--pr2));color:#fff;font-family:'Tajawal',sans-serif;font-size:.95rem;font-weight:700;text-decoration:none;transition:all .3s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">
+        <i class="fas fa-globe" style="font-size:1.2rem"></i> الموقع التعليمي H-EDU
+      </a>
+    </div>
+    <p style="font-size:.82rem;color:var(--tx3);margin:0">حالة استقبال الطلبات: <strong style="color:var(--ac)">مفتوح إن تيسّر الوقت</strong></p>
+  </div>
+
+  <div class="bq">لا تبنِ خادماً إذا استطعت أن تُحوِّل بنية تحتية موجودة إلى قاعدة بيانات. أعظم الابتكارات لا تخترع شيئاً جديداً، بل تُعيد توظيف ما هو موجود بذكاء أعمق.<cite>— مبدأ GlideStack في صناعة المواقع الذكية</cite></div>
+
+</div>
+</div>
+
+</div><!-- end main -->
+
+<!-- BOTTOM NAV -->
+<div id="botNav">
+  <div class="bot-row-top">
+    <div class="dots-row" id="dots"></div>
+  </div>
+  <div class="bot-row-bottom">
+    <button class="arr-btn" id="prevBtn" onclick="goPrev()" disabled><i class="fas fa-chevron-right"></i> السابق</button>
+    <div class="sec-label-wrap" id="secLbl"></div>
+    <button class="arr-btn go-btn" id="nextBtn" onclick="goNext()">التالي <i class="fas fa-chevron-left"></i></button>
+  </div>
+</div>
+
+<script>
+const SECTIONS = [
+  {id:'s0',  title:'الرئيسية',                icon:'fa-home'},
+  {id:'s1',  title:'أساسيات البرمجة',          icon:'fa-code'},
+  {id:'s2',  title:'أنواع الذكاء الاصطناعي',   icon:'fa-brain'},
+  {id:'s3',  title:'أدوات الذكاء الاصطناعي',  icon:'fa-tools'},
+  {id:'s4',  title:'هندسة الأوامر',            icon:'fa-terminal'},
+  {id:'s5',  title:'GitHub و Netlify',         icon:'fa-rocket'},
+  {id:'s6',  title:'أخطاء الذكاء الاصطناعي',  icon:'fa-bug'},
+  {id:'s7',  title:'المفاهيم المتقدمة',        icon:'fa-server'},
+  {id:'s8',  title:'نماذج الأوامر',            icon:'fa-copy'},
+  {id:'s9',  title:'إضافات تفاعلية',           icon:'fa-magic'},
+  {id:'s10', title:'إدارة الملفات',             icon:'fa-hdd'},
+  {id:'s11', title:'تجربة المستخدم',            icon:'fa-user-graduate'},
+  {id:'s12', title:'بنية الدرس المناسب',        icon:'fa-chalkboard-teacher'},
+  {id:'s13', title:'مشاريع مبتكرة',            icon:'fa-lightbulb'},
+  {id:'s14', title:'الخاتمة والمرجع',           icon:'fa-flag-checkered'},
+];
+
+let cur = 0;
+
+const AR_NUMS = ['٠','١','٢','٣','٤','٥','٦','٧','٨','٩','١٠','١١','١٢','١٣','١٤','١٥'];
+function toAr(n){ return n.toString().split('').map(d=>AR_NUMS[parseInt(d)]||d).join(''); }
+
+function init(){
+  const sb = document.getElementById('sidebar');
+  const cats = [
+    {after:-1, label:'الأساسيات'},
+    {after:4, label:'النشر والأدوات'},
+    {after:7, label:'المحتوى والإضافات'},
+    {after:12, label:'الختام'},
+  ];
+
+  SECTIONS.forEach((s,i)=>{
+    cats.forEach(c=>{ if(c.after===i-1){ const d=document.createElement('div'); d.className='sb-cat'; d.textContent=c.label; sb.appendChild(d); }});
+    const el=document.createElement('div');
+    el.className='sb-item'+(i===0?' active':'');
+    el.innerHTML=`<div class="sb-num">${toAr(i)}</div><span>${s.title}</span>`;
+    el.onclick=()=>{goTo(i);toggleSB();};
+    sb.appendChild(el);
+  });
+
+  const dots=document.getElementById('dots');
+  SECTIONS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.setAttribute('data-i',i);
+    d.onclick=()=>goTo(i);
+    dots.appendChild(d);
+  });
+  updateUI();
+}
+
+function goTo(idx){
+  if(idx<0||idx>=SECTIONS.length) return;
+  document.getElementById(SECTIONS[cur].id).classList.remove('active');
+  cur=idx;
+  const el=document.getElementById(SECTIONS[cur].id);
+  el.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateUI();
+}
+function goNext(){goTo(cur+1);}
+function goPrev(){goTo(cur-1);}
+
+function updateUI(){
+  const pct=SECTIONS.length>1?(cur/(SECTIONS.length-1))*100:0;
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('prevBtn').disabled=cur===0;
+  const nb=document.getElementById('nextBtn');
+  if(cur===SECTIONS.length-1){nb.innerHTML='النهاية <i class="fas fa-flag-checkered"></i>';}
+  else{nb.innerHTML='التالي <i class="fas fa-chevron-left"></i>';}
+  nb.disabled=cur===SECTIONS.length-1;
+  document.getElementById('secLbl').innerHTML=`<span>${toAr(cur+1)}</span>/${toAr(SECTIONS.length)} — ${SECTIONS[cur].title}`;
+  document.querySelectorAll('.dot').forEach((d,i)=>{
+    d.classList.toggle('active',i===cur);
+  });
+  document.querySelectorAll('.sb-item').forEach((item,i)=>item.classList.toggle('active',i===cur));
+}
+
+function toggleSB(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function toggleTheme(){
+  const dark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',dark?'':'dark');
+  document.getElementById('themeBtn').innerHTML=dark?'<i class="fas fa-moon"></i>':'<i class="fas fa-sun"></i>';
+  localStorage.setItem('wsTheme',dark?'':'dark');
+}
+
+function cpCode(btn){
+  const pre=btn.parentElement.querySelector('pre');
+  navigator.clipboard.writeText(pre.innerText).then(()=>{
+    btn.innerHTML='<i class="fas fa-check"></i> تم';
+    setTimeout(()=>{btn.innerHTML='<i class="fas fa-copy"></i> نسخ';},2000);
+  });
+}
+
+function cpPrm(btn){
+  const body=btn.closest('.pb').querySelector('.pb-body');
+  navigator.clipboard.writeText(body.innerText).then(()=>{
+    btn.innerHTML='<i class="fas fa-check"></i> تم';
+    setTimeout(()=>{btn.innerHTML='<i class="fas fa-copy"></i> نسخ';},2000);
+  });
+}
+
+async function loadGDSA() {
+  const container = document.getElementById('gdsa-content');
+  const textField = document.getElementById('gdsa-text');
+  
+  // إظهار حالة التحميل
+  textField.innerHTML = '<div style="text-align:center; padding:20px; color:var(--tx3);"><i class="fas fa-spinner fa-spin"></i> جاري تحميل ومعالجة الملف...</div>';
+  container.style.display = 'block';
+  container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  try {
+    const response = await fetch('GlideStack_GDSA.md');
+    if (!response.ok) throw new Error('لم يتم العثور على الملف');
+    const text = await response.text();
+    
+    // استخدام مكتبة marked لتحويل الـ Markdown إلى HTML
+    textField.innerHTML = marked.parse(text);
+    
+  } catch (err) {
+    textField.innerHTML = `<div class="al al-rd"><div class="al-i"><i class="fas fa-times-circle"></i></div><div>عذراً، لم نتمكن من قراءة ملف <strong>GlideStack_GDSA.md</strong>. تأكد من وجوده في نفس المجلد مع هذا الملف.</div></div>`;
+  }
+}
+
+function togAcc(hdr){
+  const item=hdr.parentElement;
+  const was=item.classList.contains('open');
+  document.querySelectorAll('.acc-item.open').forEach(i=>i.classList.remove('open'));
+  if(!was) item.classList.add('open');
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+  if(e.key==='ArrowLeft') goNext();
+  if(e.key==='ArrowRight') goPrev();
+});
+
+// ── TC TABS (تبويبات المفاهيم التقنية) ──
+document.querySelectorAll('#tcTabs .tc-tab').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const target = btn.dataset.tc;
+    document.querySelectorAll('#tcTabs .tc-tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tc-panel').forEach(p=>{
+      p.classList.toggle('active', p.id===target);
+    });
+  });
+});
+
+(function(){
+  const saved=localStorage.getItem('wsTheme');
+  if(saved==='dark'){
+    document.documentElement.setAttribute('data-theme','dark');
+    document.getElementById('themeBtn').innerHTML='<i class="fas fa-sun"></i>';
+  }
+  init();
+})();
+</script>
+</body>
+</html>
