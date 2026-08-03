@@ -2,14 +2,12 @@
   functions = "netlify/functions"
   publish = "."
 
-
 [[redirects]]
   from = "/:user/certs/*"
-  to = "/.netlify/functions/asset-proxy?user=:user&file=certs/:splat"
+  to = "/.netlify/functions/asset-proxy/:user/certs/:splat"
   status = 200
-
 
 [[redirects]]
   from = "/:user/:file"
-  to = "/.netlify/functions/asset-proxy?user=:user&file=:file"
+  to = "/.netlify/functions/asset-proxy/:user/:file"
   status = 200
