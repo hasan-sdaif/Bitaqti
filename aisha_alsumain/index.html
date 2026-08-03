@@ -149,10 +149,10 @@
     background:var(--bg);
   }
   .brand-mark svg{width:22px;height:22px;color:var(--gold-bright);position:relative;z-index:2;}
-  .brand-text{display:flex;flex-direction:column;line-height:1.15;min-width:0;}
-  .brand-name{font-family:'Lora',serif;font-size:14.5px;font-weight:700;letter-spacing:.2px;white-space:nowrap;}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15;min-width:0;overflow:hidden;}
+  .brand-name{font-family:'Lora',serif;font-size:14.5px;font-weight:700;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
   html[lang="ar"] .brand-name{font-family:'Amiri',serif;}
-  .brand-sub{font-size:10.5px;color:var(--gold);font-family:'IBM Plex Mono',monospace;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;}
+  .brand-sub{font-size:10.5px;color:var(--gold);font-family:'IBM Plex Mono',monospace;letter-spacing:.6px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;}
 
   .nav-links{display:flex;gap:24px;align-items:center;}
   .nav-links a{
@@ -309,7 +309,7 @@
   .hero-role .sep{color:rgba(255,255,255,.35);margin:0 8px;}
   .hero-p{
     font-size:14.5px;color:rgba(255,255,255,.78);margin-top:16px;
-    max-width:600px;line-height:1.8;
+    max-width:600px;line-height:1.8;text-align:justify;
   }
   .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px;}
   .cta-row + .cta-row{margin-top:8px;}
@@ -390,7 +390,7 @@
   html[lang="ar"] .card h3{font-family:'Tajawal',sans-serif;}
   .card h3 svg{width:15px;height:15px;}
   .about-card p{
-    font-size:14.5px;color:var(--mid);margin-bottom:12px;line-height:1.9;
+    font-size:14.5px;color:var(--mid);margin-bottom:12px;line-height:1.9;text-align:justify;
   }
   .about-card p:last-child{margin-bottom:0;}
   .about-card .hl{color:var(--gold-bright);font-weight:600;}
@@ -466,7 +466,7 @@
   }
   html[lang="ar"] .t-org{font-family:'Tajawal',sans-serif;}
   .t-org .loc{color:var(--soft);font-weight:400;}
-  .t-note{font-size:13.5px;color:var(--mid);margin-top:8px;line-height:1.8;}
+  .t-note{font-size:13.5px;color:var(--mid);margin-top:8px;line-height:1.8;text-align:justify;}
   .t-ul{margin-top:10px;}
   .t-ul li{
     font-size:13.5px;color:var(--mid);
@@ -504,7 +504,7 @@
     font-family:'Lora',serif;line-height:1.4;
   }
   html[lang="ar"] .ach-body h4{font-family:'Amiri',serif;}
-  .ach-body p{font-size:13px;color:var(--mid);line-height:1.7;}
+  .ach-body p{font-size:13px;color:var(--mid);line-height:1.7;text-align:justify;}
   .ach-link{
     display:inline-flex;align-items:center;gap:5px;margin-top:10px;
     font-size:11.5px;font-weight:700;color:var(--gold-bright);
@@ -756,6 +756,10 @@
   @media(max-width:420px){
     .brand-sub{display:none;}
     .lang-toggle button{padding:5px 9px;font-size:10.5px;}
+    .nav .container{gap:8px;padding:0 14px;}
+    .nav-right{gap:6px;}
+    .icon-btn,.burger{width:32px;height:32px;}
+    .paper-btn{padding:8px;}
   }
 
 
@@ -767,12 +771,20 @@
   .stats .container,.contact-grid,.skills-grid{
     direction:ltr;
   }
-  /* In Arabic mode, hero text content renders RTL (right-aligned) */
+  /* In Arabic mode, hero text content renders RTL */
   html[dir="rtl"] .hero-text h1,
-  html[dir="rtl"] .hero-role,
-  html[dir="rtl"] .hero-p{
+  html[dir="rtl"] .hero-role{
     direction:rtl;
     text-align:right;
+  }
+  html[dir="rtl"] .hero-p{
+    direction:rtl;
+    text-align:justify;
+  }
+  html[dir="rtl"] .about-card p,
+  html[dir="rtl"] .t-note,
+  html[dir="rtl"] .ach-body p{
+    text-align:justify;
   }
   /* Photo badge Arabic font */
   html[lang="ar"] .photo-badge{font-family:'Tajawal',sans-serif;font-weight:800;letter-spacing:0;}
