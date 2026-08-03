@@ -126,12 +126,38 @@ function normalizePhone(phone){
   return p;
 }
 
+// كل الأشكال المحتملة لنفس الرقم (محلي 8 أرقام / بـ 973 / بـ + / بـ 00)
+// نفس منطق buildPhoneVariants في track-order.js — العملاء مخزّنون بصيغة محلية
+// (مثال: "36166806") وليس بصيغة دولية، لذا يجب مطابقة كل الأشكال.
+function buildPhoneVariants(normPhone){
+  const variants = new Set();
+  if(!normPhone) return [];
+  variants.add(normPhone);
+  const m = normPhone.match(/^\+973(\d{8})$/);
+  if(m){
+    variants.add(m[1]);                 // 36166806
+    variants.add('973' + m[1]);         // 97336166806
+    variants.add('00973' + m[1]);       // 0097336166806
+    variants.add(normPhone.slice(1));   // 97336166806 (بدون +)
+  } else {
+    variants.add(normPhone.replace(/^\+/, ''));
+  }
+  return [...variants];
+}
+
+// كود التحقق قد يُخزَّن/يُدخَل بصفر بادئ أو كنص — نطابق بنفس منطق track-order
+// (رقمي بحت → يُحوَّل لرقم ثم نص، فيزول أي صفر بادئ من أي من الطرفين)
+function normalizeCode(code){
+  const c = String(code || '').trim();
+  return /^\d+$/.test(c) ? String(Number(c)) : c;
+}
+
 // ════════════════════════════════════════════════════════════════
 //  التحقق من العميل (نفس نظام تتبع الطلب — phone + code)
 // ════════════════════════════════════════════════════════════════
 async function verifyCustomerViaTrackOrder(phone, code){
   const normPhone = normalizePhone(phone);
-  const cleanCode = String(code || '').trim();
+  const cleanCode = normalizeCode(code);
   if(!normPhone || !cleanCode) return null;
 
   // محاولة 1: استدعاء track-order (نفس مسار تتبع الطلب)
@@ -152,14 +178,19 @@ async function verifyCustomerViaTrackOrder(phone, code){
   }
 
   // محاولة 2: تحقق مباشر من جدول customers
+  // ★ الإصلاح: نطابق كل الأشكال المحتملة لرقم الهاتف (محلي/دولي/بصفر بادئ)
+  // بدلاً من مطابقة حرفية واحدة بصيغة +973XXXXXXXX التي لا تطابق أبداً
+  // الأرقام المخزّنة بصيغة محلية 8 أرقام (وهي الصيغة الفعلية في الجدول).
   try {
+    const variants = buildPhoneVariants(normPhone);
+    if(!variants.length) return null;
+    const orFilter = variants.map(v => `phone.eq.${encodeURIComponent(v)}`).join(',');
     const rows = await sbRequest(
-      `customers?phone=eq.${encodeURIComponent(normPhone)}&limit=5`,
+      `customers?or=(${orFilter})&limit=20`,
       'GET'
     );
     if(rows && rows.length > 0){
-      // تحقق من الكود (مطابقة مرنة)
-      const match = rows.find(r => String(r.code || '').trim() === cleanCode);
+      const match = rows.find(r => normalizeCode(r.code) === cleanCode);
       if(match) return match;
     }
   } catch(e2) {}
