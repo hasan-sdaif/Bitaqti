@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<!--
+  ════════════════════════════════════════════════════════════════════
+  AISHA HASSAN ALSUMAIM — Programme Case Study
+  Programme Deep-Dive: Psychological & Social Support for Female Inmates
+  ════════════════════════════════════════════════════════════════════
+  This sub-page is a detailed case-study page
+  expanding on the flagship programme referenced in index.html.
+  ════════════════════════════════════════════════════════════════════
+-->
+<html lang="en" dir="ltr" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Psychological & Social Support Programme — Aisha Alsumaim</title>
+<meta name="description" content="Detailed case study of the Psychological & Social Support Programme for Female Inmates — Captain Aisha Hassan Alsumaim." />
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex" />
+<meta name="googlebot" content="noindex, nofollow" />
+<meta name="theme-color" content="#0B1A2E" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#F8F6F0" media="(prefers-color-scheme: light)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230B1A2E'/%3E%3Cg stroke='%23C9A961' stroke-width='3.5' fill='none' stroke-linecap='round'%3E%3Cpath d='M50 22v56M30 38h40M30 38l-10 22h20zM70 38l-10 22h20zM40 78h20'/%3E%3Ccircle cx='50' cy='22' r='4' fill='%23C9A961' stroke='none'/%3E%3C/g%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700;800&family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+
+  :root{
+    --bg:#0B1A2E; --bg2:#0F2138;
+    --surface:#162E4F; --surface2:#1E3A5F; --surface3:#26446E;
+    --gold:#C9A961; --gold-bright:#E5C678; --gold-dim:rgba(201,169,97,.16);
+    --teal:#6BB6CF; --rose:#D49BAE; --mint:#7FC9A4;
+    --text:#EDF1F7; --mid:#B8C5D6; --soft:#7E91AC;
+    --line:rgba(201,169,97,.20); --line-soft:rgba(255,255,255,.07);
+    --shadow:0 16px 40px rgba(0,0,0,.45); --shadow-gold:0 12px 32px rgba(201,169,97,.18);
+    --grad-gold:linear-gradient(135deg,#C9A961 0%,#E5C678 50%,#A8893E 100%);
+    --grad-hero:linear-gradient(160deg,#0B1A2E 0%,#162E4F 55%,#1E3A5F 100%);
+    --bar-grad:linear-gradient(90deg,#C9A961,#E5C678);
+  }
+  html[data-theme="light"]{
+    --bg:#F8F6F0; --bg2:#FFFFFF;
+    --surface:#FFFFFF; --surface2:#F4F1E8; --surface3:#EDE8D8;
+    --gold:#A8893E; --gold-bright:#C9A961; --gold-dim:rgba(168,137,62,.12);
+    --teal:#2C7BA0; --rose:#A56479; --mint:#4A9C7A;
+    --text:#1A2942; --mid:#4A5872; --soft:#8B97AC;
+    --line:rgba(168,137,62,.28); --line-soft:rgba(15,33,66,.08);
+    --shadow:0 14px 32px rgba(15,33,66,.08); --shadow-gold:0 12px 28px rgba(168,137,62,.18);
+    --grad-gold:linear-gradient(135deg,#A8893E 0%,#C9A961 50%,#876B30 100%);
+    --grad-hero:linear-gradient(160deg,#F8F6F0 0%,#EDE8D8 55%,#E0D9C0 100%);
+    --bar-grad:linear-gradient(90deg,#A8893E,#C9A961);
+  }
+
+  /* Light theme hero — soft cream */
+  html[data-theme="light"] .hero{color:var(--text);}
+  html[data-theme="light"] .hero h1{color:#0B1A2E;}
+  html[data-theme="light"] .hero-sub{color:var(--mid);}
+  html[data-theme="light"] .hero-eyebrow{color:var(--gold);}
+  html[data-theme="light"] .meta-chip{background:rgba(11,26,46,.06);border-color:rgba(11,26,46,.18);color:#0B1A2E;}
+  html[data-theme="light"] .meta-chip svg{color:var(--gold);}
+  html[data-theme="light"] .back-link{background:rgba(168,137,62,.1);border-color:var(--line);color:var(--text);}
+
+  body{
+    font-family:'Source Sans 3','Tajawal',Arial,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.7;
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+    transition:background .35s ease,color .35s ease;
+  }
+  html[lang="ar"] body{font-family:'Tajawal','Source Sans 3',Arial,sans-serif;}
+  h1,h2,h3,h4{font-family:'Lora',Georgia,serif;font-weight:600;}
+  html[lang="ar"] h1,html[lang="ar"] h2,html[lang="ar"] h3,html[lang="ar"] h4{font-family:'Amiri',Georgia,serif;font-weight:700;}
+  img,svg{display:block;} a{color:inherit;text-decoration:none;} ul{list-style:none;}
+  .container{max-width:1080px;margin:0 auto;padding:0 24px;}
+  ::selection{background:var(--gold);color:var(--bg);}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--gold-bright);outline-offset:3px;border-radius:6px;}
+
+  /* NAV */
+  .nav{
+    position:sticky;top:0;z-index:100;
+    background:rgba(11,26,46,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);transition:background .35s ease;
+  }
+  html[data-theme="light"] .nav{background:rgba(248,246,240,.92);}
+  .nav .container{display:flex;align-items:center;justify-content:space-between;height:66px;gap:14px;}
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;
+    color:var(--text);font-size:13.5px;font-weight:700;font-family:'IBM Plex Mono',monospace;
+    padding:8px 14px;border-radius:9px;background:var(--gold-dim);
+    border:1px solid var(--line);transition:all .2s ease;
+  }
+  html[lang="ar"] .back-link{font-family:'Tajawal',sans-serif;font-weight:700;}
+  .back-link:hover{background:rgba(201,169,97,.22);transform:translateX(-3px);}
+
+  .back-link svg{width:15px;height:15px;color:var(--gold-bright);}
+
+  .nav-right{display:flex;align-items:center;gap:9px;flex-shrink:0;}
+  .lang-toggle{
+    display:flex;align-items:center;
+    background:var(--gold-dim);border:1px solid var(--line);
+    border-radius:22px;padding:2.5px;
+  }
+  .lang-toggle button{
+    background:transparent;border:0;color:var(--mid);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;font-weight:700;padding:5px 11px;border-radius:18px;
+    cursor:pointer;transition:all .15s ease;line-height:1;
+  }
+  .lang-toggle button.active{background:var(--grad-gold);color:#1A2942;}
+  .lang-toggle button:not(.active):hover{color:var(--gold-bright);}
+
+  .icon-btn{
+    width:36px;height:36px;border-radius:9px;
+    background:var(--gold-dim);border:1px solid var(--line);
+    color:var(--gold-bright);cursor:pointer;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    transition:all .2s ease;
+  }
+  .icon-btn:hover{background:rgba(201,169,97,.22);transform:translateY(-1px);}
+  .icon-btn svg{width:17px;height:17px;}
+  .icon-btn .moon{display:none;}
+  html[data-theme="light"] .icon-btn .sun{display:none;}
+  html[data-theme="light"] .icon-btn .moon{display:block;}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;background:var(--grad-hero);color:#fff;padding:54px 0 56px;}
+  .hero::before{
+    content:'';position:absolute;inset:0;opacity:.3;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cg fill='none' stroke='%23C9A961' stroke-opacity='0.18' stroke-width='1'%3E%3Cpath d='M40 10v60M20 25h40M20 25l-10 20h20zM60 25l-10 20h20z'/%3E%3Ccircle cx='40' cy='10' r='3' fill='%23C9A961' fill-opacity='0.25'/%3E%3C/g%3E%3C/svg%3E");
+    background-size:80px 80px;
+    mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.05));
+    -webkit-mask-image:linear-gradient(180deg,#000,rgba(0,0,0,.05));
+  }
+  .hero .container{position:relative;}
+  .hero-eyebrow{
+    font-size:11.5px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;
+    color:var(--gold-bright);margin-bottom:14px;display:flex;align-items:center;gap:10px;
+  }
+  .hero-eyebrow::before{content:'';width:26px;height:1px;background:var(--gold-bright);}
+  /* hero-eyebrow line stable — always left */
+  .hero h1{font-size:clamp(26px,4.5vw,38px);font-weight:700;line-height:1.2;color:#fff;max-width:820px;}
+  .hero-sub{
+    font-size:15px;color:rgba(255,255,255,.82);margin-top:16px;max-width:780px;line-height:1.8;
+  }
+  .hero-meta{
+    display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;
+  }
+  .meta-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);
+    color:#fff;font-size:12px;font-weight:700;font-family:'IBM Plex Mono',monospace;
+    padding:7px 13px;border-radius:18px;
+  }
+  html[lang="ar"] .meta-chip{font-family:'Tajawal',sans-serif;}
+  .meta-chip svg{width:13px;height:13px;color:var(--gold-bright);}
+
+  /* METRICS STRIP */
+  .metrics{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .metrics .container{display:grid;grid-template-columns:repeat(4,1fr);}
+  .metric{
+    padding:24px 14px;text-align:center;
+    border-right:1px solid var(--line);
+  }
+  html[dir="rtl"] .metric{border-right:none;border-left:1px solid var(--line);}
+  .metric:last-child{border-right:none;border-left:none;}
+  html[dir="rtl"] .metric:last-child{border-left:none;}
+  .metric b{
+    display:block;font-family:'Lora',serif;font-size:26px;
+    color:var(--gold-bright);font-weight:700;line-height:1;
+  }
+  html[lang="ar"] .metric b{font-family:'Amiri',serif;}
+  .metric span{
+    display:block;font-size:11px;color:var(--soft);
+    text-transform:uppercase;letter-spacing:.6px;margin-top:6px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  html[lang="ar"] .metric span{font-family:'Tajawal',sans-serif;}
+
+  /* SECTIONS */
+  section{padding:60px 0;scroll-margin-top:80px;}
+  section:nth-of-type(odd){background:var(--bg);}
+  section:nth-of-type(even){background:var(--bg2);}
+  .sec-head{
+    display:flex;align-items:center;gap:14px;margin-bottom:30px;
+    padding-bottom:14px;border-bottom:1px solid var(--line);
+  }
+  .sec-num{font-family:'Lora',serif;font-size:13px;font-weight:600;color:var(--gold);letter-spacing:1px;}
+  html[lang="ar"] .sec-num{font-family:'Amiri',serif;}
+  .sec-head h2{font-size:clamp(22px,3vw,28px);color:var(--text);font-weight:700;display:flex;align-items:center;gap:10px;}
+  .sec-head h2 svg{width:22px;height:22px;color:var(--gold);}
+  .sec-line{flex:1;height:1px;background:var(--line);}
+
+  .card{background:var(--surface);border:1px solid var(--line-soft);border-radius:14px;padding:24px;box-shadow:var(--shadow);}
+  .card h3{
+    font-size:13px;font-weight:700;text-transform:uppercase;
+    letter-spacing:.8px;color:var(--gold);margin-bottom:14px;
+    display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;
+  }
+  html[lang="ar"] .card h3{font-family:'Tajawal',sans-serif;}
+  .card h3 svg{width:15px;height:15px;}
+  .card p{font-size:14.5px;color:var(--mid);margin-bottom:11px;line-height:1.9;}
+  .card p:last-child{margin-bottom:0;}
+
+  /* BACKGROUND / PROBLEM / SOLUTION / IMPACT blocks */
+  .narrative-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .narrative-card{
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:14px;padding:26px;position:relative;overflow:hidden;
+    transition:border-color .25s ease;
+  }
+  .narrative-card:hover{border-color:var(--line);}
+  .narrative-card::before{
+    content:'';position:absolute;top:0;left:0;width:100%;height:3px;
+  }
+  .narrative-card.bg::before{background:linear-gradient(90deg,var(--teal),transparent);}
+  .narrative-card.prob::before{background:linear-gradient(90deg,var(--rose),transparent);}
+  .narrative-card.sol::before{background:linear-gradient(90deg,var(--gold-bright),transparent);}
+  .narrative-card.imp::before{background:linear-gradient(90deg,var(--mint),transparent);}
+  /* narrative-card accent stable — always left */
+  .narrative-card .ic{
+    width:42px;height:42px;border-radius:11px;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:14px;
+  }
+  .narrative-card.bg .ic{background:rgba(107,182,207,.14);color:var(--teal);}
+  .narrative-card.prob .ic{background:rgba(212,155,174,.14);color:var(--rose);}
+  .narrative-card.sol .ic{background:var(--gold-dim);color:var(--gold-bright);}
+  .narrative-card.imp .ic{background:rgba(127,201,164,.14);color:var(--mint);}
+  .narrative-card .ic svg{width:21px;height:21px;}
+  .narrative-card h3{
+    font-size:18px;font-weight:700;color:var(--text);
+    font-family:'Lora',serif;margin-bottom:10px;text-transform:none;letter-spacing:0;
+  }
+  html[lang="ar"] .narrative-card h3{font-family:'Amiri',serif;}
+  .narrative-card p{font-size:14px;color:var(--mid);line-height:1.85;}
+
+  /* PILLARS GRID */
+  .pillars-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+  .pillar{
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:12px;padding:20px;position:relative;
+    transition:transform .25s ease,border-color .25s ease;
+  }
+  .pillar:hover{transform:translateY(-3px);border-color:var(--line);}
+  .pillar .num{
+    font-family:'Lora',serif;font-size:24px;font-weight:700;
+    color:var(--gold-bright);line-height:1;margin-bottom:10px;
+  }
+  html[lang="ar"] .pillar .num{font-family:'Amiri',serif;}
+  .pillar h4{
+    font-size:14.5px;font-weight:700;color:var(--text);
+    margin-bottom:8px;line-height:1.4;
+  }
+  html[lang="ar"] .pillar h4{font-family:'Amiri',serif;}
+  .pillar p{font-size:13px;color:var(--mid);line-height:1.75;}
+
+  /* TIMELINE */
+  .timeline{position:relative;padding-left:32px;}
+  .timeline::before{
+    content:'';position:absolute;left:6px;top:8px;bottom:8px;
+    width:2px;background:linear-gradient(180deg,var(--gold),var(--gold-dim));
+  }
+  .t-item{position:relative;padding-bottom:24px;}
+  .t-item:last-child{padding-bottom:0;}
+  .t-dot{
+    position:absolute;left:-32px;top:6px;
+    width:14px;height:14px;border-radius:50%;
+    background:var(--surface);border:3px solid var(--gold);
+    box-shadow:0 0 12px rgba(201,169,97,.5);
+  }
+  .t-date{
+    font-family:'IBM Plex Mono',monospace;font-size:11.5px;font-weight:700;
+    color:var(--gold-bright);background:var(--gold-dim);
+    border:1px solid var(--line);padding:4px 11px;border-radius:14px;
+    display:inline-block;margin-bottom:6px;white-space:nowrap;
+  }
+  html[lang="ar"] .t-date{font-family:'Tajawal',sans-serif;}
+  .t-title{font-weight:700;font-size:16px;color:var(--text);font-family:'Lora',serif;line-height:1.4;}
+  html[lang="ar"] .t-title{font-family:'Amiri',serif;}
+  .t-note{font-size:13.5px;color:var(--mid);margin-top:6px;line-height:1.8;}
+
+  /* OUTCOMES LIST */
+  .outcomes-list{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .outcome{
+    display:flex;gap:11px;align-items:flex-start;
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:10px;padding:14px;
+  }
+  .outcome .check{
+    width:22px;height:22px;border-radius:50%;
+    background:rgba(127,201,164,.18);color:var(--mint);
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  html[data-theme="light"] .outcome .check{background:rgba(74,156,122,.18);}
+  .outcome .check svg{width:13px;height:13px;}
+  .outcome p{font-size:13px;color:var(--mid);line-height:1.7;}
+  .outcome strong{color:var(--text);font-weight:700;}
+
+  /* PARTNERS */
+  .partners{display:flex;gap:14px;flex-wrap:wrap;}
+  .partner{
+    flex:1;min-width:240px;
+    background:var(--surface);border:1px solid var(--line-soft);
+    border-radius:12px;padding:18px;display:flex;gap:13px;align-items:center;
+  }
+  .partner .ic{
+    width:40px;height:40px;border-radius:10px;flex-shrink:0;
+    background:var(--gold-dim);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    color:var(--gold-bright);
+  }
+  .partner .ic svg{width:20px;height:20px;}
+  .partner .name{font-size:14px;font-weight:700;color:var(--text);font-family:'Lora',serif;line-height:1.3;}
+  html[lang="ar"] .partner .name{font-family:'Amiri',serif;}
+  .partner .role{font-size:11.5px;color:var(--soft);font-family:'IBM Plex Mono',monospace;margin-top:2px;}
+  html[lang="ar"] .partner .role{font-family:'Tajawal',sans-serif;}
+
+  /* FOOTER */
+  footer{
+    background:var(--bg2);color:var(--soft);
+    padding:32px 0 40px;text-align:center;font-size:12.5px;
+    border-top:1px solid var(--line);
+  }
+  footer .brand-foot{
+    font-family:'Lora',serif;font-weight:700;
+    background:var(--grad-gold);-webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  html[lang="ar"] footer .brand-foot{font-family:'Amiri',serif;}
+  footer .copy{margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+  html[lang="ar"] footer .copy{font-family:'Tajawal',sans-serif;}
+
+  .to-top{
+    position:fixed;bottom:24px;right:24px;z-index:91;
+    width:42px;height:42px;border-radius:11px;
+    background:var(--grad-gold);color:#1A2942;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--shadow-gold);border:none;cursor:pointer;
+    opacity:0;pointer-events:none;transform:translateY(12px);
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  /* to-top stable — always right */
+  .to-top.show{opacity:1;pointer-events:auto;transform:none;}
+  .to-top svg{width:18px;height:18px;}
+
+
+  /* ═══════ STABLE LAYOUT — Forced LTR on visual containers ═══════ */
+  .nav,.nav .container,.fab-bar,.fab-bar .container,
+  .hero .container,.hero-meta,.hero-eyebrow,.back-link,
+  .metrics .container,.narrative-grid,.pillars-grid,.outcomes-list,.partners,
+  .timeline,.t-head{
+    direction:ltr;
+  }
+  /* In Arabic mode, text content renders RTL */
+  html[dir="rtl"] .hero h1,
+  html[dir="rtl"] .hero-sub,
+  html[dir="rtl"] .narrative-card h3,
+  html[dir="rtl"] .narrative-card p,
+  html[dir="rtl"] .pillar h4,
+  html[dir="rtl"] .pillar p,
+  html[dir="rtl"] .outcome p,
+  html[dir="rtl"] .t-title,
+  html[dir="rtl"] .t-note,
+  html[dir="rtl"] .partner .name,
+  html[dir="rtl"] .partner .role{
+    direction:rtl;
+    text-align:right;
+  }
+
+  @media(max-width:880px){
+    .narrative-grid{grid-template-columns:1fr;}
+    .pillars-grid{grid-template-columns:1fr;}
+    .outcomes-list{grid-template-columns:1fr;}
+  }
+  @media(max-width:760px){
+    .metrics .container{grid-template-columns:repeat(2,1fr);}
+    .metric:nth-child(2){border-right:none;}
+    html[dir="rtl"] .metric:nth-child(2){border-left:none;}
+    .metric{border-bottom:1px solid var(--line);}
+    .metric:nth-child(3),.metric:nth-child(4){border-bottom:none;}
+    .partners{flex-direction:column;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="back-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      <span data-i18n="nav.back">Back to CV</span>
+    </a>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button type="button" data-lang="ar">AR</button>
+        <button type="button" data-lang="en" class="active">EN</button>
+      </div>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Toggle theme">
+        <svg class="sun" viewBox="0 0 24 24" fill="currentColor"><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0-5a1 1 0 011 1v2a1 1 0 11-2 0V3a1 1 0 011-1zm0 18a1 1 0 011 1v2a1 1 0 11-2 0v-2a1 1 0 011-1zM4.22 4.22a1 1 0 011.42 0l1.4 1.42a1 1 0 11-1.4 1.4l-1.42-1.4a1 1 0 010-1.42zm14.36 14.36a1 1 0 011.42 0l1.4 1.4a1 1 0 11-1.4 1.42l-1.42-1.4a1 1 0 010-1.42zM1 12a1 1 0 011-1h2a1 1 0 110 2H2a1 1 0 01-1-1zm18 0a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1zM4.22 19.78a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0zM18.58 5.64a1 1 0 010-1.42l1.4-1.4a1 1 0 111.42 1.4l-1.4 1.42a1 1 0 01-1.42 0z"/></svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="container">
+    <div class="hero-eyebrow" data-i18n="hero.eyebrow">Programme Case Study</div>
+    <h1 data-i18n="hero.title">Psychological & Social Support Programme for Female Inmates</h1>
+    <p class="hero-sub" data-i18n="hero.sub">
+      A first-of-its-kind rehabilitation initiative conceived, coordinated, and led by Captain Aisha Hassan Alsumaim — in strategic partnership with the Royal Charity Organisation for Humanitarian Works — to deliver structured psychological and social support to female inmates at the Reform, Rehabilitation & Pretrial Detention Centre for Women in Bahrain.
+    </p>
+    <div class="hero-meta">
+      <span class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        <span data-i18n="hero.chip1">Launched Nov 2025</span>
+      </span>
+      <span class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <span data-i18n="hero.chip2">20 inmates · 2 post-release</span>
+      </span>
+      <span class="meta-chip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+        <span data-i18n="hero.chip3">80%+ attendance</span>
+      </span>
+    </div>
+  </div>
+</header>
+
+<!-- METRICS -->
+<div class="metrics">
+  <div class="container">
+    <div class="metric">
+      <b data-i18n="m.1.v">20</b>
+      <span data-i18n="m.1.l">Inmates in Cohort</span>
+    </div>
+    <div class="metric">
+      <b data-i18n="m.2.v">2</b>
+      <span data-i18n="m.2.l">Post-Release Cases</span>
+    </div>
+    <div class="metric">
+      <b data-i18n="m.3.v">6</b>
+      <span data-i18n="m.3.l">Counselling Pillars</span>
+    </div>
+    <div class="metric">
+      <b data-i18n="m.4.v">80%+</b>
+      <span data-i18n="m.4.l">Sustained Attendance</span>
+    </div>
+  </div>
+</div>
+
+<!-- NARRATIVE: Background / Problem / Solution / Impact -->
+<section id="overview">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        <span data-i18n="sec.overview">Programme Overview</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="narrative-grid">
+      <div class="narrative-card bg">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+        </div>
+        <h3 data-i18n="ov.bg.t">Background</h3>
+        <p data-i18n="ov.bg.p">Female inmates at the Reform, Rehabilitation & Pretrial Detention Centre for Women in Bahrain needed a structured, evidence-based pathway for psychological recovery and social reintegration — beyond what standard detention routines could provide.</p>
+      </div>
+      <div class="narrative-card prob">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
+        </div>
+        <h3 data-i18n="ov.prob.t">Challenge</h3>
+        <p data-i18n="ov.prob.p">No dedicated psychological and social support programme existed for female inmates. Welfare programming required inter-agency coordination, individualised needs assessment, and continuity of care extending beyond release — capabilities no single entity could deliver alone.</p>
+      </div>
+      <div class="narrative-card sol">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2h-4M9 11V7a3 3 0 016 0v4"/></svg>
+        </div>
+        <h3 data-i18n="ov.sol.t">Solution</h3>
+        <p data-i18n="ov.sol.p">Designed and led a partnership programme with the Royal Charity Organisation, combining weekly in-centre counselling, individualised psychological and social assessments, complementary wellbeing activities, and structured post-release aftercare — built around six clearly defined therapeutic pillars.</p>
+      </div>
+      <div class="narrative-card imp">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+        </div>
+        <h3 data-i18n="ov.imp.t">Impact</h3>
+        <p data-i18n="ov.imp.p">Achieved and sustained above 80% session attendance across a cohort of 20 inmates, with measurable improvements in psychological wellbeing, self-confidence, and family relationships — and continuity of care extended to 2 cases post-release.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section id="pillars">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span data-i18n="sec.pillars">Six Counselling Pillars</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar">
+        <div class="num">01</div>
+        <h4 data-i18n="p.1.t">Self-Acceptance</h4>
+        <p data-i18n="p.1.p">Helping participants develop a healthy self-image and acknowledge their worth without judgment — a foundational step toward sustained behavioural change.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">02</div>
+        <h4 data-i18n="p.2.t">Social Insight</h4>
+        <p data-i18n="p.2.p">Building awareness of social dynamics and the participant's role within their family and community, supporting healthier interpersonal choices.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">03</div>
+        <h4 data-i18n="p.3.t">Stress Management</h4>
+        <p data-i18n="p.3.p">Equipping participants with practical techniques to recognise, process, and regulate stress in custody and after release.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">04</div>
+        <h4 data-i18n="p.4.t">Behavioural Change</h4>
+        <p data-i18n="p.4.p">Structured work on identifying triggers, replacing harmful patterns, and reinforcing positive routines through supervised responsibility.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">05</div>
+        <h4 data-i18n="p.5.t">Family Support</h4>
+        <p data-i18n="p.5.p">Strengthening family ties and communication channels — recognised as a key predictor of successful reintegration and reduced recidivism.</p>
+      </div>
+      <div class="pillar">
+        <div class="num">06</div>
+        <h4 data-i18n="p.6.t">Future Planning</h4>
+        <p data-i18n="p.6.p">Guiding participants to articulate realistic post-release goals and identify concrete next steps, with linkage to aftercare services.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <span data-i18n="sec.timeline">Programme Timeline</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="card">
+      <div class="timeline">
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <span class="t-date" data-i18n="tl.1.d">2024</span>
+          <div class="t-title" data-i18n="tl.1.t">Coordination Initiated</div>
+          <p class="t-note" data-i18n="tl.1.n">Initial strategic coordination with the Royal Charity Organisation for Humanitarian Works — defining scope, governance, and joint delivery model.</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <span class="t-date" data-i18n="tl.2.d">Nov 2025</span>
+          <div class="t-title" data-i18n="tl.2.t">Full Implementation Launched</div>
+          <p class="t-note" data-i18n="tl.2.n">Programme officially launched with weekly in-centre counselling sessions and a cohort of 20 selected inmates based on individualised needs assessments.</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <span class="t-date" data-i18n="tl.3.d">Ongoing</span>
+          <div class="t-title" data-i18n="tl.3.t">Continuity of Care Post-Release</div>
+          <p class="t-note" data-i18n="tl.3.n">Extended structured support to 2 cases following release — linking them to the Royal Charity Organisation's 'Ma'akum' aftercare initiative.</p>
+        </div>
+        <div class="t-item">
+          <div class="t-dot"></div>
+          <span class="t-date" data-i18n="tl.4.d">Next Phase</span>
+          <div class="t-title" data-i18n="tl.4.t">Aftercare Recommendations</div>
+          <p class="t-note" data-i18n="tl.4.n">Authored programme recommendations to scale structured aftercare services — supporting sustainable reintegration and reduced recidivism.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTCOMES -->
+<section id="outcomes">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+        <span data-i18n="sec.outcomes">Outcomes & Impact</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="outcomes-list">
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.1.s">80%+ attendance</strong> <span data-i18n="o.1.p">sustained across the cohort throughout the programme.</span></p>
+      </div>
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.2.s">Measurable wellbeing gains</strong> <span data-i18n="o.2.p">in psychological health, self-confidence, and family relationships.</span></p>
+      </div>
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.3.s">Cross-sector partnership</strong> <span data-i18n="o.3.p">established with a national humanitarian organisation.</span></p>
+      </div>
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.4.s">Post-release continuity</strong> <span data-i18n="o.4.p">delivered to 2 cases via the Ma'akum aftercare initiative.</span></p>
+      </div>
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.5.s">Life-skills development</strong> <span data-i18n="o.5.p">through supervised responsibility in fitness, workshops, and engagement activities.</span></p>
+      </div>
+      <div class="outcome">
+        <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <p><strong data-i18n="o.6.s">Scalable aftercare model</strong> <span data-i18n="o.6.p">documented for future expansion across additional cases.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section id="partners">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">05</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span data-i18n="sec.partners">Strategic Partners</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="partners">
+      <div class="partner">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 22V12h6v10"/></svg>
+        </div>
+        <div>
+          <div class="name" data-i18n="pt.1.n">Reform, Rehabilitation & Pretrial Detention Centre for Women</div>
+          <div class="role" data-i18n="pt.1.r">Ministry of Interior · Programme Host</div>
+        </div>
+      </div>
+      <div class="partner">
+        <div class="ic">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        </div>
+        <div>
+          <div class="name" data-i18n="pt.2.n">Royal Charity Organisation for Humanitarian Works</div>
+          <div class="role" data-i18n="pt.2.r">Strategic Partner · Counselling & Aftercare</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <p><span class="brand-foot" data-i18n="foot.brand">Aisha Hassan Alsumaim</span> — <span data-i18n="foot.tagline">Programme Case Study</span></p>
+    <p class="copy">© <span id="year">2026</span> · <span data-i18n="foot.tier">Digital CV</span></p>
+  </div>
+</footer>
+
+<button class="to-top" id="toTop" aria-label="To top" type="button">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+</button>
+
+<script>
+const I18N = {
+  ar: {
+    "nav.back":"العودة للسيرة",
+    "hero.eyebrow":"دراسة حالة البرنامج",
+    "hero.title":"برنامج الدعم النفسي والاجتماعي للنزيلات",
+    "hero.sub":"مبادرة تأهيلية رائدة من حيث نوعها، ابتكرتها ونسبتها وقادتها النقيب عائشة حسن السميم — بالشراكة الاستراتيجية مع المنظمة الملكية للأعمال الإنسانية — لتقديم دعم نفسي واجتماعي منظم للنزيلات في مركز الإصلاح والتأهيل والحبس الاحتياطي للنساء بمملكة البحرين.",
+    "hero.chip1":"أُطلق نوفمبر 2025","hero.chip2":"20 نزيلة · 2 بعد الإفراج","hero.chip3":"حضور +80%",
+    "m.1.v":"20","m.1.l":"نزيلة في المجموعة",
+    "m.2.v":"2","m.2.l":"حالة بعد الإفراج",
+    "m.3.v":"6","m.3.l":"محاور إرشادية",
+    "m.4.v":"+80%","m.4.l":"حضور مستدام",
+    "sec.overview":"نظرة عامة على البرنامج",
+    "ov.bg.t":"الخلفية","ov.bg.p":"كانت النزيلات في مركز الإصلاح والتأهيل والحبس الاحتياطي للنساء في البحرين بحاجة إلى مسار منظم ومبني على الأدلة للتعافي النفسي والإدماج الاجتماعي — يتجاوز ما يمكن أن تقدمه روتينات الاحتجاز القياسية.",
+    "ov.prob.t":"التحدّي","ov.prob.p":"لم يوجد برنامج مخصص للدعم النفسي والاجتماعي للنزيلات. تطلّب تصميم البرنامج تنسيقاً بين الوكالات، وتقييماً فردياً للاحتياجات، واستمرارية للرعاية تمتد إلى ما بعد الإفراج — قدرات لا تستطيع جهة واحدة تقديمها بمفردها.",
+    "ov.sol.t":"الحل","ov.sol.p":"تصميم وقيادة برنامج شراكة مع المنظمة الملكية للأعمال الإنسانية، يجمع بين الإرشاد الأسبوعي داخل المركز، والتقييمات الفردية النفسية والاجتماعية، وأنشطة الرفاه التكميلية، والرعاية اللاحقة المنظمة — مبني على ستة محاور علاجية محددة بوضوح.",
+    "ov.imp.t":"الأثر","ov.imp.p":"تحقيق والحفاظ على معدل حضور يتجاوز 80% عبر مجموعة من 20 نزيلة، مع تحسينات قابلة للقياس في الرفاه النفسي والثقة بالنفس والعلاقات الأسرية — وامتداد استمرارية الرعاية لحالتين بعد الإفراج.",
+    "sec.pillars":"المحاور الإرشادية الستة",
+    "p.1.t":"تقبّل الذات","p.1.p":"مساعدة المشاركات على تطوير صورة ذاتية صحية والاعتراف بقيمتهن دون إصدار أحكام — خطوة تأسيسية نحو تغيير سلوكي مستدام.",
+    "p.2.t":"البصيرة الاجتماعية","p.2.p":"بناء الوعي بالديناميكيات الاجتماعية ودور المشاركة داخل أسرتها ومجتمعها، دعماً لاختيارات شخصية أكثر صحة.",
+    "p.3.t":"إدارة الضغوط","p.3.p":"تزويد المشاركات بتقنيات عملية للتعرف على الضغوط ومعالجتها وتنظيمها داخل السجن وبعد الإفراج.",
+    "p.4.t":"تغيير السلوك","p.4.p":"عمل منظم لتحديد المحفّزات واستبدال الأنماط الضارة وتعزيز الروتين الإيجابي عبر المسؤولية المُشرفة.",
+    "p.5.t":"دعم الأسرة","p.5.p":"تعزيز روابط الأسرة وقنوات التواصل — باعتبارها مؤشراً تنبؤياً رئيسياً على نجاح إعادة الإدماج وتقليل العودية.",
+    "p.6.t":"التخطيط للمستقبل","p.6.p":"توجيه المشاركات لصياغة أهداف واقعية لما بعد الإفراج وتحديد الخطوات التالية الملموسة، مع الربط بخدمات الرعاية اللاحقة.",
+    "sec.timeline":"الجدول الزمني للبرنامج",
+    "tl.1.d":"2024","tl.1.t":"بدء التنسيق","tl.1.n":"التنسيق الاستراتيجي الأولي مع المنظمة الملكية للأعمال الإنسانية — تحديد النطاق والحوكمة ونموذج التنفيذ المشترك.",
+    "tl.2.d":"نوفمبر 2025","tl.2.t":"إطلاق التنفيذ الكامل","tl.2.n":"إطلاق البرنامج رسمياً بجلسات إرشادية أسبوعية داخل المركز ومجموعة من 20 نزيلة مختارة بناءً على تقييمات فردية للاحتياجات.",
+    "tl.3.d":"مستمر","tl.3.t":"استمرارية الرعاية بعد الإفراج","tl.3.n":"توسيع الدعم المنظم لحالتين بعد الإفراج — وربطهما بمبادرة 'معكم' للرعاية اللاحقة التابعة للمنظمة الملكية للأعمال الإنسانية.",
+    "tl.4.d":"المرحلة التالية","tl.4.t":"توصيات الرعاية اللاحقة","tl.4.n":"إعداد توصيات البرنامج لتوسيع نطاق خدمات الرعاية اللاحقة المنظمة — دعماً لإعادة الإدماج المستدام وتقليل العودية.",
+    "sec.outcomes":"النتائج والأثر",
+    "o.1.s":"+80% حضور","o.1.p":"محفوظاً عبر المجموعة طوال البرنامج.",
+    "o.2.s":"تحسينات قابلة للقياس","o.2.p":"في الصحة النفسية والثقة بالنفس والعلاقات الأسرية.",
+    "o.3.s":"شراكة بين القطاعات","o.3.p":"مع منظمة إنسانية وطنية.",
+    "o.4.s":"استمرارية بعد الإفراج","o.4.p":"لحالتين عبر مبادرة 'معكم' للرعاية اللاحقة.",
+    "o.5.s":"تطوير مهارات الحياة","o.5.p":"عبر المسؤولية المُشرفة في اللياقة والورش وأنشطة التفاعل.",
+    "o.6.s":"نموذج رعاية لاحقة قابل للتوسّع","o.6.p":"موثّق للتوسع المستقبلي عبر حالات إضافية.",
+    "sec.partners":"الشركاء الاستراتيجيون",
+    "pt.1.n":"مركز الإصلاح والتأهيل والحبس الاحتياطي للنساء","pt.1.r":"وزارة الداخلية · مركز استضافة البرنامج",
+    "pt.2.n":"المنظمة الملكية للأعمال الإنسانية","pt.2.r":"شريك استراتيجي · الإرشاد والرعاية اللاحقة",
+    "foot.brand":"عائشة حسن السميم","foot.tagline":"دراسة حالة البرنامج","foot.tier":"سيرة ذاتية رقمية"
+  },
+  en: {
+    "nav.back":"Back to CV",
+    "hero.eyebrow":"Programme Case Study",
+    "hero.title":"Psychological & Social Support Programme for Female Inmates",
+    "hero.sub":"A first-of-its-kind rehabilitation initiative conceived, coordinated, and led by Captain Aisha Hassan Alsumaim — in strategic partnership with the Royal Charity Organisation for Humanitarian Works — to deliver structured psychological and social support to female inmates at the Reform, Rehabilitation & Pretrial Detention Centre for Women in Bahrain.",
+    "hero.chip1":"Launched Nov 2025","hero.chip2":"20 inmates · 2 post-release","hero.chip3":"80%+ attendance",
+    "m.1.v":"20","m.1.l":"Inmates in Cohort",
+    "m.2.v":"2","m.2.l":"Post-Release Cases",
+    "m.3.v":"6","m.3.l":"Counselling Pillars",
+    "m.4.v":"80%+","m.4.l":"Sustained Attendance",
+    "sec.overview":"Programme Overview",
+    "ov.bg.t":"Background","ov.bg.p":"Female inmates at the Reform, Rehabilitation & Pretrial Detention Centre for Women in Bahrain needed a structured, evidence-based pathway for psychological recovery and social reintegration — beyond what standard detention routines could provide.",
+    "ov.prob.t":"Challenge","ov.prob.p":"No dedicated psychological and social support programme existed for female inmates. Welfare programming required inter-agency coordination, individualised needs assessment, and continuity of care extending beyond release — capabilities no single entity could deliver alone.",
+    "ov.sol.t":"Solution","ov.sol.p":"Designed and led a partnership programme with the Royal Charity Organisation, combining weekly in-centre counselling, individualised psychological and social assessments, complementary wellbeing activities, and structured post-release aftercare — built around six clearly defined therapeutic pillars.",
+    "ov.imp.t":"Impact","ov.imp.p":"Achieved and sustained above 80% session attendance across a cohort of 20 inmates, with measurable improvements in psychological wellbeing, self-confidence, and family relationships — and continuity of care extended to 2 cases post-release.",
+    "sec.pillars":"Six Counselling Pillars",
+    "p.1.t":"Self-Acceptance","p.1.p":"Helping participants develop a healthy self-image and acknowledge their worth without judgment — a foundational step toward sustained behavioural change.",
+    "p.2.t":"Social Insight","p.2.p":"Building awareness of social dynamics and the participant's role within their family and community, supporting healthier interpersonal choices.",
+    "p.3.t":"Stress Management","p.3.p":"Equipping participants with practical techniques to recognise, process, and regulate stress in custody and after release.",
+    "p.4.t":"Behavioural Change","p.4.p":"Structured work on identifying triggers, replacing harmful patterns, and reinforcing positive routines through supervised responsibility.",
+    "p.5.t":"Family Support","p.5.p":"Strengthening family ties and communication channels — recognised as a key predictor of successful reintegration and reduced recidivism.",
+    "p.6.t":"Future Planning","p.6.p":"Guiding participants to articulate realistic post-release goals and identify concrete next steps, with linkage to aftercare services.",
+    "sec.timeline":"Programme Timeline",
+    "tl.1.d":"2024","tl.1.t":"Coordination Initiated","tl.1.n":"Initial strategic coordination with the Royal Charity Organisation for Humanitarian Works — defining scope, governance, and joint delivery model.",
+    "tl.2.d":"Nov 2025","tl.2.t":"Full Implementation Launched","tl.2.n":"Programme officially launched with weekly in-centre counselling sessions and a cohort of 20 selected inmates based on individualised needs assessments.",
+    "tl.3.d":"Ongoing","tl.3.t":"Continuity of Care Post-Release","tl.3.n":"Extended structured support to 2 cases following release — linking them to the Royal Charity Organisation's 'Ma'akum' aftercare initiative.",
+    "tl.4.d":"Next Phase","tl.4.t":"Aftercare Recommendations","tl.4.n":"Authored programme recommendations to scale structured aftercare services — supporting sustainable reintegration and reduced recidivism.",
+    "sec.outcomes":"Outcomes & Impact",
+    "o.1.s":"80%+ attendance","o.1.p":"sustained across the cohort throughout the programme.",
+    "o.2.s":"Measurable wellbeing gains","o.2.p":"in psychological health, self-confidence, and family relationships.",
+    "o.3.s":"Cross-sector partnership","o.3.p":"established with a national humanitarian organisation.",
+    "o.4.s":"Post-release continuity","o.4.p":"delivered to 2 cases via the Ma'akum aftercare initiative.",
+    "o.5.s":"Life-skills development","o.5.p":"through supervised responsibility in fitness, workshops, and engagement activities.",
+    "o.6.s":"Scalable aftercare model","o.6.p":"documented for future expansion across additional cases.",
+    "sec.partners":"Strategic Partners",
+    "pt.1.n":"Reform, Rehabilitation & Pretrial Detention Centre for Women","pt.1.r":"Ministry of Interior · Programme Host",
+    "pt.2.n":"Royal Charity Organisation for Humanitarian Works","pt.2.r":"Strategic Partner · Counselling & Aftercare",
+    "foot.brand":"Aisha Hassan Alsumaim","foot.tagline":"Programme Case Study","foot.tier":"Digital CV"
+  }
+};
+
+function applyLanguage(lang){
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    const dict = I18N[lang] || I18N.ar;
+    if(dict[key] !== undefined){ el.innerHTML = dict[key]; }
+  });
+  document.querySelectorAll('.lang-toggle button[data-lang]').forEach(b=>{
+    b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+  });
+  const html = document.documentElement;
+  html.setAttribute('lang', lang);
+  html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+  try{ localStorage.setItem('aisha_lang', lang); }catch(e){}
+}
+document.querySelectorAll('.lang-toggle button[data-lang]').forEach(btn=>{
+  btn.addEventListener('click', ()=> applyLanguage(btn.getAttribute('data-lang')));
+});
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  try{ localStorage.setItem('aisha_theme', theme); }catch(e){}
+}
+const themeBtn = document.getElementById('themeBtn');
+if(themeBtn){
+  themeBtn.addEventListener('click', ()=>{
+    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  });
+}
+
+(function init(){
+  let savedLang = 'en', savedTheme = 'dark';
+  try{ savedLang = localStorage.getItem('aisha_lang') || 'en'; }catch(e){}
+  try{ savedTheme = localStorage.getItem('aisha_theme') || 'dark'; }catch(e){}
+  applyLanguage(savedLang);
+  applyTheme(savedTheme);
+})();
+
+const toTop = document.getElementById('toTop');
+window.addEventListener('scroll', ()=>{
+  if(window.scrollY > 300) toTop.classList.add('show');
+  else toTop.classList.remove('show');
+});
+toTop.addEventListener('click', ()=>window.scrollTo({top:0, behavior:'smooth'}));
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+
+</body>
+</html>
