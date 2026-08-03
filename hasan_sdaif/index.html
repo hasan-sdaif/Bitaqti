@@ -47,6 +47,8 @@
   html[lang="ar"] .hero-role{ font-family:'Amiri',Georgia,serif; }
 
   a:focus-visible,button:focus-visible{outline:2px solid var(--goldf);outline-offset:3px;border-radius:4px;}
+  /* أي رقم أو نص يُعرض بـ dir="ltr" داخل صفحة RTL يُعزَل كي لا تُعاد ترتيب مقاطعه (مشكلة أرقام الهاتف) */
+  [dir="ltr"]{unicode-bidi:isolate;}
 
   /* ═══════════════ NAV ═══════════════ */
   .nav{
@@ -137,6 +139,15 @@
   .eyebrow::before{content:'';width:22px;height:1px;background:var(--goldf);}
   .hero-text h1{font-size:clamp(26px,5vw,42px);font-weight:700;line-height:1.15;}
   .hero-role{font-size:clamp(13px,2vw,15px);font-weight:600;color:rgba(255,255,255,.82);margin-top:8px;}
+  .founder-badge{
+    display:inline-flex; align-items:center; gap:7px; margin-top:12px;
+    background:rgba(201,164,90,.12); border:1px solid rgba(201,164,90,.45);
+    color:var(--goldf); font-size:12px; font-weight:700; letter-spacing:.2px;
+    padding:6px 14px; border-radius:20px;
+  }
+  .founder-badge svg{width:13px;height:13px;flex-shrink:0;}
+  .founder-badge a{color:#fff;text-decoration:underline;text-underline-offset:2px;}
+  .founder-badge a:hover{color:var(--goldf);}
   .hero-p{font-size:14.5px;color:rgba(255,255,255,.72);margin-top:14px;max-width:560px;line-height:1.75;}
 
   .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;}
@@ -149,6 +160,15 @@
   .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(201,164,90,.35);}
   .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.22);}
   .btn-ghost:hover{background:rgba(255,255,255,.16);transform:translateY(-2px);}
+
+  /* signature perforated divider — echoes the bitaqti.com homepage */
+  .serrate{
+    height:11px; width:100%;
+    background-image:linear-gradient(135deg,var(--navy2) 50%,transparent 50%),
+                      linear-gradient(-135deg,var(--navy2) 50%,transparent 50%);
+    background-size:16px 16px; background-position:top left,top right;
+    background-repeat:repeat-x; background-color:var(--surface);
+  }
 
   /* quick facts strip */
   .facts{background:var(--surface);border-bottom:1px solid var(--border);}
@@ -208,6 +228,35 @@
   .t-ul{margin-top:8px;}
   .t-ul li{font-size:13.5px;color:var(--mid);padding-left:15px;position:relative;margin-bottom:5px;line-height:1.6;}
   .t-ul li::before{content:'▸';position:absolute;left:0;color:var(--goldf);}
+
+  /* featured-project accordion — same pattern as the bitaqti.com FAQ/prep boxes */
+  .proj-item{background:linear-gradient(160deg,var(--navy-deep),var(--navy) 60%,var(--navy2));border-radius:12px;padding:20px 22px;box-shadow:var(--shadow);margin-bottom:14px;position:relative;overflow:hidden;}
+  .proj-item::before{content:'';position:absolute;top:-26px;left:-26px;width:80px;height:80px;background:linear-gradient(135deg,var(--goldf) 48%,transparent 50%);opacity:.85;}
+  .proj-item .t-head,.proj-item .t-org,.proj-item .t-ul{position:relative;z-index:1;}
+  .proj-item .t-title{color:#fff;}
+  .proj-item .t-date{background:rgba(201,164,90,.18);color:var(--goldf);}
+  .proj-item .t-org{color:var(--goldf);}
+  .proj-item .t-org a{text-decoration:underline;text-underline-offset:2px;color:#fff;}
+  .proj-item .t-org a:hover{color:var(--goldf);}
+  .proj-item .t-ul li{color:rgba(255,255,255,.82);}
+  .proj-item .t-ul li::before{color:var(--goldf);}
+
+  .proj-box{margin-top:14px;background:rgba(201,164,90,.08);border:1px dashed rgba(201,164,90,.55);border-radius:12px;overflow:hidden;position:relative;z-index:1;}
+  .proj-box summary{list-style:none;cursor:pointer;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .proj-box summary::-webkit-details-marker{display:none;}
+  .proj-box summary .sm-txt{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:700;color:var(--goldf);}
+  .proj-box summary .sm-txt svg{width:16px;height:16px;flex-shrink:0;}
+  .proj-box summary .sm-plus{font-size:19px;font-weight:700;color:var(--goldf);flex-shrink:0;transition:transform .2s ease;}
+  .proj-box[open] summary .sm-plus{transform:rotate(45deg);}
+  .proj-box .proj-content{padding:0 18px 18px;}
+  .proj-box h4{font-size:11.5px;font-weight:700;margin:14px 0 8px;color:var(--goldf);text-transform:uppercase;letter-spacing:.5px;}
+  .proj-box h4:first-child{margin-top:0;}
+  .proj-box ul li{font-size:12.5px;color:rgba(255,255,255,.8);display:flex;gap:8px;margin-bottom:7px;line-height:1.6;}
+  .proj-box ul li::before{content:'▢';color:var(--goldf);font-weight:700;flex-shrink:0;}
+  .proj-note{background:rgba(255,255,255,.06);border:1px solid rgba(201,164,90,.4);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:rgba(255,255,255,.85);line-height:1.7;display:flex;gap:9px;}
+  .proj-note svg{width:16px;height:16px;color:var(--goldf);flex-shrink:0;margin-top:1px;}
+  .proj-note strong{color:var(--goldf);}
+  html[dir="rtl"] .proj-item::before{left:auto;right:-26px;}
 
   /* achievements + certifications */
   .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
@@ -302,7 +351,6 @@
   html[dir="rtl"] .t-ul li::before{content:'◂';left:auto;right:0;}
   html[dir="rtl"] .corner-star.tl{left:auto;right:-13px;}
   html[dir="rtl"] .corner-star.br{right:auto;left:-13px;}
-  html[dir="rtl"] .nav-links a::after{left:auto;right:0;}
   html[dir="rtl"] .to-top{right:auto;left:18px;}
   html[dir="rtl"] .fact{border-right:none;border-left:1px solid var(--border);}
   html[dir="rtl"] .fact:last-child{border-left:none;}
@@ -311,6 +359,10 @@
     html[dir="rtl"] .fact{border-left:1px solid var(--border);border-bottom:1px solid var(--border);}
     html[dir="rtl"] .fact:nth-child(3),html[dir="rtl"] .fact:nth-child(4){border-bottom:none;}
   }
+
+  /* ثبات مواقع الأزرار: هذه المجموعات تبقى بنفس ترتيبها المرئي عند التبديل للعربي —
+     فقط النص يتغيّر، أما مكان كل زر فيبقى ثابتاً ولا ينعكس مع اتجاه الصفحة */
+  .cta-row,.fab-bar .container,.nav-right,.contact-grid,.nav .container{direction:ltr;}
 </style>
 </head>
 <body>
@@ -372,6 +424,10 @@
       <div class="eyebrow" data-i18n="eyebrow">Digital CV</div>
       <h1 data-i18n="heroName">Hasan Abbas Hasan Sdaif</h1>
       <div class="hero-role" data-i18n="heroRole">Islamic Studies Student &amp; Community Educator</div>
+      <div class="founder-badge">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14l-5-4.87 7.1-1.01z"/></svg>
+        <span data-i18n-html="founderBadge">Founder of Bitaqti — <a href="https://bitaqti.com/" target="_blank" rel="noopener">bitaqti.com</a></span>
+      </div>
       <p class="hero-p" data-i18n="heroBio">Student of Islamic sciences at Al-Ghadir Hawza with hands-on experience in education, youth development, and community programs. Balances full-time religious study with active teaching roles and self-directed learning in technology and AI tools. Holds an intermediate spoken level in Japanese and has applied it in real educational settings. Committed volunteer since 2017.</p>
       <div class="cta-row">
         <a class="btn btn-gold" href="https://wa.me/97336166806" target="_blank" rel="noopener">
@@ -390,6 +446,7 @@
     </div>
   </div>
 </header>
+<div class="serrate"></div>
 
 <!-- QUICK FACTS -->
 <div class="facts">
@@ -457,6 +514,56 @@
   <div class="container">
     <div class="sec-head"><span class="sec-num">02</span><h2 data-i18n="sec02">Work Experience</h2><div class="sec-line"></div></div>
     <div class="timeline">
+
+      <div class="t-item reveal proj-item">
+        <div class="t-dot"></div>
+        <div class="t-head"><span class="t-title" data-i18n="proj1Title">Founder &amp; Developer — Bitaqti (بطاقتي)</span><span class="t-date" data-i18n="proj1Date">2026 – Present</span></div>
+        <div class="t-org" data-i18n-html="proj1Org">Independent Project · Bahrain — <a href="https://bitaqti.com/" target="_blank" rel="noopener">bitaqti.com ↗</a></div>
+        <ul class="t-ul">
+          <li data-i18n="proj1B1">Founded and independently built Bitaqti, a digital business-card platform that turns a traditional CV into a single interactive web page reachable through a private link or QR code</li>
+          <li data-i18n="proj1B2">Personally handled every stage as a one-person service — design, front-end development, backend and database integration, and client delivery</li>
+          <li data-i18n="proj1B3">Delivers each client's digital card within 24–48 hours, with bilingual Arabic/English support and ongoing edits after delivery</li>
+        </ul>
+
+        <details class="proj-box">
+          <summary>
+            <span class="sm-txt">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z"/></svg>
+              <span data-i18n="proj1Toggle">About the project — what it does, how it was built &amp; secured</span>
+            </span>
+            <span class="sm-plus">+</span>
+          </summary>
+          <div class="proj-content">
+            <h4 data-i18n="proj1H1">What the platform does</h4>
+            <ul>
+              <li data-i18n="proj1H1L1">Turns a CV into a single interactive page opened instantly through a private link or a QR code, in place of a traditional PDF</li>
+              <li data-i18n="proj1H1L2">Includes structured sections for skills, work experience, education, achievements and certifications, plus one-tap contact buttons (WhatsApp, email, phone, LinkedIn)</li>
+              <li data-i18n="proj1H1L3">Full bilingual support with an instant Arabic/English switch and correct RTL/LTR layout, plus a dark-mode toggle</li>
+              <li data-i18n="proj1H1L4">Several package tiers, an FAQ section, client reviews, order tracking by phone number, and a separate offering for company/corporate cards</li>
+            </ul>
+            <h4 data-i18n="proj1H2">How I built it</h4>
+            <ul>
+              <li data-i18n="proj1H2L1">Hand-coded the entire front end in plain HTML, CSS and JavaScript — no framework — to keep every card fast and lightweight on mobile</li>
+              <li data-i18n="proj1H2L2">Built a shared bilingual engine that swaps all text and page direction instantly without a page reload</li>
+              <li data-i18n="proj1H2L3">Backend runs on serverless functions rather than a traditional server, connected to a cloud database for orders, invoices and reviews</li>
+              <li data-i18n="proj1H2L4">Built a private dashboard to manage orders, generate invoices and moderate reviews, with automatic client notifications over WhatsApp</li>
+              <li data-i18n="proj1H2L5">Added a fallback data path so order tracking keeps working even if the main database is temporarily unreachable</li>
+            </ul>
+            <h4 data-i18n="proj1H3">How I secured it</h4>
+            <ul>
+              <li data-i18n="proj1H3L1">Every secret key and database credential lives on the server only — nothing sensitive is ever sent to a visitor's browser</li>
+              <li data-i18n="proj1H3L2">Enforced database-level access rules so that even a leaked public key could not be used to read or change data directly</li>
+              <li data-i18n="proj1H3L3">Rate-limited the backend endpoints to block automated abuse and spam submissions</li>
+              <li data-i18n="proj1H3L4">Protected the private dashboard with a server-verified password check and a time-limited login session rather than a client-side check</li>
+              <li data-i18n="proj1H3L5">Applied standard security headers site-wide (anti-clickjacking, anti-MIME-sniffing, strict referrer policy) and blocked search engines from indexing the private areas</li>
+            </ul>
+            <div class="proj-note">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              <span data-i18n-html="proj1Note"><strong>Note:</strong> this is a live, individually-run service — not a company — and every part of it, from the first design to the last line of backend code, was built and is maintained by me.</span>
+            </div>
+          </div>
+        </details>
+      </div>
 
       <div class="t-item reveal">
         <div class="t-dot"></div>
@@ -588,7 +695,7 @@
     <div class="contact-grid">
       <a class="contact-card reveal" href="tel:+97336166806">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.32.57 3.58.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.24 1.01L6.6 10.8z"/></svg>
-        <div class="lbl" data-i18n="contactPhoneLbl">Phone</div><div class="val">+973 3616 6806</div>
+        <div class="lbl" data-i18n="contactPhoneLbl">Phone</div><div class="val" dir="ltr">+973 3616 6806</div>
       </a>
       <a class="contact-card reveal" href="mailto:Hasan.sdaif16@gmail.com">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
@@ -651,6 +758,7 @@
       heroName:"Hasan Abbas Hasan Sdaif",
       heroRole:"Islamic Studies Student & Community Educator",
       heroBio:"Student of Islamic sciences at Al-Ghadir Hawza with hands-on experience in education, youth development, and community programs. Balances full-time religious study with active teaching roles and self-directed learning in technology and AI tools. Holds an intermediate spoken level in Japanese and has applied it in real educational settings. Committed volunteer since 2017.",
+      founderBadge:"Founder of Bitaqti — <a href=\"https://bitaqti.com/\" target=\"_blank\" rel=\"noopener\">bitaqti.com</a>",
       btnWhatsapp:"WhatsApp", btnEmail:"Email", btnLinkedin:"LinkedIn",
       photoFallback:"HS",
       factLocationVal:"Sitra, BH", factLocationLbl:"Location",
@@ -669,6 +777,30 @@
       langEnName:"English", langEnLvl:"Basic",
       cardInterestsTitle:"Interests",
       interest1:"Reading", interest2:"Writing", interest3:"Translation", interest4:"Technology", interest5:"Web Dev (AI)",
+      proj1Title:"Founder & Developer — Bitaqti (بطاقتي)", proj1Date:"2026 – Present",
+      proj1Org:"Independent Project · Bahrain — <a href=\"https://bitaqti.com/\" target=\"_blank\" rel=\"noopener\">bitaqti.com ↗</a>",
+      proj1B1:"Founded and independently built Bitaqti, a digital business-card platform that turns a traditional CV into a single interactive web page reachable through a private link or QR code",
+      proj1B2:"Personally handled every stage as a one-person service — design, front-end development, backend and database integration, and client delivery",
+      proj1B3:"Delivers each client's digital card within 24–48 hours, with bilingual Arabic/English support and ongoing edits after delivery",
+      proj1Toggle:"About the project — what it does, how it was built & secured",
+      proj1H1:"What the platform does",
+      proj1H1L1:"Turns a CV into a single interactive page opened instantly through a private link or a QR code, in place of a traditional PDF",
+      proj1H1L2:"Includes structured sections for skills, work experience, education, achievements and certifications, plus one-tap contact buttons (WhatsApp, email, phone, LinkedIn)",
+      proj1H1L3:"Full bilingual support with an instant Arabic/English switch and correct RTL/LTR layout, plus a dark-mode toggle",
+      proj1H1L4:"Several package tiers, an FAQ section, client reviews, order tracking by phone number, and a separate offering for company/corporate cards",
+      proj1H2:"How I built it",
+      proj1H2L1:"Hand-coded the entire front end in plain HTML, CSS and JavaScript — no framework — to keep every card fast and lightweight on mobile",
+      proj1H2L2:"Built a shared bilingual engine that swaps all text and page direction instantly without a page reload",
+      proj1H2L3:"Backend runs on serverless functions rather than a traditional server, connected to a cloud database for orders, invoices and reviews",
+      proj1H2L4:"Built a private dashboard to manage orders, generate invoices and moderate reviews, with automatic client notifications over WhatsApp",
+      proj1H2L5:"Added a fallback data path so order tracking keeps working even if the main database is temporarily unreachable",
+      proj1H3:"How I secured it",
+      proj1H3L1:"Every secret key and database credential lives on the server only — nothing sensitive is ever sent to a visitor's browser",
+      proj1H3L2:"Enforced database-level access rules so that even a leaked public key could not be used to read or change data directly",
+      proj1H3L3:"Rate-limited the backend endpoints to block automated abuse and spam submissions",
+      proj1H3L4:"Protected the private dashboard with a server-verified password check and a time-limited login session rather than a client-side check",
+      proj1H3L5:"Applied standard security headers site-wide (anti-clickjacking, anti-MIME-sniffing, strict referrer policy) and blocked search engines from indexing the private areas",
+      proj1Note:"<strong>Note:</strong> this is a live, individually-run service — not a company — and every part of it, from the first design to the last line of backend code, was built and is maintained by me.",
       exp1Title:"Religious Education Teacher", exp1Org:"Al-Murtadha Center · Sitra, Bahrain", exp1Date:"2024 – Present",
       exp1B1:"Taught religious education across two consecutive years — middle school students (Year 1) then primary students (Year 2) — adapting content and delivery to suit each age group",
       exp1B2:"Designed lesson plans, managed classroom dynamics, and maintained consistent student engagement throughout the academic year",
@@ -712,6 +844,7 @@
       heroName:"حسن عباس حسن سديف",
       heroRole:"طالب دراسات إسلامية ومتطوع مجتمعي",
       heroBio:"طالب في العلوم الإسلامية بحوزة الغدير، يمتلك خبرة عملية في التعليم وتطوير الشباب والبرامج المجتمعية. يوازن بين الدراسة الدينية المتفرغة وأدوار التدريس النشطة والتعلم الذاتي في مجال التكنولوجيا وأدوات الذكاء الاصطناعي. يتقن اليابانية بمستوى متوسط محادثةً وطبّقها في بيئات تعليمية حقيقية. متطوع ملتزم منذ عام 2017.",
+      founderBadge:"مؤسّس بطاقتي — <a href=\"https://bitaqti.com/\" target=\"_blank\" rel=\"noopener\">bitaqti.com</a>",
       btnWhatsapp:"واتساب", btnEmail:"البريد الإلكتروني", btnLinkedin:"لينكدإن",
       photoFallback:"ح.س",
       factLocationVal:"سترة، البحرين", factLocationLbl:"الموقع",
@@ -730,6 +863,30 @@
       langEnName:"الإنجليزية", langEnLvl:"أساسي",
       cardInterestsTitle:"الاهتمامات",
       interest1:"القراءة", interest2:"الكتابة", interest3:"الترجمة", interest4:"التكنولوجيا", interest5:"تطوير الويب (ذكاء اصطناعي)",
+      proj1Title:"مؤسّس ومطوّر — بطاقتي (Bitaqti)", proj1Date:"2026 – حتى الآن",
+      proj1Org:"مشروع فردي مستقل · البحرين — <a href=\"https://bitaqti.com/\" target=\"_blank\" rel=\"noopener\">bitaqti.com ↗</a>",
+      proj1B1:"أسّس وطوّر بشكل مستقل منصة «بطاقتي»، وهي منصة بطاقات تعريفية رقمية تحوّل السيرة الذاتية التقليدية إلى صفحة ويب تفاعلية واحدة تُفتح برابط خاص أو رمز QR",
+      proj1B2:"تولّى بنفسه كل مراحل المشروع كخدمة فردية — التصميم، تطوير الواجهة الأمامية، ربط الخلفية البرمجية وقاعدة البيانات، وتسليم الطلبات للعملاء",
+      proj1B3:"يسلّم بطاقة كل عميل خلال 24 إلى 48 ساعة، بدعم كامل للغتين العربية والإنجليزية وتعديلات لاحقة بعد التسليم",
+      proj1Toggle:"عن المشروع — ماذا يقدّم، وكيف طوّرته وأمّنته",
+      proj1H1:"ماذا يقدّم الموقع",
+      proj1H1L1:"يحوّل السيرة الذاتية إلى صفحة تفاعلية واحدة تُفتح فوراً برابط خاص أو رمز QR، بديلاً عن ملف PDF التقليدي",
+      proj1H1L2:"أقسام منظّمة للمهارات والخبرة العملية والتعليم والإنجازات والشهادات، مع أزرار تواصل مباشرة بضغطة واحدة (واتساب، بريد إلكتروني، هاتف، لينكدإن)",
+      proj1H1L3:"دعم ثنائي اللغة كامل مع تبديل فوري بين العربية والإنجليزية واتجاه صحيح للصفحة (RTL/LTR)، إضافة إلى وضع داكن قابل للتبديل",
+      proj1H1L4:"عدة باقات أسعار، قسم أسئلة شائعة، تقييمات العملاء، تتبّع الطلب برقم الهاتف، وعرض منفصل مخصّص للشركات والمؤسسات",
+      proj1H2:"كيف طوّرته",
+      proj1H2L1:"بنيتُ الواجهة الأمامية بالكامل يدوياً بلغات HTML وCSS وJavaScript الخام دون أي إطار عمل (framework)، لتبقى كل بطاقة سريعة وخفيفة على الجوال",
+      proj1H2L2:"بنيتُ محرّك ترجمة مشترك يبدّل كل النصوص واتجاه الصفحة فورياً دون إعادة تحميلها",
+      proj1H2L3:"تعمل الخلفية البرمجية عبر دوال بلا خادم دائم (serverless) بدلاً من خادم تقليدي، مرتبطة بقاعدة بيانات سحابية لتخزين الطلبات والفواتير والتقييمات",
+      proj1H2L4:"بنيتُ لوحة تحكّم خاصة لإدارة الطلبات، وإصدار الفواتير، ومراجعة التقييمات، مع إشعارات تلقائية للعملاء عبر واتساب",
+      proj1H2L5:"أضفتُ مساراً بديلاً للبيانات بحيث تستمر خاصية تتبّع الطلب في العمل حتى لو تعذّر الوصول مؤقتاً لقاعدة البيانات الرئيسية",
+      proj1H3:"كيف أمّنته",
+      proj1H3L1:"تبقى كل مفاتيح الدخول وبيانات الاعتماد الحساسة على الخادم فقط، ولا تصل أبداً إلى متصفح الزائر",
+      proj1H3L2:"فرضتُ قواعد صلاحيات على مستوى قاعدة البيانات نفسها، بحيث لا يمكن استخدام أي مفتاح عام مسرّب لقراءة البيانات أو تعديلها مباشرة",
+      proj1H3L3:"وضعتُ حداً لعدد الطلبات على نقاط الخلفية البرمجية لمنع إساءة الاستخدام الآلي والرسائل العشوائية",
+      proj1H3L4:"حمَيتُ لوحة التحكّم الخاصة بتحقّق من كلمة المرور يتم على الخادم نفسه، مع جلسة دخول محدودة المدة، بدلاً من تحقّق يعتمد على المتصفح فقط",
+      proj1H3L5:"طبّقتُ رؤوس أمان قياسية على كامل الموقع (ضد النقر الخادع، وضد استنشاق نوع الملفات، وسياسة إحالة صارمة)، ومنعتُ محركات البحث من فهرسة الأقسام الخاصة والإدارية",
+      proj1Note:"<strong>ملاحظة:</strong> هذه خدمة فعلية أديرها بنفسي وليست شركة، وكل جزء فيها — من أول خطوة في التصميم إلى آخر سطر في الخلفية البرمجية — بنيته وأتولى صيانته بنفسي.",
       exp1Title:"معلم في التعليم الديني", exp1Org:"مركز المرتضى · سترة، البحرين", exp1Date:"2024 – حتى الآن",
       exp1B1:"درّس في التعليم الديني على مدى سنتين متتاليتين — طلاب المرحلة الإعدادية (في السنة الأولى) ثم طلاب المرحلة الابتدائية (في السنة الثانية) — مع تكييف المحتوى وأسلوب التدريس لكل فئة عمرية",
       exp1B2:"صمّم خطط الدروس، وأدار ديناميكيات الفصل، وحافظ على مشاركة الطلاب طوال العام الدراسي",
