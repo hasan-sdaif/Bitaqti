@@ -1,19 +1,5 @@
-// netlify/functions/asset-proxy.js
-// ════════════════════════════════════════════════════════════════
-//  دالة وسيطة (Proxy) تجلب ملفات المستخدمين (PDF / صور / شهادات)
-//  من مستودع GitHub خاص منفصل تمامًا عن مستودع الموقع الرئيسي.
-//
-//  الفكرة:
-//   - رفع سيرة ذاتية جديدة = رفع ملف في مستودع GitHub آخر (خاص)
-//     لا علاقة له بنشر Netlify إطلاقًا → لا يُشغّل أي بناء جديد للموقع.
-//   - الرابط الذي يراه الزائر يبقى: bitaqti.com/username/paper-cv.pdf
-//     (نفس الجذر تمامًا)، لأن الجلب من GitHub يحدث من داخل الخادم
-//     هنا، ولا يظهر أبدًا في متصفح الزائر.
-//   - اسم/رابط المستودع الثاني لا يُكشف أبدًا للزوار.
-// ════════════════════════════════════════════════════════════════
-
 exports.config = {
-  path: '/.netlify/functions/asset-proxy',
+  path: '/.netlify/functions/asset-proxy/*',
 };
 
 const CONTENT_TYPES = {
@@ -25,29 +11,36 @@ const CONTENT_TYPES = {
   gif: 'image/gif',
 };
 
+const PREFIX = '/.netlify/functions/asset-proxy/';
+
 exports.handler = async (event) => {
   try {
-    const { user, file } = event.queryStringParameters || {};
+    const rawPath = event.path || '';
+    if (!rawPath.startsWith(PREFIX)) {
+      return { statusCode: 400, body: 'Bad request' };
+    }
 
-    if (!user || !file) {
+    const rest = decodeURIComponent(rawPath.slice(PREFIX.length));
+    const parts = rest.split('/').filter(Boolean);
+
+    if (parts.length < 2 || parts.some((p) => p === '..')) {
       return { statusCode: 400, body: 'Missing user or file parameter' };
     }
-    // منع محاولات الخروج عن المجلد المسموح به
-    if (user.includes('..') || file.includes('..') || user.includes('/')) {
-      return { statusCode: 400, body: 'Invalid path' };
-    }
 
-    const owner  = process.env.ASSETS_GITHUB_OWNER;   // اسم المستخدم/المنظمة على GitHub
-    const repo   = process.env.ASSETS_GITHUB_REPO;    // اسم المستودع الخاص بالملفات
+    const user = parts[0];
+    const file = parts.slice(1).join('/');
+
+    const owner  = process.env.ASSETS_GITHUB_OWNER;
+    const repo   = process.env.ASSETS_GITHUB_REPO;
     const branch = process.env.ASSETS_GITHUB_BRANCH || 'main';
-    const token  = process.env.ASSETS_GITHUB_TOKEN;   // Personal Access Token (صلاحية قراءة فقط)
+    const token  = process.env.ASSETS_GITHUB_TOKEN;
 
     if (!owner || !repo || !token) {
       return { statusCode: 500, body: 'Asset storage is not configured' };
     }
 
-    const path = `${user}/${file}`;
-    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(branch)}`;
+    const ghPath = `${user}/${file}`;
+    const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(ghPath)}?ref=${encodeURIComponent(branch)}`;
 
     const ghRes = await fetch(apiUrl, {
       headers: {
