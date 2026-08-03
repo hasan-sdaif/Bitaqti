@@ -1964,6 +1964,49 @@ function setupSuggestionCounter(){
 }
 
 // ════════════════════════════════════════════════════════════════
+//  قراءة معاملات URL — لدعم الانتقال من تتبع الطلب
+//  مثال: reviews.html?tab=write&phone=3XXX XXXX&code=XXXX
+// ════════════════════════════════════════════════════════════════
+function applyUrlParams(){
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    const phone = params.get('phone');
+    const code = params.get('code');
+
+    // تعبئة حقول التحقق لو وُجدت في URL (قادمة من تتبع الطلب)
+    if(phone && $('verifyPhone')){
+      $('verifyPhone').value = phone;
+    }
+    if(code && $('verifyCode')){
+      $('verifyCode').value = code;
+    }
+
+    // التبديل للتبويب المطلوب
+    if(tab === 'write'){
+      switchTab('write');
+      // لو وُجد رقم هاتف وكود، نوسّع قسم التحقق ونحاول التحقق تلقائياً
+      if(phone && code){
+        const verifyBox = $('verifyBox');
+        if(verifyBox){
+          verifyBox.scrollIntoView({ behavior:'smooth', block:'center' });
+        }
+        // تحقق تلقائي بعد ثانية (لإعطاء المستخدم فرصة لرؤية ما يحدث)
+        setTimeout(() => {
+          if($('verifyBtn') && !$('verifyBtn').disabled){
+            $('verifyBtn').click();
+          }
+        }, 800);
+      }
+    } else if(tab === 'suggestions'){
+      switchTab('suggestions');
+    } else if(tab === 'suggest-form'){
+      switchTab('suggest-form');
+    }
+  } catch(e) { /* تجاهل الأخطاء بصمت */ }
+}
+
+// ════════════════════════════════════════════════════════════════
 //  INIT
 // ════════════════════════════════════════════════════════════════
 loadStats();
@@ -1971,6 +2014,7 @@ loadReviews(true);
 setupCollapsibles();
 setupSocialValidation();
 setupSuggestionCounter();
+applyUrlParams(); // تطبيق معاملات URL (للانتقال من تتبع الطلب)
 </script>
 </body>
 </html>
