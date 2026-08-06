@@ -1675,6 +1675,11 @@ const I18N = {
     "pwa.title":"تثبيت هذه السيرة","pwa.sub":"وصول سريع · جاهزة دون اتصال","pwa.install":"تثبيت",
     "paper.title":"السيرة الذاتية الورقية","paper.open":"عرض / تحميل PDF","paper.close":"إغلاق","paper.fallback":"سيتم رفع ملف السيرة الورقية (PDF) قريباً.",
     "footer.install":"تثبيت التطبيق",
+    "iosInstall.title":"التثبيت على آيفون",
+    "iosInstall.step1":"اضغطي على زر المشاركة Share الموجود في شريط المتصفح",
+    "iosInstall.step2":"مرّري للأسفل ثم اختاري «إضافة إلى الشاشة الرئيسية» Add to Home Screen",
+    "iosInstall.step3":"اضغطي «إضافة» Add في الأعلى لإتمام التثبيت",
+    "iosInstall.close":"تم",
     "certs.title":"الشهادات والوثائق",
     "certs.sub":"اضغطي على أي شهادة لعرض أو تحميل الملف الكامل بصيغة PDF.",
     "certs.viewPdf":"عرض الملف الكامل","certs.close":"إغلاق",
@@ -1802,6 +1807,11 @@ const I18N = {
     "pwa.title":"Install this CV","pwa.sub":"Quick access · offline ready","pwa.install":"Install",
     "paper.title":"Paper CV","paper.open":"View / Download PDF","paper.close":"Close","paper.fallback":"Paper CV (PDF) will be uploaded soon.",
     "footer.install":"Install App",
+    "iosInstall.title":"Install on iPhone",
+    "iosInstall.step1":"Tap the Share button in the browser toolbar",
+    "iosInstall.step2":"Scroll down and choose \"Add to Home Screen\"",
+    "iosInstall.step3":"Tap \"Add\" at the top to finish",
+    "iosInstall.close":"Done",
     "certs.title":"Certificates & Documents",
     "certs.sub":"Tap any certificate to view or download the full PDF file.",
     "certs.viewPdf":"View full PDF","certs.close":"Close",
@@ -2030,6 +2040,15 @@ const pwaInstall = document.getElementById('pwaInstall');
 const pwaClose = document.getElementById('pwaClose');
 const footerInstallBtn = document.getElementById('footerInstallBtn');
 
+// iOS (Safari/Chrome/Firefox for iOS) never fires 'beforeinstallprompt' —
+// there is no programmatic install API there, so we detect it directly
+// and fall back to a manual "Add to Home Screen" instructions modal.
+const isIOSDevice = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); // iPadOS 13+
+function isRunningStandalone(){
+  return window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+}
+
 window.addEventListener('beforeinstallprompt', (e)=>{
   e.preventDefault();
   deferredPrompt = e;
@@ -2044,6 +2063,34 @@ window.addEventListener('beforeinstallprompt', (e)=>{
   }catch(_){}
 });
 
+function openIOSInstallModal(){
+  const dict = I18N[document.documentElement.lang] || I18N.ar;
+  const isRTL = document.documentElement.dir === 'rtl';
+  const modal = document.createElement('div');
+  modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
+  const step = (n, txt) => `
+    <div style="display:flex;align-items:flex-start;gap:10px;">
+      <span style="flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--gold-dim);color:var(--gold-bright);font-size:11.5px;font-weight:700;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;">${n}</span>
+      <span style="font-size:13px;color:var(--mid);line-height:1.55;padding-top:2px;">${txt}</span>
+    </div>`;
+  modal.innerHTML = `
+    <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:360px;width:100%;padding:28px;box-shadow:var(--shadow);text-align:center;">
+      <div style="width:46px;height:46px;border-radius:12px;background:var(--gold-dim);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold-bright);margin:0 auto 14px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:22px;height:22px;"><path d="M4 12v7a2 2 0 002 2h12a2 2 0 002-2v-7M16 6l-4-4-4 4M12 2v13"/></svg>
+      </div>
+      <h3 style="font-family:'Lora',serif;font-size:18px;color:var(--text);margin-bottom:16px;">${dict['iosInstall.title']}</h3>
+      <div style="text-align:${isRTL ? 'right' : 'left'};display:flex;flex-direction:column;gap:12px;margin-bottom:22px;">
+        ${step(1, dict['iosInstall.step1'])}
+        ${step(2, dict['iosInstall.step2'])}
+        ${step(3, dict['iosInstall.step3'])}
+      </div>
+      <button id="closeIOSInstall" style="background:var(--grad-gold);color:#1A2942;border:none;font-size:13px;font-weight:700;font-family:'IBM Plex Mono',monospace;padding:10px 26px;border-radius:9px;cursor:pointer;">${dict['iosInstall.close']}</button>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.querySelector('#closeIOSInstall').addEventListener('click', ()=>modal.remove());
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.remove(); });
+}
+
 async function triggerInstall(){
   if(deferredPrompt){
     deferredPrompt.prompt();
@@ -2051,6 +2098,9 @@ async function triggerInstall(){
     deferredPrompt = null;
     pwaBanner.classList.remove('show');
     if(footerInstallBtn) footerInstallBtn.classList.add('hidden');
+  } else if(isIOSDevice){
+    // No native install prompt exists on iOS — show manual steps instead.
+    openIOSInstallModal();
   }
 }
 
@@ -2059,6 +2109,8 @@ if(pwaInstall){
 }
 if(footerInstallBtn){
   footerInstallBtn.addEventListener('click', triggerInstall);
+  // Hide the button once the app is already installed / running standalone
+  if(isRunningStandalone()) footerInstallBtn.classList.add('hidden');
 }
 if(pwaClose){
   pwaClose.addEventListener('click', ()=>{
