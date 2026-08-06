@@ -582,6 +582,16 @@
     font-family:'IBM Plex Mono',monospace;
   }
   html[lang="ar"] .train-card .org{font-family:'Tajawal',sans-serif;}
+  .train-link{
+    display:flex;align-items:center;gap:5px;margin-top:8px;
+    font-size:11px;font-weight:700;color:var(--teal);
+    font-family:'IBM Plex Mono',monospace;transition:transform .2s ease,color .2s ease;
+    padding-top:8px;border-top:1px dashed var(--line-soft);
+  }
+  html[lang="ar"] .train-link{font-family:'Tajawal',sans-serif;font-weight:700;}
+  .train-link:hover{color:var(--gold-bright);transform:translateX(-3px);}
+  html[dir="ltr"] .train-link:hover{transform:translateX(3px);}
+  .train-link svg{width:12px;height:12px;flex-shrink:0;}
 
   /* ═══════ LANGUAGES ═══════ */
   .lang-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
@@ -599,6 +609,11 @@
   html[lang="ar"] .lang-name{font-family:'Amiri',serif;}
   .lang-lvl{font-size:11.5px;color:var(--soft);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.4px;}
   html[lang="ar"] .lang-lvl{font-family:'Tajawal',sans-serif;font-weight:700;}
+  .lang-ielts{
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    margin-top:14px;padding-top:12px;border-top:1px dashed var(--line-soft);
+  }
+  .lang-ielts .train-link{margin-top:0;padding-top:0;border-top:none;}
 
   /* ═══════ CONTACT ═══════ */
   .contact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
@@ -839,6 +854,7 @@
       <li><a href="#achievements" data-i18n="nav.ach">Achievements</a></li>
       <li><a href="#education" data-i18n="nav.edu">Education</a></li>
       <li><a href="#training" data-i18n="nav.train">Training</a></li>
+      <li><a href="#honours" data-i18n="nav.hon">Honours</a></li>
       <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <div class="nav-right">
@@ -868,6 +884,7 @@
   <a href="#achievements" data-i18n="nav.ach">Achievements</a>
   <a href="#education" data-i18n="nav.edu">Education</a>
   <a href="#training" data-i18n="nav.train">Training</a>
+  <a href="#honours" data-i18n="nav.hon">Honours</a>
   <a href="#contact" data-i18n="nav.contact">Contact</a>
 </div>
 
@@ -1258,6 +1275,42 @@
     </div>
     <div class="train-grid">
       <div class="train-card reveal">
+        <span class="yr">2024</span>
+        <div class="title" data-i18n="train.8.t">Self Development & Creative Thinking</div>
+        <div class="org" data-i18n="train.8.o">Royal Police Academy</div>
+        <a class="train-link" href="certs/self-development-creative-thinking.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="train.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="train-card reveal">
+        <span class="yr">2024</span>
+        <div class="title" data-i18n="train.9.t">Dealing with Different Personalities at Work</div>
+        <div class="org" data-i18n="train.9.o">Royal Police Academy</div>
+        <a class="train-link" href="certs/dealing-different-personalities-work.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="train.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="train-card reveal">
+        <span class="yr">2024</span>
+        <div class="title" data-i18n="train.10.t">Advanced Security Work Program</div>
+        <div class="org" data-i18n="train.10.o">Ministry of Interior</div>
+        <a class="train-link" href="certs/advanced-security-work-program.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="train.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="train-card reveal">
+        <span class="yr">2024</span>
+        <div class="title" data-i18n="train.11.t">Root Cause Analysis</div>
+        <div class="org" data-i18n="train.11.o">Aluminium Bahrain (Alba)</div>
+        <a class="train-link" href="certs/root-cause-analysis-alba.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="train.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="train-card reveal">
         <span class="yr">2022</span>
         <div class="title" data-i18n="train.1.t">Foundation Equestrian Course</div>
         <div class="org" data-i18n="train.1.o">Ministry of Interior</div>
@@ -1296,11 +1349,66 @@
   </div>
 </section>
 
+<!-- ═══════ HONOURS & DISTINCTIONS ═══════ -->
+<section id="honours">
+  <div class="container">
+    <div class="sec-head">
+      <span class="sec-num">07</span>
+      <h2>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a7 7 0 100-14 7 7 0 000 14z"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
+        <span data-i18n="sec.hon">Honours & Distinctions</span>
+      </h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="edu-grid">
+      <div class="edu-card reveal">
+        <div class="degree" data-i18n="hon.1.t">Medical Medal for Frontline Service during the COVID-19 Pandemic</div>
+        <div class="school" data-i18n="hon.1.s">Kingdom of Bahrain — Royal Order</div>
+        <div class="date" data-i18n="hon.1.d">2020</div>
+        <span class="edu-honor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+          <span data-i18n="hon.1.h">Royal Medal</span>
+        </span>
+        <a class="edu-link" href="certs/medical-medal-covid19.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="edu-card reveal">
+        <div class="degree" data-i18n="hon.2.t">Certificate of Appreciation for National Volunteer Service — COVID-19 Educational Support Initiative</div>
+        <div class="school" data-i18n="hon.2.s">Ministry of Education, Kingdom of Bahrain</div>
+        <div class="date" data-i18n="hon.2.d">2021</div>
+        <span class="edu-honor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="hon.2.h">National Volunteer Service</span>
+        </span>
+        <a class="edu-link" href="certs/volunteer-appreciation-moe.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+      <div class="edu-card reveal">
+        <div class="degree" data-i18n="hon.3.t">International Visitor Leadership Program (IVLP) — Open Prisons & Juvenile Justice Reform</div>
+        <div class="school" data-i18n="hon.3.s">U.S. Department of State, Bureau of Educational and Cultural Affairs</div>
+        <div class="date" data-i18n="hon.3.d">July 25 – August 2, 2022</div>
+        <span class="edu-honor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4M21 12c0 5-9 9-9 9s-9-4-9-9V5l9-3 9 3z"/></svg>
+          <span data-i18n="hon.3.h">IVLP Alumna, USA</span>
+        </span>
+        <a class="edu-link" href="certs/ivlp-us-state-dept.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+          <span data-i18n="edu.link">View Certificate (PDF)</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ═══════ LANGUAGES ═══════ -->
 <section id="languages">
   <div class="container">
     <div class="sec-head">
-      <span class="sec-num">07</span>
+      <span class="sec-num">08</span>
       <h2>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
         <span data-i18n="sec.lang">Languages</span>
@@ -1325,6 +1433,16 @@
           </div>
           <div class="skill-bar"><div class="skill-bar-f" style="width:85%"></div></div>
         </div>
+        <div class="lang-ielts">
+          <span class="edu-honor">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg>
+            <span data-i18n="lang.ielts.badge">IELTS Overall Band 5.5 · CEFR B2</span>
+          </span>
+          <a class="train-link" href="certs/ielts-english.pdf" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+            <span data-i18n="train.link">View Certificate (PDF)</span>
+          </a>
+        </div>
       </div>
     </div>
   </div>
@@ -1334,7 +1452,7 @@
 <section id="contact">
   <div class="container">
     <div class="sec-head">
-      <span class="sec-num">08</span>
+      <span class="sec-num">09</span>
       <h2>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg>
         <span data-i18n="sec.contact">Contact</span>
@@ -1371,7 +1489,7 @@
       <button class="contact-card" id="certsCard" type="button">
         <div class="contact-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4 2 7L12 16l-6.5 4 2-7L2 9h7z"/></svg></div>
         <div class="lbl" data-i18n="contact.certs">Certificates</div>
-        <div class="val" data-i18n="contact.certsV">View 4 documents</div>
+        <div class="val" data-i18n="contact.certsV">View 12 documents</div>
       </button>
     </div>
   </div>
@@ -1438,7 +1556,7 @@ const I18N = {
   ar: {
     "brand.name":"عائشة السميم",
     "brand.sub":"سيرة رقمية",
-    "nav.about":"نبذة","nav.comp":"الكفاءات","nav.exp":"الخبرات","nav.ach":"الإنجازات","nav.edu":"التعليم","nav.train":"التدريب","nav.contact":"تواصل",
+    "nav.about":"نبذة","nav.comp":"الكفاءات","nav.exp":"الخبرات","nav.ach":"الإنجازات","nav.edu":"التعليم","nav.train":"التدريب","nav.hon":"التكريم","nav.contact":"تواصل",
     "nav.paper":"السيرة الورقية",
     "photo.fallback":"ع.س",
     "hero.badge":"النقيب · البحرين",
@@ -1524,26 +1642,48 @@ const I18N = {
     "train.5.t":"كتابة التقارير الشرطية","train.5.o":"الأكاديمية الملكية للشرطة",
     "train.6.t":"تطوير الإنتاجية وإدارة الوقت","train.6.o":"تطوير مهني",
     "train.7.t":"إدارة الاجتماعات الفعّالة","train.7.o":"الأكاديمية الملكية للشرطة",
+    "train.8.t":"التنمية الذاتية والتفكير الإبداعي","train.8.o":"الأكاديمية الملكية للشرطة",
+    "train.9.t":"التعامل مع الشخصيات المختلفة في العمل","train.9.o":"الأكاديمية الملكية للشرطة",
+    "train.10.t":"برنامج العمل الأمني المتقدم","train.10.o":"وزارة الداخلية",
+    "train.11.t":"تحليل الأسباب الجذرية","train.11.o":"ألمنيوم البحرين (ألبا)",
+    "train.link":"عرض الشهادة (PDF)",
+    "sec.hon":"التكريم والأوسمة",
+    "hon.1.t":"وسام الاستحقاق الطبي تقديراً للجهود في الصفوف الأمامية خلال جائحة كورونا",
+    "hon.1.s":"مملكة البحرين — أمر ملكي",
+    "hon.1.d":"2020",
+    "hon.1.h":"وسام ملكي",
+    "hon.2.t":"شهادة تقدير للموقف الوطني التطوعي ضمن مبادرة الدعم التعليمي خلال جائحة كورونا",
+    "hon.2.s":"وزارة التربية والتعليم، مملكة البحرين",
+    "hon.2.d":"2021",
+    "hon.2.h":"تطوع وطني",
+    "hon.3.t":"برنامج الزائر الدولي للقيادة (IVLP) — السجون المفتوحة وإصلاح قضاء الأحداث",
+    "hon.3.s":"وزارة الخارجية الأمريكية، مكتب الشؤون التعليمية والثقافية",
+    "hon.3.d":"25 يوليو – 2 أغسطس 2022",
+    "hon.3.h":"عضوة IVLP، الولايات المتحدة",
     "sec.lang":"اللغات",
     "lang.ar.name":"العربية","lang.ar.lvl":"اللغة الأم",
     "lang.en.name":"الإنجليزية","lang.en.lvl":"إجادة مهنية في العمل",
+    "lang.ielts.t":"شهادة آيلتس الأكاديمية (IELTS Academic)",
+    "lang.ielts.o":"المجلس الثقافي البريطاني، البحرين — 23 أكتوبر 2021",
+    "lang.ielts.badge":"آيلتس – الدرجة الكلية 5.5 · مستوى B2",
     "sec.contact":"تواصل",
     "contact.phoneWa":"هاتف · واتساب","contact.email":"بريد","contact.loc":"الموقع","contact.locV":"مدينة خليفة، البحرين",
-    "contact.certs":"الشهادات","contact.certsV":"عرض 4 مستندات",
+    "contact.certs":"الشهادات","contact.certsV":"عرض 12 مستندًا",
     "foot.brand":"عائشة حسن السميم","foot.tagline":"خدمة عامة · تأهيل · عدالة",
     "foot.rights":"جميع الحقوق محفوظة","foot.tier":"سيرة رقمية",
     "fab.wa":"واتساب","fab.email":"بريد","fab.call":"اتصال","fab.paper":"السيرة",
     "pwa.title":"تثبيت هذه السيرة","pwa.sub":"وصول سريع · جاهزة دون اتصال","pwa.install":"تثبيت",
     "paper.title":"السيرة الذاتية الورقية","paper.open":"عرض / تحميل PDF","paper.close":"إغلاق","paper.fallback":"سيتم رفع ملف السيرة الورقية (PDF) قريباً.",
     "footer.install":"تثبيت التطبيق",
-    "certs.title":"الشهادات الأكاديمية",
+    "certs.title":"الشهادات والوثائق",
     "certs.sub":"اضغطي على أي شهادة لعرض أو تحميل الملف الكامل بصيغة PDF.",
-    "certs.viewPdf":"عرض الملف الكامل","certs.close":"إغلاق"
+    "certs.viewPdf":"عرض الملف الكامل","certs.close":"إغلاق",
+    "certs.grp.edu":"الشهادات الأكاديمية","certs.grp.train":"التدريب والتطوير المهني","certs.grp.hon":"التكريم والأوسمة","certs.grp.lang":"شهادة اللغة"
   },
   en: {
     "brand.name":"Aisha Alsumaim",
     "brand.sub":"Digital CV",
-    "nav.about":"About","nav.comp":"Competencies","nav.exp":"Experience","nav.ach":"Achievements","nav.edu":"Education","nav.train":"Training","nav.contact":"Contact",
+    "nav.about":"About","nav.comp":"Competencies","nav.exp":"Experience","nav.ach":"Achievements","nav.edu":"Education","nav.train":"Training","nav.hon":"Honours","nav.contact":"Contact",
     "nav.paper":"Paper CV",
     "photo.fallback":"AHA",
     "hero.badge":"CAPTAIN · Bahrain",
@@ -1629,21 +1769,43 @@ const I18N = {
     "train.5.t":"Writing Police Reports","train.5.o":"Royal Police Academy",
     "train.6.t":"Productivity Development & Time Management","train.6.o":"Professional Development",
     "train.7.t":"Effective Meeting Management","train.7.o":"Royal Police Academy",
+    "train.8.t":"Self Development & Creative Thinking","train.8.o":"Royal Police Academy",
+    "train.9.t":"Dealing with Different Personalities at Work","train.9.o":"Royal Police Academy",
+    "train.10.t":"Advanced Security Work Program","train.10.o":"Ministry of Interior",
+    "train.11.t":"Root Cause Analysis","train.11.o":"Aluminium Bahrain (Alba)",
+    "train.link":"View Certificate (PDF)",
+    "sec.hon":"Honours & Distinctions",
+    "hon.1.t":"Medical Medal for Frontline Service during the COVID-19 Pandemic",
+    "hon.1.s":"Kingdom of Bahrain — Royal Order",
+    "hon.1.d":"2020",
+    "hon.1.h":"Royal Medal",
+    "hon.2.t":"Certificate of Appreciation for National Volunteer Service — COVID-19 Educational Support Initiative",
+    "hon.2.s":"Ministry of Education, Kingdom of Bahrain",
+    "hon.2.d":"2021",
+    "hon.2.h":"National Volunteer Service",
+    "hon.3.t":"International Visitor Leadership Program (IVLP) — Open Prisons & Juvenile Justice Reform",
+    "hon.3.s":"U.S. Department of State, Bureau of Educational and Cultural Affairs",
+    "hon.3.d":"July 25 – August 2, 2022",
+    "hon.3.h":"IVLP Alumna, USA",
     "sec.lang":"Languages",
     "lang.ar.name":"Arabic","lang.ar.lvl":"Native",
     "lang.en.name":"English","lang.en.lvl":"Professional Working Proficiency",
+    "lang.ielts.badge":"IELTS Overall Band 5.5 · CEFR B2",
+    "lang.ielts.t":"IELTS Academic Test Report Form",
+    "lang.ielts.o":"British Council Bahrain — 23 October 2021",
     "sec.contact":"Contact",
     "contact.phoneWa":"Phone · WhatsApp","contact.email":"Email","contact.loc":"Location","contact.locV":"Khalefa Town, Bahrain",
-    "contact.certs":"Certificates","contact.certsV":"View 4 documents",
+    "contact.certs":"Certificates","contact.certsV":"View 12 documents",
     "foot.brand":"Aisha Hassan Alsumaim","foot.tagline":"Public Service · Rehabilitation · Justice",
     "foot.rights":"All rights reserved","foot.tier":"Digital CV",
     "fab.wa":"WhatsApp","fab.email":"Email","fab.call":"Call","fab.paper":"CV",
     "pwa.title":"Install this CV","pwa.sub":"Quick access · offline ready","pwa.install":"Install",
     "paper.title":"Paper CV","paper.open":"View / Download PDF","paper.close":"Close","paper.fallback":"Paper CV (PDF) will be uploaded soon.",
     "footer.install":"Install App",
-    "certs.title":"Academic Certificates",
+    "certs.title":"Certificates & Documents",
     "certs.sub":"Tap any certificate to view or download the full PDF file.",
-    "certs.viewPdf":"View full PDF","certs.close":"Close"
+    "certs.viewPdf":"View full PDF","certs.close":"Close",
+    "certs.grp.edu":"Academic Certificates","certs.grp.train":"Training & Professional Development","certs.grp.hon":"Honours & Distinctions","certs.grp.lang":"Language Certification"
   }
 };
 
@@ -1799,16 +1961,31 @@ function openPaperCV(){
 
 /* ═══ Certificates modal (4 academic documents) ═══ */
 const CERTS = [
-  {pdf:'certs/llm-huddersfield.pdf', nameKey:'edu.1.t', orgKey:'edu.1.s'},
-  {pdf:'certs/police-diploma.pdf', nameKey:'edu.2.t', orgKey:'edu.2.s'},
-  {pdf:'certs/bachelor-business-informatics.pdf', nameKey:'edu.3.t', orgKey:'edu.3.s'},
-  {pdf:'certs/graphic-design-diploma.pdf', nameKey:'edu.4.t', orgKey:'edu.4.s'}
+  {group:'certs.grp.edu', pdf:'certs/llm-huddersfield.pdf', nameKey:'edu.1.t', orgKey:'edu.1.s'},
+  {group:'certs.grp.edu', pdf:'certs/police-diploma.pdf', nameKey:'edu.2.t', orgKey:'edu.2.s'},
+  {group:'certs.grp.edu', pdf:'certs/bachelor-business-informatics.pdf', nameKey:'edu.3.t', orgKey:'edu.3.s'},
+  {group:'certs.grp.edu', pdf:'certs/graphic-design-diploma.pdf', nameKey:'edu.4.t', orgKey:'edu.4.s'},
+  {group:'certs.grp.train', pdf:'certs/self-development-creative-thinking.pdf', nameKey:'train.8.t', orgKey:'train.8.o'},
+  {group:'certs.grp.train', pdf:'certs/dealing-different-personalities-work.pdf', nameKey:'train.9.t', orgKey:'train.9.o'},
+  {group:'certs.grp.train', pdf:'certs/advanced-security-work-program.pdf', nameKey:'train.10.t', orgKey:'train.10.o'},
+  {group:'certs.grp.train', pdf:'certs/root-cause-analysis-alba.pdf', nameKey:'train.11.t', orgKey:'train.11.o'},
+  {group:'certs.grp.hon', pdf:'certs/medical-medal-covid19.pdf', nameKey:'hon.1.t', orgKey:'hon.1.s'},
+  {group:'certs.grp.hon', pdf:'certs/volunteer-appreciation-moe.pdf', nameKey:'hon.2.t', orgKey:'hon.2.s'},
+  {group:'certs.grp.hon', pdf:'certs/ivlp-us-state-dept.pdf', nameKey:'hon.3.t', orgKey:'hon.3.s'},
+  {group:'certs.grp.lang', pdf:'certs/ielts-english.pdf', nameKey:'lang.ielts.t', orgKey:'lang.ielts.o'}
 ];
 function openCertificatesModal(){
   const dict = I18N[document.documentElement.lang] || I18N.ar;
   const modal = document.createElement('div');
   modal.style.cssText = 'position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;';
-  const cardsHtml = CERTS.map(c => `
+  let lastGroup = null;
+  const cardsHtml = CERTS.map((c,i) => {
+    let header = '';
+    if(c.group !== lastGroup){
+      lastGroup = c.group;
+      header = `<div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--gold-bright);font-family:'IBM Plex Mono',monospace;margin:${i===0?'0':'18px'} 0 2px;padding-bottom:6px;border-bottom:1px solid var(--line-soft);">${dict[c.group]}</div>`;
+    }
+    return `${header}
         <a href="${c.pdf}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;transition:transform .2s ease,border-color .2s ease;" onmouseover="this.style.transform='translateY(-2px)';this.style.borderColor='var(--gold)';" onmouseout="this.style.transform='none';this.style.borderColor='var(--line)';">
           <span style="flex-shrink:0;width:40px;height:40px;border-radius:10px;background:var(--gold-dim);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--gold-bright);">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
@@ -1821,7 +1998,8 @@ function openCertificatesModal(){
             ${dict['certs.viewPdf']}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </span>
-        </a>`).join('');
+        </a>`;
+  }).join('');
   modal.innerHTML = `
     <div style="background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:480px;width:100%;max-height:88vh;overflow-y:auto;padding:28px;box-shadow:var(--shadow);">
       <h3 style="font-family:'Lora',serif;font-size:20px;color:var(--text);margin-bottom:6px;">${dict['certs.title']}</h3>
